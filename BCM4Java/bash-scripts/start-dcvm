@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ -z "$1" ]; then 
+  echo usage: $0 testNumber jvmName
+  exit
+ fi
+java -ea -cp 'jars/*' -Djava.security.manager \
+     -Djava.security.policy=dcvm.policy \
+     fr.sorbonne_u.components.testdistributed.DCVM$1 $2 config.xml
