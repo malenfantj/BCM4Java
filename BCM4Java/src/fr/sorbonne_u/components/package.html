@@ -1,0 +1,160 @@
+<!-- fr.sorbonne_u.components -->
+<html>
+<body>
+<p><b>Basic component model.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+The package <code>fr.upmc.components</code> provides a basic component
+model.  This model is constructed around the common following concepts:
+</p>
+
+<ul>
+<li>components, that can act both as clients when they call other
+  components, or providers, when they answer calls coming from other
+  components;</li>
+<li>required interfaces, that express the services that a client
+  component needs to call;</li>
+<li>offered interfaces, that express the services that a component
+  offers to other components to be called;</li>
+<li>two-way interfaces, that express the services that components offer
+  and require from each others in a peer-to-peer way;</li>
+<li>ports, that expose under an URI individual required or offered
+  interfaces of each component; an inbound port exposes an offered
+  interface while an outbound port is defined by a required
+  interface;</li>
+<li>connectors, that allow to connect an inbound port of a provider
+  component with an outbound port of a client component;</li>
+<li>components, that have required and offered interfaces exposed
+  through ports and that can be passive when their services are
+  executed by the thread of a client component or active when they use
+  their own threads to service requests or execute tasks of their
+  own;</li>
+<li>component virtual machines, that create components and interconnect
+  them using connectors to build applications and that can be either
+  local to a virtual machine or distributed among several ones;
+  and,</li>
+<li>a global registry, used to publish the ports under their URI, and
+  therefore makes it possible to find components through their ports
+  and connect to them.</li>
+</ul>
+
+<p>
+The next figure shows how these artifacts correspond to UML entities and
+artifacts in component diagrams.  As the dashed arrows show, the normal
+flow of control is for the client component to call a service offered by
+a provider component.  The model also offers data connections, where
+the client and the provider exchanges information rather than call each
+other services.  In data connections, the provider provides data that is
+consumed by the client.  Data connections can be of two modes: pull or
+push. In the pull mode, the client takes the initiative of requiring a
+new datum from the provider, which responds by providing such a new
+datum.  In push mode, the provider is taking the initiative to send a
+new datum to the client whenever it wants.  Two way data connection can
+also be set up, where both exchange roles as provider and client, and
+can adopt either the pull or push modes.
+</p>
+
+<p>
+Components can be created recursively, as part-whole hierarchies of
+components where subcomponents are embedded in an aggregate component.
+Unless explicitly promoted to the ports of the aggregate component, the
+ports of subcomponents are not visible from the outside.  Hence, the
+distinction between an assembly and an aggregate component is that the
+assembly is not a component and all of the components in the assembly
+are visible.  Assemblies can reside within a single JVM or multiple
+ones.
+</p>
+
+<img SRC="../../../../images/components.jpg"/>
+
+<p>
+The package has subpackages defining each of these concepts:
+</p>
+
+<ul>
+<li><code>fr.upmc.components</code> itself defines the component and
+  active components;</li>
+<li><code>fr.upmc.components.cvm</code> defines the local and
+  distributed component virtual machines.</li>
+<li><code>fr.upmc.components.connectors</code> defines the different
+  types of connectors;</li>
+<li><code>fr.upmc.components.interfaces</code> defines the component
+  generic required and offered interfaces;</li>
+<li><code>fr.upmc.components.ports</code> defines the different types of
+  ports.</li>
+</ul>
+
+<p>
+Component required and offered interfaces are defined as Java interfaces
+that extends the seminal <code>RequiredI</code> and <code>OfferedI</code>
+Java interfaces.  Hence, a required interface is just a Java interface
+with the signature of services, that is tagged by the fact that it
+extends directly or indirectly either <code>RequiredI</code> or
+<code>OfferedI</code>.
+</p>
+
+<p>
+For a better support to end users, in addition to component interfaces
+requiring or offering services (in terms of methods that can be called),
+the package also provides for data component interfaces, that are
+specific kinds of interface meant to be used to exchange data between
+components rather than calling each others services.
+</p>
+
+<p>
+Here is a UML class diagram of the package:
+</p>
+
+<img SRC="../../../../images/BCM-Components.jpg"/>
+
+</body>
+</html>

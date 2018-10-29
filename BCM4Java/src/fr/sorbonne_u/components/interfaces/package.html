@@ -1,0 +1,182 @@
+<!-- fr.sorbonne_u.components.interfaces -->
+<html>
+<body>
+<p><b>Types of offered and required interfaces for components.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+The package <code>fr.upmc.components.interfaces</code> contains all of the
+kind of interfaces a component can use and implement.  The interface
+<code>ComponentI</code> serves as a common supertype for all interfaces
+in the component model.  A component interface is associated with a <i>port</i>
+on a component, through which the component will be connected to
+another component using a <i>connector</i>.  Two major kinds of interface
+are then introduced:
+</p>
+<ol>
+<li><code>OfferedI</code> is an interface implemented by a component acting as
+  a service provider. An offered interface therefor declares the signature
+  of services (methods) provided by the component.</li>
+<li><code>RequiredI</code> is an interface that is required by a component,
+  expressing the services that the component will require during its
+  execution.</li>
+</ol>
+<p>
+When connecting components, a required interface of one component will be
+matched with the offered interface of another component in order to connect
+them, either as subcomponents of a composite components or inside an assembly
+of components.  Offered interfazces can lead to several connections to several
+client compoents, but required interfaces are connected 
+</p>
+
+<p><b>Data exchange interfaces</b></p>
+
+<p>
+Many components just exchange data, and not services <i>per se</i>.  To cater
+for asynchronous exchange of data, two variant interfaces are defined:
+</p>
+<ol>
+<li><code>DataOfferedI</code> is an interface implemented by a component that
+  will produce data.</li>
+<li><code>DataRequiredI</code> is an interface implemented by a component that
+  will consume data.</li>
+</ol>
+<p>
+Both <code>DataOfferedI</code> and <code>DataRequiredI</code> declares a
+<code>DataI</code> internal interface that serves as a supertype for objects
+implementing the data that is exchanged between a producer and a consumer.
+The classes defining data objects need not be implementing both the
+<code>DataOfferedI.DataI</code> and <code>DataRequiredI.DataI</code>.
+Indeed, though it is the most simple way to make the object directly
+interpretable on both sides, data connectors propose an alternative way
+to mediate between producer and consumer of data by requiring the implementation
+of conversion <code>to</code> and <code>from</code> that allows to converts
+required side data objects <i>to</i> offered side ones, and required side
+objects <i>from</i> offered side ones.
+</p>
+<p>
+Data exchange interfaces can be used in two modes: pull and push.  In pull
+mode, the consumer components calls the producer whenever it needs another
+piece of data.  In push mode, the producer calls to consumer each time it
+has a new piece of data that can be consumed.  These two modes are taken
+into account by two internal interfaces <code>PullI</code> and
+<code>PushI</code> defined in both <code>DataOfferedI</code> and
+<code>DataRequiredI</code> interfaces.  The pull mode is implemented
+by the pair of methods defined in the <code>PullI</code> interfaces:
+</p>
+<ul>
+<li>the <code>get()</code> method in the <code>DataOfferedI.PullI</code>
+  interface, that is called upon the producer to get the next piece of
+  data.</li>
+<li>the <code>request()</code> method in the <code>DataRequiredI.PullI</code>
+  interface, that is called upon the producer to request the next piece of
+  data.</li>
+</ul>
+<p>
+Similarly, the push mode is implemented by the pair of methods defined in the
+<code>PushI</code> interfaces:
+</p>
+<ul>
+<li>the <code>send(DataI)</code> method in the <code>DataOfferedI.PushI</code>
+  interface, that is called by the producer to send the next piece of
+  data.</li>
+<li>the <code>receive(DataI)</code> method in the
+  <code>DataRequiredI.PushI</code> interface, that is called upon the consumer 
+  to pass it the next piece of data.</li>
+</ul>
+
+
+<p><b>Two way interfaces</b></p>
+
+<p>
+A third kind of interface is added: <code>TwoWayI</code> that is used when
+two components play symmetrically the role of requirer and offerer of services
+to each other, for example in peer-to-peer algorithms.  Indeed, it is much
+simpler in this case to consider that the two components as implementing a
+unique interface rather that trying to connect them through two pairs of
+required and offered interfaces.  It also simplifies the connector that will
+bind the two.  As in offered and required interfaces, a data exchange variant
+of the two interfaces is defined: <code>DataTwoWayI</code>.  In two-way data
+exchange, there is no need to distinguish a push and a pull mode, as both
+components may take the initiative os sending a piece of data to the other
+component.  Exchanges are thus using only one pair of methods:
+</p>
+<ul>
+<li>the <code>send(DataI, DataTwoWayPortI)</code> method that is called by the
+  sender to send the next piece of data.</li>
+<li>the <code>receive(DataI, DataTwoWayPortI)</code> method that is called upon
+  the receiver to pass it the next piece of data.</li>
+</ul>
+<p>
+These two methods take as parameter the port of the sender to enable the
+connector to forward the piece of data in the right direction.  Indeed, as
+both components can act as sender and receiver, this parameter identifies
+the sender (and therefore the receiver) in the current exchange.
+</p>
+
+<p><b>Using the package</b></p>
+
+<p>
+When programming components, interfaces of the components must be defined to
+expose the services offered by the components and to make explicit the services
+required by the component.  For each interface, the programmer must select the
+appropriate type of interfaces that is needed and make the corresponding
+interface defined in this package the super interface of its interface.
+</p>
+
+<p>
+Here is a UML class diagram of the package:
+</p>
+
+<img SRC="../../../../../images/BCM-Interfaces.jpg"/>
+
+</body>
+</html>

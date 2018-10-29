@@ -1,0 +1,189 @@
+<!-- fr.sorbonne_u.components.ports -->
+<html>
+<body>
+<p><b>Hierarchy of ports to expose interfaces of components and
+      interconnect them.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+Ports are the entities that allow components to expose services and call other
+components' services.  The basic properties of ports are defined by the
+interface <code>PortI</code> and implemented by the abstract class
+<code>AbstractPort</code>.  As such, components offer services as offered
+interfaces (interfaces extending <code>OfferedI</code>) and allow other
+components to call these services through inbound ports, that are defined
+by the interface <code>InboundPortI</code> and implemented by the class
+<code>AbstractInboundPort</code>.  Symmetrically, components can require other
+components services as required interfaces  (interfaces extending
+<code>RequiredI</code>) and call them through outbound ports, that are defined
+by the interface <code>OutboundPortI</code> and implemented by the class
+<code>AbstractOutboundPort</code>.  Inbound and outbound ports are connected
+through connectors (subclasses of <code>AbstractConnector</code>).
+<p>
+
+<p>
+An outbound port is an object that typically implements (in the Java sense) the
+required interface to allow the internal code of the client component to call
+its required methods on that port.  The port then calls the connector, which
+therefore also implements the required interface.  The connector then calls
+the inbound port of the server component, which implements the offered interface.
+The inbound port is thus responsible for calling the actual service on the
+server component.  From the implementation point of view, if the server
+component is sequential, the inbound port can call the service method using
+plain Java method calls.  If the server component is concurrent, then the
+inbound port will create a service runnable task that will be submitted to
+the thread pool of the server component for execution.  Hence, when the server
+component is sequential (or passive), the service is executed by the thread of
+the client component (or the thread that is executing the code in the client
+component that made the call).  But when the server component is concurrent
+(or active), the thread of the client executes everything until the inbound
+port, and then a thread of the server component executes the service.  However,
+when programming the port, there is no need to make a difference as the call
+to the owner component should always use the <code>handleRequest</code>
+methods which are properlu defined to use a thread or not depending on the
+owner to be passive or active.
+</p>
+
+<p>
+Ports play a key role in making the components callable even among different
+JVM and hosts.  Ports therefore have a URI so that they can be published on
+registry.  When deploying an application within a single JVM, only a local
+registry and plain Java method calls are used.  When the application is deployed
+on multiple JVM and hosts, calls among the JVM are using RMI.  In RMI, only
+the called methods must be published in the RMI registry.  Hence, outbound
+ports need just to be published in the local registry (so that the connection
+logic in the class <code>ConnectionBuilder</code> can know them), but inbound
+ports that are meant to be called across JVM must be published on the RMI
+registry.  The abstract classes <code>AbstractAssembly</code> and
+<code>AbstractDistributedAssembly</code> provide respectively the methods for
+publishing ports locally or in the RMI registry.  Using RMI is manisfested by
+the fact that the interface <code>OfferedI<code> extends the interface
+<code>java.rmi.Remote</code> and by the fact that the class
+<code>AbstractInboundPort</code> extends the class
+<code>java.rmi.server.UnicastRemoteObject</code>.
+</p>
+
+<p>
+For data exchange interfaces, <code>DataOfferedI</code> and
+<code>DataRequiredI</code>, the exchanges are made through method calls both
+in pull and push modes.  In pull mode, the calls originate from the client
+component and works as in the client/server case using the pull interface of
+<code>DataRequiredI</code> and then <code>DataOfferedI</code>.  In push mode,
+components exchange roles.  The server component, which produces the data,
+pushes it to the client using the push interface of <code>DataOfferedI</code>
+and then <code>DataRequiredI</code>.  Pull and push interfaces therefore
+install two symmetric flow of call: a standard one where the client component
+calls the server component to get data, and another one where the server
+initiates the calls and therefore plays the role of a client and the client
+plays the role of the server.  Note that the data itself is defined as
+implementing the interface <code>DataOfferedI.DataI</code> on the server
+side and the interface <code>DataRequiredI.DataI</code> on the client
+side.  The connector is therefore responsible for implementing conversion
+methods <code>required2offered</code> and <code>offered2required</code>
+to transform the data from one representation to the other.
+</p>
+
+<p>
+Hence, data inbound ports, defined by the interface <code>DataInboundPortI</code>
+and implemented by <code>AbstractDataInboundPort</code>, implement the data
+offered pull interface and passes the calls on this interface to the server
+component as previously described.  But they also implement the data offered
+push interface that the server component will call to push the data.
+Symmetrically, data outbound ports, defined by the interface
+<code>DataOutboundPortI</code> and implemented by
+<code>AbstractDataOutboundPort</code>, implement the data
+required pull interface that client components will call to request data.  But
+they also implement the data required push interface that will be called through
+the connector and passes the calls on this interface to the client component as
+previously described for the inbound ports.  Note that when components are
+in different JVM, the calls must be made through RMI, as in the client/server
+case.  However, as the calls can go from the client to the server and from the
+server to the client, the data inbound ports must be published in the RMI
+registry for their pull interfaces, and the data outbound port must be published
+for their push interfaces.
+</p>
+
+<p>
+Components that call each others services defined in interfaces extending
+<code>TwoWayI</code> in a peer-to-peer way uses two way ports defined by the
+interface <code>TwoWayPortI</code> and implemented by the class
+<code>AbstractTwoWayPort</code>.  These ports are symmetric also, as they can
+be used by component A to call the services of component B, but also by the
+component B to call services of the component A.  Such peer-to-peer exchanges
+can limit to data exchanges, defined by the interface <code>DataTwoWayI</code>
+which defines pull and push interfaces.  Hence, ports defined by
+<code>DataTwoWayPortI</code> and implemented by
+<code>AbstractDataTwoWayPort</code> install a connection that is similar to the
+data inbound and outbound ports.  Data two way connectors must also implement
+conversion methods for the data, <code>first2second</code> and
+<code>second2first</code>.  In both cases, the two way ports must be published
+on the RMI registry if the components are executing on different JVM.
+</p>
+
+<p>Usage</p>
+
+<p>
+Ports for the different kinds of interfaces are created by defining subclasses
+of the abstract port classes.  For client/server and two way exchanges, service
+signatures are completely user-defined, so the ports (and connectors) methods
+are also user-defined.  For data exchanges, pull and push interfaces already
+define standard methods which have concrete implementation in the abstract
+classes, except when the calls must be passed to the called component, because
+the components are free to implement the required methods the way the want.
+</p>
+
+<p>
+Here is a UML class diagram of the package:
+</p>
+
+<img SRC="../../../../../images/BCM-Ports.jpg"/>
+</body>
+</html>

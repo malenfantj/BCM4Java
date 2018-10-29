@@ -1,0 +1,367 @@
+<!-- fr.sorbonne_u.components.examples.basic_cs -->
+<html>
+<body>
+<p><b>Basic client/server example.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+In this example, a basic client/server is constructed.  Upon a call, the server
+will provide a string that is an URI.
+</p>
+
+<p>Here are the steps from the design to execution:</p>
+<ol>
+<li>The first step is to define the <b>interfaces</b> of the components.  In
+  this example, the offered interface is <code>URIProviderI</code>, which
+  defines a method <code>proideURI</code>.  Notice that this method throws an
+  exception, as it is required from the RMI protocol that all methods
+  that can be called through RMI throws at least the
+  <code>java.rmi.RemoteException</code>.  The required interface is
+  <code>URIConsumerI</code>.  As in component-based programming, client and
+  server components need not be designed by the same persons, and may be
+  connected after their design and implementation, the required interface does
+  not necessarily use the same signatures for the service.  A method in a
+  required interface does not have to throw an exception, but here as the
+  service method does, we add the exception throwing declaration to be able
+  to propagate the exception if necessary.
+</li>
+<li>The second step is beginning to define the components, starting with the
+  server component in order to know what will be the service methods.  The
+  component is a subclass of <code>AbstractComponent</code> called
+  <code>URIProvider</code>, to which we add a method
+  <code>provideURIService</code>.
+</li>
+<li>The third step is to define the inbound port to expose the offered interface
+  of the component.  The port is created as a subclass of
+  <code>AbstractInboundPort</code> named <code>URIProviderInboundPort</code>.
+  See the documentation of this class for details about the port design and
+  implementation.
+  </li>
+<li>The fourth step is now to come back to the server component and complete
+  its creation so that it creates and publish its inbound port.  To do so,
+  a constructor must be provided to <codeURIProvider</code>, taling as basis
+  the constructors of the class <code>AbstractComponent</code>.  Here, we want
+  an active component with one thread, so we use the constructor
+  <code>AbstractComponent(boolean)</code> as a basis.  Beware that component
+  interfaces must be added to the appropriate sets, ports must be put into
+  the set of ports of the component and published appropriately when needed.
+</li>
+<li>The fifth step is to implement the outbound port that will be used by the
+  client component.  The port is a subclass of <code>AbstractOutboundPort</code>
+  called <code>URIGetterOutboundPort</code>.  As other outbound port, it
+  implements the required interface to make it possible for the owner component
+  to call it, and upon such a call, it transfers it to the connector, that will
+  itself call the inbound port of the server component.
+</li>
+<li>The sixth step is to define and implement the client component.  In this
+  short example, the client component will play the active role, calling the
+  service ten times and printing the returned URI.  Tasks are created as
+  implementations of the interface <code>ComponentTask</code> defined in the
+  interface <code>ComponentI</code>.  It only requires to define a run method,
+  which in this case calls an internal method <code>getURIandPrint</code>
+  that implements the component's behaviour.
+</li>
+<li>The seventh step is to implement the connector, a simple client server
+  connector subclass of <code>AbstractConnector</code> called
+  <code>URIServiceConnector</code>.  This connector implements the required
+  interface by simply calling the inbound port with the corresponding offered
+  method.
+</li>
+<li>The eight step is to define the assembly, but then you must choose
+  between a local execution within one JVM, or a distributed one over several
+  JVM.  The steps differ, so they are explained separately for the two cases.
+</li>
+<li>The ninth step is execution, but again it differs whether the execution is
+  using one or several JVM, so the steps are explained separately for the two
+  cases.
+</li>
+</ol>
+
+<p><b>The single JVM case</b></p>
+
+<p>
+In the single JVM case, an assembly is created by a component virtual machine
+itself as a subclass of <code>AbstractCVM</code>, called <code>CVM</code>.
+This CVM deploys two components: a provider and a consumer.  The two are
+connected by their inbound and outbound ports respectively, through the connector.
+To connect two ports, it is necessary that to know the URI of the two ports
+to be connected.  For simplicity, <code>CVM</code> defines them as static
+constants.
+</p>
+<p>
+Next, the method <code>deploy</code> must be implemented to create the
+components, publish their ports and connect them.  Notice here that the
+provider component is created by passing the constant false to the constructor
+of <code>URIProvider</code>, hence its inbound port will be published only
+locally, as single JVM deployment do not use a global and RMI registry.
+A connector is instantiated from <code>URIServiceConnector</code> and used
+to connect the two components by calling the method <code>connectWith</code> on
+<code>ConnectionBuilder.SINGLETON</code>.
+</p>
+<p>
+The main method of the CVM creates an instance of <code>CVM</code>, calls its
+method <code>deploy</code>, then its method <code>start</code>, waits until the
+consumer finished its processing, and then call its method <code>shutdown</code>
+and <code>System.exit(0)</code>.  The class <code>CVM</code> can the be run as
+any Java application, as it appears in this first screen shot before starting
+the execution where the source are placed in the subdirectory <code>jars</code>:
+</p>
+
+<img SRC="../../../../../../images/before-execution.jpg"/>
+
+<p>
+During the execution, the consumer prints a new URI each 2 seconds:
+</p>
+
+<img SRC="../../../../../../images/during-execution.jpg"/>
+
+<p>
+At the end of the execution, the ten URI have been printed and the control
+returns to the shell.
+</p>
+
+<img SRC="../../../../../../images/after-execution.jpg"/>
+
+<p><b>The multiple JVM case</b></p>
+
+<p>
+In the multiple JVM case, a distributed assembly is created by a distributed
+CVM itself defined as a subclass of <code>AbstractDistributedCVM</code>, called
+<code>DistributedCVM</code>.  But before going into the code of this class, the
+programmer must decide a deployment and its configuration.  A distributed CVM
+will be run on several JVM, and eventually on several hosts.  Connecting
+components running on different JVM uses RMI, which requires the publication of
+remote objects (here component ports) on a RMI registry, and in the openly
+available implementations of Java, a RMI registry cannot be changed by code
+running on a different host, so one need to have one RMI registry running per
+host.  All of these requirements force every part of the distributed CVM to have
+informations about the registry and the registry needs to know about the number
+of JVM implied in an execution.  A configuration file in XML is used to provide
+this information, and such configuration files obey a Relax NG schema provided
+with the component model implementation.  In our client server example, it
+looks like follows:
+</p>
+<pre>
+&lt;deployment&gt;
+   &lt;hosts&gt;
+    &lt;host name="localhost" dir="path-to-execution-dir/"/&gt;
+  &lt;/hosts&gt;
+  &lt;cyclicBarrier   hostname="localhost" port="55253"/&gt;
+  &lt;globalRegistry  hostname="localhost" port="55252"/&gt;
+  &lt;rmiRegistryPort no="55999"/&gt;
+  &lt;jvms2hostnames&gt;
+    &lt;jvm2hostname jvmuri="provider"
+        rmiRegistryCreator="true"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.basic_cs.DistributedCVM"/&gt;
+    &lt;jvm2hostname jvmuri="consumer"
+        rmiRegistryCreator="false"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.basic_cs.DistributedCVM"/&gt;
+  &lt;/jvms2hostnames&gt;
+&lt;/deployment&gt;
+</pre>
+<p>
+This distributed CVM deploys the two components, a provider and a
+consumer, in two distinct JVM called <code>provider</code> and
+<code>consumer</code>.  The two JVM are run on the same host,
+<code>localhost</code>.  As we need to have on RMI registry per host,
+one and only one JVM per host must be declared as the RMI registry
+creator, the other will use the same registry.  The first seven lines
+provide information about the central resources: the hosts used to run
+the application with for each the execution directory, the host running
+the assembly cyclic barrier and the port on which it listens, the host
+running the global registry and the port on which it listens, and the
+port used by the different RMI registry.
+</p>
+<p>
+The code of <code>DistributedCVM</code> uses the names of the JVM to
+know where to statically create the components and where to perform
+the connections and disconnections of the components.  The
+<code>deploy</code> method is now decomposed into three methods,
+<code>initialise</code>, <code>instantiateAndPublish</code> and
+<code>interconnect</code>, and the different DCVM sites synchronise
+with each other at each step. <code>initialise</code> can be used to
+do anything required before the creation of components, and in the base
+class it creates and initialises the references to the RMI registry. 
+<code>instantiateAndPublish</code> creates each component on the right
+JVM and publishes their ports. <code>interconnect</code> creates the
+connectors and performs the connections but in only one JVM for each
+connection, the one of one of the two connected components.  The method
+<code>main</code> creates an instance of <code>DistributedCVM</code>,
+calls calls he method <code>startStandardLifeCycle</code> with an
+execution duration of 15 seconds for the consumer component to complete
+its execution, and then exits.
+</p>
+
+<p>
+Note also that the code need to have access to the schema of the
+configuration file, <code>deployment.rnc</code>, put in a subdirectory
+<code>config</code>. It also needs to have access to jars of the code:
+the basic component model, the code of the component model, e.g.
+<code>BasicComponentModel.jar</code>, the component-based application
+(here, the basic client/server example is already in the
+<code>BCM.jar</code> archive), as well as the <code>jing.jar</code>
+library used to validate the <code>config.xml</code> file against the
+<code>deployment.rnc</code> Relax NG schema.  Launching shell
+scripts below assume that all java archives are in a subdirectory
+<code>jars</code>.
+</p>
+
+<p>
+To execute the application, two JVM must be started to execute the
+global registry and the DCVM cyclic barrier, and two others to run
+the components. There are two ways to do that: a fully manual and a
+semi-automatic. For the manual one, three shell scripts are provided
+to ease the process, the script <code>start-gregistry</code>:
+</p>
+
+<pre>
+#!/bin/bash
+java -cp &apos;jars/*&apos; -Djava.security.manager \
+     -Djava.security.policy=dcvm.policy \
+     fr.sorbonne_u.components.registry.GlobalRegistry config.xml
+</pre>
+
+<p>
+the script <code>start-cyclicbarrier</code>:
+</p>
+
+<pre>
+#!/bin/bash
+java -cp 'jars/*' -Djava.security.manager \
+     -Djava.security.policy=dcvm.policy \
+     fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrier config.xml
+</pre>
+
+<p>
+and the script <code>start-dcvm</code>:
+</p>
+
+<pre>
+#!/bin/bash
+if [ -z "$1" ]; then 
+  echo usage: $0 jvmName
+  exit
+ fi
+java -ea -cp 'jars/*' -Djava.security.manager \
+     -Djava.security.policy=dcvm.policy \
+     fr.sorbonne_u.components.examples.basic_cs.DistributedCVM $1 config.xml
+</pre>
+<p>
+that requires adaptation for each application and which receives as
+command line parameter the name of the JVM it executes in the DCVM
+deployment. Note that this is the main class provided in the
+<code>config.xml</code> file.
+</p>
+
+<p>
+Notice the use of a security manager to give the application the
+necessary rights to access the files and use sockets, etc.  The
+BCM standard policy file used in this application is:
+</p>
+<pre>
+grant {
+  permission java.io.FilePermission "./*", "write";
+  permission java.io.FilePermission "./jars/*", "read,write";
+  permission java.io.FilePermission "/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/jre/lib/*", "read";
+  permission java.io.FilePermission "/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/lib/*", "read";
+  permission java.io.FilePermission "/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/jre/lib/*", "read";
+  permission java.lang.RuntimePermission "accessDeclaredMembers" ;
+  permission java.lang.RuntimePermission "getClassLoader" ;
+  permission java.util.PropertyPermission "javax.xml.validation.SchemaFactory:http://relaxng.org/ns/structure/1.0", "read,write";
+  permission java.io.FilePermission "./config/deployment.rnc", "read";
+  permission java.io.FilePermission "./config.xml", "read";
+  permission java.io.FilePermission "./*", "write";
+  permission java.io.FilePermission "<<ALL FILES>>", "execute";
+  permission java.util.PropertyPermission "user.dir", "read";
+  permission java.net.SocketPermission "*:1999", "connect, resolve";
+  permission java.net.SocketPermission "*:1024-", "connect, resolve";
+  permission java.net.SocketPermission "*:1024-", "accept, resolve";
+  permission java.lang.RuntimePermission "stopThread";
+  permission java.lang.RuntimePermission "modifyThread";
+  permission java.lang.RuntimePermission "modifyThreadGroup";
+  permission java.lang.RuntimePermission "setIO";
+};
+</pre>
+
+<p>
+The next screen shot shows four shell windows with the four command ready to
+be executed:
+</p>
+<img SRC="../../../../../../images/before-distributed-execution.jpg"/>
+
+<p>
+Similarly to the single JVM case, during the execution, the progress of the
+consumer can be seen in its window:
+</p>
+<img SRC="../../../../../../images/during-distributed-execution.jpg"/>
+
+<p>
+And at the end, the list of produced URI is completed, and all of the processes
+have stopped and returned to the shell:
+</p>
+<img SRC="../../../../../../images/after-distributed-execution.jpg"/>
+
+<p>
+The manual way can be used either for an execution on a single host
+or on several hosts where the user needs to connect to execute the
+scripts.
+</p>
+<p>
+The semi-automatic way to execute the application can only execute
+applications on a single host at this time. It uses the class
+<code>fr.sorbonne_u.components.cvm.utils.DCVM_Launcher</code>, which
+is simply executed as a main Java class provided with the name of the
+<code>config.xml</code> file as a command line parameter.
+</p>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!-- fr.sorbonne_u.components.exqmples.cps -->
+<html>
+<body>
+<p><b>Continuation-passing style example.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+The continuation-passing style has been essentially used in
+functional programming both to better understand control-flow
+principles supporting phenomena like recursion and tail-recursion
+as well as to provide continuations as first class citizen in
+a programs. The most concrete place where to learn about the
+continuation-passing style is the programming language Scheme
+with its call-with-current-continuation function.
+</p>
+
+<p>
+This BCM example shows how ideas from the continuation-passing
+style can appear in its component programming model. Two main forms
+of continuation-passing style are of common use in BCM programming:
+<ol>
+<li>the <i>explicit result notification</i> idiom and</li>
+<li>the <i>continuation upon future result</i> idiom.</li>
+</ol>
+
+<p><b>Explicit result notification</b></p>
+
+<p>
+<i>To be written.</i>
+</p>
+
+<p><b>Continuation upon future result</b></p>
+
+<p>
+The component interface <code>ValueProvidingI</code> defines a
+service to provide integer values. A component
+<code>RandomValueProvider</code> is implemented to expose this
+service and implement it by returning random int value.
+The consumer is implemented in the component class
+<code>ValueConsumer</code>.
+</p>
+<p>
+When the component <code>ValueConsumer</code> calls
+<code>RandomValueProvider</code> the standard way, its only thread
+will be blocked until it receives the request value. In some cases,
+such blocking may cause troubles, for example if the caller has only
+one thread (perhaps because it requires a completely serialised
+execution of its services) a callback will not be possible because
+the only thread is blocked for the result that the callback would
+presumably lead to (hence, a deadlock, famous for callbacks).
+</p>
+<p>
+The idea is to release the thread of the caller by putting the
+remaining of the code that is waiting the value in another method,
+task or simply block of code which plays the role of the continuation.
+The calling service, here <code>computeAndThenPrint</code>, uses a
+separate thread to perform the call to the service <code>getValue</code>
+of the server component, a thread that will wait for the result and
+then call the continuation with it (here
+<code>computeAndThenPrintContinuation</code>). When this thread has
+started, the current execution of the method
+<code>computeAndThenPrint</code> must release the control over its
+component thread. Thus, <code>computeAndThenPrint</code> must be
+written to simply terminate and leave to the continuation method
+the computation that requires the result. 
+</p>
+</body>
+</html>

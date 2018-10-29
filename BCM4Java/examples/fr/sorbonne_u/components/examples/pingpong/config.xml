@@ -1,0 +1,19 @@
+<deployment>
+   <hosts>
+    <host name="localhost"
+          dir="/Users/jmalenfant/principal/Tests/PingPong/"/>
+  </hosts>
+  <cyclicBarrier   hostname="localhost" port="55253"/>
+  <globalRegistry  hostname="localhost" port="55252"/>
+  <rmiRegistryPort no="55999"/>
+  <jvms2hostnames>
+    <jvm2hostname jvmuri="player1jvm"
+        rmiRegistryCreator="true"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.pingpong.DistributedCVM"/>
+    <jvm2hostname jvmuri="player2jvm"
+        rmiRegistryCreator="false"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.pingpong.DistributedCVM"/>
+  </jvms2hostnames>
+</deployment>

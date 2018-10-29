@@ -1,0 +1,121 @@
+<!-- fr.sorbonne_u.components.examples.pingpong -->
+<html>
+<body>
+<p><b>Ping pong example.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+In this example, a "ping pong" is constructed between two players
+implemented as components that will call each other to simulate the
+exchanges.  The example shows how to use all of the different types
+of interfaces in BCM and allows to compare them in delivering
+conceptually the same kinds of exchanges between two components.
+</p>
+
+<p>
+Offered and required interfaces make a clear distinction in the
+roles of the two components. When they use a connection based on
+them, one component is the client and it calls the other component
+that plays the server. The server can't call back the client. In
+the example, as the control passes from one player to the other,
+two connections are needed: one in which the first player is the
+client and the other where it is the second player that has this
+role.
+</p>
+
+<p>
+Data offered and data required interfaces allow to exchange data
+in pull or push mode rather than call a service per se. In this
+example, only the push mode is used. Each time a player receives
+the ball (the data), it pushes it back to the other player after
+incrementing its number of hits since the beginning of the exchange.
+As with offered and required interfaces, data offered and data
+required interfaces establish a flow of the data coming from
+the offered side which is the server that produces the data,
+while the requiring side is consuming the data. In the ping
+pong example, players alternatively push the ball to the each
+other so two connections are needed: one in which the first
+player produces the data (the ball, i.e. is the server) and the
+other where it is the second player that has this role.
+</p>
+
+<p>
+Two way interfaces allow components to call each other as peers
+using the same interface on a single connection that works the
+two ways. This is very convenient but comes at a price. The ports
+and connectors need to know which way the call must go, and
+because it can go either ways, the signature of the methods
+must be modified to pass the URI of the calling port so that
+the ports and connectors can deliver the call to the other port
+in the connection.
+</p>
+
+
+<p>
+Data two way interfaces allow components to exchange data as peers
+using the same interface on a single connection that works the
+two ways. But again, the signature of the methods needs to pass
+the URI of the calling port so that the ports and connectors can
+deliver the data to the other port in the connection.
+</p>
+
+<p>
+The are four exchanges using in turn offered/required interfaces,
+data offered and data required interfaces, two way interfaces and
+finally data two way interfaces. When executing the example on a 
+single JVM, the log messages of the two components interleave
+nicely but when executing it on multiple JVM one has to look
+carefully at the time stamps of the messages to see the
+interleaving.
+</p>
+
+</body>
+</html>

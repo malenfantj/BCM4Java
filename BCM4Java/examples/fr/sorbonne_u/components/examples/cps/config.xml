@@ -1,0 +1,19 @@
+<deployment>
+   <hosts>
+    <host name="localhost"
+          dir="/Users/jmalenfant/principal/Tests/CPS/"/>
+  </hosts>
+  <cyclicBarrier   hostname="localhost" port="55253"/>
+  <globalRegistry  hostname="localhost" port="55252"/>
+  <rmiRegistryPort no="55999"/>
+  <jvms2hostnames>
+    <jvm2hostname jvmuri="ValueProvider"
+        rmiRegistryCreator="true"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.cps.DistributedCVM"/>
+    <jvm2hostname jvmuri="ValueConsumer"
+        rmiRegistryCreator="false"
+        	hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.cps.DistributedCVM"/>
+  </jvms2hostnames>
+</deployment>

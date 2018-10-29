@@ -1,0 +1,860 @@
+package fr.sorbonne_u.components.cvm;
+
+//Copyright Jacques Malenfant, Sorbonne Universite.
+//
+//Jacques.Malenfant@lip6.fr
+//
+//This software is a computer program whose purpose is to provide a
+//basic component programming model to program with components
+//distributed applications in the Java programming language.
+//
+//This software is governed by the CeCILL-C license under French law and
+//abiding by the rules of distribution of free software.  You can use,
+//modify and/ or redistribute the software under the terms of the
+//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+//URL "http://www.cecill.info".
+//
+//As a counterpart to the access to the source code and  rights to copy,
+//modify and redistribute granted by the license, users are provided only
+//with a limited warranty  and the software's author,  the holder of the
+//economic rights,  and the successive licensors  have only  limited
+//liability. 
+//
+//In this respect, the user's attention is drawn to the risks associated
+//with loading,  using,  modifying and/or developing or reproducing the
+//software by the user in light of its specific status of free software,
+//that may mean  that it is complicated to manipulate,  and  that  also
+//therefore means  that it is reserved for developers  and  experienced
+//professionals having in-depth computer knowledge. Users are therefore
+//encouraged to load and test the software's suitability as regards their
+//requirements in conditions enabling the security of their systems and/or 
+//data to be ensured and,  more generally, to use and operate it in the 
+//same conditions as regards security. 
+//
+//The fact that you are presently reading this means that you have had
+//knowledge of the CeCILL-C license and that you accept its terms.
+
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.concurrent.TimeUnit;
+import java.util.HashSet;
+
+import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
+import fr.sorbonne_u.components.helpers.CVMDebugModesI;
+import fr.sorbonne_u.components.helpers.Logger;
+import fr.sorbonne_u.components.ports.PortI;
+import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
+
+//-----------------------------------------------------------------------------
+/**
+ * The class <code>AbstractCVM</code> defines the common properties of
+ * component virtual machines in the component model.
+ *
+ * <p><strong>Description</strong></p>
+ * 
+ * Local CVM are deployed on a single Java virtual machine and have local
+ * component interconnections only.  A CVM must define a <code>deploy</code>
+ * method that includes all the code necessary to instantiate and interconnect
+ * the static components in the application.  Then, they must define a
+ * <code>start</code> method that plays the role of a <code>main</code> method
+ * in object-oriented Java applications.
+ * 
+ * <p><strong>Usage</strong></p>
+ * 
+ * Local CVM are defined as subclasses of this abstract class.  A CVM has to
+ * redefine <code>deploy</code> and may redefine <code>start</code>.  The
+ * method <code>start</code> defined here defaults to starting all of the
+ * components registered as deployed on this site by calling the method
+ * <code>addDeployedComponent</code>.
+ * 
+ * Every port that will be used to connect components must be published in
+ * the local registry by calling the method <code>localPublishPort</code> and
+ * it can be unpublished by calling the method <code>localUnpublishPort</code>.
+ * 
+ * <p><strong>Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant		AbstractCVM.getCVM() != null
+ * </pre>
+ * 
+ * <p>Created on : 2011-11-18</p>
+ * 
+ * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+ */
+public abstract class	AbstractCVM
+implements	ComponentVirtualMachineI
+{
+	// ------------------------------------------------------------------------
+	// CVM state
+	// ------------------------------------------------------------------------
+
+	/** The singleton pattern: one instance of CVM per JVM.				*/
+	protected static AbstractCVM				theCVM ;
+	/**	Enables or not debugging messages.								*/
+//	public static boolean					DEBUG = false ;
+	public static final HashSet<CVMDebugModesI>	DEBUG_MODE =
+											new HashSet<CVMDebugModesI>() ;
+	/** suffix for the dynamic component creator component inbound
+	 *  port URI.														*/
+	public static final String				DCC_INBOUNDPORT_URI_SUFFIX =
+												"-dcc" ;
+	// ------------------------------------------------------------------------
+	// Assertions status checking
+	// ------------------------------------------------------------------------
+
+	// TODO: explore this possibility...
+//	static {
+//		AbstractCVM.class.getClassLoader().setClassAssertionStatus(
+//						"fr.sorbonne_u.components.cvm.AbstractCVM", true) ;
+//		AbstractCVM.class.getClassLoader().setDefaultAssertionStatus(true) ;
+//	}
+
+	/**
+	 * check if the assertions have been enabled on the JVM running this code
+	 * and print a warning if not.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 */
+	public static void	checkAssertionsEnabled()
+	{
+		boolean assertionsEnabled = false ;
+		// The assignment as expression returns the assigned value, hence the
+		// next assertion will assign true to assertionsEnabled if it is
+		// executed i.e., if the assertions are enabled.
+		assert	assertionsEnabled = true ;
+		if (!assertionsEnabled) {
+			System.out.println(
+			"************************************************************\n" +
+			"* WARNING! -- BCM is executed without having enabled the   *\n" +
+			"* assertions. To get the benefits of assertions checking,  *\n" +
+			"* checking, the JVM should be launched with the parameter  *\n" +
+			"* \"-ea\" or \"-enableassertions\".                            *\n" +
+			"************************************************************") ;
+		}
+	}
+
+	// ------------------------------------------------------------------------
+	// Accessing the current component virtual machine
+	// ------------------------------------------------------------------------
+
+	/**
+	 * return a reference on the component virtual machine instance running
+	 * on this Java virtual machine.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	ret != null
+	 * </pre>
+	 *
+	 * @return	a reference on the component virtual machine instance running on this Java virtual machine.
+	 */
+	public static AbstractCVM	getCVM()
+	{
+		return AbstractCVM.theCVM ;
+	}
+
+	// ------------------------------------------------------------------------
+	// Local registry
+	// ------------------------------------------------------------------------
+
+	/** initial number of potential entries in the local registry.		*/
+	protected static int						LOCAL_REGISTRY_INIT_SIZE = 1000 ;
+	/** local registry linking port URI to local port objects.			*/
+	protected static final Hashtable<String,PortI>	LOCAL_REGISTRY =
+						new Hashtable<String,PortI>(LOCAL_REGISTRY_INIT_SIZE) ;
+
+	/**
+	 * return true if the local registry has been initialised.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if the local registry has been initialised.
+	 */
+	protected static boolean		localRegistryInitialised()
+	{
+		return AbstractCVM.LOCAL_REGISTRY != null ;
+	}
+
+	/**
+	 * return true if the <code>key</code> correspond to a publication
+	 * in the local registry.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	AbstractCVM.localRegistryInitialised()
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key	key to be tested.
+	 * @return	true if the <code>key</code> correspond to a publication in the local registry.
+	 */
+	public static boolean	isPublishedInLocalRegistry(String key)
+	{
+		assert	AbstractCVM.localRegistryInitialised() ;
+
+		boolean ret = false ;
+		synchronized (AbstractCVM.LOCAL_REGISTRY) {
+			ret = AbstractCVM.LOCAL_REGISTRY.containsKey(key) ;
+		}
+
+		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+					"called isPublishedInLocalRegistry(" + key + ")" +
+					" returning " + ret) ;
+		}
+
+		return ret ;
+	}
+
+	/**
+	 * publish a port in the local registry.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre	!AbstractCVM.isPublishedInLocalRegistry(key)
+	 * post	AbstractCVM.isPublishedInLocalRegistry(key)
+	 * </pre>
+	 *
+	 * @param key		key under which the publication is done.
+	 * @param p			the port to be published.
+	 * @throws Exception <i>TODO.</i>
+	 */
+	protected static void		publishInLocalRegistry(String key, PortI p)
+	throws Exception
+	{
+		assert	AbstractCVM.localRegistryInitialised() ;
+		assert	!AbstractCVM.isPublishedInLocalRegistry(key) ;
+		assert	key.equals(p.getPortURI()) ;
+
+		synchronized (AbstractCVM.LOCAL_REGISTRY) {
+			AbstractCVM.LOCAL_REGISTRY.put(key, p) ;
+		}
+
+		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+					"called publishInLocalRegistry(" + key + ", "
+					+ p.getPortURI() + ") ...done.") ;
+		}
+
+		assert	AbstractCVM.isPublishedInLocalRegistry(key) ;
+	}
+
+	/**
+	 * get the port published under the given key.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	AbstractCVM.localRegistryInitialised()
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key		the key under which the publication has been done.
+	 * @return			the port published under the given key.
+	 * @throws Exception <i>TODO.</i>
+	 */
+	public static PortI		getFromLocalRegistry(String key) throws Exception
+	{
+		assert	AbstractCVM.localRegistryInitialised() ;
+
+		PortI p = AbstractCVM.LOCAL_REGISTRY.get(key) ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+					"called getFromLocalRegistry(" + key + ")"
+					+ " returning "	+ p.getPortURI() + ")") ;
+		}
+
+		return p ;
+	}
+
+	/**
+	 * unpublish a port from the local registry.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre	AbstractCVM.isPublishedInLocalRegistry(key)
+	 * post	!AbstractCVM.isPublishedInLocalRegistry(key)
+	 * </pre>
+	 *
+	 * @param key	key under which the publication has been done.
+	 */
+	protected static void	unpublishFromLocalRegistry(String key)
+	{
+		assert	AbstractCVM.localRegistryInitialised() ;
+		assert	AbstractCVM.isPublishedInLocalRegistry(key) ;
+
+		synchronized (AbstractCVM.LOCAL_REGISTRY) {
+			AbstractCVM.LOCAL_REGISTRY.remove(key) ;
+		}		
+
+		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+					"called unpublishFromLocalRegistry(" + key + ")"
+					+ " ...done. ") ;
+		}
+
+		assert	!AbstractCVM.isPublishedInLocalRegistry(key) ;
+	}
+
+	// ------------------------------------------------------------------------
+	// Internal information about components in the CVM and CVM life-cycle
+	// management.
+	// ------------------------------------------------------------------------
+	
+	/** collection of deployed components.								*/
+	protected final Vector<ComponentI>	deployedComponents ;
+	/** the state of the component virtual machine.						*/
+	protected CVMState					state ;
+	/** true if the CVM currently running is distributed.					*/
+	public static boolean				isDistributed ;
+	/** the logger used for debugging log entries.						*/
+	protected Logger						debugginLogger ;
+
+	// ------------------------------------------------------------------------
+	// Constructors
+	// ------------------------------------------------------------------------
+
+	/**
+	 * create and initialise a local CVM.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 * 
+	 * @throws Exception <i>to do.</i>
+	 */
+	public				AbstractCVM() throws Exception
+	{
+		this(false) ;
+	}
+
+	/**
+	 * create and initialise the CVM, tagged as distributed if the parameter is
+	 * true, and as local otherwise; note however that distributed CVM must be
+	 * created as subclasses of the class <code>AbstractDistributedCVM</code>,
+	 * so this constructor should never be called directly but only through the
+	 * other constructor of this class or through one of the constructors of
+	 * <code>AbstractDistributedCVM</code>.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	AbstractCVM.localRegistryInitialised()
+	 * </pre>
+	 *
+	 * @param isDistributed	true if the CVM is distributed, false otherwise
+	 * @throws Exception  	<i>to do.</i>
+	 */
+	public				AbstractCVM(
+		boolean isDistributed
+		) throws Exception
+	{
+		super() ;
+
+		AbstractCVM.theCVM = this ;
+		this.deployedComponents = new Vector<ComponentI>() ;
+		this.state = null ;
+		AbstractCVM.isDistributed = isDistributed ;
+
+		AbstractCVM.checkAssertionsEnabled() ;
+
+		if (!isDistributed) {
+			this.debugginLogger = new Logger("cvm") ;
+
+			// when distributed, the dynamic component creator is created and
+			// initialised in the method initialise of AbstractDistributedCVM
+			try {
+				DynamicComponentCreator dcc =
+					new DynamicComponentCreator(DCC_INBOUNDPORT_URI_SUFFIX) ;
+				this.deployedComponents.add(dcc) ;
+			} catch (Exception e) {
+				this.logDebug(null, "WARNING! -- The dynamic component "
+									+ "creator has not been "
+									+ "successfully deployed!") ;
+				throw e ;
+			}
+		}
+
+		assert	AbstractCVM.localRegistryInitialised() ;
+	}
+
+	// ------------------------------------------------------------------------
+	// Static Methods
+	// ------------------------------------------------------------------------
+
+	/**
+	 * publish the port in the local registry.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	port != null
+	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())
+	 * post AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())
+	 * post	AbstractCVM.getFromLocalRegistry(port.getPortURI()) != null
+	 * post port == AbstractCVM.getFromLocalRegistry(port.getPortURI())
+	 * </pre>
+	 * 
+	 * @param port		port to be published
+	 * @throws Exception <i>to do.</i>
+	 */
+	public synchronized static void	localPublishPort(PortI port)
+	throws	Exception
+	{
+		assert	port != null ;
+		assert	AbstractCVM.localRegistryInitialised() ;
+		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
+
+		AbstractCVM.publishInLocalRegistry(port.getPortURI(), port) ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+				"called localPublishPort(" + port.getPortURI()
+														+ ") ...done.") ;
+		}
+
+		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
+		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI()) ;
+		assert	p != null && port == p ;
+	}
+
+	/**
+	 * unpublish the port in the local registry.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	port != null
+	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) != null
+	 * pre	port == AbstractCVM.getFromLocalRegistry(port.getPortURI())
+	 * pre	port == AbstractCVM.getFromLocalRegistry(port.getPortURI())
+	 * post	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())
+	 * </pre>
+	 *
+	 * @param port		port to be unpublished.
+	 * @throws Exception <i>to do.</i>
+	 */
+	public synchronized static void	localUnpublishPort(PortI port)
+	throws	Exception
+	{
+		assert	port != null ;
+		assert	AbstractCVM.localRegistryInitialised() ;
+		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
+		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI()) ;
+		assert	p != null && port == p ;
+
+		AbstractCVM.unpublishFromLocalRegistry(port.getPortURI()) ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+				"called localUnpublishPort(" + port.getPortURI()
+														+ ") ...done.") ;
+		}
+
+		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
+	}
+
+	// ------------------------------------------------------------------------
+	// Methods
+	// ------------------------------------------------------------------------
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#getHostName()
+	 */
+	@Override
+	public String		getHostName()
+	{
+		return "localhost" ;
+	}
+
+	/**
+	 * simply set the <code>deploymentDone</code> flag to true, so it should
+	 * be called at the end of the user's own <code>deploy</code> method.
+	 *
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	!this.deploymentDone()
+	 * post	this.deploymentDone()
+	 * </pre>
+	 * 
+	 * @throws Exception  <i>to do.</i>
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#deploy()
+	 */
+	@Override
+	public void			deploy() throws Exception
+	{
+		assert	!this.deploymentDone() ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
+						  "called deploy() ...done.");
+		}
+
+		this.state = CVMState.DEPLOYMENT_DONE ;
+	}
+	
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isDeployedComponent(fr.sorbonne_u.components.ComponentI)
+	 */
+	@Override
+	public boolean		isDeployedComponent(ComponentI component)
+	{
+		assert	component != null ;
+
+		boolean ret = this.deployedComponents.contains(component) ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
+			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
+						  "called isDeployedComponent(" + component
+						  + ") returning " + ret + ".") ;
+		}
+
+		return ret ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#addDeployedComponent(fr.sorbonne_u.components.ComponentI)
+	 */
+	@Override
+	public void			addDeployedComponent(ComponentI component)
+	{
+		assert	component != null ;
+		assert	!this.isDeployedComponent(component) ;
+
+		this.deployedComponents.add(component) ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
+			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
+						  "called addDeployedComponent(" + component
+						  + ") ...done.") ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#removeDeployedComponent(fr.sorbonne_u.components.ComponentI)
+	 */
+	@Override
+	public void			removeDeployedComponent(ComponentI component)
+	{
+		assert	component != null ;
+		assert	this.isDeployedComponent(component) ;
+
+		this.deployedComponents.remove(component) ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
+			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
+						  "called removeDeployedComponent(" + component
+						  + ") ...done.") ;
+		}
+	}
+
+	/**
+	 * check if the deployment is completed, and start all of the deployed
+	 * components.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	deploymentDone
+	 * post	this.allStarted
+	 * post	!this.isShutdown()
+	 * </pre>
+	 * 
+	 * @throws Exception  <i>todo.</i>
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#start()
+	 */
+	@Override
+	public void			start() throws Exception
+	{
+		assert	this.deploymentDone() ;
+
+		for(ComponentI c : this.deployedComponents) {
+			if (!c.isStarted()) {
+				c.start() ;	
+			}
+		}
+		this.state = CVMState.START_DONE ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE, "called start() ...done") ;
+		}
+	}
+
+	/**
+	 * check if all of the deployed component have been started, and perform
+	 * the execute method on all of them.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.allStarted
+	 * post	true				// no more postconditions.
+	 * </pre>
+	 * 
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#execute()
+	 */
+	@Override
+	public void			execute() throws Exception
+	{
+		assert	this.allStarted() ;
+
+		for(ComponentI c : this.deployedComponents) {
+			c.runTask(new AbstractComponent.AbstractTask() {
+				@Override
+				public void run() {
+					try {
+						this.getOwner().execute() ;
+					} catch (Exception e) {
+						throw new RuntimeException(e) ;
+					}
+				}
+			}) ;
+		}
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
+						  "called execute() ...done") ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#finalise()
+	 */
+	@Override
+	public void			finalise() throws Exception
+	{
+		assert	this.allStarted() ;
+
+		for(ComponentI c : this.deployedComponents) {
+			c.finalise() ;
+		}
+
+		this.state = CVMState.FINALISE_DONE ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
+						  "called finalise() ...done") ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#shutdown()
+	 */
+	@Override
+	public void			shutdown() throws Exception
+	{
+		assert	this.allFinalised() ;
+
+		for(ComponentI c : this.deployedComponents) {
+			c.shutdown() ;
+		}
+
+		this.state = CVMState.SHUTDOWN ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.LIFE_CYCLE,
+											"called shutdown() ...done") ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#shutdownNow()
+	 */
+	@Override
+	public void			shutdownNow() throws Exception
+	{
+		assert	this.allFinalised() ;
+
+		for(ComponentI c : this.deployedComponents) {
+			c.shutdownNow() ;
+		}
+
+		this.state = CVMState.SHUTDOWN ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
+						  "called shutdownNow() ...done") ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isInitialised()
+	 */
+	@Override
+	public boolean		isInitialised() throws Exception
+	{
+		return	this.state == CVMState.INITIALISED ||
+				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
+				this.state == CVMState.INTERCONNECTED ||
+				this.state == CVMState.DEPLOYMENT_DONE ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isIntantiatedAndPublished()
+	 */
+	@Override
+	public boolean		isIntantiatedAndPublished() throws Exception
+	{
+		return	this.state == CVMState.INITIALISED ||
+				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
+				this.state == CVMState.INTERCONNECTED ||
+				this.state == CVMState.DEPLOYMENT_DONE ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isInterconnected()
+	 */
+	@Override
+	public boolean		isInterconnected() throws Exception
+	{
+		return	this.state == CVMState.INITIALISED ||
+				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
+				this.state == CVMState.INTERCONNECTED ||
+				this.state == CVMState.DEPLOYMENT_DONE ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#deploymentDone()
+	 */
+	@Override
+	public boolean		deploymentDone() throws Exception
+	{
+		return	this.state == CVMState.INITIALISED ||
+				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
+				this.state == CVMState.INTERCONNECTED ||
+				this.state == CVMState.DEPLOYMENT_DONE ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#allStarted()
+	 */
+	@Override
+	public boolean		allStarted() throws Exception
+	{
+		return this.state == CVMState.START_DONE ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#allFinalised()
+	 */
+	@Override
+	public boolean		allFinalised() throws Exception
+	{
+		return this.state == CVMState.FINALISE_DONE ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isShutdown()
+	 */
+	@Override
+	public boolean		isShutdown()
+	{
+		boolean ret = true ;
+		for(ComponentI c : this.deployedComponents) {
+			ret = ret && c.isShutdown() ;
+		}
+		return ret ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isTerminated()
+	 */
+	@Override
+	public boolean		isTerminated()
+	{
+		boolean ret = true ;
+		for(ComponentI c : this.deployedComponents) {
+			ret = ret && c.isTerminated() ;
+		}
+		return ret ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#startStandardLifeCycle(long)
+	 */
+	@Override
+	public boolean		startStandardLifeCycle(long duration)
+	{
+		try {
+			assert	duration	> 0 ;
+			this.deploy() ;
+			System.out.println("starting...") ;
+			this.start() ;
+			System.out.println("executing...") ;
+			this.execute() ;
+			Thread.sleep(duration) ;
+			System.out.println("finalising...") ;
+			this.finalise() ;
+			System.out.println("shutting down...") ;
+			this.shutdown() ;
+			System.out.println("ending...") ;
+			return true ;
+		} catch (Exception e) {
+			e.printStackTrace() ;
+			return false ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#awaitTermination(long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public boolean		awaitTermination(long timeout, TimeUnit unit)
+	throws InterruptedException
+	{
+		// TODO needs more reflection... how to await termination of several
+		// entities?
+		return false;
+	}
+
+	// ------------------------------------------------------------------------
+	// Debugging
+	// ------------------------------------------------------------------------
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#logPrefix()
+	 */
+	public String		logPrefix()
+	{
+		return "CVM" ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#logDebug(fr.sorbonne_u.components.helpers.CVMDebugModesI, java.lang.String)
+	 */
+	public void			logDebug(CVMDebugModesI dm, String message)
+	{
+		String logEntry = this.logPrefix() + "|" + dm + "|" + message ;
+		System.out.println(logEntry) ;
+		this.debugginLogger.logMessage(logEntry) ;
+	}
+}
+//-----------------------------------------------------------------------------

@@ -1,0 +1,21 @@
+<deployment>
+   <hosts>
+    <host name="localhost"
+          dir="/Users/jmalenfant/principal/Tests/Reflection/"/>
+  </hosts>
+  <cyclicBarrier   hostname="localhost" port="55253"/>
+  <globalRegistry  hostname="localhost" port="55252"/>
+  <rmiRegistryPort no="55999"/>
+  <jvms2hostnames>
+    <jvm2hostname jvmuri="server"
+        rmiRegistryCreator="true"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.reflection.DistributedCVM"
+        reflective="true"/>
+    <jvm2hostname jvmuri="client"
+        rmiRegistryCreator="false"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.examples.reflection.DistributedCVM"
+        reflective="true"/>
+  </jvms2hostnames>
+</deployment>
