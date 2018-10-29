@@ -4,7 +4,7 @@ Basic component model for Java/RMI
 BCM4Java implements a simple component model for Java. It is based on the
 standard concepts for a component model: components themselves, offered
 and required interfaces, outbount and inbound ports through which components
-call each others and expose interfaces, conenctors that are used to
+call each others and expose interfaces, connectors that are used to
 connect components through their outbound and inbound ports and that
 can mediate between required and offered interfaces that need not be
 the same. In BCM4Java, components can have their own threads and they
