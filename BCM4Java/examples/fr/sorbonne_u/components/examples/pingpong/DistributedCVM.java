@@ -74,11 +74,11 @@ import fr.sorbonne_u.components.examples.pingpong.components.PingPongPlayer;
  * <pre>
  * java -ea -cp 'jars/*' -Djava.security.manager \
  * 			             -Djava.security.policy=dcvm.policy \
- *   fr.upmc.components.examples.pingpong.DistributedCVM player1jvm config.xml
+ *   fr.sorbonne_u.components.examples.pingpong.DistributedCVM player1jvm config.xml
  * 
  * java -ea -cp 'jars/*' -Djava.security.manager \
  * 			             -Djava.security.policy=dcvm.policy \
- *   fr.upmc.components.examples.pingpong.DistributedCVM player2jvm config.xml
+ *   fr.sorbonne_u.components.examples.pingpong.DistributedCVM player2jvm config.xml
  * </pre>
  * 
  * <p><strong>Invariant</strong></p>

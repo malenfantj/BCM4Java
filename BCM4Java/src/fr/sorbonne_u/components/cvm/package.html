@@ -54,10 +54,10 @@ knowledge of the CeCILL-C license and that you accept its terms.
 </table>
 
 <p>
-The package <code>fr.upmc.components.cvm</code> defines the concept of component
-virtual machines (CVM) in the component model.  CVM deploy and run applications,
-themselves seen as interconnection of components.  Currently, two different
-kinds of CVM are proposed:
+The package <code>fr.sorbonne_u.components.cvm</code> defines the concept of
+component virtual machines (CVM) in the component model.  CVM deploy and run
+applications, themselves seen as interconnection of components.  Currently,
+two different kinds of CVM are proposed:
 </p>
 <ol>
 <li>Local CVM are meant to deploy simple component-based applications running
@@ -84,12 +84,13 @@ are created and interconnected at once, when the CVM is starting.  In a partly
 dynamically deployed application, only a share of the components are statically
 created and interconnected, others are created and interconnected during the
 execution of the application.  Tools for the dynamic component creation and
-connection are described in the package <code>fr.upmc.components.cvm.pre.dcc</code>.
-Note that at least some components must be statically deployed and started if
-an application ever want to reach execution and be able to dynamically create
-and connect new components.  The extreme case would be an application that
-would create only one static component responsible for the direct or indirect
-creation and connection of every other components.
+connection are described in the package
+<code>fr.sorbonne_u.components.cvm.pre.dcc</code>. Note that at least some
+components must be statically deployed and started if an application ever want
+to reach execution and be able to dynamically create and connect new components.
+The extreme case would be an application that would create only one static
+component responsible for the direct or indirect creation and connection of
+every other components.
 </p>
 <p>
 Local CVM have essentially two methods helping in the static part of application
