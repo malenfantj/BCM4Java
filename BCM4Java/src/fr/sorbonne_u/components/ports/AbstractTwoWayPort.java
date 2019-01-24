@@ -506,7 +506,7 @@ implements	TwoWayPortI<TWI>
 		this.setClientPortURI(this.getPortURI()) ;
 		PortI serverPort =
 				AbstractCVM.getFromLocalRegistry(this.getServerPortURI()) ;
-		if (serverPort == null) {
+		if (serverPort == null && AbstractCVM.isDistributed) {
 			this.isRemotelyConnected = true ;
 			serverPort =
 				(PortI) AbstractDistributedCVM.getCVM().
@@ -584,7 +584,7 @@ implements	TwoWayPortI<TWI>
 		this.setConnector(connector) ;
 		PortI clientPort =
 				AbstractCVM.getFromLocalRegistry(this.getClientPortURI()) ;
-		if (clientPort == null) {
+		if (clientPort == null && AbstractCVM.isDistributed) {
 			this.isRemotelyConnected = true ;
 			clientPort = (PortI) AbstractDistributedCVM.getCVM().
 								getRemoteReference(this.getClientPortURI()) ;

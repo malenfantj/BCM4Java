@@ -500,7 +500,7 @@ implements	DataInboundPortI
 		this.setClientPortURI(otherPortURI) ;
 		PortI clientPort =
 			AbstractCVM.getFromLocalRegistry(this.getClientPortURI()) ;
-		if (clientPort == null) {
+		if (clientPort == null && AbstractCVM.isDistributed) {
 			this.isRemotelyConnected = true ;
 			clientPort = (PortI) AbstractDistributedCVM.getCVM().
 							getRemoteReference(this.getClientPortURI()) ;
@@ -565,7 +565,7 @@ implements	DataInboundPortI
 		this.setClientPortURI(otherPortURI) ;
 		PortI clientPort =
 				AbstractCVM.getFromLocalRegistry(this.getClientPortURI()) ;
-		if (clientPort == null) {
+		if (clientPort == null && AbstractCVM.isDistributed) {
 			this.isRemotelyConnected = true ;
 			clientPort = (PortI) AbstractDistributedCVM.getCVM().
 								getRemoteReference(this.getClientPortURI()) ;

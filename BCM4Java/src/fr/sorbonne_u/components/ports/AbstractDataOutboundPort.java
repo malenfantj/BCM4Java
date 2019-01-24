@@ -412,7 +412,7 @@ implements	DataOutboundPortI
 		this.setServerPortURI(otherPortURI) ;
 		PortI serverPort =
 			AbstractCVM.getFromLocalRegistry(this.getServerPortURI()) ;
-		if (serverPort == null) {
+		if (serverPort == null && AbstractCVM.isDistributed) {
 			this.isRemotelyConnected = true ;
 			serverPort =
 				(PortI) AbstractDistributedCVM.getCVM().

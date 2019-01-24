@@ -487,7 +487,7 @@ implements	DistributedComponentVirtualMachineI
 		int yLayout
 		) throws Exception
 	{
-		super(true);
+		super(true) ;
 		// this line will only be executed if a DCVM is created, which means
 		// that the CVM currently running is indeed distributed.
 		// Otherwise, a local CVM will be used.
