@@ -42,7 +42,6 @@ import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -59,6 +58,8 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.exceptions.PostconditionException;
 import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
+import fr.sorbonne_u.components.helpers.ComponentExecutorServiceManager;
+import fr.sorbonne_u.components.helpers.ComponentSchedulableExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerOnConsole;
 import fr.sorbonne_u.components.interfaces.OfferedI;
@@ -209,9 +210,9 @@ implements	ComponentI
 	// management.
 	// ------------------------------------------------------------------------
 
-	/** current state in the component life-cycle.							*/
+	/** current state in the component life-cycle.						*/
 	protected ComponentState				state ;
-	/** inner components owned by this component.							*/
+	/** inner components owned by this component.						*/
 	protected final Vector<ComponentI>	innerComponents ;
 
 	// ------------------------------------------------------------------------
@@ -224,13 +225,188 @@ implements	ComponentI
 	protected boolean					canScheduleTasks ;
 
 	/** the executor service in charge of handling component requests.	*/
-	protected ExecutorService			requestHandler ;
+//	protected ExecutorService			requestHandler ;
 	/** number of threads in the <code>ExecutorService</code>.			*/
 	protected int						nbThreads ;
 	/** the executor service in charge of handling scheduled tasks.		*/
-	protected ScheduledExecutorService	scheduledTasksHandler ;
+//	protected ScheduledExecutorService	scheduledTasksHandler ;
 	/** number of threads in the <code>ScheduledExecutorService</code>.	*/
 	protected int						nbSchedulableThreads ;
+
+	protected int						executorServicesNextIndex ;
+	/** map from URI of executor services to their index.				 	*/
+	protected Map<String,Integer>		executorServicesIndexes ;
+	/** URI of the standard request handler pool of threads.				*/
+	public static final String			STANDARD_REQUEST_HANDLER_URI =
+											"STANDARD_REQUEST_H_URI" ;
+	/** index of the standard request handler pool of threads.			*/
+	protected final int					standardRequestHandlerIndex ;
+	/** URI of the standard schedulable tasks handler pool of threads.	*/
+	public static final String			STANDARD_SCHEDULABLE_HANDLER_URI =
+											"STANDARD_SCHEDULABLE_H_URI" ;
+	/** index of the standard schedulable tasks handler pool of threads.	*/
+	protected final int					standardSchedulableHandlerIndex ;
+	/** vector of executor service managers.							 	*/
+	protected Vector<ComponentExecutorServiceManager>		executorServices ;
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#createNewExecutorService(java.lang.String, int, boolean)
+	 */
+	@Override
+	public int			createNewExecutorService(
+		String uri,
+		int nbThreads,
+		boolean schedulable
+		)
+	{
+		assert	uri != null ;
+		assert	!this.validExecutorServiceURI(uri) ;
+		assert	nbThreads > 0 ;
+		int size_pre = this.executorServices.size() ;
+
+		int index = this.executorServicesNextIndex++ ;
+		assert	index == this.executorServices.size() ;
+		this.executorServicesIndexes.put(uri, index) ;
+		ComponentExecutorServiceManager cesm = null ;
+		if (!schedulable) {
+			cesm = new ComponentExecutorServiceManager(uri, nbThreads) ;
+		} else {
+			cesm = new ComponentSchedulableExecutorServiceManager(
+															uri, nbThreads) ;
+		}
+		this.executorServices.add(cesm) ;
+		this.isConcurrent = true ;
+		if (schedulable) {
+			this.canScheduleTasks = true ;
+		}
+
+		assert	this.executorServicesIndexes.get(uri) == index ;
+		assert	this.executorServices.get(index) != null ;
+		assert	this.executorServices.size() == size_pre + 1 ;
+
+		assert	this.validExecutorServiceURI(uri) ;
+
+		return index ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#validExecutorServiceURI(java.lang.String)
+	 */
+	@Override
+	public boolean		validExecutorServiceURI(String uri)
+	{
+		return uri != null && this.executorServicesIndexes.containsKey(uri) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#validExecutorServiceIndex(int)
+	 */
+	@Override
+	public boolean		validExecutorServiceIndex(int index)
+	{
+		return index >= 0 && index < this.executorServices.size() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#isSchedulable(java.lang.String)
+	 */
+	@Override
+	public boolean		isSchedulable(String uri)
+	{
+		assert	this.validExecutorServiceURI(uri) ;
+
+		return this.executorServices.
+				get(this.executorServicesIndexes.get(uri)).isSchedulable() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#isSchedulable(int)
+	 */
+	@Override
+	public boolean		isSchedulable(int index)
+	{
+		assert	this.validExecutorServiceIndex(index) ;
+
+		return this.executorServices.get(index).isSchedulable() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#getExecutorServiceIndex(java.lang.String)
+	 */
+	@Override
+	public int			getExecutorServiceIndex(String uri)
+	{
+		assert	this.validExecutorServiceURI(uri) ;
+
+		return this.executorServicesIndexes.get(uri) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#getExecutorService(int)
+	 */
+	public ExecutorService	getExecutorService(int index)
+	{
+		assert	this.validExecutorServiceIndex(index) ;
+		assert	!this.isSchedulable(index) ;
+
+		return this.executorServices.get(index).getExecutorService() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#getExecutorService(java.lang.String)
+	 */
+	@Override
+	public ExecutorService	getExecutorService(String uri)
+	{
+		assert	this.validExecutorServiceURI(uri) ;
+
+		ComponentExecutorServiceManager csem =
+				this.executorServices.get(this.getExecutorServiceIndex(uri)) ;
+		assert	!csem.isSchedulable() ;
+		return csem.getExecutorService() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#getSchedulableExecutorService(int)
+	 */
+	@Override
+	public ScheduledExecutorService	getSchedulableExecutorService(int index)
+	{
+		assert	this.validExecutorServiceIndex(index) ;
+		assert	this.isSchedulable(index) ;
+
+		return ((ComponentSchedulableExecutorServiceManager) 
+									this.executorServices.get(index)).
+											getScheduledExecutorService() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#getSchedulableExecutorService(java.lang.String)
+	 */
+	@Override
+	public ScheduledExecutorService	getSchedulableExecutorService(String uri)
+	{
+		assert	this.validExecutorServiceURI(uri) ;
+
+		ComponentExecutorServiceManager csem =
+				this.executorServices.get(this.getExecutorServiceIndex(uri)) ;
+		assert	csem.isSchedulable() ;
+		return ((ComponentSchedulableExecutorServiceManager) csem).
+											getScheduledExecutorService() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#hasUserDefinedSchedulableThreads()
+	 */
+	@Override
+	public boolean		hasUserDefinedSchedulableThreads()
+	{
+		boolean ret = false ;
+		for (int i = 0 ; !ret && i < this.executorServices.size() ; i++) {
+			ret = this.executorServices.get(i).isSchedulable() ;
+		}
+		return ret ;
+	}
 
 	// ------------------------------------------------------------------------
 	// Plug-ins facilities
@@ -777,10 +953,11 @@ implements	ComponentI
 		this.innerComponents = new Vector<ComponentI>() ;
 		this.isConcurrent = false ;
 		this.canScheduleTasks = false ;
-		this.requestHandler = null ;
 		this.nbThreads = 0 ;
-		this.scheduledTasksHandler = null ;
 		this.nbSchedulableThreads = 0 ;
+		this.executorServicesNextIndex = 0 ;
+		this.executorServicesIndexes = new HashMap<String,Integer>() ;
+		this.executorServices = new Vector<ComponentExecutorServiceManager>() ;
 		this.requiredInterfaces = new Vector<Class<?>>() ;
 		this.offeredInterfaces = new Vector<Class<?>>() ;
 		this.interfaces2ports = new Hashtable<Class<?>,Vector<PortI>>() ;
@@ -798,24 +975,24 @@ implements	ComponentI
 
 		this.nbThreads = nbThreads ;
 		if (nbThreads > 0) {
-			this.isConcurrent = true ;
-		}
-		if (nbThreads == 1) {
-			this.requestHandler = Executors.newSingleThreadExecutor() ;
-		} else if (nbThreads > 1) {
-			this.requestHandler = Executors.newFixedThreadPool(nbThreads) ;
+			this.standardRequestHandlerIndex =
+				this.createNewExecutorService(
+										STANDARD_REQUEST_HANDLER_URI,
+										nbThreads,
+										false) ;
+		} else {
+			this.standardRequestHandlerIndex = -1 ;
 		}
 		
 		this.nbSchedulableThreads = nbSchedulableThreads ;
 		if (nbSchedulableThreads > 0) {
-			this.canScheduleTasks = true ;
-		}
-		if (nbSchedulableThreads == 1) {
-			this.scheduledTasksHandler =
-								Executors.newSingleThreadScheduledExecutor() ;
-		} else if (nbSchedulableThreads > 1) {
-			this.scheduledTasksHandler =
-						Executors.newScheduledThreadPool(nbSchedulableThreads) ;
+			this.standardSchedulableHandlerIndex =
+				this.createNewExecutorService(
+										STANDARD_SCHEDULABLE_HANDLER_URI,
+										nbSchedulableThreads,
+										true) ;
+		} else {
+			this.standardSchedulableHandlerIndex = -1 ;
 		}
 
 		this.addOfferedInterface(ReflectionI.class) ;
@@ -858,10 +1035,13 @@ implements	ComponentI
 		boolean ret = true ;
 
 		ret &= ac.innerComponents != null ;
-		ret &= ac.isConcurrent == (ac.requestHandler != null) ;
-		ret &= ac.isConcurrent == (ac.nbThreads > 0) ;
-		ret &= ac.canScheduleTasks == (ac.scheduledTasksHandler != null) ;
-		ret &= ac.canScheduleTasks == (ac.nbSchedulableThreads > 0) ;
+		ret &= ac.isConcurrent == (ac.executorServices.size() > 0) ;
+		ret &= ac.isConcurrent == (ac.nbThreads > 0 ||
+								   ac.nbSchedulableThreads > 0 ||
+								   ac.executorServices.size() > 0) ;
+		ret &= ac.canScheduleTasks == (ac.hasUserDefinedSchedulableThreads()) ;
+		ret &= ac.canScheduleTasks == (ac.nbSchedulableThreads > 0 ||
+									  ac.hasUserDefinedSchedulableThreads()) ;
 		ret &= ac.installedPlugins != null ;
 		ret &= (ac.isLogging() == (ac.executionLog != null)) ;
 		ret &= ac.requiredInterfaces != null ;
@@ -937,7 +1117,7 @@ implements	ComponentI
 					new PreconditionException("Component must not be"
 										+ " in Terminated state!") ;
 
-		return this.isConcurrent || this.canScheduleTasks() ;
+		return this.isConcurrent ;
 	}
 
 	/**
@@ -946,7 +1126,13 @@ implements	ComponentI
 	@Override
 	public int			getTotalNUmberOfThreads()
 	{
-		return this.nbThreads + this.nbSchedulableThreads ;
+		int nbUserDefinedThreads = 0 ;
+		for (int i = 0 ; i < this.executorServices.size() ; i++) {
+			nbUserDefinedThreads +=
+					this.executorServices.get(i).getNumberOfThreads() ;
+		}
+		return this.nbThreads + this.nbSchedulableThreads +
+											nbUserDefinedThreads ;
 	}
 
 	/**
@@ -956,7 +1142,7 @@ implements	ComponentI
 	public boolean		hasSerialisedExecution()
 	{
 		return this.hasItsOwnThreads() &&
-				this.nbThreads + this.nbSchedulableThreads == 1 ;
+							this.getTotalNUmberOfThreads() == 1 ;
 	}
 
 	/**
@@ -1840,11 +2026,8 @@ implements	ComponentI
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
-		if (this.isConcurrent) {
-			this.requestHandler.shutdown() ;
-		}
-		if (this.canScheduleTasks) {
-			this.scheduledTasksHandler.shutdown() ;
+		for (int i = 0 ; i < this.executorServices.size() ; i++) {
+			this.executorServices.get(i).shutdown() ;
 		}
 		this.state = ComponentState.SHUTTINGDOWN ;
 		if (!this.isConcurrent && !this.canScheduleTasks) {
@@ -1877,11 +2060,8 @@ implements	ComponentI
 			throw new ComponentShutdownException(e1) ;
 		}
 
-		if (this.isConcurrent) {
-			this.requestHandler.shutdownNow() ;
-		}
-		if (this.canScheduleTasks) {
-			this.scheduledTasksHandler.shutdownNow() ;
+		for (int i = 0 ; i < this.executorServices.size() ; i++) {
+			this.executorServices.get(i).shutdownNow() ;
 		}
 		this.state = ComponentState.SHUTDOWN ;
 	}
@@ -1924,21 +2104,16 @@ implements	ComponentI
 	@Override
 	public boolean		isShutdown()
 	{
-		boolean isShutdown = false ;
+		boolean isShutdown = true ;
 
 		if (this.state == ComponentState.SHUTDOWN) {
 			return true ;
 		}
 
-		if (this.isConcurrent) {
-			isShutdown = this.requestHandler.isShutdown() ;
-			if (this.canScheduleTasks) {
+		if (this.executorServices.size() > 0) {
+			for (int i = 0 ; i < this.executorServices.size() ; i++) {
 				isShutdown = isShutdown &&
-									this.scheduledTasksHandler.isShutdown() ;
-			}
-		} else {
-			if (this.canScheduleTasks) {
-				isShutdown = this.scheduledTasksHandler.isShutdown() ;
+								this.executorServices.get(i).isShutdown() ;
 			}
 		}
 		if (isShutdown) {
@@ -1953,20 +2128,19 @@ implements	ComponentI
 	@Override
 	public boolean		isTerminated()
 	{
-		boolean isTerminated = false ;
+		boolean isTerminated = true ;
 
 		if (this.state == ComponentState.TERMINATED) {
 			return true ;
 		}
 
 		if (this.isConcurrent) {
-			isTerminated = this.requestHandler.isTerminated() ;
+			for (int i = 0 ; i < this.executorServices.size() ; i++) {
+				isTerminated = isTerminated &&
+								this.executorServices.get(i).isTerminated() ;
+			}
 		} else {
 			isTerminated = this.isShutdown() ;
-		}
-		if (this.canScheduleTasks) {
-			isTerminated = isTerminated &&
-									this.scheduledTasksHandler.isTerminated() ;
 		}
 		if (isTerminated) {
 			this.state = ComponentState.TERMINATED ;
@@ -1985,16 +2159,13 @@ implements	ComponentI
 			return true ;
 		}
 
-		boolean status = false ;
-		if (this.canScheduleTasks) {
-			status =
-					this.scheduledTasksHandler.awaitTermination(timeout, unit) ;
-		}
-		if (this.isConcurrent) {
-			status = status &&
-						this.requestHandler.awaitTermination(timeout, unit) ;
-		} else {
-			status = true ;
+		boolean status = true ;
+		if (this.executorServices.size() > 0) {
+			for (int i = 0 ; i < this.executorServices.size() ; i++) {
+				status = status &&
+							this.executorServices.get(i).awaitTermination(
+															timeout, unit) ;
+			}
 		}
 		if (status) {
 			this.state = ComponentState.TERMINATED ;
@@ -2057,18 +2228,19 @@ implements	ComponentI
 		assert	this.isStarted() ;
 		assert	t != null ;
 
-		t.setOwnerReference(this) ;
-		Future<?> f = null ;
-		if (this.hasItsOwnThreads()) {
-			if (this.isConcurrent) {
-				f = this.requestHandler.submit(t) ;
+		if (this.isConcurrent) {
+			if (this.validExecutorServiceIndex(
+										this.standardRequestHandlerIndex)) {
+				return this.runTask(this.standardRequestHandlerIndex, t) ;
 			} else {
-				assert	this.canScheduleTasks ;
-				f = this.scheduledTasksHandler.submit(t) ;
+				assert	this.validExecutorServiceIndex(
+									this.standardSchedulableHandlerIndex) ;
+				return this.runTask(this.standardSchedulableHandlerIndex, t) ;
 			}
 		} else {
 			t.run() ;
-			f = new Future<Object>() {
+			Future<?> f =
+				new Future<Object>() {
 						@Override
 						public boolean	cancel(boolean arg0)
 						{ return false ; }
@@ -2092,8 +2264,38 @@ implements	ComponentI
 						public boolean	isDone()
 						{ return true ; }
 					} ;
+					return f ;
 		}
-		return f ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 */
+	@Override
+	public Future<?>		runTask(String executorServiceURI, ComponentTask t)
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	t != null ;
+
+		int executorServiceIndex =
+						this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.runTask(executorServiceIndex, t) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 */
+	@Override
+	public Future<?>		runTask(int executorServiceIndex, ComponentTask t)
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	t != null ;
+
+		t.setOwnerReference(this) ;
+		return this.executorServices.get(executorServiceIndex).
+										getExecutorService().submit(t) ;
 	}
 
 	/**
@@ -2108,10 +2310,55 @@ implements	ComponentI
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(
+									this.standardSchedulableHandlerIndex) ;
+		assert	t != null && delay >= 0 && u != null ;
+
+		return this.scheduleTask(this.standardSchedulableHandlerIndex,
+															t, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public ScheduledFuture<?>	scheduleTask(
+		String executorServiceURI,
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	this.isSchedulable(executorServiceURI) ;
+		assert	t != null && delay >= 0 && u != null ;
+
+		int executorServiceIndex =
+				this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.scheduleTask(executorServiceIndex, t, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public ScheduledFuture<?>	scheduleTask(
+		int executorServiceIndex,
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
 		assert	t != null && delay >= 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return this.scheduledTasksHandler.schedule(t, delay, u) ;
+		return ((ComponentSchedulableExecutorServiceManager)
+					this.executorServices.get(executorServiceIndex)).
+						getScheduledExecutorService().schedule(t, delay, u) ;
 	}
 
 	/**
@@ -2127,11 +2374,62 @@ implements	ComponentI
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(
+								this.standardSchedulableHandlerIndex) ;
+		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
+
+		return this.scheduleTaskAtFixedRate(
+									this.standardSchedulableHandlerIndex,
+											t, initialDelay, period, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+		String executorServiceURI,
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	this.isSchedulable(executorServiceURI) ;
+		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
+
+		int executorServiceIndex =
+						this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.scheduleTaskAtFixedRate(executorServiceIndex,
+											t, initialDelay, period, u);
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+		int executorServiceIndex,
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return this.scheduledTasksHandler.
-							scheduleAtFixedRate(t, initialDelay, period, u) ;
+		return ((ComponentSchedulableExecutorServiceManager)
+				this.executorServices.get(executorServiceIndex)).
+					getScheduledExecutorService().
+						scheduleAtFixedRate(t, initialDelay, period, u) ;
 	}
 
 	/**
@@ -2147,11 +2445,62 @@ implements	ComponentI
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(
+									this.standardSchedulableHandlerIndex) ;
 		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null ;
 
+		return this.scheduleTaskWithFixedDelay(
+									this.standardSchedulableHandlerIndex,
+											t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+		String executorServiceURI,
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	this.isSchedulable(executorServiceURI) ;
+		assert	t != null && initialDelay >= 0  && delay > 0 && u != null ;
+
+		int executorServiceIndex =
+				this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.scheduleTaskWithFixedDelay(executorServiceIndex,
+												t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+		int executorServiceIndex,
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
+		assert	t != null && initialDelay >= 0  && delay > 0 && u != null ;
+
 		t.setOwnerReference(this) ;
-		return this.scheduledTasksHandler.
-							scheduleWithFixedDelay(t, initialDelay, delay, u) ;
+		return ((ComponentSchedulableExecutorServiceManager)
+				this.executorServices.get(executorServiceIndex)).
+					getScheduledExecutorService().
+						scheduleWithFixedDelay(t, initialDelay, delay, u) ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -2286,24 +2635,23 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param request	service request to be executed on the component.
-	 * @return			a future value embedding the result of the task.
-	 * @throws Exception					if exception raised by the task.
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @return						a future value embedding the result of the task.
+	 * @throws Exception				if exception raised by the task.
 	 */
-	public <T> Future<T>		handleRequest(ComponentService<T> request)
-	throws Exception
+	protected <T> Future<T>		handleRequest(
+		int executorServiceIndex,
+		ComponentService<T> request
+		) throws Exception
 	{
 		assert	this.isStarted() ;
 		assert	request != null ;
 
 		request.setOwnerReference(this) ;
-		if (this.hasItsOwnThreads()) {
-			if (this.isConcurrent) {
-				return this.requestHandler.submit(request) ;
-			} else {
-				assert	this.canScheduleTasks ;
-				return this.scheduledTasksHandler.submit(request) ;
-			}
+		if (this.validExecutorServiceIndex(executorServiceIndex)) {
+			return this.executorServices.get(executorServiceIndex).
+									getExecutorService().submit(request) ;
 		} else {
 			final ComponentService<T> t = request ;
 			return new Future<T>() {
@@ -2348,12 +2696,56 @@ implements	ComponentI
 		assert	this.isStarted() ;
 		assert	request != null ;
 
-		request.setOwnerReference(this) ;
 		if (this.hasItsOwnThreads()) {
-			return this.handleRequest(request).get() ;
+			if (this.validExecutorServiceIndex(
+										this.standardRequestHandlerIndex)) {
+				return this.handleRequest(this.standardRequestHandlerIndex,
+															request).get() ;
+			} else {
+				assert this.validExecutorServiceIndex(
+									this.standardSchedulableHandlerIndex) ;
+				return this.handleRequest(
+								this.standardSchedulableHandlerIndex,
+								request).get() ;
+			}
 		} else {
+			request.setOwnerReference(this) ;
 			return request.call() ;
 		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
+	 */
+	@Override
+	public <T> T			handleRequestSync(
+		String executorServiceURI,
+		ComponentService<T> request
+		) throws Exception 
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	request != null ;
+
+		int executorServiceIndex =
+				this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.handleRequest(executorServiceIndex, request).get() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
+	 */
+	@Override
+	public <T> T			handleRequestSync(
+		int executorServiceIndex,
+		ComponentService<T> request
+		) throws Exception
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	request != null ;
+
+		return this.handleRequest(executorServiceIndex, request).get() ;
 	}
 
 	/**
@@ -2366,12 +2758,54 @@ implements	ComponentI
 		assert	this.isStarted() ;
 		assert	request != null ;
 
-		request.setOwnerReference(this) ;
 		if (this.hasItsOwnThreads()) {
-			this.handleRequest(request) ;
+			if (this.validExecutorServiceIndex(
+										this.standardRequestHandlerIndex)) {
+				this.handleRequest(this.standardRequestHandlerIndex, request) ;
+			} else {
+				assert	this.validExecutorServiceIndex(
+									this.standardSchedulableHandlerIndex) ;
+				this.handleRequest(this.standardSchedulableHandlerIndex,
+								   request) ;
+			}
 		} else {
+			request.setOwnerReference(this) ;
 			request.call();
 		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
+	 */
+	@Override
+	public <T> void		handleRequestAsync(
+		String executorServiceURI,
+		ComponentService<T> request
+		) throws Exception
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	request != null ;
+
+		int executorServiceIndex =
+				this.getExecutorServiceIndex(executorServiceURI) ;
+		this.handleRequest(executorServiceIndex, request) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
+	 */
+	@Override
+	public <T> void		handleRequestAsync(
+		int executorServiceIndex,
+		ComponentService<T> request
+		) throws Exception
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	request != null ;
+
+		this.handleRequest(executorServiceIndex, request) ;
 	}
 
 	/**
@@ -2386,23 +2820,29 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param request	service request to be scheduled.
-	 * @param delay		delay after which the task must be run.
-	 * @param u			time unit in which the delay is expressed.
-	 * @return			a scheduled future to synchronise with the task.
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a scheduled future to synchronise with the task.
 	 */
 	protected <T> ScheduledFuture<T>		scheduleRequest(
+		int executorServiceIndex,
 		ComponentService<T> request,
 		long delay,
 		TimeUnit u
 		)
 	{
 		assert	this.isStarted() ;
-		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
 		assert	request != null && delay >= 0 && u != null ;
 
 		request.setOwnerReference(this) ;
-		return this.scheduledTasksHandler.schedule(request, delay, u) ;
+		return ((ComponentSchedulableExecutorServiceManager)
+					this.executorServices.get(executorServiceIndex)).
+							getScheduledExecutorService().
+											schedule(request, delay, u) ;
 	}
 
 	/**
@@ -2412,7 +2852,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> T		scheduleRequestSync(
+	public <T> T			scheduleRequestSync(
 		ComponentService<T> request,
 		long delay,
 		TimeUnit u
@@ -2420,10 +2860,54 @@ implements	ComponentI
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(
+									this.standardSchedulableHandlerIndex) ;
 		assert	request != null && delay >= 0 && u != null ;
 
-		request.setOwnerReference(this) ;
-		return this.scheduleRequest(request, delay, u).get() ;
+		return this.scheduleRequestSync(this.standardSchedulableHandlerIndex,
+														request, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> T			scheduleRequestSync(
+		String executorServiceURI,
+		ComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws InterruptedException, ExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	this.isSchedulable(executorServiceURI) ;
+		assert	request != null && delay >= 0 && u != null ;
+
+		int executorServiceIndex =
+				this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.scheduleRequestSync(executorServiceIndex,
+													request, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> T 		scheduleRequestSync(
+		int executorServiceIndex,
+		ComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws InterruptedException, ExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
+		assert	request != null && delay >= 0 && u != null ;
+
+		return this.scheduleRequest(executorServiceIndex, request, delay, u).
+																	get() ;
 	}
 
 	/**
@@ -2438,10 +2922,54 @@ implements	ComponentI
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(
+									this.standardSchedulableHandlerIndex) ;
 		assert	request != null && delay >= 0 && u != null ;
 
-		request.setOwnerReference(this) ;
-		this.scheduleRequest(request, delay, u) ;
+		this.scheduleRequestAsync(this.standardSchedulableHandlerIndex,
+														request, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public void			scheduleRequestAsync(
+		String executorServiceURI,
+		ComponentService<?> request,
+		long delay,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	this.isSchedulable(executorServiceURI) ;
+		assert	request != null && delay >= 0 && u != null ;
+
+		int executorServiceIndex =
+				this.getExecutorServiceIndex(executorServiceURI) ;
+		this.scheduleRequest(executorServiceIndex, request, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public void			scheduleRequestAsync(
+		int executorServiceIndex,
+		ComponentService<?> request,
+		long delay,
+		TimeUnit u
+		)
+	{
+		assert	this.isStarted() ;
+		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
+		assert	request != null && delay >= 0 && u != null ;
+
+		this.scheduleRequest(executorServiceIndex, request, delay, u) ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -2542,12 +3070,22 @@ implements	ComponentI
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
+		assert	this.isStarted() ;
+		assert	name != null && params != null ;
+
 		Class<?>[] pTypes = new Class<?>[params.length] ;
 		for (int i = 0 ; i < params.length ; i++) {
 			pTypes[i] = params[i].getClass() ;
 		}
 		Method m = this.getClass().getMethod(name, pTypes) ;
+		int index ;
+		if (this.validExecutorServiceIndex(this.standardRequestHandlerIndex)) {
+			index = this.standardRequestHandlerIndex ;
+		} else {
+			index = this.standardSchedulableHandlerIndex ;
+		}
 		return this.handleRequest(
+						index,
 						new AbstractService<Object>() {
 							@Override
 							public Object call() throws Exception {
