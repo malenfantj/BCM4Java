@@ -206,58 +206,59 @@ public class				ConfigurationParameters
 
 	@Override
 	public String		toString() {
-		String rjvms = "{" ;
+		StringBuilder rjvms = new StringBuilder("{") ;
 		for (int i = 0 ; i < this.jvms.length ; i++) {
-			rjvms += this.jvms[i] ;
+			rjvms.append(this.jvms[i]) ;
 			if (i < this.jvms.length -1) {
-				rjvms += ", " ;
+				rjvms.append(", ") ;
 			}
 		}
-		rjvms += "}" ;
-		String theHosts = "{" ;
+		rjvms.append("}") ;
+		StringBuilder theHosts = new StringBuilder("{") ;
 		int n = 0 ;
 		for(String name : this.hosts2dirs.keySet()) {
-			theHosts += name + " ==> " + this.hosts2dirs.get(name) ;
+			theHosts.append(name).append(" ==> ").append(this.hosts2dirs.get(name)) ;
 			n++ ;
 			if (n < this.hosts2dirs.size() - 1) {
-				theHosts += ", " ;
+				theHosts.append(", ") ;
 			}
 		}
-		theHosts += "}" ;
-		String theMainClasses = "{" ;
+		theHosts.append("}") ;
+		StringBuilder theMainClasses = new StringBuilder("{") ;
 		n = 0 ;
 		for (String uri : this.jvms2mainclasses.keySet()) {
-			theMainClasses += uri + " ==> " + this.jvms2mainclasses.get(uri) ;
+			theMainClasses.append(uri).append(" ==> ").
+								append(this.jvms2mainclasses.get(uri)) ;
 			if (n < this.jvms2mainclasses.size() - 1) {
-				theMainClasses += ", " ;
+				theMainClasses.append(", ") ;
 			}
 		}
-		theMainClasses += "}" ;
-		String theReflectives = "{" ;
+		theMainClasses.append("}") ;
+		StringBuilder theReflectives = new StringBuilder("{") ;
 		n = 0 ;
 		for (String jvms : this.reflectiveJVMs) {
-			theReflectives += jvms ;
+			theReflectives.append(jvms) ;
 			n++ ;
 			if (n < this.reflectiveJVMs.size() - 1) {
-				theReflectives += ", " ;
+				theReflectives.append(", ") ;
 			}
 		}
-		theReflectives += "}" ;
-		return "ConfigurationParameters[" +
-					"codebase hostname: " + this.codebaseHostname + "; " +
-					"codebase directory: " + this.codebaseDirectory + "; " +
-					"hosts: " + theHosts + "; " +
-					"cyclicBarrier hostname: " + this.cyclicBarrierHostname + "; " +
-					"cyclicBarrier port: " + this.cyclicBarrierPort + "; " +
-					"global registry hostname: " + this.globalRegistryHostname + "; " +
-					"global registry port: " + this.globalRegistryPort + "; " +
-					"RMI registry creators: " + this.rmiRegistryCreators + "; " +
-					"RMI registry hosts: " + this.rmiRegistryHosts + "; " +
-					"rmiregistry port: " + this.rmiregistryPort + "; " +
-					"jvms: " + rjvms + "; " +
-					"main classes: " + theMainClasses + "; " +
-					"reflective JVMs: " + theReflectives + "; " +
-				"]" ;
+		theReflectives.append("}") ;
+		return new StringBuilder("ConfigurationParameters[").
+					append("codebase hostname: ").append(this.codebaseHostname).append("; ").
+					append("codebase directory: ").append(this.codebaseDirectory).append("; ").
+					append("hosts: ").append(theHosts).append("; ").
+					append("cyclicBarrier hostname: ").append(this.cyclicBarrierHostname).append("; ").
+					append("cyclicBarrier port: ").append(this.cyclicBarrierPort).append("; ").
+					append("global registry hostname: ").append(this.globalRegistryHostname).append("; ").
+					append("global registry port: ").append(this.globalRegistryPort).append("; ").
+					append("RMI registry creators: ").append(this.rmiRegistryCreators).append("; ").
+					append("RMI registry hosts: ").append(this.rmiRegistryHosts).append("; ").
+					append("rmiregistry port: ").append(this.rmiregistryPort).append("; ").
+					append("jvms: ").append(rjvms).append("; ").
+					append("main classes: ").append(theMainClasses).append("; ").
+					append("reflective JVMs: ").append(theReflectives).append("; ").
+					append("]").toString() ;
 	}
 }
 //-----------------------------------------------------------------------------

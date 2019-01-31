@@ -259,9 +259,11 @@ implements	ComponentI
 		boolean schedulable
 		)
 	{
-		assert	uri != null ;
-		assert	!this.validExecutorServiceURI(uri) ;
-		assert	nbThreads > 0 ;
+		assert	uri != null : new PreconditionException("uri != null") ;
+		assert	!this.validExecutorServiceURI(uri) :
+					new PreconditionException(
+								"!this.validExecutorServiceURI(uri)") ;
+		assert	nbThreads > 0 : new PreconditionException("nbThreads > 0") ;
 		int size_pre = this.executorServices.size() ;
 
 		int index = this.executorServicesNextIndex++ ;
@@ -284,7 +286,9 @@ implements	ComponentI
 		assert	this.executorServices.get(index) != null ;
 		assert	this.executorServices.size() == size_pre + 1 ;
 
-		assert	this.validExecutorServiceURI(uri) ;
+		assert	this.validExecutorServiceURI(uri) :
+					new PostconditionException(
+								"this.validExecutorServiceURI(uri)") ;
 
 		return index ;
 	}
@@ -313,7 +317,9 @@ implements	ComponentI
 	@Override
 	public boolean		isSchedulable(String uri)
 	{
-		assert	this.validExecutorServiceURI(uri) ;
+		assert	this.validExecutorServiceURI(uri) :
+					new PreconditionException(
+								"this.validExecutorServiceURI(uri)") ;
 
 		return this.executorServices.
 				get(this.executorServicesIndexes.get(uri)).isSchedulable() ;
@@ -325,7 +331,9 @@ implements	ComponentI
 	@Override
 	public boolean		isSchedulable(int index)
 	{
-		assert	this.validExecutorServiceIndex(index) ;
+		assert	this.validExecutorServiceIndex(index) :
+					new PreconditionException(
+								"this.validExecutorServiceIndex(index)") ;
 
 		return this.executorServices.get(index).isSchedulable() ;
 	}
@@ -336,9 +344,17 @@ implements	ComponentI
 	@Override
 	public int			getExecutorServiceIndex(String uri)
 	{
-		assert	this.validExecutorServiceURI(uri) ;
+		assert	this.validExecutorServiceURI(uri) :
+					new PreconditionException(
+								"this.validExecutorServiceURI(uri)") ;
 
-		return this.executorServicesIndexes.get(uri) ;
+		int ret = this.executorServicesIndexes.get(uri) ;
+
+		assert	this.validExecutorServiceIndex(ret) :
+					new PostconditionException(
+							"this.validExecutorServiceIndex(return)") ;
+
+		return ret ;
 	}
 
 	/**
@@ -346,8 +362,9 @@ implements	ComponentI
 	 */
 	public ExecutorService	getExecutorService(int index)
 	{
-		assert	this.validExecutorServiceIndex(index) ;
-		assert	!this.isSchedulable(index) ;
+		assert	this.validExecutorServiceIndex(index) :
+					new PreconditionException(
+								"this.validExecutorServiceIndex(index)") ;
 
 		return this.executorServices.get(index).getExecutorService() ;
 	}
@@ -358,12 +375,12 @@ implements	ComponentI
 	@Override
 	public ExecutorService	getExecutorService(String uri)
 	{
-		assert	this.validExecutorServiceURI(uri) ;
+		assert	this.validExecutorServiceURI(uri) :
+					new PreconditionException(
+								"this.validExecutorServiceURI(uri)") ;
 
-		ComponentExecutorServiceManager csem =
-				this.executorServices.get(this.getExecutorServiceIndex(uri)) ;
-		assert	!csem.isSchedulable() ;
-		return csem.getExecutorService() ;
+		return this.executorServices.get(this.getExecutorServiceIndex(uri)).
+													getExecutorService() ;
 	}
 
 	/**
@@ -372,8 +389,11 @@ implements	ComponentI
 	@Override
 	public ScheduledExecutorService	getSchedulableExecutorService(int index)
 	{
-		assert	this.validExecutorServiceIndex(index) ;
-		assert	this.isSchedulable(index) ;
+		assert	this.validExecutorServiceIndex(index) :
+					new PreconditionException(
+								"this.validExecutorServiceIndex(index)") ;
+		assert	this.isSchedulable(index) :
+					new PreconditionException("this.isSchedulable(index)") ;
 
 		return ((ComponentSchedulableExecutorServiceManager) 
 									this.executorServices.get(index)).
@@ -386,11 +406,16 @@ implements	ComponentI
 	@Override
 	public ScheduledExecutorService	getSchedulableExecutorService(String uri)
 	{
-		assert	this.validExecutorServiceURI(uri) ;
+		assert	this.validExecutorServiceURI(uri) :
+					new PreconditionException(
+								"this.validExecutorServiceURI(uri)") ;
 
 		ComponentExecutorServiceManager csem =
 				this.executorServices.get(this.getExecutorServiceIndex(uri)) ;
-		assert	csem.isSchedulable() ;
+
+		assert	csem.isSchedulable() :
+					new PreconditionException("this.isSchedulable(uri)") ;
+
 		return ((ComponentSchedulableExecutorServiceManager) csem).
 											getScheduledExecutorService() ;
 	}

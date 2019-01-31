@@ -132,8 +132,8 @@ extends		AbstractComponent
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param classname				name of the class from which the component is created.
-	 * @param constructorParams		parameters to be passed to the constructor.
+	 * @param classname			name of the class from which the component is created.
+	 * @param constructorParams	parameters to be passed to the constructor.
 	 * @throws Exception			if the creation did not succeed.
 	 */
 	public String		createComponent(

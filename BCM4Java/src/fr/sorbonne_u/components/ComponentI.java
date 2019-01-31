@@ -243,7 +243,7 @@ public interface			ComponentI
 	 * 
 	 * <pre>
 	 * pre	uri != null
-	 * pre	this.validExecutorServiceURI(uri)
+	 * pre	!this.validExecutorServiceURI(uri)
 	 * pre	nbThreads > 0
 	 * post	this.validExecutorServiceURI(uri)
 	 * </pre>
@@ -328,7 +328,7 @@ public interface			ComponentI
 	 * 
 	 * <pre>
 	 * pre	this.validExecutorServiceURI(uri)
-	 * post	true			// no postcondition.
+	 * post	this.validExecutorServiceIndex(return)
 	 * </pre>
 	 *
 	 * @param uri	URI of the sought executor service.
@@ -343,7 +343,6 @@ public interface			ComponentI
 	 * 
 	 * <pre>
 	 * pre	this.validExecutorServiceIndex(index)
-	 * pre	!this.isSchedulable(index)
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -359,7 +358,6 @@ public interface			ComponentI
 	 * 
 	 * <pre>
 	 * pre	this.validExecutorServiceURI(uri)
-	 * pre	!this.isSchedulable(uri)
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
