@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.chm.interfaces;
+package fr.sorbonne_u.components.examples.chm;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -34,13 +34,13 @@ package fr.sorbonne_u.components.examples.chm.interfaces;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.cvm.AbstractCVM ;
+import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
 
 //------------------------------------------------------------------------------
 /**
- * The interface <code>MapTesting</code> defines services that test the
- * state of the map without changing it.
+ * The class <code>CVM</code> deploys and launch a simple tests for the
+ * <code>ConcurrentMapComponent</code>.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -50,74 +50,59 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-01-22</p>
+ * <p>Created on : 2019-02-11</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapTesting<K,V>
-extends		RequiredI,
-			OfferedI
+public class				CVM
+extends		AbstractCVM
 {
-	/**
-	 * return true if the map contains the given value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param value			value to be tested.
-	 * @return				true if the map contains the given value.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public boolean		containsValue(V value) throws Exception ;
+	/** URI of the reflection inbound port of the concurrent map
+	 *  component.														*/
+	protected static final String	CONCURRENT_MAP_RIP_URI = "cmrip" ;
+
+	public				CVM() throws Exception
+	{
+		super(false) ;
+	}
 
 	/**
-	 * return true if the map contains the given key.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param key			key to be tested.
-	 * @return				true if the map contains the given key.
-	 * @throws Exception		<i>to do.</i>
+	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
 	 */
-	public boolean		containsKey(K key) throws Exception ;
+	@Override
+	public void			deploy() throws Exception
+	{
+		// --------------------------------------------------------------------
+		// Creation phase
+		// --------------------------------------------------------------------
 
-	/**
-	 * return true if the map is empty.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return				true if the map is empty.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public boolean		isEmpty() throws Exception ;
+		ConcurrentMapComponent<String,Integer> cmc =
+					new ConcurrentMapComponent<>(CONCURRENT_MAP_RIP_URI, 5) ;
+		this.addDeployedComponent(cmc) ;
+		cmc.toggleTracing() ;
 
-	/**
-	 * return the number of key/value pairs kept in the map.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return				the number of key/value pairs kept in the map.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public int			size() throws Exception ;
+		TesterComponent tc = new TesterComponent(CONCURRENT_MAP_RIP_URI) ;
+		this.addDeployedComponent(tc) ;
+		tc.toggleTracing() ;
+
+		super.deploy();
+	}
+
+	public static void	main(String[] args)
+	{
+		try {
+			// Create an instance of the defined component virtual machine.
+			CVM a = new CVM() ;
+			// Execute the application.
+			a.startStandardLifeCycle(5000L) ;
+			// Give some time to see the traces (convenience).
+			Thread.sleep(100000L) ;
+			// Simplifies the termination (termination has yet to be treated
+			// properly in BCM).
+			System.exit(0) ;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
 //------------------------------------------------------------------------------

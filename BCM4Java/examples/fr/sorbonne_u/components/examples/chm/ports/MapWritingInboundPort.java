@@ -36,13 +36,14 @@ package fr.sorbonne_u.components.examples.chm.ports;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.chm.components.ConcurrentHashMapComponent;
+import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapWritingInboundPort</code>
+ * The class <code>MapWritingInboundPort</code> implements the inbound for
+ * map services that are changing the state of the map.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -56,13 +57,28 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapWritingInboundPort
+public class				MapWritingInboundPort<K,V>
 extends		AbstractInboundPort
-implements	MapWriting
+implements	MapWriting<K,V>
 {
 	private static final long serialVersionUID = 1L;
 	protected final int	executorIndex ;
 
+	/**
+	 * create a map writing inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri			the URI to be attributed to the port.
+	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
+	 * @param owner			the owner component.
+	 * @throws Exception		<i>to do.</i>
+	 */
 	public				MapWritingInboundPort(
 		String uri,
 		int executorIndex,
@@ -76,6 +92,20 @@ implements	MapWriting
 		this.executorIndex = executorIndex ;
 	}
 
+	/**
+	 * create a map writing inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
+	 * @param owner			the owner component.
+	 * @throws Exception		<i>to do.</i>
+	 */
 	public				MapWritingInboundPort(
 		int executorIndex,
 		ComponentI owner
@@ -89,18 +119,37 @@ implements	MapWriting
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#put(java.lang.String, int)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#put(java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public int			put(String key, int value) throws Exception
+	public V			put(K key, V value) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				executorIndex,
-				new AbstractComponent.AbstractService<Integer>() {
+				executorIndex,			// identifies the pool of threads to be used
+				new AbstractComponent.AbstractService<V>() {
+					@SuppressWarnings("unchecked")
 					@Override
-					public Integer call() throws Exception {
-						return ((ConcurrentHashMapComponent)this.getOwner()).
-														put(key, value) ;
+					public V call() throws Exception {
+						return ((ConcurrentMapComponent<K,V>)
+										this.getOwner()).put(key, value) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#remove(java.lang.Object)
+	 */
+	@Override
+	public V			remove(K key) throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				executorIndex,			// identifies the pool of threads to be used
+				new AbstractComponent.AbstractService<V>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public V call() throws Exception {
+						return ((ConcurrentMapComponent<K,V>)
+										this.getOwner()).remove(key) ;
 					}
 				}) ;
 	}

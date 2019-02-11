@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.chm.components;
+package fr.sorbonne_u.components.examples.chm.ports;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -34,12 +34,13 @@ package fr.sorbonne_u.components.examples.chm.components;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.AbstractComponent;
-import java.util.concurrent.ConcurrentHashMap;
+import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
+import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>ConcurrentHashMapComponent</code>
+ * The class <code>MapWritingOutboundPort</code>
  *
  * <p><strong>Description</strong></p>
  * 
@@ -49,87 +50,49 @@ import java.util.concurrent.ConcurrentHashMap;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-01-22</p>
+ * <p>Created on : 2019-02-11</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				ConcurrentHashMapComponent
-extends		AbstractComponent
+public class				MapWritingOutboundPort<K,V>
+extends		AbstractOutboundPort
+implements	MapWriting<K, V>
 {
-	// ------------------------------------------------------------------------
-	// Constants and variables
-	// ------------------------------------------------------------------------
+	private static final long serialVersionUID = 1L;
 
-	public static final String	READ_ACCESS_HANDLER_URI = "rah" ;
-	public static final String	WRITE_ACCESS_HANDLER_URI = "wah" ;
-	protected final ConcurrentHashMap<String,Integer> chm ;
+	public				MapWritingOutboundPort(
+		String uri,
+		ComponentI owner
+		) throws Exception
+	{
+		super(uri, MapWriting.class, owner);
+	}
 
-	// ------------------------------------------------------------------------
-	// Constructors
-	// ------------------------------------------------------------------------
+	public				MapWritingOutboundPort(
+		ComponentI owner
+		) throws Exception
+	{
+		super(MapWriting.class, owner);
+	}
 
 	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param reflectionInboundPortURI
-	 * @param nbThreads
-	 * @param nbSchedulableThreads
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#put(java.lang.Object, java.lang.Object)
 	 */
-	public				ConcurrentHashMapComponent(
-		String reflectionInboundPortURI
-		)
+	@SuppressWarnings("unchecked")
+	@Override
+	public V				put(K key, V value) throws Exception
 	{
-		super(reflectionInboundPortURI, 1, 0) ;
-
-		this.chm = new ConcurrentHashMap<String,Integer>() ;
-		this.createNewExecutorService(READ_ACCESS_HANDLER_URI, 1, false) ;
-		this.createNewExecutorService(WRITE_ACCESS_HANDLER_URI, 1, false) ;
+		return ((MapWriting<K, V>)this.connector).put(key, value) ;
 	}
 
-	// ------------------------------------------------------------------------
-	// Methods
-	// ------------------------------------------------------------------------
-
-	public boolean		contains(int value)
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#remove(java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public V				remove(K key) throws Exception
 	{
-		return this.chm.contains(value) ;
-	}
-
-	public boolean		containsKey(String key)
-	{
-		return this.chm.containsKey(key) ;
-	}
-
-	public int			get(String key)
-	{
-		return this.chm.get(key) ;
-	}
-
-	public boolean		isEmpty()
-	{
-		return this.chm.isEmpty() ;
-	}
-
-	public int			put(String key, int value)
-	{
-		return this.chm.put(key, value) ;
-	}
-
-	public int			remove(String key)
-	{
-		return this.chm.remove(key) ;
-	}
-
-	public int			size()
-	{
-		return this.chm.size() ;
+		return ((MapWriting<K, V>)this.connector).remove(key) ;
 	}
 }
 //------------------------------------------------------------------------------

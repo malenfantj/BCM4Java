@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.chm.interfaces;
+package fr.sorbonne_u.components.examples.chm.connectors;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -34,13 +34,12 @@ package fr.sorbonne_u.components.examples.chm.interfaces;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.connectors.AbstractConnector;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
 
 //------------------------------------------------------------------------------
 /**
- * The interface <code>MapTesting</code> defines services that test the
- * state of the map without changing it.
+ * The class <code>MapWritingConnector</code>
  *
  * <p><strong>Description</strong></p>
  * 
@@ -50,74 +49,37 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-01-22</p>
+ * <p>Created on : 2019-02-11</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapTesting<K,V>
-extends		RequiredI,
-			OfferedI
+public class				MapWritingConnector<K, V>
+extends		AbstractConnector
+implements	MapWriting<K, V>
 {
-	/**
-	 * return true if the map contains the given value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param value			value to be tested.
-	 * @return				true if the map contains the given value.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public boolean		containsValue(V value) throws Exception ;
+	public				MapWritingConnector()
+	{
+		super() ;
+	}
 
 	/**
-	 * return true if the map contains the given key.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param key			key to be tested.
-	 * @return				true if the map contains the given key.
-	 * @throws Exception		<i>to do.</i>
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#put(java.lang.Object, java.lang.Object)
 	 */
-	public boolean		containsKey(K key) throws Exception ;
+	@SuppressWarnings("unchecked")
+	@Override
+	public V				put(K key, V value) throws Exception
+	{
+		return ((MapWriting<K, V>)this.offering).put(key, value) ;
+	}
 
 	/**
-	 * return true if the map is empty.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return				true if the map is empty.
-	 * @throws Exception		<i>to do.</i>
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#remove(java.lang.Object)
 	 */
-	public boolean		isEmpty() throws Exception ;
-
-	/**
-	 * return the number of key/value pairs kept in the map.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return				the number of key/value pairs kept in the map.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public int			size() throws Exception ;
+	@SuppressWarnings("unchecked")
+	@Override
+	public V				remove(K key) throws Exception
+	{
+		return ((MapWriting<K, V>)this.offering).remove(key) ;
+	}
 }
 //------------------------------------------------------------------------------

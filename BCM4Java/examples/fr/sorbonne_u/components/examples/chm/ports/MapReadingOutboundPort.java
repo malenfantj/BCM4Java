@@ -34,15 +34,14 @@ package fr.sorbonne_u.components.examples.chm.ports;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.chm.components.ConcurrentHashMapComponent;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapReading;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
-import fr.sorbonne_u.components.ports.AbstractInboundPort;
+import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapTestingInboundPort</code>
+ * The class <code>MapReadingOutboundPort</code>
  *
  * <p><strong>Description</strong></p>
  * 
@@ -52,108 +51,78 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-01-22</p>
+ * <p>Created on : 2019-02-11</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapTestingInboundPort
-extends		AbstractInboundPort
-implements	MapTesting
+public class				MapReadingOutboundPort<K,V>
+extends AbstractOutboundPort
+implements	MapReading<K,V>,
+			MapTesting<K,V>
 {
-	private static final long serialVersionUID = 1L ;
-	protected final int	executorIndex ;
+	private static final long serialVersionUID = 1L;
 
-	public				MapTestingInboundPort(
+	public				MapReadingOutboundPort(
 		String uri,
-		int executorIndex,
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, MapTesting.class, owner) ;
-
-		assert	owner.validExecutorServiceIndex(executorIndex) ;
-
-		this.executorIndex = executorIndex ;
+		super(uri, MapReading.class, owner);
 	}
 
-	public				MapTestingInboundPort(
-		int executorIndex,
-		ComponentI owner
-		) throws Exception
+	public MapReadingOutboundPort(ComponentI owner) throws Exception
 	{
-		super(MapTesting.class, owner);
-
-		assert	owner.validExecutorServiceIndex(executorIndex) ;
-
-		this.executorIndex = executorIndex ;
+		super(MapReading.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#contains(int)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#get(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean		contains(int value) throws Exception
+	public V				get(K key) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
-				executorIndex,
-				new AbstractComponent.AbstractService<Boolean>() {
-					@Override
-					public Boolean call() throws Exception {
-						return ((ConcurrentHashMapComponent)this.getOwner()).
-												contains(value) ;
-					}
-				}) ;
+		return ((MapReading<K,V>)this.connector).get(key) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsKey(java.lang.String)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsValue(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean		containsKey(String key) throws Exception
+	public boolean		containsValue(V value) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
-				executorIndex,
-				new AbstractComponent.AbstractService<Boolean>() {
-					@Override
-					public Boolean call() throws Exception {
-						return ((ConcurrentHashMapComponent)this.getOwner()).
-												containsKey(key) ;
-					}
-				}) ;
+		return ((MapTesting<K,V>)this.connector).containsValue(value) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsKey(java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean		containsKey(K key) throws Exception
+	{
+		return ((MapTesting<K,V>)this.connector).containsKey(key) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#isEmpty()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean		isEmpty() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
-				executorIndex,
-				new AbstractComponent.AbstractService<Boolean>() {
-					@Override
-					public Boolean call() throws Exception {
-						return ((ConcurrentHashMapComponent)this.getOwner()).
-												isEmpty() ;
-					}
-				}) ;
+		return ((MapTesting<K,V>)this.connector).isEmpty() ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#size()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public int			size() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
-				executorIndex,
-				new AbstractComponent.AbstractService<Integer>() {
-					@Override
-					public Integer call() throws Exception {
-						return ((ConcurrentHashMapComponent)this.getOwner()).
-												size() ;
-					}
-				}) ;
+		return ((MapTesting<K,V>)this.connector).size() ;
 	}
 }
 //------------------------------------------------------------------------------

@@ -36,13 +36,15 @@ package fr.sorbonne_u.components.examples.chm.ports;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.chm.components.ConcurrentHashMapComponent;
+import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapReading;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapReadingInboundPort</code>
+ * The class <code>MapReadingInboundPort</code> implements the inbound for
+ * map services that are not changing the state of the map.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -56,13 +58,29 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapReadingInboundPort
+public class				MapReadingInboundPort<K,V>
 extends		AbstractInboundPort
-implements	MapReading
+implements	MapReading<K,V>,
+			MapTesting<K,V>
 {
 	private static final long serialVersionUID = 1L ;
 	protected final int	executorIndex ;
 
+	/**
+	 * create a map reading inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri			the URI to be attributed to the port.
+	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
+	 * @param owner			the owner component.
+	 * @throws Exception		<i>to do.</i>
+	 */
 	public				MapReadingInboundPort(
 		String uri,
 		int executorIndex,
@@ -76,6 +94,20 @@ implements	MapReading
 		this.executorIndex = executorIndex ;
 	}
 
+	/**
+	 * create a map reading inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
+	 * @param owner			the owner component.
+	 * @throws Exception		<i>to do.</i>
+	 */
 	public				MapReadingInboundPort(
 		int executorIndex,
 		ComponentI owner
@@ -89,18 +121,91 @@ implements	MapReading
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#get(java.lang.String)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#get(java.lang.Object)
 	 */
 	@Override
-	public int			get(String key) throws Exception
+	public V				get(K key) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				executorIndex,
+				executorIndex,			// identifies the pool of threads to be used
+				new AbstractComponent.AbstractService<V>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public V call() throws Exception {
+						return ((ConcurrentMapComponent<K,V>)
+											this.getOwner()).get(key) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsValue(java.lang.Object)
+	 */
+	@Override
+	public boolean		containsValue(V value) throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				executorIndex,			// identifies the pool of threads to be used
+				new AbstractComponent.AbstractService<Boolean>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public Boolean call() throws Exception {
+						return ((ConcurrentMapComponent<K,V>)this.getOwner()).
+												containsValue(value) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsKey(java.lang.Object)
+	 */
+	@Override
+	public boolean		containsKey(K key) throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				executorIndex,			// identifies the pool of threads to be used
+				new AbstractComponent.AbstractService<Boolean>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public Boolean call() throws Exception {
+						return ((ConcurrentMapComponent<K,V>)
+									this.getOwner()).containsKey(key) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#isEmpty()
+	 */
+	@Override
+	public boolean		isEmpty() throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				executorIndex,			// identifies the pool of threads to be used
+				new AbstractComponent.AbstractService<Boolean>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public Boolean call() throws Exception {
+						return ((ConcurrentMapComponent<K,V>)
+									this.getOwner()).isEmpty() ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#size()
+	 */
+	@Override
+	public int			size() throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<Integer>() {
+					@SuppressWarnings("unchecked")
 					@Override
 					public Integer call() throws Exception {
-						return ((ConcurrentHashMapComponent)this.getOwner()).
-															get(key) ;
+						return ((ConcurrentMapComponent<K,V>)
+									this.getOwner()).size() ;
 					}
 				}) ;
 	}

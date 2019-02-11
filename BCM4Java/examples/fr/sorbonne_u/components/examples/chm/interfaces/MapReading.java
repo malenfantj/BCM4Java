@@ -39,7 +39,8 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapReading</code>
+ * The interface <code>MapReading</code> defines services that access the
+ * values in the map without changing its state.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -53,10 +54,25 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapReading
+public interface			MapReading<K,V>
 extends		RequiredI,
 			OfferedI
 {
-	public int			get(String key) throws Exception ;
+	/**
+	 * get the value associated with the given key and return it or null if
+	 * none.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key			the key which value must be returned.
+	 * @return				the value associated with the given key or null if none.
+	 * @throws Exception		<i>to do.</i>
+	 */
+	public V				get(K key) throws Exception ;
 }
 //------------------------------------------------------------------------------

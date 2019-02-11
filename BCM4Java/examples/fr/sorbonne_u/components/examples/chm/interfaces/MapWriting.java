@@ -39,7 +39,8 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapWriting</code>
+ * The interface <code>MapWriting</code> defines services that change the
+ * state of a map.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -53,10 +54,43 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapWriting
+public interface			MapWriting<K,V>
 extends		RequiredI,
 			OfferedI
 {
-	public int			put(String key, int value) throws Exception ;
+	/**
+	 * associate the given key to the given value in the map, returning the
+	 * value previously associated to the key or null if none.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key			the key to be associated to the given value.
+	 * @param value			the value to be associated to the given key.
+	 * @return				the value previously associated to the key or null if none.
+	 * @throws Exception		<i>to do.</i>
+	 */
+	public V				put(K key, V value) throws Exception ;
+
+	/**
+	 * remove the value associated to the given key, returning the value
+	 * previously associated to the key or null if none.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key			key which association must be removed.
+	 * @return				the value previously associated to the key or null if none.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public V				remove(K key) throws Exception ;
 }
 //------------------------------------------------------------------------------
