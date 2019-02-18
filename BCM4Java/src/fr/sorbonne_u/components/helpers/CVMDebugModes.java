@@ -43,6 +43,30 @@ package fr.sorbonne_u.components.helpers;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
+ * BCM provides a trace and logging mechanism to help debug programs. Indeed,
+ * as threaded and distributed programs, BCM component-based applications are
+ * difficult top debug. Java debuggers rarely handle correctly thread
+ * interruptions, so putting breakpoints to inspect the state of the program
+ * do not work.
+ * </p>
+ * <p>
+ * The class <code>AbstractComponent</code> describes the component tracing and
+ * logging facility. The main method is logMessage which allows to put in the
+ * code logging instructions to get values of variables (state of the program)
+ * at important points in the control flow. To avoid putting and removing such
+ * instructions when going from debugging to testing and then to production,
+ * it is possible to put them in if statements according to debugging modes.
+ * </p>
+ * <p>
+ * The <code>CVMDebugModes</code> enumeration defines the core debug modes
+ * used in the BCM kernel. Adding a debug mode into the set
+ * <code>AbstractCVM.DEBUG_MODES</code> enables the logging associated to
+ * the corresponding mode. The set <code>AbstractCVM.DEBUG_MODES</code>
+ * types its content with the interface <code>CVMDebugModesI</code> so
+ * that users can extend the debugging modes with its own ones.
+ * </p>
+ * 
  * <p>Created on : 2018-08-27</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>

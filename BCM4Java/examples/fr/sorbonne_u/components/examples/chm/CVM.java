@@ -44,6 +44,13 @@ import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
+ * The class creates two components, an instance of
+ * <code>ConcurrentMapComponent</code> and an instance of
+ * <code>TesterComponent</code>. Their inter-connection and the test
+ * scenario is implemented in the two components.
+ * </p>
+ * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>

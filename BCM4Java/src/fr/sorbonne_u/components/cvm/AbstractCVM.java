@@ -35,6 +35,7 @@ package fr.sorbonne_u.components.cvm;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.HashSet;
@@ -94,7 +95,7 @@ implements	ComponentVirtualMachineI
 	protected static AbstractCVM				theCVM ;
 	/**	Enables or not debugging messages.								*/
 //	public static boolean					DEBUG = false ;
-	public static final HashSet<CVMDebugModesI>	DEBUG_MODE =
+	public static final Set<CVMDebugModesI>	DEBUG_MODE =
 											new HashSet<CVMDebugModesI>() ;
 	/** suffix for the dynamic component creator component inbound
 	 *  port URI.														*/

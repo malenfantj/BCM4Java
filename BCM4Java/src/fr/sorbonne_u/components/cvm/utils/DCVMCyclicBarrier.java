@@ -471,7 +471,6 @@ public class				DCVMCyclicBarrier
 	public static void	main(String[] args)
 	{
 		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CYCLIC_BARRIER) ;
-		new WindowOutputStream("CyclicBarrier", 0, 0, 1, 5) ;
 		try {
 			DCVMCyclicBarrier as = new DCVMCyclicBarrier(args[0]);
 			as.run() ;

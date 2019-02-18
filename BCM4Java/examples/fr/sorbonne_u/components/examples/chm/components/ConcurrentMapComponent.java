@@ -132,7 +132,7 @@ extends		AbstractComponent
 	 * 
 	 * <pre>
 	 * pre	reflectionInboundPortURI != null
-	 * pre	nbReadingThreads > 0
+	 * pre	nbReadingThreads &gt; 0
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *

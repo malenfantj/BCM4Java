@@ -78,7 +78,7 @@ extends		ComponentExecutorServiceManager
 	 * 
 	 * <pre>
 	 * pre	uri != null
-	 * pre	nbThreads > 0
+	 * pre	nbThreads &gt; 0
 	 * post	this.executorServiceCreated()
 	 * </pre>
 	 *
@@ -256,14 +256,15 @@ extends		ComponentExecutorServiceManager
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	timeout &gt;= 0
+	 * preaunit != null
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param timeout	
-	 * @param unit
-	 * @return
-	 * @throws InterruptedException
+	 * @param timeout				maximum time to wait for the termination.
+	 * @param unit					time unit to interpret the time out value.
+	 * @return						true if this executor terminated and false if the timeout elapsed before termination.
+	 * @throws InterruptedException	if interrupted while waiting.
 	 */
 	public boolean		awaitTermination(long timeout, TimeUnit unit)
 	throws	InterruptedException

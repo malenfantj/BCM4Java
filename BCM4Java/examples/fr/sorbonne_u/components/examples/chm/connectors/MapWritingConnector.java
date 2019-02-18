@@ -39,7 +39,8 @@ import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapWritingConnector</code>
+ * The class <code>MapWritingConnector</code> implements the connector on the
+ * <code>MapWriting</code> interface.
  *
  * <p><strong>Description</strong></p>
  * 

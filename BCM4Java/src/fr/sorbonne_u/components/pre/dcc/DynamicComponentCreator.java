@@ -134,6 +134,7 @@ extends		AbstractComponent
 	 *
 	 * @param classname			name of the class from which the component is created.
 	 * @param constructorParams	parameters to be passed to the constructor.
+	 * @return					th'e URI of the reflection inbound port of the new component.
 	 * @throws Exception			if the creation did not succeed.
 	 */
 	public String		createComponent(
@@ -178,11 +179,11 @@ extends		AbstractComponent
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param cl
-	 * @param constructorParams
-	 * @return
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
+	 * @param cl							class which constructor will be called.
+	 * @param constructorParams			actual parameters of the constructor.
+	 * @return							constructor corresponding to the parameters modulo the substitution of primitive types for the corresponding wrapper classes.
+	 * @throws NoSuchMethodException		if no such constructor exists.
+	 * @throws SecurityException			if the reflective access violates the access control status.
 	 */
 	protected Constructor<?>		retryWithPrimitiveTypes(
 		Class<?> cl,

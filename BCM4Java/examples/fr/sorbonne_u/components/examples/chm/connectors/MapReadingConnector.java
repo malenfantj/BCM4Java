@@ -40,7 +40,8 @@ import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapReadingConnector</code>
+ * The class <code>MapReadingConnector</code> implements the connector on the
+ * <code>MapReading</code> and <code>MapTesting</code> interfaces.
  *
  * <p><strong>Description</strong></p>
  * 

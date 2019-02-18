@@ -115,10 +115,12 @@ implements	WindowListener,
 		StyleConstants.setFontFamily(style, "MonoSpaced");
 		StyleConstants.setFontSize(style, 10);
 
-		// Main frame to which the text area will be added to, along with scroll bars
+		// Main frame to which the text area will be added to, along with
+		// scroll bars
 		frame = new JFrame(frameTitle);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize() ;
-		Dimension frameSize = new Dimension(screenSize.width / 4, screenSize.height / 5);
+		Dimension frameSize =
+				new Dimension(screenSize.width / 4, screenSize.height / 5);
 		frame.setBounds(x + xLayout * frameSize.width,
 						y + (yLayout * frameSize.height) + 25,
 						frameSize.width,
@@ -131,24 +133,31 @@ implements	WindowListener,
 		frame.addWindowListener(this);
 
 		try {
-			PipedOutputStream stdOutPos = new PipedOutputStream(this.stdOutPin);
+			PipedOutputStream stdOutPos =
+								new PipedOutputStream(this.stdOutPin);
 			System.setOut(new PrintStream(stdOutPos, true));
 		} catch (java.io.IOException io) {
-			textArea.setText("Couldn't redirect STDOUT to this console\n" + io.getMessage());
+			textArea.setText("Couldn't redirect STDOUT to this console\n" +
+														io.getMessage()) ;
 		} catch (SecurityException se) {
-			textArea.setText("Couldn't redirect STDOUT to this console\n" + se.getMessage());
+			textArea.setText("Couldn't redirect STDOUT to this console\n" +
+														se.getMessage()) ;
 		}
 
 		try {
-			PipedOutputStream stdErrPos = new PipedOutputStream(this.stdErrPin);
+			PipedOutputStream stdErrPos =
+								new PipedOutputStream(this.stdErrPin);
 			System.setErr(new PrintStream(stdErrPos, true));
 		} catch (java.io.IOException io) {
-			textArea.setText("Couldn't redirect STDERR to this console\n" + io.getMessage());
+			textArea.setText("Couldn't redirect STDERR to this console\n" +
+														io.getMessage()) ;
 		} catch (SecurityException se) {
-			textArea.setText("Couldn't redirect STDERR to this console\n" + se.getMessage());
+			textArea.setText("Couldn't redirect STDERR to this console\n" +
+														se.getMessage()) ;
 		}
 
-		stopThreads = false; // Will be set to true at closing time. This will stop the threads
+		// Will be set to true at closing time. This will stop the threads
+		stopThreads = false ;
 
 		// Starting two threads to read the PipedInputStreams
 		stdOutReader = new Thread(this);
@@ -204,7 +213,8 @@ implements	WindowListener,
 					StyleConstants.setForeground(style, Color.black);
 					doc.insertString(doc.getLength(), input, style);
 					// Make sure the last line is always visible
-					textArea.setCaretPosition(textArea.getDocument().getLength());
+					textArea.setCaretPosition(
+									textArea.getDocument().getLength());
 				}
 				if (stopThreads) {
 					return;
@@ -221,7 +231,8 @@ implements	WindowListener,
 					StyleConstants.setForeground(style, Color.red);
 					doc.insertString(doc.getLength(), input, style);
 					// Make sure the last line is always visible
-					textArea.setCaretPosition(textArea.getDocument().getLength());
+					textArea.setCaretPosition(
+									textArea.getDocument().getLength());
 				}
 				if (stopThreads) {
 					return;

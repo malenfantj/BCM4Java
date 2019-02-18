@@ -279,17 +279,18 @@ implements	PluginI
 		assert	pluginInboundPortURI != null && plugin != null ;
 
 		Fake fake = new Fake() {} ;
-		fake.runTask(new AbstractComponent.AbstractTask() {
-						@Override
-						public void run() {
-							try {
-								((Fake)this.getOwner()).doInstallPluginOn(
-												plugin, pluginInboundPortURI) ;
-							} catch (Exception e) {
-								throw new RuntimeException(e);
-							}
-						}
-					 }) ;		
+		fake.runTask(
+			new AbstractComponent.AbstractTask() {
+				@Override
+				public void run() {
+					try {
+						((Fake)this.getOwner()).doInstallPluginOn(
+									plugin, pluginInboundPortURI) ;
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}) ;		
 	}
 
 	/**
@@ -316,17 +317,17 @@ implements	PluginI
 
 		Fake fake = new Fake() {} ;
 		fake.runTask(
-				new AbstractComponent.AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							((Fake) this.getOwner()).doFinalise(
-										pluginInboundPortURI, pluginURI) ;
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
-						}
+			new AbstractComponent.AbstractTask() {
+				@Override
+				public void run() {
+					try {
+						((Fake) this.getOwner()).doFinalise(
+								pluginInboundPortURI, pluginURI) ;
+					} catch (Exception e) {
+						throw new RuntimeException(e) ;
 					}
-				 }) ;
+				}
+			}) ;
 
 	}
 
@@ -352,18 +353,19 @@ implements	PluginI
 		assert	pluginInboundPortURI != null && pluginURI != null ;
 
 		Fake fake = new Fake() {} ;
-		fake.runTask(new AbstractComponent.AbstractTask() {
-						@Override
-						public void run() {
-							try {
-								((Fake) this.getOwner()).
-										doUnistallPluginFrom(
-											pluginInboundPortURI, pluginURI) ;
-							} catch (Exception e) {
-								throw new RuntimeException(e) ;
-							}
-						}
-					 }) ;
+		fake.runTask(
+			new AbstractComponent.AbstractTask() {
+				@Override
+				public void run() {
+					try {
+						((Fake) this.getOwner()).
+							doUnistallPluginFrom(
+									pluginInboundPortURI, pluginURI) ;
+					} catch (Exception e) {
+						throw new RuntimeException(e) ;
+					}
+				}
+			}) ;
 	}
 
 	// --------------------------------------------------------------------
@@ -505,7 +507,7 @@ implements	PluginI
 	protected PortI		findPortFromURI(String portURI)
 	{
 		assert	portURI != null :
-					new PreconditionException("portURI != null") ;
+						new PreconditionException("portURI != null") ;
 
 		return ((AbstractComponent) this.owner).findPortFromURI(portURI) ;
 	}

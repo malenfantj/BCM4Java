@@ -41,6 +41,13 @@ package fr.sorbonne_u.components.helpers;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
+ * This interface is implemented by the enumeration  <code>CVMDebugModes</code>
+ * as well as the type of the values of the set in the variable
+ * <code>AbstractCVM.DEBUG_MODES</code>. Hence, this setting allows programmers
+ * to extend it with their own debugging modes.
+ * </p>
+ * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>

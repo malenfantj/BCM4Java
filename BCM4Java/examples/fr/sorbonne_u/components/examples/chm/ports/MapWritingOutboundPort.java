@@ -40,7 +40,8 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapWritingOutboundPort</code>
+ * The class <code>MapWritingOutboundPort</code> implements the outbound for
+ * map services that are changing the state of the map.
  *
  * <p><strong>Description</strong></p>
  * 

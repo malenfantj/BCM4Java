@@ -49,7 +49,6 @@ import fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrierClient;
 import fr.sorbonne_u.components.exceptions.ConfigurationException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.WindowOutputStream;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
 import fr.sorbonne_u.components.registry.ConnectionData;
@@ -472,14 +471,14 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	args.length &gt; 1
+	 * pre	args != null and args.length &gt; 1
 	 * post	true			// TODO
 	 * </pre>
 	 *
-	 * @param args	command line arguments from the main method.
+	 * @param args		command line arguments from the main method.
 	 * @param xLayout	x coordinate of the relative position of the frame attached to the CVM.
 	 * @param yLayout	y coordinate of the relative position of the frame attached to the CVM.
-	 * @throws Exception 		<i>todo.</i>
+	 * @throws Exception <i>todo.</i>
 	 */
 	public				AbstractDistributedCVM(
 		String[] args,
@@ -488,6 +487,9 @@ implements	DistributedComponentVirtualMachineI
 		) throws Exception
 	{
 		super(true) ;
+
+		assert	args != null && args.length > 1 ;
+
 		// this line will only be executed if a DCVM is created, which means
 		// that the CVM currently running is indeed distributed.
 		// Otherwise, a local CVM will be used.
@@ -513,12 +515,12 @@ implements	DistributedComponentVirtualMachineI
 		// Redirecting the stdout and stderr to a window frame.
 		// Currently works only when everything runs on the localhost.
 		// TODO: make it work for truly distributed applications.
-		if (AbstractDistributedCVM.thisHostname.equals("localhost")) {
-			new WindowOutputStream(
-					AbstractDistributedCVM.thisHostname + ":" +
-										AbstractDistributedCVM.thisJVMURI,
-					0, 0, xLayout, yLayout) ;
-		}
+//		if (AbstractDistributedCVM.thisHostname.equals("localhost")) {
+//			new WindowOutputStream(
+//					AbstractDistributedCVM.thisHostname + ":" +
+//										AbstractDistributedCVM.thisJVMURI,
+//					0, 0, xLayout, yLayout) ;
+//		}
 
 		GlobalRegistry.REGISTRY_HOSTNAME =
 					this.configurationParameters.getGlobalRegistryHostname() ;
@@ -691,8 +693,7 @@ implements	DistributedComponentVirtualMachineI
 											DCC_INBOUNDPORT_URI_SUFFIX) ;
 			this.deployedComponents.add(dcc) ;
 		} catch (Exception e) {
-			System.out.println(
-					"The dynamic component creator has not been "
+			System.out.println("The dynamic component creator has not been "
 											+ "successfully deployed!") ;
 			throw e ;
 		}

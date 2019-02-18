@@ -46,7 +46,6 @@ import java.util.Hashtable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
@@ -54,7 +53,6 @@ import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerOnConsole;
-import fr.sorbonne_u.components.helpers.WindowOutputStream;
 
 //-----------------------------------------------------------------------------
 /**
@@ -338,6 +336,8 @@ public class				GlobalRegistry
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
 				executionLog.logMessage(
 								"Registry creating a service runnable") ;
+				tracer.traceMessage(
+								"Registry creating a service runnable") ;
 			}
 			this.s = s ;
 			this.directory = directory ;
@@ -349,6 +349,7 @@ public class				GlobalRegistry
 			this.tracer = tracer ;
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
 				this.executionLog.logMessage("...service runnable created") ;
+				this.tracer.traceMessage("...service runnable created") ;
 			}
 		}
 
@@ -356,7 +357,8 @@ public class				GlobalRegistry
 		public void		run()
 		{
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
-				System.out.println("Service runnable running...") ;
+				this.executionLog.logMessage("Service runnable running...") ;
+				this.tracer.traceMessage("Service runnable running...");
 			}
 			String message = null ;
 			try {
@@ -410,7 +412,8 @@ public class				GlobalRegistry
 				throw new RuntimeException(e);
 			}
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
-				this.executionLog.logMessage("GlobalRegistry exits ") ;
+				this.executionLog.logMessage("GlobalRegistry exits.") ;
+				this.tracer.traceMessage("GlobalRegistry exits.") ;
 			}
 			this.finished.countDown() ;
 		}
@@ -549,7 +552,6 @@ public class				GlobalRegistry
 	 */
 	public static void	main(String[] args)
 	{
-		new WindowOutputStream("GlobalRegistry", 0, 0, 0, 5) ;
 		GlobalRegistry reg;
 		try {
 			reg = new GlobalRegistry(args[0]);

@@ -101,8 +101,8 @@ import java.lang.reflect.Modifier;
  * as objects implements the methods from an offered component service
  * interface but each inbound port method implementation must relay the call
  * to a method actually implementing the corresponding service in the component
- * object. To relay the call, inbound ports create a component task implementing
- * <code>ComponentService</code> and then call the method
+ * object. To relay the call, inbound ports create a component task
+ * implementing <code>ComponentService</code> and then call the method
  * <code>handleRequest</code> passing it this task as parameter.
  * </p>
  * <p>
@@ -173,21 +173,123 @@ import java.lang.reflect.Modifier;
  *       with reflective features.
  * </pre>
  * 
- * <p><strong>Usage</strong></p>
+ * <p><i>Usage</i></p>
  * 
+ * <p>
  * This class is meant to be extended by any class implementing a kind of
  * components in the application.  Constructors and methods should be used only
  * in the code of the component so to hide technicalities of the implementation
  * from the component users.  The proper vision of the component model is to
  * consider the code in this package, and therefore in this class, as a virtual
  * machine to implement components rather that application code.
- * 
+ * </p>
+ * <p>
  * Components are indeed implemented as objects but calling from the outside of
- * this objects methods they define directly is something that should be done
- * only in virtual machine code and not in component code, essentially in
- * classes derived from AbstractCVM. The call should also use only methods
- * defined within this abstract class and not methods defined as services in
- * user components that must be called through the Executor framework.
+ * these objects methods they define directly is something that should be done
+ * only in virtual machine code and in this component code but never in other
+ * components code (i.e., essentially in classes derived from AbstractCVM or in
+ * the class defining the component or one of its subclasses). The call should
+ * also use only methods defined within this abstract class and not methods
+ * defined as services in user components that must be called through the
+ * Executor framework.
+ * </p>
+ * 
+ * <p><i>Executor services management</i></p>
+ * 
+ * <p>
+ * Components can have their own threads, which are managed through Java
+ * executor services. By default, <code>AbstractComponent</code> can
+ * create two executor services: one for non schedulable threads and
+ * another for schedulable ones. The constructor takes three arguments,
+ * the two last ones controlling the number of threads in the non
+ * schedulable and the schedulable executor services respectively.
+ * When an inbound port wants to make a service execute on its owner
+ * component, it constructs a request or a task from
+ * <code>AbstractService</code> (for requests) or from
+ * <code>AbstractTask</code> and summit it to the appropriate
+ * executor service using the methods <code>runTask</code> or
+ * <code>handleRequest</code> for non scheduled ones and
+ * <code>scheduleTask</code> or <code>scheduleRequest</code>
+ * for scheduled ones.
+ * </p>
+ * <p>
+ * Besides the possibility to submit task and requests to these
+ * two standard executor services, components can also create more
+ * non schedulable or schedulable executor services giving them
+ * unique identifiers (URI) using the method
+ * <code>createNewExecutorService</code>. A complementary set of
+ * methods for running tasks and executing requests take as first
+ * argument either the URI of the executor service that must
+ * execute them. To make these calls more efficient, other
+ * similar methods take the index of the executor service in
+ * a vector of executor services defined by the component
+ * (one can get the index corresponding to a given URI with the
+ * method <code>getExecutorServiceIndex(java.lang.String)</code>).
+ * This capability is particularly interesting for components
+ * that want to separate completely the threads used to execute
+ * non overlapping subsets of their services or requests, to
+ * impose a finer concurrency control mechanism or different
+ * priorities for clients, for example.
+ * </p>
+ * 
+ * <p><i>Plug-in facility</i></p>
+ * 
+ * <p>
+ * To ease the reuse of component behaviours, BCM implements a plug-in
+ * facility for components. A plug-in is an object which class inherit from
+ * <code>AbstractPlugin</code> (see its documentation) and which is meant to
+ * implement a coherent reusable behaviour consisting of service
+ * implementations with their required or offered interfaces declarations,
+ * port creations, as well as a proper plug-in life-cycle with its installation
+ * on the component, initialisation, finalisation and uninstallation. Plug-ins
+ * can be added or removed dynamically to and from components; they are
+ * identified by URI. When an inbound port want to call a service implemented
+ * by a plug-in, it can retrieve the plug-in from its URI with the method
+ * <code>getPlugin</code> and then call the service method on the retrieved
+ * object. To ease this process, a specific set of inbound ports for plug-ins
+ * can be used; they are created by passing them the URI of their corresponding
+ * plug-in to abstract the retrieving of the plug-in object away from the user
+ * code.
+ * </p>
+ * 
+ * <p><i>Logging and tracing facility</i></p>
+ * 
+ * <p>
+ * Debugging threaded Java code is notoriously difficult as debuggers rarely
+ * handle thread interruptions correctly. It is even more difficult for
+ * programs distributed among several JVM. Hence, most of the debugging rely
+ * on trace or log messages allowing to understand the order of events among
+ * the different threads and JVM. However, using standard output and standard
+ * error stream for that is inappropriate when the code is executed on remote
+ * computers that do not have access to a proper standard output and standard
+ * error.
+ * </p>
+ * <p>
+ * In place, BCM proposes a logging and tracing facility that can be used even
+ * in a distributed environment. The basic method to be used to produce trace
+ * and log messages is <code>logMessage</code>. Each message is tagged with
+ * the system time at their production. Log and trace can be activated
+ * independently using the corresponding toggle methods. If none are activated,
+ * <code>logMessage</code> does nothing. When tracing is activated, each message
+ * will appear in a trace window. When logging is activated, messages are kept
+ * until the end of the execution and can be written to a file. The produced
+ * file is in CSV format, so they can be merged into one file, read as a
+ * spreadsheet file with time stamps in the first column. Hence, sorting by the
+ * first column put the messages in their order of execution (modulo the clock
+ * drifts for distributed programs).
+ * </p>
+ * 
+ * <p><i>BCM internal traces</i></p>
+ * 
+ * <p>
+ * The component virtual machine defined by <code>AbstractCVM</code> uses the
+ * logging and tracing facility and complete it with a way to activate,
+ * deactivate and extend debugging modes that can be tested in if statements
+ * to activate and deactivate debugging traces. This capability is used in the
+ * BCM kernel to help the debugging. See the documentation of
+ * <code>AbstractCVM</code>, <code>CVMDebugModesI</code> and
+ * <code>CVMDebugModes</code> for more information.
+ * </p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -2582,7 +2684,7 @@ implements	ComponentI
 		 * post	true			// no postcondition.
 		 * </pre>
 		 *
-		 * @param pluginURI
+		 * @param pluginURI	URI of a plug-in installed on the component.
 		 */
 		public				AbstractService(String pluginURI)
 		{
@@ -2660,6 +2762,7 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be executed on the component.
 	 * @return						a future value embedding the result of the task.
@@ -2845,6 +2948,7 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.

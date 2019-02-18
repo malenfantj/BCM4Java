@@ -244,7 +244,7 @@ public interface			ComponentI
 	 * <pre>
 	 * pre	uri != null
 	 * pre	!this.validExecutorServiceURI(uri)
-	 * pre	nbThreads > 0
+	 * pre	nbThreads &gt; 0
 	 * post	this.validExecutorServiceURI(uri)
 	 * </pre>
 	 *
@@ -1747,6 +1747,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>		the type of the value returned by the request.
 	 * @param request	service request to be executed on the component.
 	 * @return			the result of the task.
 	 * @throws Exception	if exception raised by the task.
@@ -1767,6 +1768,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>				the type of the value returned by the request.
 	 * @param executorServiceURI	URI of the executor service that will run the task.
 	 * @param request			service request to be executed on the component.
 	 * @return					the result of the task.
@@ -1790,6 +1792,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request	service request to be executed on the component.
 	 * @return			the result of the task.
@@ -1815,8 +1818,9 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param request	service request to be executed on the component.
-	 * @throws Exception	if exception raised by the task.
+	 * @param <T>			the type of the value returned by the request.
+	 * @param request		service request to be executed on the component.
+	 * @throws Exception		if exception raised by the task.
 	 */
 	public <T> void		handleRequestAsync(ComponentService<T> request)
 	throws Exception ;
@@ -1836,9 +1840,10 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request			service request to be executed on the component.
-	 * @throws Exception			if exception raised by the task.
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceURI		URI of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @throws Exception				if exception raised by the task.
 	 */
 	public <T> void		handleRequestAsync(
 		String executorServiceURI,
@@ -1860,6 +1865,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be executed on the component.
 	 * @throws Exception				if exception raised by the task.
@@ -1882,10 +1888,11 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param request	service request to be scheduled.
-	 * @param delay		delay after which the task must be run.
-	 * @param u			time unit in which the delay is expressed.
-	 * @return			a scheduled future to synchronise with the task.
+	 * @param <T>					the type of the value returned by the request.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a scheduled future to synchronise with the task.
 	 * @throws ExecutionException	<i>todo.</i>
 	 * @throws InterruptedException	<i>todo.</i>
 	 */
@@ -1907,6 +1914,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceURI		URI of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.
@@ -1935,6 +1943,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.
