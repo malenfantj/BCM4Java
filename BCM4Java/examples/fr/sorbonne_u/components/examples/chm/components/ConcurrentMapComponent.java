@@ -150,6 +150,9 @@ extends		AbstractComponent
 		assert	reflectionInboundPortURI != null ;
 		assert	nbReadingThreads > 0 ;
 
+		this.tracer.setTitle("ConcurrentMapComponent") ;
+		this.tracer.setRelativePosition(0, 0) ;
+
 		this.hm = new HashMap<K,V>() ;
 		this.hashMapLock = new ReentrantReadWriteLock() ;
 

@@ -349,7 +349,7 @@ implements	ComponentI
 	/** index of the standard schedulable tasks handler pool of threads.	*/
 	protected final int					standardSchedulableHandlerIndex ;
 	/** vector of executor service managers.							 	*/
-	protected Vector<ComponentExecutorServiceManager>		executorServices ;
+	protected ArrayList<ComponentExecutorServiceManager>	executorServices ;
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#createNewExecutorService(java.lang.String, int, boolean)
@@ -1084,7 +1084,7 @@ implements	ComponentI
 		this.nbSchedulableThreads = 0 ;
 		this.executorServicesNextIndex = 0 ;
 		this.executorServicesIndexes = new HashMap<String,Integer>() ;
-		this.executorServices = new Vector<ComponentExecutorServiceManager>() ;
+		this.executorServices = new ArrayList<ComponentExecutorServiceManager>() ;
 		this.requiredInterfaces = new Vector<Class<?>>() ;
 		this.offeredInterfaces = new Vector<Class<?>>() ;
 		this.interfaces2ports = new Hashtable<Class<?>,Vector<PortI>>() ;

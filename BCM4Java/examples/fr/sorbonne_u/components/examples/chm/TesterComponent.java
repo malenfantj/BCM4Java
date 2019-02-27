@@ -111,6 +111,9 @@ extends		AbstractComponent
 
 		assert	chmReflectionIBPUri != null ;
 
+		this.tracer.setTitle("TesterComponent") ;
+		this.tracer.setRelativePosition(0, 1) ;
+
 		this.chmReflectionIBPUri = chmReflectionIBPUri ;
 
 		this.readingOutboundPort =
