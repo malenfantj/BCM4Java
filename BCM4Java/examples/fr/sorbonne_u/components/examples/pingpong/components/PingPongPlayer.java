@@ -37,6 +37,7 @@ package fr.sorbonne_u.components.examples.pingpong.components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.connectors.DataConnector;
 import fr.sorbonne_u.components.connectors.DataTwoWayConnector;
+import fr.sorbonne_u.components.examples.pingpong.CVM;
 import fr.sorbonne_u.components.examples.pingpong.connectors.PingPongConnector;
 import fr.sorbonne_u.components.examples.pingpong.connectors.PingPongTwoWayConnector;
 import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI;
@@ -215,7 +216,11 @@ extends		AbstractComponent
 		this.initialise(pingPongTwoWayPortURI) ;
 
 		this.tracer.setTitle(uri) ;
-		this.tracer.setRelativePosition(1, 0) ;
+		if (uri.equals(CVM.PING_PONG_URI_1)) {
+			this.tracer.setRelativePosition(1, 0) ;
+		} else {
+			this.tracer.setRelativePosition(1, 1) ;
+		}
 	}
 
 	/**
@@ -414,11 +419,11 @@ extends		AbstractComponent
 		// The next two alternatives are implementation alternatives:
 		// disconnect either side of the two way and data two ports..
 		if (this.hasService) {
-//			this.doPortDisconnection(this.pingPongTwoWayPort.getPortURI()) ;
-//			this.doPortDisconnection(this.pingpongDataTwoWayPort.getPortURI()) ;
-		} else {
 			this.doPortDisconnection(this.pingPongTwoWayPort.getPortURI()) ;
 			this.doPortDisconnection(this.pingpongDataTwoWayPort.getPortURI()) ;
+		} else {
+//			this.doPortDisconnection(this.pingPongTwoWayPort.getPortURI()) ;
+//			this.doPortDisconnection(this.pingpongDataTwoWayPort.getPortURI()) ;
 		}
 
 		super.finalise();

@@ -298,7 +298,7 @@ implements	OutboundPortI
 	@Override
 	public boolean		connected() throws Exception
 	{
-		return this.getConnector() != null && this.getConnector().connected() ;
+		return this.getConnector() != null ;
 	}
 
 	/**
@@ -462,7 +462,6 @@ implements	OutboundPortI
 	protected void		doMyDisconnection() throws Exception
 	{
 		assert	this.connected() ;
-		assert	((ConnectorI)this.connector).connected() ;
 
 		// FIXME: should use a proper state machine model to implement the
 		// connection and disconnection protocol

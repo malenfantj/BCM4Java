@@ -447,6 +447,24 @@ implements	DataOutboundPortI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ports.AbstractOutboundPort#doMyDisconnection()
+	 */
+	@Override
+	protected void		doMyDisconnection() throws Exception
+	{
+		assert	this.connected() ;
+
+		// FIXME: should use a proper state machine model to implement the
+		// connection and disconnection protocol
+
+		this.unsetServerPortURI() ;
+		this.connector = null ;
+
+		assert	!this.connected() :
+					new PostconditionException("!this.connected()");
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ports.AbstractInboundPort#obeyDisconnection()
 	 */
 	@Override
