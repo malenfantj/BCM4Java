@@ -1,0 +1,210 @@
+<!-- fr.sorbonne_u.components.plugins.dconnection
+     (dynamic connection)                                            -->
+<html>
+<body>
+<p><b>Component dynamic connection pattern plug-in.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability.
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+The package <code>fr.sorbonne_u.components.plugins.dconnection</code>
+defines and implements a component dynamic connection pattern.
+</p>
+<p><strong>Description</strong></p>
+<p>
+The component model uses ports and connectors to connect components.
+In static architectures, connections that need to be done are known
+at initialisation time. However, in dynamic architectures, connections
+can appear and disappear during the execution.  Such dynamic
+architectures are especially needed when components also appear during
+execution and when the number of connections vary over time.
+</p>
+<p>
+The easiest way to do dynamic connections between components and their
+ports is from the concerned components to use the methods
+<code>doPortConnection</code> and <code>doPortDisconnection</code> of
+the <code>ComponentI</code> interface implemented by
+<code>AbstractComponent</code>. These methods require to know the URI
+of the ports to be connected. If they are not known, the reflection
+interface <code>ReflectionI</code> allows to query components for
+these. As this makes the code grow in complexity, the dynamic
+connection plug-in proposes an alternative to cope with complex
+dynamic architectures. Moreover, the reflection interface
+do not allow to request the creation of an inbound port in the server
+side component; it can only retrieve the URI of an already created
+port. This plug-in allows the server side component to create inbound
+ports on demand.
+</p>
+<p><i>The pattern entities</i></p>
+<p>
+The pattern uses two sets of interfaces/ports/connector:
+</p>
+<ul>
+<li>a static interface/port/connector which ensures the dynamic
+  connection service through offered and required interfaces as
+  well as their ports that are created at installation time;</li>
+<li>a dynamic interfaces/ports/connectors which represent the
+  actual dynamic connections that the component can handle.</li>
+</ul>
+<p>
+When a client component wants to dynamically perform connections with
+a client component, it must first install the client side plug-in. If
+the client component did not install the server side plug-in yet, the
+client side component can use the plug-in facility to make the server
+component install it. When the two plug-ins have been installed, the
+client side component can connect$ its plug-in with the one of the
+server side using the plug-in method <code>connectWithServerSide</code>.
+The first requires that the client side component be connected to the
+server side component through the <code>ReflectionI</code> interface
+to be able to call the server side to get the URI of its dynamic
+connection service inbound port. With this URI, the client side
+component plug-in creates the client side outbound port and connect it
+to the server side inbound port.
+</p>
+<p>
+After the connection, the two components have their respective
+plug-in instances and are connected in the way illustrated by the
+following UML-like class/component diagram:
+</p>
+<img SRC="../../../../../../images/DynamicConnectionClassDiagram.png"
+     height="353" width="701"/>
+
+<p><i>Using the pattern</i></p>
+<p>
+To perform the dynamic connection <i>per se</i>, the client side calls
+its plug-in method <code>doDynamicConnection</code>. This methods takes
+an interface that is used to get from the server side the URI of an
+inbound port implementing this interface. The the client side plug-in
+creates the corresponding outbound port and connect it to the provided
+inbound port. After this, the dynamic connection becomes operational.
+If the client side do not need to perform other dynamic connection with
+the same server side component, it can disconnect its dynamic connection
+service outbound port by calling the plug-in method
+<code>disconnectFromServerSide</code>. It can also disconnect its
+reflection outbound port from the server side reflection inbound port.
+Hence, the server side may continuously offers the dynamic connection
+service, but the client side connects to it only for the time required
+to set up a dynamic connection.  Indeed, this pattern is meant to cater
+for an unlimited number of dynamic connection accessible through a
+permanent and open dynamic connection service offered by the server.
+</p>
+<p>
+<i>Note:</i> the terms client and server in the above description refer
+to the respective roles of the component that initiates the dynamic
+connection and the component that waits for such requests.  The dynamic
+connection built through this pattern need not be a client/server one,
+but can also be a data connection or a two way connection.
+</p>
+<p>Protocol</p>
+<p>
+The client is the one that requires the
+<code>DynamicConnectionRequestI</code> interface, while the server is
+the component that offers it.
+</p>
+<pre>
+Client component                  Client-side plug-in                           Server-side plug-in
+       |                                   |                                             |
+       |    connectWithserverSide()        |                                             |
+       |---------------------------------->|                                             |
+       |                                   |     findInboundPortURIsFromInterface()      |
+       |                                   |-------------------------------------------->|
+       |                                   |                                             |
+       |                                   | dynamic connection request inbound port URI |
+       |                                   |<--------------------------------------------|
+       |   connect dynamic connection -----|                                             |
+       |                request ports |    |                                             |
+       |                              ---->|                                             |
+       |<----------------------------------|                                             |
+       |                                   |                                             |
+       |        doDynamicConnection()      |                                             |
+       |---------------------------------->|                                             |
+       |                                   |          requestDynamicPortURI()            |
+       |                                   |-------------------------------------------->|
+       |                                   |                                             |   creates a new dynamic port
+       |                                   |                                             |-----
+       |                                   |                                             |    | createServerSideDynamicPort()  
+       |                                   |                                             |<----
+       |                                   |             dynamic port URI                | 
+       |                                   |<--------------------------------------------|
+       |                              -----|                                             |
+       |                connect ports |    |                                             |
+       |                              ---->|                                             |
+       |<----------------------------------|                                             |
+       | reference to the client side port |                                             |
+       |                                   | components can now exchange through the     |
+       |                                   | dynamic connection.                         |
+       |                                   |                                             |
+       |     doDynamicDisconnection()      |                                             |
+       |---------------------------------->|                                             |
+       |           disconnect dynamic -----|                                             |
+       |             connection ports |    |                                             |
+       |                              ---->|                                             |
+       |                                   | components can no longer exchange through   |
+       |                                   | the dynamic connection.                     |
+       |                                   |                                             |
+       |                                   |                                             |
+       |     disconnectFromServerSide()    |                                             |
+       |---------------------------------->|                                             |
+       |           disconnect dynamic -----|                                             |
+       |      connection request port |    |                                             |
+       |                              ---->|                                             |
+       |<----------------------------------|                                             |
+       |                                   |                                             |
+</pre>
+<p>
+The abstract class <code>DynamicConnectionServerSidePlugin</code>
+defines the methods and data needed to implement the client side
+of the protocol while the class
+<code>DynamicConnectionServerSidePlugin</code> implements the ones
+needed on the server side. To use the protocol, programmers have to
+define a concrete subclass of this latter abstract class, and provide
+an implementation for method <code>createServerSideDynamicPort</code>.
+</p>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<deployment>
+   <hosts>
+    <host name="localhost"
+          dir="/Users/jmalenfant/principal/Tests/Dconnection/"/>
+  </hosts>
+  <cyclicBarrier   hostname="localhost" port="55253"/>
+  <globalRegistry  hostname="localhost" port="55252"/>
+  <rmiRegistryPort no="55999"/>
+  <jvms2hostnames>
+    <jvm2hostname jvmuri="server-side-jvm"
+        rmiRegistryCreator="true"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.plugins.dconnection.example.DistributedCVM"/>
+    <jvm2hostname jvmuri="client-side-jvm"
+        rmiRegistryCreator="false"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.plugins.dconnection.example.DistributedCVM"/>
+  </jvms2hostnames>
+</deployment>

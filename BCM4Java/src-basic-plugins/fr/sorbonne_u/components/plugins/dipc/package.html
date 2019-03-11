@@ -1,0 +1,161 @@
+<!-- fr.upmc.components.plugins.dipc -->
+<html>
+<body>
+<p><b>Data interfaces push control plugin.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide a
+basic component programming model to program with components
+distributed applications in the Java programming language.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+The package <code>fr.sorbonne_u.components.plugins.dipc</code> provides
+as a plug-in a software pattern to control the regular exchanges of
+data in push mode via <code>DataOfferedI</code> and
+<code>DataRequiredI</code>
+interfaces.
+</p>
+
+<p><strong>Description</strong></p>
+
+<p>
+The general idea of the plug-in is to add to the standard data
+interfaces the capability for a client component to control at
+which rate the server will push data towards it. The client
+component is assumed to receive data from the server component
+through the latter data inbound port and its data outbound port
+in push mode. The two ports are also assumed to be created and
+published by the two components and then connected. The plug-in
+allows a client component to control the pushes from the server
+by starting a series of pushes that can be unlimited in number
+but stopped explicitly by the client, or for a limited predefined
+number of pushes and then the server stops when this number has
+been reached.
+</p>
+<p>
+The push control services are declared by the interface
+<code>PushControlI</code>, which is both a required and an offered
+component interface. The server-side and client-side plug-ins are
+responsible for the addition of this interface as required for
+the client component and as offered for the server. They also
+create the push control inbound and outbound ports and connect
+them.
+</p>
+
+<p>Protocol</p>
+
+<p>
+The client is the one that requires the <code>PushControlI</code>
+interface, while the server is the component that offers it. The next
+sequence diagram illustrates the most important exchanges between the
+two component sand their respective plug-ins when the client requires
+an unlimited number of pushes that are then explicitly stopped.
+</p>
+<pre>
+            Client component             Client-side plug-in                       Server component             Server-side plug-in 
+                   |                              |                                        |                           |
+ Create a data  ---|                              |                                        |--- Create a data          |
+ outbound port  |  |                              |                                        |  | inbound port           |
+                -->|                              |                                        |<--                        |
+                   | connect the data ports       |                                        |                           |
+                   |---------------------------------------------------------------------->|                           |
+                   |                              |                                        |                           |
+                   | connectWithServerSide()      |                                        |                           |
+                   |----------------------------->|                                        |                           |
+                   |                              | findInboundPortURIsFromInterface()     |                           |
+                   |                              |--------------------------------------->|                           |
+                   |                              |                                        |                           |
+                   |                              |          push control inbound port URI |                           |
+                   |                              |<---------------------------------------|                           |
+                   |                              |                                        |                           |
+                   |                   Connect ---|                                        |                           |
+                   |              push control |  |                                        |                           |
+                   |             outbound port -->|                                        |                           |
+                   |                              |                                        |                           |
+                   |<-----------------------------|                                        |                           |
+                   |                              |                                        |                           |
+                   | startUnlimitedPushing()      |                                        |                           |
+                   |----------------------------->|                                        |                           |
+                   |                              | startUnlimitedPushing()                |                           |
+                   |                              |------------------------------------------------------------------->|
+                   |<-----------------------------|                                        |                           |
+                   |                              |<-------------------------------------------------------------------|
+                   |                              |                                        |                           |
+                   |                              |                                        |       launches the pushes |
+                   |                              |                                        |<--------------------------|
+                   |                              |                                        |                           |
+                   |                              |                                        |-------------------------->|
+                   |                              |                                 send() |                           |
+                   |<----------------------------------------------------------------------|                           |
+        process ---|                              |                                        |                           |
+       the data |  |                              |                                        |                           |
+                -->|                              |                                        |                           |
+                   |                              |                                 send() |                           |
+                   |<----------------------------------------------------------------------|                           |
+        process ---|                              |                                        |                           |
+       the data |  |                              |                                        |                           |
+                -->|                              |                                        |                           |
+                   |                              |                                 send() |                           |
+                   |<----------------------------------------------------------------------|                           |
+        process ---|                              |                                        |                           |
+       the data |  |                              |                                        |                           |
+                -->|                              |                                        |                           |
+                   |                              |                                        |                           |
+                   | stopPushing()                |                                        |                           |
+                   |----------------------------->|                                        |                           |
+                   |                              | stopPushing()                          |                           |
+                   |                              |------------------------------------------------------------------->|
+                   |<-----------------------------|                                        |                           |
+                   |                              |<-------------------------------------------------------------------|
+                   |                              |                                        |                           |
+                   |                              |                                        |          stops the pushes |
+                   |                              |                                        |<--------------------------|
+                   |                              |                                        |                           |
+                   |                              |                                        |-------------------------->|
+                   |                              |                                        |                           |
+</pre>
+</body>
+</html>
