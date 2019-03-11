@@ -154,7 +154,6 @@ implements	PushControlImplementationI
 	}
 
 	/**
-	 * @throws Exception 
 	 * @see fr.sorbonne_u.components.plugins.helpers.AbstractClientSidePlugin#createOutboundPort()
 	 */
 	@Override

@@ -190,7 +190,7 @@ implements	ClientSidePluginI
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	ret != null && RequiredI.class.isAssignableFrom(ret)
+	 * post	ret != null and RequiredI.class.isAssignableFrom(ret)
 	 * </pre>
 	 *
 	 * @return	the interface required by the client side.
@@ -204,7 +204,7 @@ implements	ClientSidePluginI
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	ret != null && OfferedI.class.isAssignableFrom(ret)
+	 * post	ret != null and OfferedI.class.isAssignableFrom(ret)
 	 * </pre>
 	 *
 	 * @return	the interface required by the client-side.
