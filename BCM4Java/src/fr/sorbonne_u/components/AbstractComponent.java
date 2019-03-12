@@ -840,10 +840,20 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#initialisePlugin(java.lang.String)
+	 * initialise the identified plug-in by adding to the owner component every
+	 * specific information, ports, etc. required to run the plug-in.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	pluginURI != null and !this.isInitialised(pluginURI)
+	 * post	this.isInitialised(pluginURI)
+	 * </pre>
+	 *
+	 * @param pluginURI	unique plug-in identifier.
+	 * @throws Exception	<i>todo.</i>
 	 */
-	@Override
-	public void			initialisePlugin(String pluginURI)
+	protected void		initialisePlugin(String pluginURI)
 	throws Exception
 	{
 		assert	this.isPluginFacilitiesConfigured() :
