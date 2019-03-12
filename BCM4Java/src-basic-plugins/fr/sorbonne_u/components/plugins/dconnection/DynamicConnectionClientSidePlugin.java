@@ -141,7 +141,7 @@ extends		AbstractPlugin
 
 		// At installation time on a component, the plug-in adds the plug-in
 		// required interfaces to the ones of the component.
-		this.owner.addRequiredInterface(DynamicConnectionRequestI.class) ;
+		this.addRequiredInterface(DynamicConnectionRequestI.class) ;
 	}
 
 	/**
@@ -180,7 +180,7 @@ extends		AbstractPlugin
 	{
 		// When uninstalling the plug-in, the ports and the interfaces added
 		// to the component at installation time are removed.
-		this.owner.removeRequiredInterface(DynamicConnectionRequestI.class) ;
+		this.removeRequiredInterface(DynamicConnectionRequestI.class) ;
 
 		super.uninstall() ;
 	}
@@ -251,7 +251,7 @@ extends		AbstractPlugin
 
 		boolean wasRequiringReflectionI = true ;
 		if (!this.owner.isRequiredInterface(ReflectionI.class)) {
-			this.owner.addRequiredInterface(ReflectionI.class) ;
+			this.addRequiredInterface(ReflectionI.class) ;
 			wasRequiringReflectionI = false ;
 		}
 
@@ -282,7 +282,7 @@ extends		AbstractPlugin
 		rop.unpublishPort() ;
 		rop.destroyPort() ;
 		if (!wasRequiringReflectionI) {
-			this.owner.removeRequiredInterface(ReflectionI.class) ;
+			this.removeRequiredInterface(ReflectionI.class) ;
 		}
 
 		assert	this.isConnectedToServerSide() ;

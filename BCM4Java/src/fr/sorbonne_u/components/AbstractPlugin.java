@@ -511,6 +511,87 @@ implements	PluginI
 
 		return ((AbstractComponent) this.owner).findPortFromURI(portURI) ;
 	}
+
+	/**
+	 * add a required interface to the required interfaces of the
+	 * owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	RequiredI.class.isAssignableFrom(inter)
+	 * pre	!this.owner.isRequiredInterface(inter)
+	 * post	this.isRequiredInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter	required interface to be added.
+	 */
+	protected void		addRequiredInterface(Class<?> inter)
+	{
+		((AbstractComponent) this.owner).addRequiredInterface(inter) ;
+	}
+
+	/**
+	 * add an offered interface to the offered interfaces of the
+	 * owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.Owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	OfferedI.class.isAssignableFrom(inter)
+	 * pre	!this.owner.isOfferedInterface(inter)
+	 * post	this.owner.isOfferedInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter offered interface to be added.
+	 */
+	protected void		addOfferedInterface(Class<?> inter)
+	{
+		((AbstractComponent) this.owner).addOfferedInterface(inter) ;
+	}
+
+	/**
+	 * remove a required interface from the required interfaces of the
+	 * owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	this.ownzer.isRequiredInterface(inter)
+	 * pre	this.owner.findPortsFromInterface(inter) == null || this.owner.findPortsFromInterface(inter).isEmpty()
+	 * post	!this.owner.isRequiredInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter required interface to be removed.
+	 */
+	protected void		removeRequiredInterface(Class<?> inter)
+	{
+		((AbstractComponent) this.owner).removeRequiredInterface(inter) ;
+	}
+
+	/**
+	 * remove an offered interface from the offered interfaces of the
+	 * owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	this.owner.isOfferedInterface(inter)
+	 * pre	this.owner.findPortsFromInterface(inter) == null || this.owner.findPortsFromInterface(inter).isEmpty()
+	 * post	!this.owner.isOfferedInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter	offered interface to be removed
+	 */
+	protected void		removeOfferedInterface(Class<?> inter)
+	{
+		((AbstractComponent) this.owner).removeOfferedInterface(inter) ;
+	}
+
 	/**
 	 * log a message using the owner component logging facilities.
 	 * 

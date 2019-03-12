@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.reflection.ports;
+package fr.sorbonne_u.components;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -35,21 +35,16 @@ package fr.sorbonne_u.components.reflection.ports;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.annotation.Annotation;
-import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.ComponentStateI;
-import fr.sorbonne_u.components.PluginI;
-import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.IntrospectionI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
 //-----------------------------------------------------------------------------
 /**
- * The class <code>ReflectionInboundPort</code> defines the inbound port
- * associated the interface <code>ReflectionI</code>.
+ * The class <code>IntrospectionInboundPort</code> defines the inbound port
+ * associated the interface <code>IntrospectionI</code>.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -59,13 +54,13 @@ import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2016-02-25</p>
+ * <p>Created on : 2018-02-16</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				ReflectionInboundPort
+public class				IntrospectionInboundPort
 extends		AbstractInboundPort
-implements	ReflectionI
+implements	IntrospectionI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -73,40 +68,24 @@ implements	ReflectionI
 	// Constructors
 	// ------------------------------------------------------------------------
 
-	public				ReflectionInboundPort(
+	public				IntrospectionInboundPort(
 		String uri,
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, ReflectionI.class, owner) ;
+		super(uri, IntrospectionI.class, owner) ;
 	}
 
-	public				ReflectionInboundPort(
+	public				IntrospectionInboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(ReflectionI.class, owner);
+		super(IntrospectionI.class, owner) ;
 	}
 
 	// ------------------------------------------------------------------------
 	// Plug-ins facilities
 	// ------------------------------------------------------------------------
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#installPlugin(fr.sorbonne_u.components.PluginI)
-	 */
-	@Override
-	public void			installPlugin(final PluginI plugin) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().installPlugin(plugin) ;
-							return null ;
-						}
-					}) ;
-	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#hasInstalledPlugins()
@@ -119,38 +98,6 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getOwner().hasInstalledPlugins() ;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#finalisePlugin(java.lang.String)
-	 */
-	@Override
-	public void			finalisePlugin(final String pluginURI) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().finalisePlugin(pluginURI) ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#uninstallPlugin(java.lang.String)
-	 */
-	@Override
-	public void			uninstallPlugin(final String pluginId) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().uninstallPlugin(pluginId) ;
-							return null;
 						}
 					}) ;
 	}
@@ -187,23 +134,6 @@ implements	ReflectionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#initialisePlugin(java.lang.String)
-	 */
-	@Override
-	public void			initialisePlugin(final String pluginURI)
-	throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().initialisePlugin(pluginURI) ;
-							return null ;
-						}
-					}) ;
-	}
-
-	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isInitialised(java.lang.String)
 	 */
 	@Override
@@ -222,86 +152,6 @@ implements	ReflectionI
 	// ------------------------------------------------------------------------
 	// Logging facilities
 	// ------------------------------------------------------------------------
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#toggleLogging()
-	 */
-	@Override
-	public void			toggleLogging() throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().toggleLogging() ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setLogger(fr.sorbonne_u.components.helpers.Logger)
-	 */
-	@Override
-	public void			setLogger(Logger logger) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						this.getOwner().setLogger(logger) ;
-						return null ;
-					}
-				}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#toggleTracing()
-	 */
-	@Override
-	public void			toggleTracing() throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().toggleTracing() ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerOnConsole)
-	 */
-	@Override
-	public void			setTracer(TracerOnConsole tracer) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						this.getOwner().setTracer(tracer) ;
-						return null ;
-					}
-				}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#logMessage(java.lang.String)
-	 */
-	@Override
-	public void			logMessage(final String message) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().logMessage(message) ;
-							return null;
-						}
-					}) ;
-	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isLogging()
@@ -331,55 +181,6 @@ implements	ReflectionI
 							return this.getOwner().isTracing() ;
 						}
 					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#printExecutionLog()
-	 */
-	@Override
-	public void			printExecutionLog() throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().printExecutionLog() ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#printExecutionLogOnFile(java.lang.String)
-	 */
-	@Override
-	public void			printExecutionLogOnFile(final String fileName)
-	throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().printExecutionLogOnFile(fileName) ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#traceMessage(java.lang.String)
-	 */
-	@Override
-	public void			traceMessage(String message) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						this.getOwner().traceMessage(message) ;
-						return null ;
-					}
-				}) ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -473,7 +274,7 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Integer>() {
 						@Override
 						public Integer call() throws Exception {
-							return this.getOwner().getTotalNUmberOfThreads() ;
+							return this.getOwner().getTotalNumberOfThreads() ;
 						}
 					}) ;
 	}
@@ -572,73 +373,6 @@ implements	ReflectionI
 						return this.getOwner().getOfferedInterface(inter) ;
 					}
 				}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addRequiredInterface(java.lang.Class)
-	 */
-	@Override
-	public void			addRequiredInterface(final Class<?> inter)
-	throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().addRequiredInterface(inter) ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeRequiredInterface(java.lang.Class)
-	 */
-	@Override
-	public void			removeRequiredInterface(final Class<?> inter)
-	throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().removeRequiredInterface(inter) ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addOfferedInterface(java.lang.Class)
-	 */
-	@Override
-	public void			addOfferedInterface(final Class<?> inter) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().addOfferedInterface(inter) ;
-							return null;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeOfferedInterface(java.lang.Class)
-	 */
-	@Override
-	public void			removeOfferedInterface(final Class<?> inter)
-	throws Exception
-	{
-		this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Void>() {
-						@Override
-						public Void call() throws Exception {
-							this.getOwner().removeOfferedInterface(inter) ;
-							return null;
-						}
-					}) ;
 	}
 
 	/**
@@ -786,43 +520,6 @@ implements	ReflectionI
 					}) ;
 	}
 
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#doPortConnection(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void			doPortConnection(
-		final String portURI,
-		final String otherPortURI,
-		final String ccname
-		) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						this.getOwner().doPortConnection(portURI, otherPortURI, ccname) ;
-						return null ;
-					}
-				}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#doPortDisconnection(java.lang.String)
-	 */
-	@Override
-	public void			doPortDisconnection(final String portURI)
-	throws Exception
-	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						this.getOwner().doPortDisconnection(portURI) ;
-						return null ;
-					}
-				}) ;
-	}
-
 	// ------------------------------------------------------------------------
 	// Reflection facility
 	// ------------------------------------------------------------------------
@@ -902,113 +599,6 @@ implements	ReflectionI
 							return this.getOwner().getComponentConstructorSignatures() ;
 						}
 					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#newInstance(java.lang.Object[])
-	 */
-	@Override
-	public ComponentI		newInstance(Object[] parameters)
-	throws Exception
-	{
-		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<ComponentI>() {
-						@Override
-						public ComponentI call() throws Exception {
-							return this.getOwner().newInstance(parameters) ;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeService(java.lang.String, java.lang.Object[])
-	 */
-	@Override
-	public Object		invokeService(String name, Object[] params)
-	throws Exception
-	{
-		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Object>() {
-						@Override
-						public Object call() throws Exception {
-							return this.getOwner().invokeService(name, params) ;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceSync(java.lang.String, java.lang.Object[])
-	 */
-	@Override
-	public Object		invokeServiceSync(String name, Object[] params)
-	throws Exception
-	{
-		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Object>() {
-						@Override
-						public Object call() throws Exception {
-							return this.getOwner().invokeServiceSync(name, params) ;
-						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceAsync(java.lang.String, java.lang.Object[])
-	 */
-	@Override
-	public void			invokeServiceAsync(String name, Object[] params)
-	throws Exception
-	{
-		this.getOwner().handleRequestSync(
-			new AbstractComponent.AbstractService<Void>() {
-				@Override
-				public Void call() throws Exception {
-					this.getOwner().invokeServiceAsync(name, params) ;
-					return null ;
-				}
-			}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
-	 */
-	@Override
-	public void			insertBeforeService(
-		String methodName,
-		String[] parametersCanonicalClassNames,
-		String code
-		) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						this.getOwner().insertBeforeService(
-							methodName, parametersCanonicalClassNames, code) ;
-						return null ;
-					}
-				}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertAfterService(java.lang.String, java.lang.String[], java.lang.String)
-	 */
-	@Override
-	public void			insertAfterService(
-		String methodName,
-		String[] parametersCanonicalClassNames,
-		String code
-		) throws Exception
-	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
-					@Override
-					public Void call() throws Exception {
-						this.getOwner().insertAfterService(
-							methodName, parametersCanonicalClassNames, code) ;
-						return null ;
-					}
-				}) ;
 	}
 }
 //-----------------------------------------------------------------------------

@@ -69,7 +69,6 @@ import fr.sorbonne_u.components.ports.InboundPortI;
 import fr.sorbonne_u.components.ports.OutboundPortI;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
-import fr.sorbonne_u.components.reflection.ports.ReflectionInboundPort;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 import javassist.ClassPool;
@@ -352,10 +351,24 @@ implements	ComponentI
 	protected ArrayList<ComponentExecutorServiceManager>	executorServices ;
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#createNewExecutorService(java.lang.String, int, boolean)
+	 * create a new user-defined executor service under the given URI and
+	 * with the given number of threads.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	uri != null
+	 * pre	!this.validExecutorServiceURI(uri)
+	 * pre	nbThreads &gt; 0
+	 * post	this.validExecutorServiceURI(uri)
+	 * </pre>
+	 *
+	 * @param uri			URI of the new executor service.
+	 * @param nbThreads		number of threads of the new executor service.
+	 * @param schedulable	if true, the new executor service is schedulable otherwise it is not.
+	 * @return				the index associated with the new executor service.
 	 */
-	@Override
-	public int			createNewExecutorService(
+	protected int			createNewExecutorService(
 		String uri,
 		int nbThreads,
 		boolean schedulable
@@ -460,9 +473,19 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#getExecutorService(int)
+	 * get the executor service at the given index.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.validExecutorServiceIndex(index)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param index	index of the sought executor service.
+	 * @return		the executor service at the given index.
 	 */
-	public ExecutorService	getExecutorService(int index)
+	protected ExecutorService	getExecutorService(int index)
 	{
 		assert	this.validExecutorServiceIndex(index) :
 					new PreconditionException(
@@ -472,10 +495,19 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#getExecutorService(java.lang.String)
+	 * get the executor service at the given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.validExecutorServiceURI(uri)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri	URI of the sought executor service.
+	 * @return		the executor service at the given URI.
 	 */
-	@Override
-	public ExecutorService	getExecutorService(String uri)
+	protected ExecutorService	getExecutorService(String uri)
 	{
 		assert	this.validExecutorServiceURI(uri) :
 					new PreconditionException(
@@ -486,10 +518,22 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#getSchedulableExecutorService(int)
+	 * get the executor service at the given index.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.validExecutorServiceIndex(index)
+	 * pre	this.isSchedulable(index)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param index	index of the sought executor service.
+	 * @return		the executor service at the given index.
 	 */
-	@Override
-	public ScheduledExecutorService	getSchedulableExecutorService(int index)
+	protected ScheduledExecutorService	getSchedulableExecutorService(
+		int index
+		)
 	{
 		assert	this.validExecutorServiceIndex(index) :
 					new PreconditionException(
@@ -503,10 +547,22 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#getSchedulableExecutorService(java.lang.String)
+	 * get the executor service at the given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.validExecutorServiceURI(uri)
+	 * pre	this.isSchedulable(uri)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri	URI of the sought executor service.
+	 * @return		the executor service at the given URI.
 	 */
-	@Override
-	public ScheduledExecutorService	getSchedulableExecutorService(String uri)
+	protected ScheduledExecutorService	getSchedulableExecutorService(
+		String uri
+		)
 	{
 		assert	this.validExecutorServiceURI(uri) :
 					new PreconditionException(
@@ -615,10 +671,19 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#installPlugin(fr.sorbonne_u.components.PluginI)
+	 * install a plug-in into this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	!this.isInstalled(plugin.getPluginURI())
+	 * post	this.isIntalled(plugin.getPluginURI())
+	 * </pre>
+	 *
+	 * @param plugin		plug-in implementation object.
+	 * @throws Exception	<i>todo.</i>
 	 */
-	@Override
-	public void			installPlugin(
+	protected void			installPlugin(
 		PluginI plugin
 		) throws Exception
 	{
@@ -659,10 +724,19 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#finalisePlugin(java.lang.String)
+	 * finalise the plug-in, at least when finalising the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	pluginURI != null and this.isIntalled(pluginURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param pluginURI	unique plug-in identifier.
+	 * @throws Exception	<i>todo.</i>
 	 */
-	@Override
-	public void			finalisePlugin(String pluginURI) throws Exception
+	protected void		finalisePlugin(String pluginURI) throws Exception
 	{
 		assert	this.isPluginFacilitiesConfigured()  :
 					new RuntimeException("Can't uninstall plug-in, "
@@ -684,10 +758,19 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#uninstallPlugin(java.lang.String)
+	 * uninstall a plug-in from this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	pluginURI != null and this.isIntalled(pluginURI)
+	 * post	!this.isIntalled(pluginURI)
+	 * </pre>
+	 *
+	 * @param pluginURI	unique plug-in identifier.
+	 * @throws Exception	<i>todo.</i>
 	 */
-	@Override
-	public void			uninstallPlugin(String pluginURI) throws Exception
+	protected void		uninstallPlugin(String pluginURI) throws Exception
 	{
 		assert	this.isPluginFacilitiesConfigured()  :
 					new RuntimeException("Can't uninstall plug-in, "
@@ -731,10 +814,21 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#getPlugin(java.lang.String)
+	 * access a named plug-in into this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	pluginURI != null
+	 * pre	
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param pluginURI	unique plug-in identifier.
+	 * @return			the corresponding installed plug-in or null if none.
+	 * @throws Exception	<i>todo.</i>
 	 */
-	@Override
-	public PluginI		getPlugin(String pluginURI)
+	protected PluginI	getPlugin(String pluginURI)
 	{
 		assert	this.isPluginFacilitiesConfigured() :
 					new RuntimeException("Can't access plug-in, "
@@ -1248,10 +1342,10 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#getTotalNUmberOfThreads()
+	 * @see fr.sorbonne_u.components.ComponentI#getTotalNumberOfThreads()
 	 */
 	@Override
-	public int			getTotalNUmberOfThreads()
+	public int			getTotalNumberOfThreads()
 	{
 		int nbUserDefinedThreads = 0 ;
 		for (int i = 0 ; i < this.executorServices.size() ; i++) {
@@ -1269,7 +1363,7 @@ implements	ComponentI
 	public boolean		hasSerialisedExecution()
 	{
 		return this.hasItsOwnThreads() &&
-							this.getTotalNUmberOfThreads() == 1 ;
+							this.getTotalNumberOfThreads() == 1 ;
 	}
 
 	/**
@@ -1303,7 +1397,7 @@ implements	ComponentI
 					new PreconditionException("Component must not be"
 										+ " in Terminated state!") ;
 
-		Vector<Class<?>> temp = new Vector<Class<?>>() ;
+		ArrayList<Class<?>> temp = new ArrayList<Class<?>>() ;
 		synchronized (this.requiredInterfaces) {
 			temp.addAll(this.requiredInterfaces) ;
 		}
@@ -1417,10 +1511,20 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#addRequiredInterface(java.lang.Class)
+	 * add a required interface to the required interfaces of this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	RequiredI.class.isAssignableFrom(inter)
+	 * pre	!this.isRequiredInterface(inter)
+	 * post	this.isRequiredInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter	required interface to be added.
 	 */
-	@Override
-	public void			addRequiredInterface(Class<?> inter)
+	protected void			addRequiredInterface(Class<?> inter)
 	{
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
@@ -1444,10 +1548,20 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#removeRequiredInterface(java.lang.Class)
+	 * remove a required interface from the required interfaces of this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	this.isRequiredInterface(inter)
+	 * pre	this.findPortsFromInterface(inter) == null || this.findPortsFromInterface(inter).isEmpty()
+	 * post	!this.isRequiredInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter required interface to be removed.
 	 */
-	@Override
-	public void			removeRequiredInterface(Class<?> inter)
+	protected void			removeRequiredInterface(Class<?> inter)
 	{
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
@@ -1471,10 +1585,20 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#addOfferedInterface(java.lang.Class)
+	 * add an offered interface to the offered interfaces of this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	OfferedI.class.isAssignableFrom(inter)
+	 * pre	!this.isOfferedInterface(inter)
+	 * post	this.isOfferedInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter offered interface to be added.
 	 */
-	@Override
-	public void			addOfferedInterface(Class<?> inter)
+	protected void		addOfferedInterface(Class<?> inter)
 	{
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
@@ -1498,10 +1622,20 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#removeOfferedInterface(java.lang.Class)
+	 * remove an offered interface from the offered interfaces of this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	this.isOfferedInterface(inter)
+	 * pre	this.findPortsFromInterface(inter) == null || this.findPortsFromInterface(inter).isEmpty()
+	 * post	!this.isOfferedInterface(inter)
+	 * </pre>
+	 *
+	 * @param inter	offered interface to be removed
 	 */
-	@Override
-	public void			removeOfferedInterface(Class<?> inter)
+	protected void		removeOfferedInterface(Class<?> inter)
 	{
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
@@ -2323,7 +2457,7 @@ implements	ComponentI
 	public static abstract class		AbstractTask
 	implements	ComponentI.ComponentTask
 	{
-		protected ComponentI		owner ;
+		protected AbstractComponent	owner ;
 
 		/**
 		 * @see fr.sorbonne_u.components.ComponentI.ComponentTask#setOwnerReference(fr.sorbonne_u.components.ComponentI)
@@ -2332,15 +2466,16 @@ implements	ComponentI
 		public void			setOwnerReference(ComponentI owner)
 		{
 			assert	owner != null ;
+			assert	owner instanceof AbstractComponent ;
 
-			this.owner = owner ;
+			this.owner = (AbstractComponent) owner ;
 		}
 
 		/**
 		 * @see fr.sorbonne_u.components.ComponentI.ComponentTask#getOwner()
 		 */
 		@Override
-		public ComponentI	getOwner()
+		public AbstractComponent	getOwner()
 		{
 			return this.owner ;
 		}
@@ -2653,8 +2788,8 @@ implements	ComponentI
 	public static abstract class		AbstractService<V>
 	implements	ComponentI.ComponentService<V>
 	{
-		protected ComponentI		owner ;
-		protected final String	pluginURI ;
+		protected AbstractComponent	owner ;
+		protected final String		pluginURI ;
 
 		/**
 		 * create a service callable which calls a service directly
@@ -2700,6 +2835,7 @@ implements	ComponentI
 		public void			setOwnerReference(ComponentI owner)
 		{
 			assert	owner != null ;
+			assert	owner instanceof AbstractComponent ;
 
 			try {
 				assert	this.pluginURI == null ||
@@ -2708,14 +2844,14 @@ implements	ComponentI
 				throw new RuntimeException(e) ;
 			}
 
-			this.owner = owner ;
+			this.owner = (AbstractComponent) owner ;
 		}
 
 		/**
 		 * @see fr.sorbonne_u.components.ComponentI.ComponentService#getOwner()
 		 */
 		@Override
-		public ComponentI	getOwner()
+		public AbstractComponent	getOwner()
 		{
 			assert	this.pluginURI == null ;
 

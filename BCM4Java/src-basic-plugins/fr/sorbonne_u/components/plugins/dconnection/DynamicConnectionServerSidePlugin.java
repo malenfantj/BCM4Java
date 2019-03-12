@@ -131,7 +131,7 @@ extends		AbstractPlugin
 
 		// At installation time on a component, the plug-in adds the plug-in
 		// offered interfaces to the ones of the component.
-		this.owner.addOfferedInterface(DynamicConnectionRequestI.class) ;
+		this.addOfferedInterface(DynamicConnectionRequestI.class) ;
 		// Then, ports for the above interfaces are created, added to the
 		// component and published.
 		this.dcrip =
@@ -179,7 +179,7 @@ extends		AbstractPlugin
 		// to the component at installation time are removed.
 		this.dcrip.unpublishPort() ;
 		this.dcrip.destroyPort() ;
-		this.owner.removeOfferedInterface(DynamicConnectionRequestI.class) ;
+		this.removeOfferedInterface(DynamicConnectionRequestI.class) ;
 
 		super.uninstall() ;
 	}

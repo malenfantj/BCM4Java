@@ -101,7 +101,7 @@ implements	ClientSidePluginI
 		super.installOn(owner) ;
 
 		this.requiredInterface = this.getRequiredInterface() ;
-		this.owner.addRequiredInterface(this.requiredInterface) ;
+		this.addRequiredInterface(this.requiredInterface) ;
 	}
 
 	/**
@@ -173,7 +173,7 @@ implements	ClientSidePluginI
 	@Override
 	public void				uninstall() throws Exception
 	{
-		this.owner.removeRequiredInterface(this.requiredInterface) ;
+		this.removeRequiredInterface(this.requiredInterface) ;
 		this.requiredInterface = null ;
 
 		super.uninstall();
@@ -266,7 +266,7 @@ implements	ClientSidePluginI
 
 		boolean wasRequiringReflectionI = true ;
 		if (!this.owner.isRequiredInterface(ReflectionI.class)) {
-			this.owner.addRequiredInterface(ReflectionI.class) ;
+			this.addRequiredInterface(ReflectionI.class) ;
 			wasRequiringReflectionI = false ;
 		}
 
@@ -297,7 +297,7 @@ implements	ClientSidePluginI
 		rop.destroyPort() ;
 
 		if (!wasRequiringReflectionI) {
-			this.owner.removeRequiredInterface(ReflectionI.class) ;
+			this.removeRequiredInterface(ReflectionI.class) ;
 		}
 
 		return ret ;

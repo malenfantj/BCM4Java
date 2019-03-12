@@ -109,7 +109,7 @@ implements	PushControlImplementationI
 
 		super.installOn(owner) ;
 
-		this.owner.addOfferedInterface(PushControlI.class) ;
+		this.addOfferedInterface(PushControlI.class) ;
 		this.pushControlInboundPort =
 				new PushControlInboundPort(this.getPluginURI(), owner) ;
 		this.addPort(this.pushControlInboundPort) ;
@@ -158,7 +158,7 @@ implements	PushControlImplementationI
 	{
 		this.pushControlInboundPort.unpublishPort() ;
 		this.pushControlInboundPort.destroyPort() ;
-		this.owner.removeOfferedInterface(PushControlI.class) ;
+		this.removeOfferedInterface(PushControlI.class) ;
 		
 		super.uninstall() ;
 	}
@@ -196,16 +196,14 @@ implements	PushControlImplementationI
 		assert	interval > 0 ;
 		assert	this.isPortExisting(portURI) ;
 
-		final String pluginURI = this.getPluginURI() ;
+		final DataInterfacesPushControlServerSidePlugin plugin = this ;
 		ScheduledFuture<?> f =
 			this.owner.scheduleTaskAtFixedRate(
 				new AbstractComponent.AbstractTask() {					
 					@Override
 					public void run() {
 						try {
-							((DataInterfacesPushControlServerSidePlugin)
-								this.getOwner().getPlugin(pluginURI)).
-									pushOnPort(portURI) ;
+							plugin.pushOnPort(portURI) ;
 						} catch (Exception e) {
 							throw new RuntimeException(e);
 						}
@@ -233,18 +231,16 @@ implements	PushControlImplementationI
 		assert	interval > 0 ;
 		assert	n > 0 ;
 
-		final String pluginURI = this.getPluginURI() ;
+		final DataInterfacesPushControlServerSidePlugin plugin = this ;
 		ScheduledFuture<?> f =
 			this.owner.scheduleTask(
 				new AbstractComponent.AbstractTask() {
 					@Override
 					public void run() {
 						try {
-							((DataInterfacesPushControlServerSidePlugin)
-								this.getOwner().getPlugin(pluginURI)).
-									limitedPushingTask(portURI ,
-													   interval,
-													   n) ;
+							plugin.limitedPushingTask(portURI ,
+													 interval,
+													 n) ;
 						} catch (Exception e) {
 							throw new RuntimeException(e) ;
 						}
@@ -297,18 +293,16 @@ implements	PushControlImplementationI
 		// if there are still pushed to be done, schedule the next
 		// execution of the method.
 		if (n > 1) {
-			final String pluginURI = this.getPluginURI() ;
+			final DataInterfacesPushControlServerSidePlugin plugin = this ;
 			ScheduledFuture<?> f =
 				this.owner.scheduleTask(
 					new AbstractComponent.AbstractTask() {
 						@Override
 						public void run() {
 							try {
-								((DataInterfacesPushControlServerSidePlugin)
-									this.getOwner().getPlugin(pluginURI)).
-										limitedPushingTask(portURI ,
-														   interval,
-														   n - 1);
+								plugin.limitedPushingTask(portURI ,
+														 interval,
+														 n - 1);
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
 							}

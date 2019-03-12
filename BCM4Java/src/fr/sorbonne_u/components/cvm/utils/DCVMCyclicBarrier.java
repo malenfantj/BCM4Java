@@ -47,14 +47,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerOnConsole;
-import fr.sorbonne_u.components.helpers.WindowOutputStream;
 
 //-----------------------------------------------------------------------------
 /**

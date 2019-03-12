@@ -72,9 +72,7 @@ import java.lang.annotation.Annotation;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.connectors.ConnectorI;
@@ -196,7 +194,7 @@ public interface			ComponentI
 	 *
 	 * @return	the number of threads, schedulable or not, in the component.
 	 */
-	public int			getTotalNUmberOfThreads() ;
+	public int			getTotalNumberOfThreads() ;
 
 	/**
 	 * return true if the component guarantees a serialised execution of its services.
@@ -234,30 +232,6 @@ public interface			ComponentI
 	 * @return	true if the component can schedule tasks running after a specific delay or periodically.
 	 */
 	public boolean		canScheduleTasks() ;
-
-	/**
-	 * create a new user-defined executor service under the given URI and
-	 * with the given number of threads.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	uri != null
-	 * pre	!this.validExecutorServiceURI(uri)
-	 * pre	nbThreads &gt; 0
-	 * post	this.validExecutorServiceURI(uri)
-	 * </pre>
-	 *
-	 * @param uri			URI of the new executor service.
-	 * @param nbThreads		number of threads of the new executor service.
-	 * @param schedulable	if true, the new executor service is schedulable otherwise it is not.
-	 * @return				the index associated with the new executor service.
-	 */
-	public int			createNewExecutorService(
-		String uri,
-		int nbThreads,
-		boolean schedulable
-		) ;
 
 	/**
 	 * return true if <code>uri</code> is  an existing executor service URI
@@ -335,70 +309,6 @@ public interface			ComponentI
 	 * @return		the index of the executor service with the given URI.
 	 */
 	public int			getExecutorServiceIndex(String uri) ;
-
-	/**
-	 * get the executor service at the given index.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.validExecutorServiceIndex(index)
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param index	index of the sought executor service.
-	 * @return		the executor service at the given index.
-	 */
-	public ExecutorService	getExecutorService(int index) ;
-
-	/**
-	 * get the executor service at the given URI.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.validExecutorServiceURI(uri)
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param uri	URI of the sought executor service.
-	 * @return		the executor service at the given URI.
-	 */
-	public ExecutorService	getExecutorService(String uri) ;
-
-	/**
-	 * get the executor service at the given index.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.validExecutorServiceIndex(index)
-	 * pre	this.isSchedulable(index)
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param index	index of the sought executor service.
-	 * @return		the executor service at the given index.
-	 */
-	public ScheduledExecutorService	getSchedulableExecutorService(int index) ;
-
-	/**
-	 * get the executor service at the given URI.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.validExecutorServiceURI(uri)
-	 * pre	this.isSchedulable(uri)
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param uri	URI of the sought executor service.
-	 * @return		the executor service at the given URI.
-	 */
-	public ScheduledExecutorService	getSchedulableExecutorService(
-		String uri
-		) ;
 
 	/**
 	 * return true if the component has at least one user-defined schedulable
@@ -529,7 +439,7 @@ public interface			ComponentI
 	 *
 	 * @param inter	required interface to be added.
 	 */
-	public void			addRequiredInterface(Class<?> inter) ;
+	//public void			addRequiredInterface(Class<?> inter) ;
 
 	/**
 	 * remove a required interface from the required interfaces of this component.
@@ -545,7 +455,7 @@ public interface			ComponentI
 	 *
 	 * @param inter required interface to be removed.
 	 */
-	public void			removeRequiredInterface(Class<?> inter) ;
+	//public void			removeRequiredInterface(Class<?> inter) ;
 
 	/**
 	 * add an offered interface to the offered interfaces of this component.
@@ -561,7 +471,7 @@ public interface			ComponentI
 	 *
 	 * @param inter offered interface to be added.
 	 */
-	public void			addOfferedInterface(Class<?> inter) ;
+	//public void			addOfferedInterface(Class<?> inter) ;
 
 	/**
 	 * remove an offered interface from the offered interfaces of this component.
@@ -575,9 +485,9 @@ public interface			ComponentI
 	 * post	!this.isOfferedInterface(inter)
 	 * </pre>
 	 *
-	 * @param inter	offered interface ot be removed
+	 * @param inter	offered interface to be removed
 	 */
-	public void			removeOfferedInterface(Class<?> inter) ;
+	//public void			removeOfferedInterface(Class<?> inter) ;
 
 	/**
 	 * check if an interface is one of this component or a super-interface of
@@ -831,23 +741,6 @@ public interface			ComponentI
 	// ------------------------------------------------------------------------
 
 	/**
-	 * install a plug-in into this component.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	!this.isInstalled(plugin.getPluginURI())
-	 * post	this.isIntalled(plugin.getPluginURI())
-	 * </pre>
-	 *
-	 * @param plugin		plug-in implementation object.
-	 * @throws Exception	<i>todo.</i>
-	 */
-	public void			installPlugin(
-		PluginI plugin
-		) throws Exception ;
-
-	/**
 	 * return true if the component has some installed plug-ins.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -874,7 +767,7 @@ public interface			ComponentI
 	 * @param pluginURI	unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public void			finalisePlugin(String pluginURI) throws Exception ;
+	//public void			finalisePlugin(String pluginURI) throws Exception ;
 
 	/**
 	 * uninstall a plug-in from this component.
@@ -889,7 +782,7 @@ public interface			ComponentI
 	 * @param pluginURI	unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public void			uninstallPlugin(String pluginURI) throws Exception ;
+	//public void			uninstallPlugin(String pluginURI) throws Exception ;
 
 	/**
 	 * test if a plug-in is installed into this component.
@@ -922,7 +815,7 @@ public interface			ComponentI
 	 * @return			the corresponding installed plug-in or null if none.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public PluginI		getPlugin(String pluginURI) throws Exception ;
+	//public PluginI		getPlugin(String pluginURI) throws Exception ;
 
 	/**
 	 * initialise the identified plug-in by adding to the owner component every
@@ -1323,6 +1216,7 @@ public interface			ComponentI
 		 * 
 		 * <pre>
 		 * pre	owner != null
+		 * pre	owner instanceof AbstractComponent
 		 * post	true			// no postcondition.
 		 * </pre>
 		 *
