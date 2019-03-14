@@ -34,7 +34,6 @@ package fr.sorbonne_u.components.examples.ddeployment_cs;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicAssembler;
 
@@ -85,49 +84,6 @@ extends		AbstractCVM
 
 		// deployment done
 		super.deploy() ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#start()
-	 */
-	@Override
-	public void			start() throws Exception
-	{
-		super.start() ;
-
-		this.da.runTask(
-			new AbstractComponent.AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							((DynamicAssembler)this.getOwner()).
-													dynamicDeploy() ;
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
-						}
-					}
-				}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#execute()
-	 */
-	@Override
-	public void			execute() throws Exception
-	{
-		super.execute() ;
-
-		this.da.runTask(
-			new AbstractComponent.AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							((DynamicAssembler)this.getOwner()).launch() ;
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
-						}
-					}
-				}) ;
 	}
 
 	public static void	main(String[] args)

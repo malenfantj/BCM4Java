@@ -453,7 +453,7 @@ public class				GlobalRegistry
 		}
 		this.configurationParameters = cfp.parseConfigurationFile(configFile) ;
 		this.numberOfJVMsInDCVM =
-								this.configurationParameters.getJvms().length ;
+								this.configurationParameters.getJvmURIs().length ;
 
 		this.directory =
 					new Hashtable<String,String>(this.numberOfJVMsInDCVM) ;

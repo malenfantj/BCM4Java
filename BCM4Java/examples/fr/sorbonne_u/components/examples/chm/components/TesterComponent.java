@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.chm;
+package fr.sorbonne_u.components.examples.chm.components;
 
 import java.util.concurrent.TimeUnit;
 
@@ -81,9 +81,12 @@ extends		AbstractComponent
 	// Constants and variables
 	// ------------------------------------------------------------------------
 
+	/** URI of the concurrent hash map component reflection inbound port.	*/
 	protected final String						chmReflectionIBPUri ;
+	/** outbound port to the reading services of the concurrent hash map.	*/
 	protected final MapReadingOutboundPort<String,Integer>
 												readingOutboundPort ;
+	/** outbound port to the writing services of the concurrent hash map.	*/
 	protected final MapWritingOutboundPort<String,Integer>
 												writingOutboundPort ;
 
@@ -92,7 +95,7 @@ extends		AbstractComponent
 	// ------------------------------------------------------------------------
 
 	/**
-	 * 
+	 * create the tester component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -169,6 +172,21 @@ extends		AbstractComponent
 		this.add("k") ;
 	}
 
+	/**
+	 * add 15 key/value pairs in the hash map and then schedule 15
+	 * tasks to verify their presence and another 15 tasks to remove
+	 * them.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key			prefix of the keys to be used.
+	 * @throws Exception		<i>to do.</i>
+	 */
 	protected void		add(String key) throws Exception
 	{
 		final TesterComponent tc = this ;
@@ -206,6 +224,21 @@ extends		AbstractComponent
 		}
 	}
 
+	/**
+	 * remove the key/value pair from the hash map and then verify
+	 * its absence.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	key != null and value != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key		key under which the value has been put in the hash map.
+	 * @param value		value that must be associated with the key.
+	 * @throws Exception	<i>to do.</i>
+	 */
 	protected void		remove(String key, int value) throws Exception
 	{
 		this.writingOutboundPort.remove(key) ;
@@ -224,11 +257,27 @@ extends		AbstractComponent
 				}) ;
 	}
 
+	/**
+	 * verify the presence of absence of a key/value pair in the hash map.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	key != null and value != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key		key under which the value has been put in the hash map.
+	 * @param value		value that must be associated with the key.
+	 * @throws Exception	<i>to do.</i>
+	 */
 	protected void		verifyPresence(
 		String key,
 		Integer value
 		) throws Exception
 	{
+		assert	key != null && value != null ;
+
 		this.logMessage("value = " + this.readingOutboundPort.get(key)) ;
 		this.logMessage("presence key = " +
 							this.readingOutboundPort.containsKey(key)) ;

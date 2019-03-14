@@ -501,7 +501,7 @@ implements	DistributedComponentVirtualMachineI
 		}
 		this.configurationParameters = cfp.parseConfigurationFile(configFile) ;
 		AbstractDistributedCVM.thisHostname =
-			this.configurationParameters.getJvms2hosts().
+			this.configurationParameters.getJvmURIs2hosts().
 								get(AbstractDistributedCVM.thisJVMURI) ;
 		assert	AbstractDistributedCVM.thisHostname != null :
 				new ConfigurationException("Hostname of JVM " +

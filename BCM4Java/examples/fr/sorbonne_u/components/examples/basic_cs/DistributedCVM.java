@@ -74,7 +74,7 @@ extends		AbstractDistributedCVM
 	protected static String			PROVIDER_JVM_URI = "provider" ;
 	protected static String			CONSUMER_JVM_URI = "consumer" ;
 
-	protected static String			URIConsumerOutboundPortURI = "oport" ;
+	protected static String			URIGetterOutboundPortURI = "oport" ;
 	protected static String			URIProviderInboundPortURI = "iport" ;
 
 	protected URIProvider	uriProvider ;
@@ -145,7 +145,7 @@ extends		AbstractDistributedCVM
 
 			// create the consumer component
 			this.uriConsumer = new URIConsumer(CONSUMER_COMPONENT_URI,
-											   URIConsumerOutboundPortURI) ;
+											   URIGetterOutboundPortURI) ;
 			// make it trace its operations; comment and uncomment the line to see
 			// the difference
 			uriConsumer.toggleTracing() ;
@@ -189,11 +189,11 @@ extends		AbstractDistributedCVM
 			assert	this.uriConsumer != null && this.uriProvider == null ;
 			// do the connection
 			this.uriConsumer.doPortConnection(
-				URIConsumerOutboundPortURI,
+				URIGetterOutboundPortURI,
 				URIProviderInboundPortURI,
 				URIServiceConnector.class.getCanonicalName()) ;
 			assert	this.uriConsumer.isPortConnected(
-												URIConsumerOutboundPortURI) ;
+												URIGetterOutboundPortURI) ;
 
 		} else {
 
@@ -202,6 +202,32 @@ extends		AbstractDistributedCVM
 		}
 
 		super.interconnect();
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.AbstractDistributedCVM#finalise()
+	 */
+	@Override
+	public void			finalise() throws Exception
+	{
+		// Port disconnections can be done here for static architectures
+		// otherwise, they can be done in the finalise methods of components.
+
+		if (thisJVMURI.equals(PROVIDER_JVM_URI)) {
+
+			// nothing to be done on the provider side
+
+		} else if (thisJVMURI.equals(CONSUMER_JVM_URI)) {
+
+			this.uriConsumer.doPortDisconnection(URIGetterOutboundPortURI) ;
+
+		} else {
+
+			System.out.println("Unknown JVM URI... " + thisJVMURI) ;
+
+		}
+
+		super.finalise() ;
 	}
 
 	/**

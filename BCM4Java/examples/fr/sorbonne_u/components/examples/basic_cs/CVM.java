@@ -145,13 +145,35 @@ extends		AbstractCVM
 				URIGetterOutboundPortURI,
 				URIProviderInboundPortURI,
 				URIServiceConnector.class.getCanonicalName()) ;
-		
+		// Nota: the above use of the reference to the object representing
+		// the URI consumer component is allowed only in the deployment
+		// phase of the component virtual machine (to perform the static
+		// interconnection of components in a static architecture) and
+		// inside the concerned component (i.e., where the method
+		// doPortConnection can be called with the this destination
+		// (this.doPortConenction(...)). It must never be used in another
+		// component as the references to objects used to implement component
+		// features must not be shared among components.
+
 		// --------------------------------------------------------------------
 		// Deployment done
 		// --------------------------------------------------------------------
 
 		super.deploy();
 		assert	this.deploymentDone() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#finalise()
+	 */
+	@Override
+	public void				finalise() throws Exception
+	{
+		// Port disconnections can be done here for static architectures
+		// otherwise, they can be done in the finalise methods of components.
+		this.uriConsumer.doPortDisconnection(URIGetterOutboundPortURI) ;
+
+		super.finalise();
 	}
 
 	/**
@@ -172,7 +194,7 @@ extends		AbstractCVM
 		assert	this.allFinalised() ;
 		// any disconnection not done yet can be performed here
 
-		// print logs on files, if activated
+		// print logs on files, if previously activated
 		this.uriConsumer.printExecutionLogOnFile("consumer") ;
 		this.uriProvider.printExecutionLogOnFile("provider") ;
 

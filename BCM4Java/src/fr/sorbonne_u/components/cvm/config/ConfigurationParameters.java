@@ -64,12 +64,12 @@ public class				ConfigurationParameters
 	protected String						globalRegistryHostname ;
 	protected int						globalRegistryPort ;
 	protected int						rmiregistryPort ;
-	protected String[]					jvms ;
+	protected String[]					jvmURIs ;
 	protected Set<String>				rmiRegistryCreators ;
 	protected Set<String>				rmiRegistryHosts ;
-	protected Hashtable<String,String>	jvms2hosts ;
-	protected Hashtable<String,String>	jvms2mainclasses ;
-	protected Set<String>				reflectiveJVMs ;
+	protected Hashtable<String,String>	jvmURIs2hosts ;
+	protected Hashtable<String,String>	jvmURIs2mainclasses ;
+	protected Set<String>				reflectiveJVM_URIs ;
 
 	public				ConfigurationParameters(
 		String						codebaseHostname,
@@ -80,12 +80,12 @@ public class				ConfigurationParameters
 		String						globalRegistryHostname,
 		int							globalRegistryPort,
 		int							rmiregistryPort,
-		String[]						jvms,
-		Hashtable<String,String>		jvms2hosts,
-		Hashtable<String,String>		jvms2mainclasses,
+		String[]						jvmURIs,
+		Hashtable<String,String>		jvmURIs2hosts,
+		Hashtable<String,String>		jvmURIs2mainclasses,
 		Set<String>					rmiRegistryCreators,
 		Set<String>					rmiRegistryHosts,
-		Set<String>					reflectiveJVMs
+		Set<String>					reflectiveJVM_URIs
 		)
 	{
 		super();
@@ -97,12 +97,12 @@ public class				ConfigurationParameters
 		this.globalRegistryHostname = globalRegistryHostname;
 		this.globalRegistryPort = globalRegistryPort;
 		this.rmiregistryPort = rmiregistryPort ;
-		this.jvms = jvms;
-		this.jvms2hosts = jvms2hosts ;
-		this.jvms2mainclasses = jvms2mainclasses ;
+		this.jvmURIs = jvmURIs;
+		this.jvmURIs2hosts = jvmURIs2hosts ;
+		this.jvmURIs2mainclasses = jvmURIs2mainclasses ;
 		this.rmiRegistryCreators = rmiRegistryCreators ;
 		this.rmiRegistryHosts = rmiRegistryHosts ;
-		this.reflectiveJVMs = reflectiveJVMs ;
+		this.reflectiveJVM_URIs = reflectiveJVM_URIs ;
 	}
 
 	/**
@@ -165,29 +165,29 @@ public class				ConfigurationParameters
 	/**
 	 * @return the jvms
 	 */
-	public String[]		getJvms() {
-		return this.jvms;
+	public String[]		getJvmURIs() {
+		return this.jvmURIs;
 	}
 
 	/**
 	 * @return the jvms2hosts
 	 */
-	public Hashtable<String, String> getJvms2hosts() {
-		return this.jvms2hosts;
+	public Hashtable<String, String> getJvmURIs2hosts() {
+		return this.jvmURIs2hosts;
 	}
 
 	/**
 	 * @return the jvms2mainclasses
 	 */
-	public Hashtable<String, String> getJvms2mainclasses() {
-		return jvms2mainclasses;
+	public Hashtable<String, String> getJvmURIs2mainclasses() {
+		return jvmURIs2mainclasses;
 	}
 
 	/**
 	 * @return the reflectiveJVMs
 	 */
-	public Set<String>	getReflectiveJVMs() {
-		return reflectiveJVMs;
+	public Set<String>	getReflectiveJVM_URIs() {
+		return reflectiveJVM_URIs;
 	}
 
 	/**
@@ -207,9 +207,9 @@ public class				ConfigurationParameters
 	@Override
 	public String		toString() {
 		StringBuilder rjvms = new StringBuilder("{") ;
-		for (int i = 0 ; i < this.jvms.length ; i++) {
-			rjvms.append(this.jvms[i]) ;
-			if (i < this.jvms.length -1) {
+		for (int i = 0 ; i < this.jvmURIs.length ; i++) {
+			rjvms.append(this.jvmURIs[i]) ;
+			if (i < this.jvmURIs.length -1) {
 				rjvms.append(", ") ;
 			}
 		}
@@ -226,20 +226,20 @@ public class				ConfigurationParameters
 		theHosts.append("}") ;
 		StringBuilder theMainClasses = new StringBuilder("{") ;
 		n = 0 ;
-		for (String uri : this.jvms2mainclasses.keySet()) {
+		for (String uri : this.jvmURIs2mainclasses.keySet()) {
 			theMainClasses.append(uri).append(" ==> ").
-								append(this.jvms2mainclasses.get(uri)) ;
-			if (n < this.jvms2mainclasses.size() - 1) {
+								append(this.jvmURIs2mainclasses.get(uri)) ;
+			if (n < this.jvmURIs2mainclasses.size() - 1) {
 				theMainClasses.append(", ") ;
 			}
 		}
 		theMainClasses.append("}") ;
 		StringBuilder theReflectives = new StringBuilder("{") ;
 		n = 0 ;
-		for (String jvms : this.reflectiveJVMs) {
+		for (String jvms : this.reflectiveJVM_URIs) {
 			theReflectives.append(jvms) ;
 			n++ ;
-			if (n < this.reflectiveJVMs.size() - 1) {
+			if (n < this.reflectiveJVM_URIs.size() - 1) {
 				theReflectives.append(", ") ;
 			}
 		}
@@ -255,9 +255,9 @@ public class				ConfigurationParameters
 					append("RMI registry creators: ").append(this.rmiRegistryCreators).append("; ").
 					append("RMI registry hosts: ").append(this.rmiRegistryHosts).append("; ").
 					append("rmiregistry port: ").append(this.rmiregistryPort).append("; ").
-					append("jvms: ").append(rjvms).append("; ").
+					append("jvm URIs: ").append(rjvms).append("; ").
 					append("main classes: ").append(theMainClasses).append("; ").
-					append("reflective JVMs: ").append(theReflectives).append("; ").
+					append("reflective JVM URIs: ").append(theReflectives).append("; ").
 					append("]").toString() ;
 	}
 }

@@ -34,7 +34,6 @@ package fr.sorbonne_u.components.examples.ddeployment_cs;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicAssembler;
 
@@ -78,6 +77,34 @@ extends		AbstractDistributedCVM
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.cvm.AbstractDistributedCVM#initialise()
+	 */
+	@Override
+	public void			initialise() throws Exception
+	{
+		super.initialise() ;
+
+		String[] jvmURIs = this.configurationParameters.getJvmURIs() ;
+		boolean assemblerJVM_URI_OK = false ;
+		boolean providerJVM_URI_OK = false ;
+		boolean consumerJVM_URI_OK = false ;
+		for (int i = 0 ; i < jvmURIs.length &&
+										(!assemblerJVM_URI_OK ||
+										!providerJVM_URI_OK ||
+										!consumerJVM_URI_OK) ; i++) {
+			if (jvmURIs[i].equals(ASSEMBLER_JVM_URI)) {
+				assemblerJVM_URI_OK = true ;
+			} else if (jvmURIs[i].equals(PROVIDER_JVM_URI)) {
+				providerJVM_URI_OK = true ;
+			} else if (jvmURIs[i].equals(CONSUMER_JVM_URI)) {
+				consumerJVM_URI_OK = true ;
+			}
+		}
+		assert	assemblerJVM_URI_OK && providerJVM_URI_OK &&
+												consumerJVM_URI_OK ;
+	}
+
+	/**
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -102,53 +129,6 @@ extends		AbstractDistributedCVM
 		}
 
 		super.instantiateAndPublish();
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.cvm.AbstractDistributedCVM#start()
-	 */
-	@Override
-	public void			start() throws Exception
-	{
-		super.start() ;
-
-		if (thisJVMURI.equals(ASSEMBLER_JVM_URI)) {
-			this.da.runTask(
-				new AbstractComponent.AbstractTask() {
-						@Override
-						public void run() {
-							try {
-								((DynamicAssembler)this.getOwner()).
-														dynamicDeploy() ;
-							} catch (Exception e) {
-								throw new RuntimeException(e) ;
-							}
-						}
-					}) ;
-		}
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.cvm.AbstractDistributedCVM#execute()
-	 */
-	@Override
-	public void			execute() throws Exception
-	{
-		super.execute();
-
-		if (thisJVMURI.equals(ASSEMBLER_JVM_URI)) {
-			this.da.runTask(
-				new AbstractComponent.AbstractTask() {
-						@Override
-						public void run() {
-							try {
-								((DynamicAssembler)this.getOwner()).launch() ;
-							} catch (Exception e) {
-								throw new RuntimeException(e) ;
-							}
-						}
-					}) ;
-		}
 	}
 
 	public static void	main(String[] args)

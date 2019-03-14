@@ -80,7 +80,7 @@ extends		RequiredI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	key != null
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *

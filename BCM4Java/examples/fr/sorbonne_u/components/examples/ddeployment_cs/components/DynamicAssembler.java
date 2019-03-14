@@ -80,8 +80,6 @@ extends		AbstractComponent
 
 	protected static final String PROVIDER_COMPONENT_URI = "my-URI-provider" ;
 	protected static final String CONSUMER_COMPONENT_URI = "my-URI-consumer" ;
-	protected static final String CONSUMER_LAUNCH_INBOUNDPORT_URI =
-														  "consumer-launch" ;
 
 	protected DynamicComponentCreationOutboundPort	portToConsumerJVM ;
 	protected DynamicComponentCreationOutboundPort	portToProviderJVM ;
@@ -90,6 +88,7 @@ extends		AbstractComponent
 	protected String		providerJVMURI ;
 	protected String		consumerOutboundPortURI ;
 	protected String		providerInboundPortURI ;
+	protected String		consumerLaunchInboundPortURI ;
 
 	// -------------------------------------------------------------------------
     // Constructors
@@ -135,6 +134,8 @@ extends		AbstractComponent
 	@Override
 	public void			start() throws ComponentStartException
 	{
+		super.start() ;
+
 		try {
 			this.portToConsumerJVM =
 				new DynamicComponentCreationOutboundPort(this) ;
@@ -151,11 +152,23 @@ extends		AbstractComponent
 			this.portToProviderJVM.doConnection(
 				this.providerJVMURI + AbstractCVM.DCC_INBOUNDPORT_URI_SUFFIX,
 				DynamicComponentCreationConnector.class.getCanonicalName()) ;
+
+			this.runTask(
+					new AbstractComponent.AbstractTask() {
+							@Override
+							public void run() {
+								try {
+									((DynamicAssembler)this.getOwner()).
+															dynamicDeploy() ;
+								} catch (Exception e) {
+									throw new RuntimeException(e) ;
+								}
+							}
+						}) ;
+
 		} catch (Exception e) {
 			throw new ComponentStartException(e) ;
 		}
-
-		super.start() ;
 	}
 
 	/**
@@ -231,7 +244,7 @@ extends		AbstractComponent
 		p.publishPort() ;
 		this.doPortConnection(
 				p.getPortURI(),
-				CONSUMER_LAUNCH_INBOUNDPORT_URI,
+				this.consumerLaunchInboundPortURI,
 				URIConsumerLaunchConnector.class.getCanonicalName()) ;
 		p.getURIandPrint() ;
 		this.doPortDisconnection(p.getPortURI()) ;
@@ -255,17 +268,19 @@ extends		AbstractComponent
 	{
 		// call the dynamic component creator of the provider JVM to create
 		// the provider component
-		this.portToProviderJVM.createComponent(
+		String uri = this.portToProviderJVM.createComponent(
 								URIProvider.class.getCanonicalName(),
 								new Object[]{PROVIDER_COMPONENT_URI,
 											 this.providerInboundPortURI}) ;
+		assert uri.equals(PROVIDER_COMPONENT_URI) ;
+
 		// call the dynamic component creator of the consumer JVM to create
 		// the provider component
-		this.portToConsumerJVM.createComponent(
+		uri = this.portToConsumerJVM.createComponent(
 								DynamicURIConsumer.class.getCanonicalName(),
 								new Object[]{CONSUMER_COMPONENT_URI,
-											 this.consumerOutboundPortURI,
-											 CONSUMER_LAUNCH_INBOUNDPORT_URI}) ;
+											 this.consumerOutboundPortURI}) ;
+		assert	uri.equals(CONSUMER_COMPONENT_URI) ;
 
 		this.addRequiredInterface(ReflectionI.class) ;
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this) ;
@@ -277,6 +292,11 @@ extends		AbstractComponent
 						 ReflectionConnector.class.getCanonicalName()) ;
 		// toggle logging on the consumer component
 		rop.toggleTracing() ;
+		// get the URI of the launch inbound port of the consumer component.
+		String[] uris =
+			rop.findInboundPortURIsFromInterface(URIConsumerLaunchI.class) ;
+		assert	uris != null && uris.length == 1 ;
+		this.consumerLaunchInboundPortURI = uris[0] ;
 		// connect the consumer outbound port top the provider inbound one.
 		rop.doPortConnection(this.consumerOutboundPortURI,
 							 this.providerInboundPortURI,
@@ -292,6 +312,18 @@ extends		AbstractComponent
 		rop.unpublishPort() ;
 		this.removeRequiredInterface(ReflectionI.class) ;
 		rop.destroyPort() ;
+
+		this.runTask(
+				new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								((DynamicAssembler)this.getOwner()).launch() ;
+							} catch (Exception e) {
+								throw new RuntimeException(e) ;
+							}
+						}
+					}) ;
 	}
 }
 //-----------------------------------------------------------------------------

@@ -135,15 +135,15 @@ public class				DCVM_Launcher
 	{
 		assert	this.configurationParameters != null ;
 
-		String[] jvmURIs = this.configurationParameters.getJvms() ;
+		String[] jvmURIs = this.configurationParameters.getJvmURIs() ;
 		Hashtable<String,String> jvms2hosts =
-						this.configurationParameters.getJvms2hosts() ;
+						this.configurationParameters.getJvmURIs2hosts() ;
 		Hashtable<String,String> hosts2dirs =
 						this.configurationParameters.getHosts2dirs() ;
 		Hashtable<String,String> jvms2mainclasses =
-						this.configurationParameters.getJvms2mainclasses() ;
+						this.configurationParameters.getJvmURIs2mainclasses() ;
 		Set<String> reflectiveJVMs =
-						this.configurationParameters.getReflectiveJVMs() ;
+						this.configurationParameters.getReflectiveJVM_URIs() ;
 
 		List<String> commandRegistry = new ArrayList<String>() ;
 		String globalRegistryHostname =

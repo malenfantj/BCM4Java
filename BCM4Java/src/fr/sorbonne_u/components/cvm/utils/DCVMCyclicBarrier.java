@@ -195,7 +195,7 @@ public class				DCVMCyclicBarrier
 		this.configurationParameters = cfp.parseConfigurationFile(configFile) ;
 
 		this.numberOfJVMsInDCVM =
-							this.configurationParameters.getJvms().length ;
+							this.configurationParameters.getJvmURIs().length ;
 		this.awaitingSites = new Hashtable<String,HostPortSocket>(
 										(int) (1.5*this.numberOfJVMsInDCVM)) ;
 		this.ss = new ServerSocket(

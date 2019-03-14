@@ -175,9 +175,9 @@ public class				ConfigurationFileParser
 		String					globalRegistryHostname = null ;
 		int						globalRegistryPort = -1 ;
 		int						rmiRegistryPort = -1 ;
-		String[]					jvms = null ;
-		Hashtable<String,String>	jvms2hosts = new Hashtable<String,String>() ;
-		Hashtable<String,String>	jvms2mainclasses = new Hashtable<String,String>() ;
+		String[]					jvmURIs = null ;
+		Hashtable<String,String>	jvmURIs2hosts = new Hashtable<String,String>() ;
+		Hashtable<String,String>	jvmURIs2mainclasses = new Hashtable<String,String>() ;
 		HashSet<String> 			rmiRegistryCreators = new HashSet<String>() ;
 		HashSet<String> 			rmiRegistryHosts = new HashSet<String>() ;
 
@@ -255,17 +255,17 @@ public class				ConfigurationFileParser
 							"/deployment/jvms2hostnames/jvm2hostname/@jvmuri",
 							doc,
 							XPathConstants.NODESET) ;
-		jvms = new String[ns.getLength()] ;
+		jvmURIs = new String[ns.getLength()] ;
 		for (int i = 0 ; i < ns.getLength() ; i++) {
-			jvms[i] = ns.item(i).getNodeValue() ;
-			assert	jvms[i] != null : new ConfigurationException("JVM uri undefined!") ;
+			jvmURIs[i] = ns.item(i).getNodeValue() ;
+			assert	jvmURIs[i] != null : new ConfigurationException("JVM uri undefined!") ;
 		}
 		ns = (NodeList)xpathEvaluator.evaluate(
 									"/deployment/jvms2hostnames/jvm2hostname",
 									doc,
 									XPathConstants.NODESET) ;
 		Set<String> allHostnames = new HashSet<String>() ;
-		Set<String> reflectiveJVMs = new HashSet<String>() ;
+		Set<String> reflectiveJVM_URIs = new HashSet<String>() ;
 		for (int i = 0 ; i < ns.getLength() ; i++) {
 			String uri = ((Node)xpathEvaluator.evaluate(
 								"@jvmuri", ns.item(i), XPathConstants.NODE)).
@@ -278,7 +278,7 @@ public class				ConfigurationFileParser
 					new ConfigurationException("Hostname of JVM " + uri
 											   + " undefined!");
 			allHostnames.add(hostname) ;
-			jvms2hosts.put(uri, hostname) ;
+			jvmURIs2hosts.put(uri, hostname) ;
 
 			String mainclass = ((Node)xpathEvaluator.evaluate(
 								"@mainclass", ns.item(i), XPathConstants.NODE)).
@@ -287,7 +287,7 @@ public class				ConfigurationFileParser
 					new ConfigurationException("Main class name " + mainclass
 										   + " undefined!") ;
 
-			jvms2mainclasses.put(uri, mainclass) ;
+			jvmURIs2mainclasses.put(uri, mainclass) ;
 
 			Node reflectiveNode = 
 					((Node)xpathEvaluator.evaluate(
@@ -297,7 +297,7 @@ public class				ConfigurationFileParser
 				reflective = reflectiveNode.getNodeValue() ;
 			}
 			if (reflective != null && reflective.equals("true")) {
-				reflectiveJVMs.add(uri) ;
+				reflectiveJVM_URIs.add(uri) ;
 			}
 
 			if (((Node)xpathEvaluator.evaluate(
@@ -330,12 +330,12 @@ public class				ConfigurationFileParser
 										   globalRegistryHostname,
 										   globalRegistryPort,
 										   rmiRegistryPort,
-										   jvms,
-										   jvms2hosts,
-										   jvms2mainclasses,
+										   jvmURIs,
+										   jvmURIs2hosts,
+										   jvmURIs2mainclasses,
 										   rmiRegistryCreators,
 										   rmiRegistryHosts,
-										   reflectiveJVMs) ;
+										   reflectiveJVM_URIs) ;
 	}
 }
 //-----------------------------------------------------------------------------

@@ -36,6 +36,7 @@ package fr.sorbonne_u.components.examples.chm;
 
 import fr.sorbonne_u.components.cvm.AbstractCVM ;
 import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
+import fr.sorbonne_u.components.examples.chm.components.TesterComponent;
 
 //------------------------------------------------------------------------------
 /**

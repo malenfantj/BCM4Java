@@ -127,7 +127,8 @@ extends		AbstractComponent
 		// following instruction:
 		//this.addOfferedInterface(URIProviderI.class) ;
 
-		// create the port that exposes the offered interface
+		// create the port that exposes the offered interface with the
+		// given URI to ease the connection from client components.
 		PortI p = new URIProviderInboundPort(providerPortURI, this) ;
 		// add the port to the set of ports of the component
 		this.addPort(p) ;

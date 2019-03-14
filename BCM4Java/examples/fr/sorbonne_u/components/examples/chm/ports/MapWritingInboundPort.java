@@ -70,7 +70,7 @@ implements	MapWriting<K,V>
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	owner.validExecutorServiceIndex(executorIndex)
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -98,7 +98,7 @@ implements	MapWriting<K,V>
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	owner.validExecutorServiceIndex(executorIndex)
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -124,6 +124,8 @@ implements	MapWriting<K,V>
 	@Override
 	public V			put(K key, V value) throws Exception
 	{
+		assert	key != null ;
+
 		return this.getOwner().handleRequestSync(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<V>() {
@@ -142,6 +144,8 @@ implements	MapWriting<K,V>
 	@Override
 	public V			remove(K key) throws Exception
 	{
+		assert	key != null ;
+
 		return this.getOwner().handleRequestSync(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<V>() {

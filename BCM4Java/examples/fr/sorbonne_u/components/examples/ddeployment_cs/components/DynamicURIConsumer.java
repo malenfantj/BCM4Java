@@ -82,7 +82,7 @@ extends		AbstractComponent
 	protected int							counter ;
 
 	/**
-	 * 
+	 * create the dynamic URI consumer component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -93,13 +93,11 @@ extends		AbstractComponent
 	 *
 	 * @param uri					URI of the component.
 	 * @param outboundPortURI		URI of the outbound port.
-	 * @param launchInboundPortURI	URI of the inbound port used to launch the component execution.
 	 * @throws Exception				<i>todo.</i>
 	 */
 	public				DynamicURIConsumer(
 		String uri,
-		String outboundPortURI,
-		String launchInboundPortURI
+		String outboundPortURI
 		) throws Exception
 	{
 		// the reflection inbound port URI is the URI of the component
@@ -115,8 +113,7 @@ extends		AbstractComponent
 		// publish the port
 		this.uriGetterPort.localPublishPort() ;
 
-		this.launchInboundPort =
-				new URIConsumerLaunchInboundPort(launchInboundPortURI, this) ;
+		this.launchInboundPort = new URIConsumerLaunchInboundPort(this) ;
 		this.addPort(this.launchInboundPort) ;
 		this.launchInboundPort.publishPort() ;
 

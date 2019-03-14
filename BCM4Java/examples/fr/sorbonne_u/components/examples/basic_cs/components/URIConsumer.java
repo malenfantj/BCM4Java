@@ -229,7 +229,9 @@ extends		AbstractComponent
 		// This is the place where to clean up resources, such as
 		// disconnecting and unpublishing ports that will be destroyed
 		// when shutting down.
-		this.uriGetterPort.doDisconnection() ;
+		// In static architectures like in this example, ports can also
+		// be disconnected by the finalise method of the component
+		// virtual machine.
 		this.uriGetterPort.unpublishPort() ;
 
 		// This called at the end to make the component internal
