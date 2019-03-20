@@ -158,8 +158,7 @@ extends		AbstractComponent
 		}
 		assert	cons != null ;
 		AbstractComponent component =
-					(AbstractComponent) cons.newInstance(constructorParams) ;
-		AbstractCVM.getCVM().addDeployedComponent(component) ;
+				(AbstractComponent) cons.newInstance(constructorParams) ;
 		component.start() ;
 		String[] ret =
 			component.findInboundPortURIsFromInterface(ReflectionI.class) ;

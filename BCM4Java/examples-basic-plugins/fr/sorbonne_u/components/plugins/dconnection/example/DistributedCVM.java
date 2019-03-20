@@ -81,13 +81,11 @@ extends		AbstractDistributedCVM
 		if (thisJVMURI.equals(CLIENT_SIDE_JVM_URI)) {
 
 			this.cst = new ClientSideExample(CVM.SERVER_SIDE_RIP_URI) ;
-			this.addDeployedComponent(cst) ;
 			cst.toggleTracing() ;
 
 		} else if (thisJVMURI.equals(SERVER_SIDE_JVM_URI)) {
 
 			this.sst = new ServerSideExample(CVM.SERVER_SIDE_RIP_URI) ;
-			this.addDeployedComponent(sst) ;
 			sst.toggleTracing() ;
 
 		} else {

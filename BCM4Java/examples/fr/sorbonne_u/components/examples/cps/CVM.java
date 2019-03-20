@@ -74,16 +74,13 @@ extends		AbstractCVM
 		
 		RandomValueProvider s =
 			new RandomValueProvider(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-		this.addDeployedComponent(s) ;
 		s.toggleTracing() ;
 		
 		ValueConsumer c =
 			new ValueConsumer(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-		this.addDeployedComponent(c);
 		c.toggleTracing();
 
 		ContinuationExamples ce = new ContinuationExamples() ;
-		this.addDeployedComponent(ce) ;
 		ce.toggleTracing() ;
 
 		super.deploy();
@@ -93,7 +90,7 @@ extends		AbstractCVM
 		try {
 			CVM a = new CVM() ;
 			a.startStandardLifeCycle(10000L) ;
-			Thread.sleep(600000L);
+			Thread.sleep(5000L);
 			System.exit(0) ;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

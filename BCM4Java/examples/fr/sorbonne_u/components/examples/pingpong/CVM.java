@@ -111,7 +111,6 @@ extends		AbstractCVM
 					PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
 					PLAYER1_PING_PONG_TWOWAY_PORT_URI,
 					PLAYER2_PING_PONG_TWOWAY_PORT_URI) ;
-		this.addDeployedComponent(pp1) ;
 		pp1.toggleTracing() ;
 
 		// A second player that is initially passive.
@@ -127,7 +126,6 @@ extends		AbstractCVM
 					PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
 					PLAYER2_PING_PONG_TWOWAY_PORT_URI,
 					PLAYER1_PING_PONG_TWOWAY_PORT_URI) ;
-		this.addDeployedComponent(pp2) ;
 		pp2.toggleTracing() ;
 
 		// --------------------------------------------------------------------

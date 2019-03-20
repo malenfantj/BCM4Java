@@ -1239,6 +1239,8 @@ implements	ComponentI
 		this.addInterfacesFromAnnotations() ;
 		this.addPluginsFromAnnotations() ;
 
+		AbstractCVM.getCVM().addDeployedComponent(this) ;
+
 		assert	this.innerComponents != null ;
 		assert	this.requiredInterfaces != null ;
 		assert	this.offeredInterfaces != null ;

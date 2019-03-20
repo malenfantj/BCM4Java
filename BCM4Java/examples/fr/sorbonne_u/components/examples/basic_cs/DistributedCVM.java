@@ -137,8 +137,6 @@ extends		AbstractDistributedCVM
 			// the difference
 			uriProvider.toggleTracing() ;
 			uriProvider.toggleLogging() ;
-			// add it to the deployed components
-			this.addDeployedComponent(uriProvider) ;
 			assert	this.uriConsumer == null && this.uriProvider != null ;
 
 		} else if (thisJVMURI.equals(CONSUMER_JVM_URI)) {

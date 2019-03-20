@@ -36,10 +36,9 @@ package fr.sorbonne_u.components.cvm;
 
 import java.util.Hashtable;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
-
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
@@ -324,13 +323,13 @@ implements	ComponentVirtualMachineI
 	// ------------------------------------------------------------------------
 	
 	/** collection of deployed components.								*/
-	protected final Vector<ComponentI>	deployedComponents ;
+	protected final ArrayList<ComponentI>	deployedComponents ;
 	/** the state of the component virtual machine.						*/
-	protected CVMState					state ;
+	protected CVMState						state ;
 	/** true if the CVM currently running is distributed.					*/
-	public static boolean				isDistributed ;
+	public static boolean					isDistributed ;
 	/** the logger used for debugging log entries.						*/
-	protected Logger						debugginLogger ;
+	protected Logger							debugginLogger ;
 
 	// ------------------------------------------------------------------------
 	// Constructors
@@ -378,7 +377,7 @@ implements	ComponentVirtualMachineI
 		super() ;
 
 		AbstractCVM.theCVM = this ;
-		this.deployedComponents = new Vector<ComponentI>() ;
+		this.deployedComponents = new ArrayList<ComponentI>() ;
 		this.state = null ;
 		AbstractCVM.isDistributed = isDistributed ;
 
@@ -392,7 +391,7 @@ implements	ComponentVirtualMachineI
 			try {
 				DynamicComponentCreator dcc =
 					new DynamicComponentCreator(DCC_INBOUNDPORT_URI_SUFFIX) ;
-				this.deployedComponents.add(dcc) ;
+				assert	this.isDeployedComponent(dcc) ;
 			} catch (Exception e) {
 				this.logDebug(null, "WARNING! -- The dynamic component "
 									+ "creator has not been "

@@ -119,22 +119,20 @@ extends		AbstractCVM
 		// create the provider component
 		this.uriProvider = new URIProvider(PROVIDER_COMPONENT_URI,
 										   URIProviderInboundPortURI) ;
+		assert	this.isDeployedComponent(this.uriProvider) ;
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
 		this.uriProvider.toggleTracing() ;
 		this.uriProvider.toggleLogging() ;
-		// add it to the deployed components
-		this.deployedComponents.add(uriProvider) ;
 
 		// create the consumer component
 		this.uriConsumer = new URIConsumer(CONSUMER_COMPONENT_URI,
 									  	   URIGetterOutboundPortURI) ;
+		assert	this.isDeployedComponent(uriConsumer) ;
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
 		this.uriConsumer.toggleTracing() ;
 		this.uriConsumer.toggleLogging() ;
-		// add it to the deployed components
-		this.deployedComponents.add(uriConsumer) ;
 		
 		// --------------------------------------------------------------------
 		// Connection phase
@@ -207,9 +205,9 @@ extends		AbstractCVM
 			// Create an instance of the defined component virtual machine.
 			CVM a = new CVM() ;
 			// Execute the application.
-			a.startStandardLifeCycle(15000L) ;
+			a.startStandardLifeCycle(20000L) ;
 			// Give some time to see the traces (convenience).
-			Thread.sleep(10000L) ;
+			Thread.sleep(5000L) ;
 			// Simplifies the termination (termination has yet to be treated
 			// properly in BCM).
 			System.exit(0) ;

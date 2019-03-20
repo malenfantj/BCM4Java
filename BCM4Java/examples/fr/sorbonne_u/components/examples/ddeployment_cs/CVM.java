@@ -80,7 +80,6 @@ extends		AbstractCVM
 				   					  PROVIDER_JVM_URI,
 				   					  Consumer_OUTBOUND_PORT_URI,
 				   					  Provider_INBOUND_PORT_URI) ;
-		this.addDeployedComponent(this.da) ;
 
 		// deployment done
 		super.deploy() ;

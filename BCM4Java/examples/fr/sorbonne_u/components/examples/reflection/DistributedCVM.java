@@ -88,12 +88,10 @@ extends		AbstractDistributedCVM
 		if (thisJVMURI.equals(SERVER_JVM_URI)) {
 
 			ReflectionServer s = new ReflectionServer(SERVER_RIP_URI) ;
-			this.addDeployedComponent(s) ;
 
 		} else if (thisJVMURI.equals(CLIENT_JVM_URI)) {
 
 			ReflectionClient client = new ReflectionClient(SERVER_RIP_URI) ;
-			this.addDeployedComponent(client) ;
 
 		} else {
 

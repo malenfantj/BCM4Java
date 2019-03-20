@@ -74,11 +74,9 @@ extends		AbstractCVM
 	public void				deploy() throws Exception
 	{
 		ClientComponent cc = new ClientComponent() ;
-		this.addDeployedComponent(cc) ;
 		cc.toggleTracing() ;
 
 		ServerComponent sc = new ServerComponent() ;
-		this.addDeployedComponent(sc) ;
 		sc.toggleTracing() ;
 
 		super.deploy() ;

@@ -86,11 +86,9 @@ extends		AbstractCVM
 
 		ConcurrentMapComponent<String,Integer> cmc =
 					new ConcurrentMapComponent<>(CONCURRENT_MAP_RIP_URI, 5) ;
-		this.addDeployedComponent(cmc) ;
 		cmc.toggleTracing() ;
 
 		TesterComponent tc = new TesterComponent(CONCURRENT_MAP_RIP_URI) ;
-		this.addDeployedComponent(tc) ;
 		tc.toggleTracing() ;
 
 		super.deploy();
@@ -104,7 +102,7 @@ extends		AbstractCVM
 			// Execute the application.
 			a.startStandardLifeCycle(5000L) ;
 			// Give some time to see the traces (convenience).
-			Thread.sleep(100000L) ;
+			Thread.sleep(5000L) ;
 			// Simplifies the termination (termination has yet to be treated
 			// properly in BCM).
 			System.exit(0) ;

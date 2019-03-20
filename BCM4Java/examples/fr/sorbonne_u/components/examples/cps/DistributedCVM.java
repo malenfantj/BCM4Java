@@ -80,12 +80,10 @@ extends		AbstractDistributedCVM
 		if (thisJVMURI.equals(VALUE_CONSUMER_JVM_URI)) {
 			ValueConsumer c =
 				new ValueConsumer(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-			this.addDeployedComponent(c);
 			c.toggleTracing();
 		} else if (thisJVMURI.equals(VALUE_PROVIDER_JVM_URI)) {
 			RandomValueProvider s =
 				new RandomValueProvider(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-			this.addDeployedComponent(s) ;
 			s.toggleTracing() ;
 		} else {
 			throw new RuntimeException("Uknown JVM URI: " + thisJVMURI) ;

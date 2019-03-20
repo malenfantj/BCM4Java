@@ -156,7 +156,6 @@ extends		AbstractDistributedCVM
 							PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
 							PLAYER1_PING_PONG_TWOWAY_PORT_URI,
 							PLAYER2_PING_PONG_TWOWAY_PORT_URI) ;
-			this.addDeployedComponent(pp1) ;
 			pp1.toggleTracing() ;
 		} else if (thisJVMURI.equals(PLAYER2_JVM_URI)) {
 			// A second player that is initially passive.
@@ -172,7 +171,6 @@ extends		AbstractDistributedCVM
 							PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
 							PLAYER2_PING_PONG_TWOWAY_PORT_URI,
 							PLAYER1_PING_PONG_TWOWAY_PORT_URI) ;
-			this.addDeployedComponent(pp2) ;
 			pp2.toggleTracing() ;
 		} else {
 			throw new RuntimeException("Unknown JVM URI: " + thisJVMURI) ;

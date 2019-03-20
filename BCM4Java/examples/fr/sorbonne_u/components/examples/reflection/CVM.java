@@ -80,11 +80,8 @@ extends		AbstractCVM
 	@Override
 	public void			deploy() throws Exception
 	{
-		ReflectionServer server = new ReflectionServer(SERVER_RIP_URI) ;
-		this.addDeployedComponent(server) ;
-
-		ReflectionClient client = new ReflectionClient(SERVER_RIP_URI) ;
-		this.addDeployedComponent(client) ;
+		new ReflectionServer(SERVER_RIP_URI) ;
+		new ReflectionClient(SERVER_RIP_URI) ;
 
 		super.deploy();
 	}

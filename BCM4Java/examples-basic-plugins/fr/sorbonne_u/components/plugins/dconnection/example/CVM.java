@@ -75,11 +75,9 @@ extends		AbstractCVM
 	public void			deploy() throws Exception
 	{
 		this.sst = new ServerSideExample(CVM.SERVER_SIDE_RIP_URI) ;
-		this.addDeployedComponent(sst) ;
 		this.sst.toggleTracing() ;
 
 		this.cst = new ClientSideExample(CVM.SERVER_SIDE_RIP_URI) ;
-		this.addDeployedComponent(cst) ;
 		this.cst.toggleTracing() ;
 
 		super.deploy();
