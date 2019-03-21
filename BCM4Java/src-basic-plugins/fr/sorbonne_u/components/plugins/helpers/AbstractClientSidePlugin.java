@@ -120,8 +120,6 @@ implements	ClientSidePluginI
 	@Override
 	public void				initialise() throws Exception
 	{
-		super.initialise() ;
-
 		this.pluginOutboundPort =
 					(AbstractOutboundPort) this.createOutboundPort() ;
 		this.addPort(this.pluginOutboundPort) ;
@@ -153,8 +151,6 @@ implements	ClientSidePluginI
 			this.pluginOutboundPort.destroyPort() ;
 			this.pluginOutboundPort = null ;
 		}
-
-		super.finalise() ;
 	}
 
 	/**
@@ -175,8 +171,6 @@ implements	ClientSidePluginI
 	{
 		this.removeRequiredInterface(this.requiredInterface) ;
 		this.requiredInterface = null ;
-
-		super.uninstall();
 	}
 
 	// ------------------------------------------------------------------------

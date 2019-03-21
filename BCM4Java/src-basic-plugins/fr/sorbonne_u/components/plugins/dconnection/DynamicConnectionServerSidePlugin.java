@@ -147,7 +147,6 @@ extends		AbstractPlugin
 	@Override
 	public void			initialise() throws Exception
 	{
-		super.initialise() ;
 		this.dynamicInboundPorts = new HashMap<>() ;
 	}
 
@@ -166,7 +165,6 @@ extends		AbstractPlugin
 			}
 		}
 		this.dynamicInboundPorts.clear() ;
-		super.finalise() ;
 	}
 
 	/**
@@ -180,8 +178,6 @@ extends		AbstractPlugin
 		this.dcrip.unpublishPort() ;
 		this.dcrip.destroyPort() ;
 		this.removeOfferedInterface(DynamicConnectionRequestI.class) ;
-
-		super.uninstall() ;
 	}
 
 	// ------------------------------------------------------------------------

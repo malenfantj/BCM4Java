@@ -181,8 +181,6 @@ extends		AbstractPlugin
 		// When uninstalling the plug-in, the ports and the interfaces added
 		// to the component at installation time are removed.
 		this.removeRequiredInterface(DynamicConnectionRequestI.class) ;
-
-		super.uninstall() ;
 	}
 
 	// ------------------------------------------------------------------------

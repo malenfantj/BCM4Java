@@ -159,8 +159,6 @@ implements	PushControlImplementationI
 		this.pushControlInboundPort.unpublishPort() ;
 		this.pushControlInboundPort.destroyPort() ;
 		this.removeOfferedInterface(PushControlI.class) ;
-		
-		super.uninstall() ;
 	}
 
 	// ------------------------------------------------------------------------

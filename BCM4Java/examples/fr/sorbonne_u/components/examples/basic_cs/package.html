@@ -148,11 +148,11 @@ to connect the two components by calling the method <code>connectWith</code> on
 </p>
 <p>
 The main method of the CVM creates an instance of <code>CVM</code>, calls its
-method <code>deploy</code>, then its method <code>start</code>, waits until the
-consumer finished its processing, and then call its method <code>shutdown</code>
-and <code>System.exit(0)</code>.  The class <code>CVM</code> can the be run as
-any Java application, as it appears in this first screen shot before starting
-the execution where the source are placed in the subdirectory <code>jars</code>:
+method <code>startStandardLifeCycle</code>, waits until the program has finished,
+and then exits with <code>System.exit(0)</code>.  The class <code>CVM</code> can
+the be run as any Java application, as it appears in this first screen shot before
+starting the execution where the source are placed in the subdirectory
+<code>jars</code>:
 </p>
 
 <img SRC="../../../../../../images/before-execution.jpg"/>

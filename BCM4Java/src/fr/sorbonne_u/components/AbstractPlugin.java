@@ -397,15 +397,6 @@ implements	PluginI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.PluginI#initialise()
-	 */
-	@Override
-	public void			initialise() throws Exception
-	{
-		// By default, do nothing.
-	}
-
-	/**
 	 * @see fr.sorbonne_u.components.PluginI#setPluginURI(java.lang.String)
 	 */
 	@Override
@@ -434,6 +425,15 @@ implements	PluginI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.PluginI#initialise()
+	 */
+	@Override
+	public void			initialise() throws Exception
+	{
+		// By default, do nothing.
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.PluginI#isInitialised()
 	 */
 	@Override
@@ -457,7 +457,7 @@ implements	PluginI
 	@Override
 	public void			uninstall() throws Exception
 	{
-		this.finalise() ;
+		// By default, do nothing.
 	}
 
 	// --------------------------------------------------------------------

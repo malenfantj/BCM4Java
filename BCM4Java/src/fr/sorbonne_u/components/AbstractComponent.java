@@ -2262,8 +2262,8 @@ implements	ComponentI
 			}) ;
 		}
 
-		for (String pluginURI : this.installedPlugins.keySet()) {
-			this.finalisePlugin(pluginURI) ;
+		for (Map.Entry<String,PluginI> e : this.installedPlugins.entrySet()) {			
+			this.finalisePlugin(e.getKey()) ;
 		}
 		String[] reflPortURI =
 				this.findInboundPortURIsFromInterface(ReflectionI.class) ;
@@ -2865,8 +2865,6 @@ implements	ComponentI
 		@Override
 		public AbstractComponent	getOwner()
 		{
-			assert	this.pluginURI == null ;
-
 			return this.owner ;
 		}
 
