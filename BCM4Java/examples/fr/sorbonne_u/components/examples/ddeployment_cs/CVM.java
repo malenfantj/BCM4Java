@@ -62,9 +62,10 @@ extends		AbstractCVM
 		super();
 	}
 
-	protected static String		ASSEMBLER_JVM_URI = "" ; // single-JVM execution
-	protected static String		PROVIDER_JVM_URI = "" ; // single-JVM execution
-	protected static String		CONSUMER_JVM_URI = "" ; // single-JVM execution
+	// single-JVM execution
+	protected static String		ASSEMBLER_JVM_URI = AbstractCVM.thisJVMURI ;
+	protected static String		PROVIDER_JVM_URI = AbstractCVM.thisJVMURI ;
+	protected static String		CONSUMER_JVM_URI = AbstractCVM.thisJVMURI ;
 
 	protected DynamicAssembler	da ;
 

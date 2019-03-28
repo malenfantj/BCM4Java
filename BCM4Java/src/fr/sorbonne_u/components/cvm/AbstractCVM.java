@@ -92,8 +92,9 @@ implements	ComponentVirtualMachineI
 
 	/** The singleton pattern: one instance of CVM per JVM.				*/
 	protected static AbstractCVM				theCVM ;
+	/** URI of the current JVM in the deployment platform.				*/
+	protected final static String			thisJVMURI = "thisCVM" ;
 	/**	Enables or not debugging messages.								*/
-//	public static boolean					DEBUG = false ;
 	public static final Set<CVMDebugModesI>	DEBUG_MODE =
 											new HashSet<CVMDebugModesI>() ;
 	/** suffix for the dynamic component creator component inbound
@@ -390,7 +391,9 @@ implements	ComponentVirtualMachineI
 			// initialised in the method initialise of AbstractDistributedCVM
 			try {
 				DynamicComponentCreator dcc =
-					new DynamicComponentCreator(DCC_INBOUNDPORT_URI_SUFFIX) ;
+					new DynamicComponentCreator(
+							AbstractCVM.thisJVMURI +
+											DCC_INBOUNDPORT_URI_SUFFIX) ;
 				assert	this.isDeployedComponent(dcc) ;
 			} catch (Exception e) {
 				this.logDebug(null, "WARNING! -- The dynamic component "

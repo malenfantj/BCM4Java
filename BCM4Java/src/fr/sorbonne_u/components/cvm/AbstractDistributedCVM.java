@@ -691,7 +691,7 @@ implements	DistributedComponentVirtualMachineI
 				new DynamicComponentCreator(
 						AbstractDistributedCVM.thisJVMURI +
 											DCC_INBOUNDPORT_URI_SUFFIX) ;
-			this.deployedComponents.add(dcc) ;
+			assert	this.isDeployedComponent(dcc) ;
 		} catch (Exception e) {
 			System.out.println("The dynamic component creator has not been "
 											+ "successfully deployed!") ;
