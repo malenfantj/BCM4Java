@@ -66,6 +66,27 @@ implements	MapReading<K, V>,
 		super() ;
 	}
 
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#get(java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public V				get(K key) throws Exception
+	{
+		return ((MapReading<K, V>)this.offering).get(key) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#size()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public int			size() throws Exception
+	{
+		return ((MapReading<K, V>)this.offering).size() ;
+	}
+
 	/**
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsValue(java.lang.Object)
 	 */
@@ -95,26 +116,5 @@ implements	MapReading<K, V>,
 	{
 		return ((MapTesting<K, V>)this.offering).isEmpty() ;
 	}
-
-	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#size()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public int			size() throws Exception
-	{
-		return ((MapTesting<K, V>)this.offering).size() ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#get(java.lang.Object)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public V				get(K key) throws Exception
-	{
-		return ((MapReading<K, V>)this.offering).get(key) ;
-	}
-
 }
 //------------------------------------------------------------------------------

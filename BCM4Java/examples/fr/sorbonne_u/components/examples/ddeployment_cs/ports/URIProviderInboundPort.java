@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.basic_cs.ports;
+package fr.sorbonne_u.components.examples.ddeployment_cs.ports;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -36,8 +36,8 @@ package fr.sorbonne_u.components.examples.basic_cs.ports;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
 import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
+import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicURIProvider;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //-----------------------------------------------------------------------------
@@ -92,7 +92,7 @@ implements	URIProviderI
 		// the implemented interface is statically known
 		super(uri, URIProviderI.class, owner) ;
 
-		assert	uri != null && owner instanceof URIProvider ;
+		assert	uri != null && owner instanceof DynamicURIProvider ;
 	}
 
 	/**
@@ -120,7 +120,7 @@ implements	URIProviderI
 		// the implemented interface is statically known
 		super(URIProviderI.class, owner) ;
 
-		assert	owner instanceof URIProvider ;
+		assert	owner instanceof DynamicURIProvider ;
 	}
 
 	/**
@@ -145,7 +145,7 @@ implements	URIProviderI
 				new AbstractComponent.AbstractService<String>() {
 					@Override
 					public String call() throws Exception {
-						return ((URIProvider)this.getOwner()).
+						return ((DynamicURIProvider)this.getOwner()).
 									provideURIService() ;
 					}
 				}) ;
@@ -162,7 +162,7 @@ implements	URIProviderI
 				new AbstractComponent.AbstractService<String[]>() {
 					@Override
 					public String[] call() throws Exception {
-						return ((URIProvider)this.getOwner()).
+						return ((DynamicURIProvider)this.getOwner()).
 								provideURIsService(numberOfRequestedURIs) ;
 					}
 				}) ;

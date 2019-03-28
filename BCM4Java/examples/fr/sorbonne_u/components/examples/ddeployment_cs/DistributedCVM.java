@@ -62,9 +62,6 @@ extends		AbstractDistributedCVM
 	protected static String		PROVIDER_JVM_URI = "provider" ;
 	protected static String		CONSUMER_JVM_URI = "consumer" ;
 
-	protected static String		Consumer_OUTBOUND_PORT_URI = "oport" ;
-	protected static String		Provider_INBOUND_PORT_URI = "iport" ;
-
 	protected DynamicAssembler	da ;
 
 	public				DistributedCVM(
@@ -121,9 +118,7 @@ extends		AbstractDistributedCVM
 		if (thisJVMURI.equals(ASSEMBLER_JVM_URI)) {
 
 			this.da = new DynamicAssembler(CONSUMER_JVM_URI,
-										  PROVIDER_JVM_URI,
-										  Consumer_OUTBOUND_PORT_URI,
-										  Provider_INBOUND_PORT_URI) ;
+										  PROVIDER_JVM_URI) ;
 
 		}
 

@@ -65,8 +65,6 @@ extends		AbstractCVM
 	protected static String		ASSEMBLER_JVM_URI = "" ; // single-JVM execution
 	protected static String		PROVIDER_JVM_URI = "" ; // single-JVM execution
 	protected static String		CONSUMER_JVM_URI = "" ; // single-JVM execution
-	protected static String		Consumer_OUTBOUND_PORT_URI = "oport" ;
-	protected static String		Provider_INBOUND_PORT_URI = "iport" ;
 
 	protected DynamicAssembler	da ;
 
@@ -77,9 +75,7 @@ extends		AbstractCVM
 	public void			deploy() throws Exception
 	{
 		this.da = new DynamicAssembler(CONSUMER_JVM_URI,
-				   					  PROVIDER_JVM_URI,
-				   					  Consumer_OUTBOUND_PORT_URI,
-				   					  Provider_INBOUND_PORT_URI) ;
+				   					  PROVIDER_JVM_URI) ;
 
 		// deployment done
 		super.deploy() ;

@@ -37,8 +37,9 @@ package fr.sorbonne_u.components.examples.ddeployment_cs.components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
 import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.connectors.URIConsumerLaunchConnector;
 import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.ports.URIConsumerLaunchOutboundPort;
@@ -78,8 +79,7 @@ extends		AbstractComponent
     // Constants and variables
 	// -------------------------------------------------------------------------
 
-	protected static final String PROVIDER_COMPONENT_URI = "my-URI-provider" ;
-	protected static final String CONSUMER_COMPONENT_URI = "my-URI-consumer" ;
+	protected static final String PROVIDED_URI_PREFIX = "generated-URI-" ;
 
 	protected DynamicComponentCreationOutboundPort	portToConsumerJVM ;
 	protected DynamicComponentCreationOutboundPort	portToProviderJVM ;
@@ -106,22 +106,16 @@ extends		AbstractComponent
 	 *
 	 * @param consumerJVMURI	 			URI of the JVM that will hold the consumer component or the empty string for single-JVM executions.
 	 * @param providerJVMURI				URI of the JVM that will hold the provider component or the empty string for single-JVM executions.
-	 * @param consumerOutboundPortURI	URI of the URI consumer outbound port 
-	 * @param providerInboundPortURI		URI of the URI provider inbound port
 	 * @throws Exception					<i>todo.</i>
 	 */
 	public				DynamicAssembler(
 		String consumerJVMURI,
-		String providerJVMURI,
-		String consumerOutboundPortURI,
-		String providerInboundPortURI
+		String providerJVMURI
 		) throws Exception
 	{
 		super(1, 0) ;
 		this.consumerJVMURI = consumerJVMURI ;
 		this.providerJVMURI = providerJVMURI ;
-		this.consumerOutboundPortURI = consumerOutboundPortURI ;
-		this.providerInboundPortURI = providerInboundPortURI ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -266,52 +260,63 @@ extends		AbstractComponent
 	 */
 	public void			dynamicDeploy() throws Exception
 	{
+		assert	this.portToConsumerJVM != null ;
+		assert	this.portToConsumerJVM.connected() ;
+		assert	this.portToProviderJVM != null ;
+		assert	this.portToProviderJVM.connected() ;
+
 		// call the dynamic component creator of the provider JVM to create
 		// the provider component
-		String uri = this.portToProviderJVM.createComponent(
-								URIProvider.class.getCanonicalName(),
-								new Object[]{PROVIDER_COMPONENT_URI,
-											 this.providerInboundPortURI}) ;
-		assert uri.equals(PROVIDER_COMPONENT_URI) ;
+		String providerRIPURI =
+			this.portToProviderJVM.createComponent(
+								DynamicURIProvider.class.getCanonicalName(),
+								new Object[]{PROVIDED_URI_PREFIX}) ;
 
 		// call the dynamic component creator of the consumer JVM to create
 		// the provider component
-		uri = this.portToConsumerJVM.createComponent(
+		String consumerRIPURI =
+			this.portToConsumerJVM.createComponent(
 								DynamicURIConsumer.class.getCanonicalName(),
-								new Object[]{CONSUMER_COMPONENT_URI,
-											 this.consumerOutboundPortURI}) ;
-		assert	uri.equals(CONSUMER_COMPONENT_URI) ;
+								new Object[]{}) ;
 
 		this.addRequiredInterface(ReflectionI.class) ;
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this) ;
 		this.addPort(rop) ;
 		rop.localPublishPort() ;
 
+		// connect to the provider (server) component
+		rop.doConnection(providerRIPURI,
+						 ReflectionConnector.class.getCanonicalName()) ;
+		// toggle logging on the provider component
+		rop.toggleTracing() ;
+		// get the URI of the URI provider inbound port of the provider
+		// component.
+		String[] uris =
+			rop.findInboundPortURIsFromInterface(URIProviderI.class) ;
+		assert	uris != null && uris.length == 1 ;
+		this.providerInboundPortURI = uris[0] ;
+		this.doPortDisconnection(rop.getPortURI()) ;
+
 		// connect to the consumer (client) component
-		rop.doConnection(DynamicAssembler.CONSUMER_COMPONENT_URI,
+		rop.doConnection(consumerRIPURI,
 						 ReflectionConnector.class.getCanonicalName()) ;
 		// toggle logging on the consumer component
 		rop.toggleTracing() ;
 		// get the URI of the launch inbound port of the consumer component.
-		String[] uris =
-			rop.findInboundPortURIsFromInterface(URIConsumerLaunchI.class) ;
+		uris = rop.findInboundPortURIsFromInterface(URIConsumerLaunchI.class) ;
 		assert	uris != null && uris.length == 1 ;
 		this.consumerLaunchInboundPortURI = uris[0] ;
+		// get the URI of the URI consumer outbound port of the consumer
+		// component.
+		uris = rop.findOutboundPortURIsFromInterface(URIConsumerI.class) ;
+		assert	uris != null && uris.length == 1 ;
+		this.consumerOutboundPortURI = uris[0] ;
 		// connect the consumer outbound port top the provider inbound one.
 		rop.doPortConnection(this.consumerOutboundPortURI,
 							 this.providerInboundPortURI,
 							 URIServiceConnector.class.getCanonicalName()) ;
-		rop.doDisconnection() ;
-
-		// connect to the provider (server) component
-		rop.doConnection(PROVIDER_COMPONENT_URI,
-						 ReflectionConnector.class.getCanonicalName()) ;
-		// toggle logging on the providerer component
-		rop.toggleTracing() ;
-		rop.doDisconnection() ;
+		this.doPortDisconnection(rop.getPortURI()) ;
 		rop.unpublishPort() ;
-		this.removeRequiredInterface(ReflectionI.class) ;
-		rop.destroyPort() ;
 
 		this.runTask(
 				new AbstractComponent.AbstractTask() {

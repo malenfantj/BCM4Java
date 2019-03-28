@@ -102,7 +102,7 @@ extends		AbstractCVM
 			// Execute the application.
 			a.startStandardLifeCycle(5000L) ;
 			// Give some time to see the traces (convenience).
-			Thread.sleep(5000L) ;
+			Thread.sleep(500000L) ;
 			// Simplifies the termination (termination has yet to be treated
 			// properly in BCM).
 			System.exit(0) ;

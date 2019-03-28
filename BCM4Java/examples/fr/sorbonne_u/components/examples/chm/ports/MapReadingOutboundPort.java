@@ -87,6 +87,16 @@ implements	MapReading<K,V>,
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#size()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public int			size() throws Exception
+	{
+		return ((MapReading<K,V>)this.connector).size() ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsValue(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
@@ -114,16 +124,6 @@ implements	MapReading<K,V>,
 	public boolean		isEmpty() throws Exception
 	{
 		return ((MapTesting<K,V>)this.connector).isEmpty() ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#size()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public int			size() throws Exception
-	{
-		return ((MapTesting<K,V>)this.connector).size() ;
 	}
 }
 //------------------------------------------------------------------------------

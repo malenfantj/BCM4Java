@@ -90,6 +90,8 @@ extends		AbstractComponent
 	protected final MapWritingOutboundPort<String,Integer>
 												writingOutboundPort ;
 
+	protected int	numberOfVerify = 0 ;
+
 	// ------------------------------------------------------------------------
 	// Constructors
 	// ------------------------------------------------------------------------
@@ -187,7 +189,7 @@ extends		AbstractComponent
 	 * @param key			prefix of the keys to be used.
 	 * @throws Exception		<i>to do.</i>
 	 */
-	protected void		add(String key) throws Exception
+	protected synchronized void	add(String key) throws Exception
 	{
 		final TesterComponent tc = this ;
 		for (int i = 1 ; i <= 15 ; i++) {
@@ -239,7 +241,7 @@ extends		AbstractComponent
 	 * @param value		value that must be associated with the key.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	protected void		remove(String key, int value) throws Exception
+	protected synchronized void	remove(String key, int value) throws Exception
 	{
 		this.writingOutboundPort.remove(key) ;
 		final TesterComponent tc = this ;
@@ -271,13 +273,15 @@ extends		AbstractComponent
 	 * @param value		value that must be associated with the key.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	protected void		verifyPresence(
+	protected synchronized void	verifyPresence(
 		String key,
 		Integer value
 		) throws Exception
 	{
 		assert	key != null && value != null ;
 
+		this.logMessage("verifyPresence " + this.numberOfVerify++ +
+								"----------------------------------") ;
 		this.logMessage("value = " + this.readingOutboundPort.get(key)) ;
 		this.logMessage("presence key = " +
 							this.readingOutboundPort.containsKey(key)) ;

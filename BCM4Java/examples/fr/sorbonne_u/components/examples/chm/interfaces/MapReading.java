@@ -74,5 +74,20 @@ extends		RequiredI,
 	 * @throws Exception		<i>to do.</i>
 	 */
 	public V				get(K key) throws Exception ;
+
+	/**
+	 * return the number of key/value pairs kept in the map.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return				the number of key/value pairs kept in the map.
+	 * @throws Exception		<i>to do.</i>
+	 */
+	public int			size() throws Exception ;
 }
 //------------------------------------------------------------------------------

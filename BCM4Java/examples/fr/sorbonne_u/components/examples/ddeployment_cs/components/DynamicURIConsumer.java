@@ -91,27 +91,21 @@ extends		AbstractComponent
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param uri					URI of the component.
-	 * @param outboundPortURI		URI of the outbound port.
 	 * @throws Exception				<i>todo.</i>
 	 */
-	public				DynamicURIConsumer(
-		String uri,
-		String outboundPortURI
-		) throws Exception
+	public				DynamicURIConsumer() throws Exception
 	{
 		// the reflection inbound port URI is the URI of the component
 		// no simple thread but one schedulable thread
-		super(uri, 0, 1) ;
+		super(0, 1) ;
 
 		this.counter = 0 ;
 
-		this.uriGetterPort =
-					new URIConsumerOutboundPort(outboundPortURI, this) ;
+		this.uriGetterPort = new URIConsumerOutboundPort(this) ;
 		// add the port to the set of ports of the component
 		this.addPort(this.uriGetterPort) ;
 		// publish the port
-		this.uriGetterPort.localPublishPort() ;
+		this.uriGetterPort.publishPort() ;
 
 		this.launchInboundPort = new URIConsumerLaunchInboundPort(this) ;
 		this.addPort(this.launchInboundPort) ;

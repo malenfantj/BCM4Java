@@ -42,7 +42,6 @@ import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
 import fr.sorbonne_u.components.examples.chm.ports.MapReadingInboundPort;
 import fr.sorbonne_u.components.examples.chm.ports.MapWritingInboundPort;
 import java.util.HashMap;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 //------------------------------------------------------------------------------
@@ -106,9 +105,9 @@ extends		AbstractComponent
 
 	/** the hash map implementing the data structure and containing the
 	 *  entries.															*/
-	protected final HashMap<K,V>			hm ;
+	protected final HashMap<K,V>					hm ;
 	/** read/write lock controlling the accesses to the hash map.			*/
-	protected final ReadWriteLock		hashMapLock ;
+	protected final ReentrantReadWriteLock		hashMapLock ;
 
 	/** inbound port for reading calls.									*/
 	protected final MapReadingInboundPort<K,V>	readingInboundPort ;

@@ -141,6 +141,24 @@ implements	MapReading<K,V>,
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#size()
+	 */
+	@Override
+	public int			size() throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				executorIndex,			// identifies the pool of threads to be used
+				new AbstractComponent.AbstractService<Integer>() {
+					@SuppressWarnings("unchecked")
+					@Override
+					public Integer call() throws Exception {
+						return ((ConcurrentMapComponent<K,V>)
+									this.getOwner()).size() ;
+					}
+				}) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsValue(java.lang.Object)
 	 */
 	@Override
@@ -192,24 +210,6 @@ implements	MapReading<K,V>,
 					public Boolean call() throws Exception {
 						return ((ConcurrentMapComponent<K,V>)
 									this.getOwner()).isEmpty() ;
-					}
-				}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#size()
-	 */
-	@Override
-	public int			size() throws Exception
-	{
-		return this.getOwner().handleRequestSync(
-				executorIndex,			// identifies the pool of threads to be used
-				new AbstractComponent.AbstractService<Integer>() {
-					@SuppressWarnings("unchecked")
-					@Override
-					public Integer call() throws Exception {
-						return ((ConcurrentMapComponent<K,V>)
-									this.getOwner()).size() ;
 					}
 				}) ;
 	}
