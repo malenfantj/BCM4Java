@@ -630,16 +630,18 @@ implements	ComponentVirtualMachineI
 		assert	this.allStarted() ;
 
 		for(ComponentI c : this.deployedComponents) {
-			c.runTask(new AbstractComponent.AbstractTask() {
-				@Override
-				public void run() {
-					try {
-						this.getOwner().execute() ;
-					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+			if (c.hasItsOwnThreads()) {
+				c.runTask(new AbstractComponent.AbstractTask() {
+					@Override
+					public void run() {
+						try {
+							this.getOwner().execute() ;
+						} catch (Exception e) {
+							throw new RuntimeException(e) ;
+						}
 					}
-				}
-			}) ;
+				}) ;
+			}
 		}
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {

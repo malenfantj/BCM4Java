@@ -434,7 +434,7 @@ implements	ComponentI
 	{
 		assert	this.validExecutorServiceURI(uri) :
 					new PreconditionException(
-								"this.validExecutorServiceURI(uri)") ;
+							"this.validExecutorServiceURI(uri) " + uri) ;
 
 		return this.executorServices.
 				get(this.executorServicesIndexes.get(uri)).isSchedulable() ;
@@ -448,7 +448,7 @@ implements	ComponentI
 	{
 		assert	this.validExecutorServiceIndex(index) :
 					new PreconditionException(
-								"this.validExecutorServiceIndex(index)") ;
+							"this.validExecutorServiceIndex(index) " + index) ;
 
 		return this.executorServices.get(index).isSchedulable() ;
 	}
@@ -461,13 +461,13 @@ implements	ComponentI
 	{
 		assert	this.validExecutorServiceURI(uri) :
 					new PreconditionException(
-								"this.validExecutorServiceURI(uri)") ;
+							"this.validExecutorServiceURI(uri) " + uri) ;
 
 		int ret = this.executorServicesIndexes.get(uri) ;
 
 		assert	this.validExecutorServiceIndex(ret) :
 					new PostconditionException(
-							"this.validExecutorServiceIndex(return)") ;
+							"this.validExecutorServiceIndex(return) " + ret) ;
 
 		return ret ;
 	}
@@ -489,7 +489,7 @@ implements	ComponentI
 	{
 		assert	this.validExecutorServiceIndex(index) :
 					new PreconditionException(
-								"this.validExecutorServiceIndex(index)") ;
+							"this.validExecutorServiceIndex(index) " + index) ;
 
 		return this.executorServices.get(index).getExecutorService() ;
 	}
@@ -511,7 +511,7 @@ implements	ComponentI
 	{
 		assert	this.validExecutorServiceURI(uri) :
 					new PreconditionException(
-								"this.validExecutorServiceURI(uri)") ;
+							"this.validExecutorServiceURI(uri) " + uri) ;
 
 		return this.executorServices.get(this.getExecutorServiceIndex(uri)).
 													getExecutorService() ;
@@ -537,9 +537,10 @@ implements	ComponentI
 	{
 		assert	this.validExecutorServiceIndex(index) :
 					new PreconditionException(
-								"this.validExecutorServiceIndex(index)") ;
+							"this.validExecutorServiceIndex(index) " + index) ;
 		assert	this.isSchedulable(index) :
-					new PreconditionException("this.isSchedulable(index)") ;
+					new PreconditionException(
+							"this.isSchedulable(index) " + index) ;
 
 		return ((ComponentSchedulableExecutorServiceManager) 
 									this.executorServices.get(index)).
@@ -566,13 +567,13 @@ implements	ComponentI
 	{
 		assert	this.validExecutorServiceURI(uri) :
 					new PreconditionException(
-								"this.validExecutorServiceURI(uri)") ;
+								"this.validExecutorServiceURI(uri) " + uri) ;
 
 		ComponentExecutorServiceManager csem =
 				this.executorServices.get(this.getExecutorServiceIndex(uri)) ;
 
 		assert	csem.isSchedulable() :
-					new PreconditionException("this.isSchedulable(uri)") ;
+					new PreconditionException("csem.isSchedulable() " + csem) ;
 
 		return ((ComponentSchedulableExecutorServiceManager) csem).
 											getScheduledExecutorService() ;
@@ -2226,17 +2227,19 @@ implements	ComponentI
 		assert	this.isStarted() ;	
 
 		for(ComponentI c : this.innerComponents) {
-			c.runTask(
-				new AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							this.getOwner().execute() ;
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+			if (c.hasItsOwnThreads()) {
+				c.runTask(
+					new AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								this.getOwner().execute() ;
+							} catch (Exception e) {
+								throw new RuntimeException(e) ;
+							}
 						}
-				}
-			}) ;
+					}) ;
+			}
 		}
 	}
 
@@ -2246,20 +2249,12 @@ implements	ComponentI
 	@Override
 	public void			finalise() throws Exception
 	{
-		assert	this.isStarted() ;
+		assert	this.isStarted() :
+					new PreconditionException("AbstractComponent#finalise: "
+												+ this + " not started!") ;
 
 		for(ComponentI c : this.innerComponents) {
-			c.runTask(
-				new AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							this.getOwner().finalise() ;
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
-						}
-				}
-			}) ;
+			c.finalise() ;
 		}
 
 		for (Map.Entry<String,PluginI> e : this.installedPlugins.entrySet()) {			

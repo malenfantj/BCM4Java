@@ -135,7 +135,8 @@ extends		AbstractComponent
 				new DynamicComponentCreationOutboundPort(this) ;
 			this.addPort(this.portToConsumerJVM) ;
 			this.portToConsumerJVM.localPublishPort() ;
-			this.portToConsumerJVM.doConnection(
+			this.doPortConnection(
+				this.portToConsumerJVM.getPortURI(),
 				this.consumerJVMURI + AbstractCVM.DCC_INBOUNDPORT_URI_SUFFIX,
 				DynamicComponentCreationConnector.class.getCanonicalName()) ;
 
@@ -143,7 +144,8 @@ extends		AbstractComponent
 				new DynamicComponentCreationOutboundPort(this) ;
 			this.addPort(this.portToProviderJVM) ;
 			this.portToProviderJVM.localPublishPort() ;
-			this.portToProviderJVM.doConnection(
+			this.doPortConnection(
+				this.portToProviderJVM.getPortURI(),
 				this.providerJVMURI + AbstractCVM.DCC_INBOUNDPORT_URI_SUFFIX,
 				DynamicComponentCreationConnector.class.getCanonicalName()) ;
 
@@ -172,10 +174,10 @@ extends		AbstractComponent
 	public void			finalise() throws Exception
 	{
 		if (this.portToConsumerJVM.connected()) {
-			this.portToConsumerJVM.doDisconnection() ;
+			this.doPortDisconnection(this.portToConsumerJVM.getPortURI()) ;
 		}
 		if (this.portToProviderJVM.connected()) {
-			this.portToProviderJVM.doDisconnection() ;
+			this.doPortDisconnection(this.portToProviderJVM.getPortURI()) ;
 		}
 
 		super.finalise() ;
