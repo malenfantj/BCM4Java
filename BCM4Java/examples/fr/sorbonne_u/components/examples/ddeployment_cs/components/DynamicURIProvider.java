@@ -121,8 +121,6 @@ extends		AbstractComponent
 
 		// create the port that exposes the offered interface.
 		PortI p = new URIProviderInboundPort(this) ;
-		// add the port to the set of ports of the component
-		this.addPort(p) ;
 		// publish the port
 		p.publishPort() ;
 

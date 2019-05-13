@@ -122,7 +122,6 @@ implements	ClientSidePluginI
 	{
 		this.pluginOutboundPort =
 					(AbstractOutboundPort) this.createOutboundPort() ;
-		this.addPort(this.pluginOutboundPort) ;
 		this.pluginOutboundPort.publishPort() ;
 	}
 
@@ -265,7 +264,6 @@ implements	ClientSidePluginI
 		}
 
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this.owner) ;
-		this.addPort(rop) ;
 		rop.publishPort() ;
 
 		this.owner.doPortConnection(

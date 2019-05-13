@@ -106,8 +106,6 @@ extends		AbstractComponent
 		// create the port that exposes the required interface
 		this.uriGetterPort =
 						new URIConsumerOutboundPort(outboundPortURI, this) ;
-		// add the port to the set of ports of the component
-		this.addPort(this.uriGetterPort) ;
 		// publish the port (an outbound port is always local)
 		this.uriGetterPort.localPublishPort() ;
 		this.counter = 0 ;

@@ -254,7 +254,6 @@ extends		AbstractPlugin
 		}
 
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this.owner) ;
-		this.addPort(rop) ;
 		rop.publishPort() ;
 		this.owner.doPortConnection(
 				rop.getPortURI(),
@@ -264,7 +263,6 @@ extends		AbstractPlugin
 		// Connect to the other component using its dynamic connection request
 		// inbound port.
 		this.dcrop = new DynamicConnectionRequestOutboundPort(this.owner) ;
-		this.addPort(this.dcrop) ;
 		this.dcrop.publishPort() ;
 
 		String[] otherInboundPortURI =
@@ -328,7 +326,6 @@ extends		AbstractPlugin
 			connectionDescriptor.createClientSideDynamicPort(
 													requiredInterface,
 													this.owner) ;
-		this.addPort(dynamicOutboundPort) ;
 		dynamicOutboundPort.publishPort() ;
 		this.dynamicOutboundPorts.put(requiredInterface, dynamicOutboundPort) ;
 		this.owner.doPortConnection(

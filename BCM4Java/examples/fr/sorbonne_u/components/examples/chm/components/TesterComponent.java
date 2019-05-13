@@ -123,12 +123,10 @@ extends		AbstractComponent
 
 		this.readingOutboundPort =
 						new MapReadingOutboundPort<String,Integer>(this) ;
-		this.addPort(this.readingOutboundPort) ;
 		this.readingOutboundPort.publishPort() ;
 
 		this.writingOutboundPort =
 						new MapWritingOutboundPort<String,Integer>(this) ;
-		this.addPort(this.writingOutboundPort) ;
 		this.writingOutboundPort.publishPort() ;
 	}
 
@@ -145,7 +143,6 @@ extends		AbstractComponent
 		super.execute() ;
 
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this) ;
-		this.addPort(rop) ;
 		rop.publishPort() ;
 
 		this.doPortConnection(rop.getPortURI(),

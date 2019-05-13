@@ -91,7 +91,6 @@ extends		AbstractComponent
 
 		this.p = new DynamicComponentCreationInboundPort(
 								dynamicComponentCreationInboundPortURI, this) ;
-		this.addPort(this.p) ;
 		if (AbstractCVM.isDistributed) {
 			this.p.publishPort() ;
 		} else {

@@ -71,7 +71,6 @@ extends		AbstractComponent
 
 		this.addOfferedInterface(MyServiceI.class) ;
 		MyServiceInboundPort ip = new MyServiceInboundPort(this) ;
-		this.addPort(ip) ;
 		ip.publishPort() ;
 	}
 

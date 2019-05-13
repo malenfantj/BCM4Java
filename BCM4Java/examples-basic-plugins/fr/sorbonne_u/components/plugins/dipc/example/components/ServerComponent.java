@@ -162,7 +162,6 @@ extends		AbstractComponent
 		// create and publish the data inbound port.
 		this.pairDataIBP =
 				new PairDataInboundPort(SS_DATAINBOUNDPORT_URI, this) ;
-		this.addPort(this.pairDataIBP) ;
 		this.pairDataIBP.publishPort() ;
 
 		// create the server-side push control plug-in and install it

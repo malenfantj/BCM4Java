@@ -35,6 +35,7 @@ package fr.sorbonne_u.components.plugins.dipc.example.components;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.connectors.DataConnector;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -43,7 +44,6 @@ import fr.sorbonne_u.components.interfaces.DataRequiredI;
 import fr.sorbonne_u.components.plugins.dipc.DataInterfacePushControlClientSidePlugin;
 import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI;
 import fr.sorbonne_u.components.plugins.dipc.example.ports.PairDataOutboundPort;
-import fr.sorbonne_u.components.ports.AbstractPort;
 
 //------------------------------------------------------------------------------
 /**
@@ -124,7 +124,6 @@ extends		AbstractComponent
 
 		// create and publish the data outbound port.
 		this.pairDataOBP = new PairDataOutboundPort(this) ;
-		this.addPort(this.pairDataOBP) ;
 		this.pairDataOBP.publishPort() ;
 
 		// create the client-side push control plug-in and install it

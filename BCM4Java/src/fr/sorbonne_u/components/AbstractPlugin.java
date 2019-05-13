@@ -35,7 +35,6 @@ package fr.sorbonne_u.components;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.exceptions.PostconditionException;
 import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
@@ -152,7 +151,6 @@ implements	PluginI
 			super(0, 0) ;
 
 			this.cpObp = new ReflectionOutboundPort(this) ;
-			this.addPort(this.cpObp) ;
 			this.cpObp.publishPort() ;
 		}
 
@@ -463,31 +461,6 @@ implements	PluginI
 	// --------------------------------------------------------------------
 	// Plug-in methods linking it to the base services of components
 	// --------------------------------------------------------------------
-
-	/**
-	 * add a port to the owner component, a method used in plug-in objects to
-	 * access their owner component in a way other objects can't.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	p != null ;
-	 * post	this.owner.isPortExisting(p.getPortURI())
-	 * </pre>
-	 *
-	 * @param p port to be added.
-	 * @throws Exception		<i>todo.</i>
-	 */
-	protected void		addPort(PortI p) throws Exception
-	{
-		assert	p != null : new PreconditionException("p != null") ;
-
-		((AbstractComponent) this.owner).addPort(p) ;
-
-		assert	this.owner.isPortExisting(p.getPortURI()) :
-					new PostconditionException(
-						"this.owner.isPortExisting(p.getPortURI())") ;
-	}
 
 	/**
 	 * find a port in the owner component, a method used in plug-in

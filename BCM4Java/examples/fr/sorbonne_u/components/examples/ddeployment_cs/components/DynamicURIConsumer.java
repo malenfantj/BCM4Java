@@ -103,12 +103,10 @@ extends		AbstractComponent
 
 		this.uriGetterPort = new URIConsumerOutboundPort(this) ;
 		// add the port to the set of ports of the component
-		this.addPort(this.uriGetterPort) ;
 		// publish the port
 		this.uriGetterPort.publishPort() ;
 
 		this.launchInboundPort = new URIConsumerLaunchInboundPort(this) ;
-		this.addPort(this.launchInboundPort) ;
 		this.launchInboundPort.publishPort() ;
 
 		this.tracer.setTitle("dynamic consumer") ;

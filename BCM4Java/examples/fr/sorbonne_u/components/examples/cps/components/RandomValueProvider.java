@@ -101,7 +101,6 @@ extends		AbstractComponent
 		this.inboundPort =
 			new ValueProvidingInboundPort(valueProvidingInboundPortURI,
 										 this) ;
-		this.addPort(inboundPort) ;
 		this.inboundPort.publishPort() ;
 
 		this.tracer.setTitle("RandomValueProvider") ;
@@ -134,7 +133,6 @@ extends		AbstractComponent
 		this.inboundPort =
 			new ValueProvidingInboundPort(valueProvidingInboundPortURI,
 										 this) ;
-		this.addPort(inboundPort);
 		this.inboundPort.publishPort();
 
 		this.tracer.setTitle("RandomValueProvider") ;

@@ -35,6 +35,8 @@ package fr.sorbonne_u.components.ports;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.reflect.Constructor;
+
+import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
@@ -194,7 +196,7 @@ implements	OutboundPortI
 	// ------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#setServerPortURI(java.lang.String)
+	 * @see fr.sorbonne_u.components.AbstractPort#setServerPortURI(java.lang.String)
 	 */
 	@Override
 	public void			setServerPortURI(String serverPortURI)
@@ -206,7 +208,7 @@ implements	OutboundPortI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#unsetServerPortURI()
+	 * @see fr.sorbonne_u.components.AbstractPort#unsetServerPortURI()
 	 */
 	@Override
 	public void			unsetServerPortURI() throws Exception
@@ -225,7 +227,7 @@ implements	OutboundPortI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#setClientPortURI(java.lang.String)
+	 * @see fr.sorbonne_u.components.AbstractPort#setClientPortURI(java.lang.String)
 	 */
 	@Override
 	public void			setClientPortURI(String clientPortURI)
@@ -236,7 +238,7 @@ implements	OutboundPortI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#unsetClientPortURI()
+	 * @see fr.sorbonne_u.components.AbstractPort#unsetClientPortURI()
 	 */
 	@Override
 	public void			unsetClientPortURI() throws Exception
@@ -368,7 +370,7 @@ implements	OutboundPortI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#doMyConnection(java.lang.String, fr.sorbonne_u.components.connectors.ConnectorI)
+	 * @see fr.sorbonne_u.components.AbstractPort#doMyConnection(java.lang.String, fr.sorbonne_u.components.connectors.ConnectorI)
 	 */
 	@Override
 	protected void		doMyConnection(
@@ -456,7 +458,7 @@ implements	OutboundPortI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#doMyDisconnection()
+	 * @see fr.sorbonne_u.components.AbstractPort#doMyDisconnection()
 	 */
 	@Override
 	protected void		doMyDisconnection() throws Exception

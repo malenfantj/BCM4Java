@@ -237,7 +237,6 @@ extends		AbstractComponent
 		this.numberOfIterationsLeft = 0 ;
 		this.valueProvidingInboundPortURI = valueProvidingInboundPortURI ;
 		this.outboundPort = new ValueProvidingOutboundPort(this) ;
-		this.addPort(outboundPort) ;
 		this.outboundPort.publishPort() ;
 
 		this.tracer.setTitle("ValueConsumer") ;
@@ -272,7 +271,6 @@ extends		AbstractComponent
 		this.numberOfIterationsLeft = 0 ;
 		this.valueProvidingInboundPortURI = valueProvidingInboundPortURI ;
 		this.outboundPort = new ValueProvidingOutboundPort(this) ;
-		this.addPort(outboundPort);
 		this.outboundPort.publishPort();
 
 		this.tracer.setTitle("ValueConsumer") ;

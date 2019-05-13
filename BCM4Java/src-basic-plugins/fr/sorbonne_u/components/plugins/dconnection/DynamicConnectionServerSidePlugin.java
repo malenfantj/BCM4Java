@@ -137,7 +137,6 @@ extends		AbstractPlugin
 		this.dcrip =
 			new DynamicConnectionRequestInboundPort(
 										this.getPluginURI(), this.owner) ;
-		this.addPort(this.dcrip) ;
 		this.dcrip.publishPort() ;
 	}
 
@@ -207,7 +206,6 @@ extends		AbstractPlugin
 		assert	this.owner.isOfferedInterface(offeredInterface) ;
 
 		InboundPortI p = this.createServerSideDynamicPort(offeredInterface) ;
-		this.addPort(p) ;
 		p.publishPort() ;
 		this.dynamicInboundPorts.put(offeredInterface, p) ;
 

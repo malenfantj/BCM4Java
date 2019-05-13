@@ -87,10 +87,12 @@ extends		AbstractDistributedCVM
 	{
 		if (thisJVMURI.equals(SERVER_JVM_URI)) {
 
+			@SuppressWarnings("unused")
 			ReflectionServer s = new ReflectionServer(SERVER_RIP_URI) ;
 
 		} else if (thisJVMURI.equals(CLIENT_JVM_URI)) {
 
+			@SuppressWarnings("unused")
 			ReflectionClient client = new ReflectionClient(SERVER_RIP_URI) ;
 
 		} else {

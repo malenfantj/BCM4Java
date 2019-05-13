@@ -64,7 +64,6 @@ import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerOnConsole;
 import fr.sorbonne_u.components.interfaces.OfferedI;
 import fr.sorbonne_u.components.interfaces.RequiredI;
-import fr.sorbonne_u.components.ports.AbstractPort;
 import fr.sorbonne_u.components.ports.InboundPortI;
 import fr.sorbonne_u.components.ports.OutboundPortI;
 import fr.sorbonne_u.components.ports.PortI;
@@ -1231,7 +1230,6 @@ implements	ComponentI
 		try {
 			ReflectionInboundPort rip =
 					new ReflectionInboundPort(reflectionInboundPortURI, this) ;
-			this.addPort(rip) ;
 			rip.publishPort() ;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;

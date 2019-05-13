@@ -133,7 +133,6 @@ extends		AbstractComponent
 		try {
 			this.portToConsumerJVM =
 				new DynamicComponentCreationOutboundPort(this) ;
-			this.addPort(this.portToConsumerJVM) ;
 			this.portToConsumerJVM.localPublishPort() ;
 			this.doPortConnection(
 				this.portToConsumerJVM.getPortURI(),
@@ -142,7 +141,6 @@ extends		AbstractComponent
 
 			this.portToProviderJVM =
 				new DynamicComponentCreationOutboundPort(this) ;
-			this.addPort(this.portToProviderJVM) ;
 			this.portToProviderJVM.localPublishPort() ;
 			this.doPortConnection(
 				this.portToProviderJVM.getPortURI(),
@@ -236,7 +234,6 @@ extends		AbstractComponent
 	{
 		URIConsumerLaunchOutboundPort p =
 									new URIConsumerLaunchOutboundPort(this) ;
-		this.addPort(p) ;
 		p.publishPort() ;
 		this.doPortConnection(
 				p.getPortURI(),
@@ -283,7 +280,6 @@ extends		AbstractComponent
 
 		this.addRequiredInterface(ReflectionI.class) ;
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this) ;
-		this.addPort(rop) ;
 		rop.localPublishPort() ;
 
 		// connect to the provider (server) component

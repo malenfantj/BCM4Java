@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.ports;
 
+import fr.sorbonne_u.components.AbstractPort;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -306,7 +308,7 @@ implements	InboundPortI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#doMyConnection(java.lang.String, fr.sorbonne_u.components.connectors.ConnectorI)
+	 * @see fr.sorbonne_u.components.AbstractPort#doMyConnection(java.lang.String, fr.sorbonne_u.components.connectors.ConnectorI)
 	 */
 	@Override
 	protected void		doMyConnection(
@@ -346,7 +348,7 @@ implements	InboundPortI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#doMyDisconnection()
+	 * @see fr.sorbonne_u.components.AbstractPort#doMyDisconnection()
 	 */
 	@Override
 	protected void		doMyDisconnection() throws Exception

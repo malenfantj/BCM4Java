@@ -164,14 +164,12 @@ extends		AbstractComponent
 			new MapReadingInboundPort<K,V>(
 					this.getExecutorServiceIndex(READ_ACCESS_HANDLER_URI),
 					this) ;
-		this.addPort(this.readingInboundPort) ;
 		this.readingInboundPort.publishPort() ;
 
 		this.writingInboundPort =
 			new MapWritingInboundPort<K,V>(
 					this.getExecutorServiceIndex(WRITE_ACCESS_HANDLER_URI),
 					this) ;
-		this.addPort(this.writingInboundPort) ;
 		this.writingInboundPort.publishPort() ;
 	}
 

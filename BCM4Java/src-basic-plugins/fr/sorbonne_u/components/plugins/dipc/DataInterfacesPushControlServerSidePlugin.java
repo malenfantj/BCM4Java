@@ -112,7 +112,6 @@ implements	PushControlImplementationI
 		this.addOfferedInterface(PushControlI.class) ;
 		this.pushControlInboundPort =
 				new PushControlInboundPort(this.getPluginURI(), owner) ;
-		this.addPort(this.pushControlInboundPort) ;
 		this.pushControlInboundPort.publishPort() ;
 	}
 

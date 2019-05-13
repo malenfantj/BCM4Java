@@ -35,6 +35,8 @@ package fr.sorbonne_u.components.ports;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.reflect.Constructor;
+
+import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.connectors.AbstractDataConnector;
 import fr.sorbonne_u.components.connectors.ConnectorI;
@@ -225,7 +227,7 @@ implements	DataOutboundPortI
 	// ------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractPort#getImplementedInterface()
+	 * @see fr.sorbonne_u.components.AbstractPort#getImplementedInterface()
 	 */
 	@Override
 	public Class<?> 		getImplementedInterface() throws Exception

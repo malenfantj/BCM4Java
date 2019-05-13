@@ -85,12 +85,10 @@ extends		AbstractComponent
 		this.serverRIPURI = serverRIPURI ;
 		this.addRequiredInterface(ReflectionI.class) ;
 		this.rObp = new ReflectionOutboundPort(this) ;
-		this.addPort(this.rObp) ;
 		this.rObp.publishPort() ;
 
 		this.addRequiredInterface(MyServiceI.class) ;
 		this.servicePort = new MyServiceOutboundPort(this) ;
-		this.addPort(this.servicePort) ;
 		this.servicePort.publishPort() ;
 	}
 

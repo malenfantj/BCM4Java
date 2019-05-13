@@ -251,7 +251,6 @@ extends		AbstractComponent
 		this.addRequiredInterface(PingPongI.class) ;
 		this.addOfferedInterface(PingPongI.class) ;
 		this.pingPongOutboundPort = new PingPongOutboundPort(this) ;
-		this.addPort(this.pingPongOutboundPort) ;
 		this.pingPongOutboundPort.localPublishPort() ;
 		if (this.hasService) {
 			this.pingPongInboundPort =
@@ -262,7 +261,6 @@ extends		AbstractComponent
 				new PingPongInboundPort(
 							this.player2PingPongInboundPortURI, this) ;
 		}
-		this.addPort(this.pingPongInboundPort) ;
 		this.pingPongInboundPort.publishPort() ;
 
 		// The data interfaces and ports.
@@ -287,9 +285,7 @@ extends		AbstractComponent
 				new PingPongDataInboundPort(
 							this.player2PingPongDataInboundPortURI, this) ;
 		}
-		this.addPort(this.pingPongDataOutboundPort) ;
 		this.pingPongDataOutboundPort.publishPort() ;
-		this.addPort(pingPongDataInboundPort) ;
 		this.pingPongDataInboundPort.publishPort() ;
 
 		// The two way interface and port.
@@ -298,7 +294,6 @@ extends		AbstractComponent
 		this.addRequiredInterface(PingPongTwoWayI.class) ;
 		this.pingPongTwoWayPort =
 				new PingPongTwoWayPort(pingPongTwoWayPortURI, this) ;
-		this.addPort(this.pingPongTwoWayPort) ;
 		this.pingPongTwoWayPort.publishPort() ;
 
 		// The data two way interface and port.
@@ -311,7 +306,6 @@ extends		AbstractComponent
 				new PingPongDataTwoWayPort(
 									pingPongTwoWayPortURI + "-dtwp",
 									this) ;
-		this.addPort(this.pingpongDataTwoWayPort) ;
 		this.pingpongDataTwoWayPort.publishPort() ;
 	}
 

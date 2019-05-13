@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.ports;
 
+import fr.sorbonne_u.components.AbstractPort;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
