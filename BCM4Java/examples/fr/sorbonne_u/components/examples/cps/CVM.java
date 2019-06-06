@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.cps;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -70,18 +72,25 @@ extends		AbstractCVM
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
 	 */
 	@Override
-	public void			deploy() throws Exception {
-		
-		RandomValueProvider s =
-			new RandomValueProvider(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-		s.toggleTracing() ;
-		
-		ValueConsumer c =
-			new ValueConsumer(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-		c.toggleTracing();
+	public void			deploy() throws Exception
+	{
+		String rvpURI =
+			AbstractComponent.createComponent(
+				RandomValueProvider.class.getCanonicalName(),
+				new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI}) ;
+		this.toggleTracing(rvpURI) ;
 
-		ContinuationExamples ce = new ContinuationExamples() ;
-		ce.toggleTracing() ;
+		String vcURI =
+			AbstractComponent.createComponent(
+					ValueConsumer.class.getCanonicalName(),
+					new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI}) ;
+		this.toggleTracing(vcURI) ;
+
+		String ceURI =
+			AbstractComponent.createComponent(
+					ContinuationExamples.class.getCanonicalName(),
+					new Object[]{}) ;
+		this.toggleTracing(ceURI) ;
 
 		super.deploy();
 	}

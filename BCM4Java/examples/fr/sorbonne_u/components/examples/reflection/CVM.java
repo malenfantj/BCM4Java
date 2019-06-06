@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.reflection;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -80,8 +82,12 @@ extends		AbstractCVM
 	@Override
 	public void			deploy() throws Exception
 	{
-		new ReflectionServer(SERVER_RIP_URI) ;
-		new ReflectionClient(SERVER_RIP_URI) ;
+		AbstractComponent.createComponent(
+				ReflectionServer.class.getCanonicalName(),
+				new Object[]{SERVER_RIP_URI}) ;
+		AbstractComponent.createComponent(
+				ReflectionClient.class.getCanonicalName(),
+				new Object[]{SERVER_RIP_URI}) ;
 
 		super.deploy();
 	}

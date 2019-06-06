@@ -88,7 +88,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @OfferedInterfaces(offered = {MapReading.class,
 							 MapTesting.class,
 							 MapWriting.class})
-public class				ConcurrentMapComponent<K,V>
+public class			ConcurrentMapComponent<K,V>
 extends		AbstractComponent
 //-----------------------------------------------------------------------------
 {
@@ -139,7 +139,7 @@ extends		AbstractComponent
 	 * @param nbReadingThreads			number of threads in the readers' pool.
 	 * @throws Exception					<i>to do.</i>
 	 */
-	public				ConcurrentMapComponent(
+	protected			ConcurrentMapComponent(
 		String reflectionInboundPortURI,
 		int nbReadingThreads
 		) throws Exception

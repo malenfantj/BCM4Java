@@ -65,7 +65,7 @@ import fr.sorbonne_u.components.ports.PortI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 @OfferedInterfaces(offered = {URIProviderI.class})
-public class				DynamicURIProvider
+public class			DynamicURIProvider
 extends		AbstractComponent
 {
 	// ------------------------------------------------------------------------
@@ -103,7 +103,7 @@ extends		AbstractComponent
 	 * @param uriPrefix			the URI prefix of this provider.
 	 * @throws Exception			<i>todo.</i>
 	 */
-	public				DynamicURIProvider(
+	protected			DynamicURIProvider(
 		String uriPrefix
 		) throws Exception
 	{

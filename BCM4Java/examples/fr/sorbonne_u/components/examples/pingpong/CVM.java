@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.pingpong;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -99,34 +101,36 @@ extends		AbstractCVM
 		// --------------------------------------------------------------------
 
 		// A first player that initially has the service.
-		PingPongPlayer pp1 =
-			new PingPongPlayer(
-					PING_PONG_URI_1,
-					true,
-					PLAYER1_PING_PONG_INBOUND_PORT_URI,
-					PLAYER2_PING_PONG_INBOUND_PORT_URI,
-					PLAYER1_PING_PONG_DATA_OUTBOUND_PORT_URI,
-					PLAYER1_PING_PONG_DATA_INBOUND_PORT_URI,
-					PLAYER2_PING_PONG_DATA_OUTBOUND_PORT_URI,
-					PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
-					PLAYER1_PING_PONG_TWOWAY_PORT_URI,
-					PLAYER2_PING_PONG_TWOWAY_PORT_URI) ;
-		pp1.toggleTracing() ;
+		String pp1URI =
+			AbstractComponent.createComponent(
+					PingPongPlayer.class.getCanonicalName(),
+					new Object[]{PING_PONG_URI_1,
+								 true,
+								 PLAYER1_PING_PONG_INBOUND_PORT_URI,
+								 PLAYER2_PING_PONG_INBOUND_PORT_URI,
+								 PLAYER1_PING_PONG_DATA_OUTBOUND_PORT_URI,
+								 PLAYER1_PING_PONG_DATA_INBOUND_PORT_URI,
+								 PLAYER2_PING_PONG_DATA_OUTBOUND_PORT_URI,
+								 PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
+								 PLAYER1_PING_PONG_TWOWAY_PORT_URI,
+								 PLAYER2_PING_PONG_TWOWAY_PORT_URI}) ;
+		this.toggleTracing(pp1URI) ;
 
 		// A second player that is initially passive.
-		PingPongPlayer pp2 =
-			new PingPongPlayer(
-					PING_PONG_URI_2,
-					false,
-					PLAYER1_PING_PONG_INBOUND_PORT_URI,
-					PLAYER2_PING_PONG_INBOUND_PORT_URI,
-					PLAYER1_PING_PONG_DATA_OUTBOUND_PORT_URI,
-					PLAYER1_PING_PONG_DATA_INBOUND_PORT_URI,
-					PLAYER2_PING_PONG_DATA_OUTBOUND_PORT_URI,
-					PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
-					PLAYER2_PING_PONG_TWOWAY_PORT_URI,
-					PLAYER1_PING_PONG_TWOWAY_PORT_URI) ;
-		pp2.toggleTracing() ;
+		String pp2URI =
+			AbstractComponent.createComponent(
+					PingPongPlayer.class.getCanonicalName(),
+					new Object[]{PING_PONG_URI_2,
+								 false,
+								 PLAYER1_PING_PONG_INBOUND_PORT_URI,
+								 PLAYER2_PING_PONG_INBOUND_PORT_URI,
+								 PLAYER1_PING_PONG_DATA_OUTBOUND_PORT_URI,
+								 PLAYER1_PING_PONG_DATA_INBOUND_PORT_URI,
+								 PLAYER2_PING_PONG_DATA_OUTBOUND_PORT_URI,
+								 PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
+								 PLAYER2_PING_PONG_TWOWAY_PORT_URI,
+								 PLAYER1_PING_PONG_TWOWAY_PORT_URI}) ;
+		this.toggleTracing(pp2URI) ;
 
 		// --------------------------------------------------------------------
 		// Deployment done

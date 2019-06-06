@@ -65,7 +65,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
  */
 @RequiredInterfaces(required = {URIConsumerI.class})
 @OfferedInterfaces(offered = {URIConsumerLaunchI.class})
-public class				DynamicURIConsumer
+public class			DynamicURIConsumer
 extends		AbstractComponent
 {
 	// ------------------------------------------------------------------------
@@ -93,7 +93,7 @@ extends		AbstractComponent
 	 *
 	 * @throws Exception				<i>todo.</i>
 	 */
-	public				DynamicURIConsumer() throws Exception
+	protected			DynamicURIConsumer() throws Exception
 	{
 		// the reflection inbound port URI is the URI of the component
 		// no simple thread but one schedulable thread

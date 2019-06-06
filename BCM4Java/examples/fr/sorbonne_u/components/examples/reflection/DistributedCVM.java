@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.reflection;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -87,13 +89,15 @@ extends		AbstractDistributedCVM
 	{
 		if (thisJVMURI.equals(SERVER_JVM_URI)) {
 
-			@SuppressWarnings("unused")
-			ReflectionServer s = new ReflectionServer(SERVER_RIP_URI) ;
+			AbstractComponent.createComponent(
+					ReflectionServer.class.getCanonicalName(),
+					new Object[]{SERVER_RIP_URI}) ;
 
 		} else if (thisJVMURI.equals(CLIENT_JVM_URI)) {
 
-			@SuppressWarnings("unused")
-			ReflectionClient client = new ReflectionClient(SERVER_RIP_URI) ;
+			AbstractComponent.createComponent(
+					ReflectionClient.class.getCanonicalName(),
+					new Object[]{SERVER_RIP_URI}) ;
 
 		} else {
 

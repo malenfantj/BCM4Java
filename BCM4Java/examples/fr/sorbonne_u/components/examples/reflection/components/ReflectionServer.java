@@ -60,10 +60,10 @@ import fr.sorbonne_u.components.ports.PortI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				ReflectionServer
+public class			ReflectionServer
 extends		AbstractComponent
 { 
-	public				ReflectionServer(
+	protected			ReflectionServer(
 		String reflectionInboundPortURI
 		) throws Exception
 	{

@@ -35,9 +35,10 @@ package fr.sorbonne_u.components.cvm;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.ArrayList;
 import java.util.HashSet;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
@@ -91,7 +92,7 @@ implements	ComponentVirtualMachineI
 	// ------------------------------------------------------------------------
 
 	/** The singleton pattern: one instance of CVM per JVM.				*/
-	protected static AbstractCVM				theCVM ;
+	protected static AbstractCVM			theCVM ;
 	/** URI of the current JVM in the deployment platform.				*/
 	protected final static String			thisJVMURI = "thisCVM" ;
 	/**	Enables or not debugging messages.								*/
@@ -169,7 +170,7 @@ implements	ComponentVirtualMachineI
 	// ------------------------------------------------------------------------
 
 	/** initial number of potential entries in the local registry.		*/
-	protected static int						LOCAL_REGISTRY_INIT_SIZE = 1000 ;
+	protected static int					LOCAL_REGISTRY_INIT_SIZE = 1000 ;
 	/** local registry linking port URI to local port objects.			*/
 	protected static final Hashtable<String,PortI>	LOCAL_REGISTRY =
 						new Hashtable<String,PortI>(LOCAL_REGISTRY_INIT_SIZE) ;
@@ -322,15 +323,15 @@ implements	ComponentVirtualMachineI
 	// Internal information about components in the CVM and CVM life-cycle
 	// management.
 	// ------------------------------------------------------------------------
-	
-	/** collection of deployed components.								*/
-	protected final ArrayList<ComponentI>	deployedComponents ;
+
+	/** map from URI of reflection inbound ports to deployed components.*/
+	protected final Map<String, ComponentI>	uri2component ;
 	/** the state of the component virtual machine.						*/
 	protected CVMState						state ;
-	/** true if the CVM currently running is distributed.					*/
+	/** true if the CVM currently running is distributed.				*/
 	public static boolean					isDistributed ;
 	/** the logger used for debugging log entries.						*/
-	protected Logger							debugginLogger ;
+	protected Logger						debugginLogger ;
 
 	// ------------------------------------------------------------------------
 	// Constructors
@@ -378,7 +379,7 @@ implements	ComponentVirtualMachineI
 		super() ;
 
 		AbstractCVM.theCVM = this ;
-		this.deployedComponents = new ArrayList<ComponentI>() ;
+		this.uri2component = new ConcurrentHashMap<>() ;
 		this.state = null ;
 		AbstractCVM.isDistributed = isDistributed ;
 
@@ -390,11 +391,12 @@ implements	ComponentVirtualMachineI
 			// when distributed, the dynamic component creator is created and
 			// initialised in the method initialise of AbstractDistributedCVM
 			try {
-				DynamicComponentCreator dcc =
-					new DynamicComponentCreator(
-							AbstractCVM.thisJVMURI +
-											DCC_INBOUNDPORT_URI_SUFFIX) ;
-				assert	this.isDeployedComponent(dcc) ;
+				String dccURI =
+					AbstractComponent.createComponent(
+						DynamicComponentCreator.class.getCanonicalName(),
+						new Object[]{AbstractCVM.thisJVMURI +
+											DCC_INBOUNDPORT_URI_SUFFIX}) ;
+				assert	this.isDeployedComponent(dccURI) ;
 			} catch (Exception e) {
 				this.logDebug(null, "WARNING! -- The dynamic component "
 									+ "creator has not been "
@@ -525,18 +527,18 @@ implements	ComponentVirtualMachineI
 	}
 	
 	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isDeployedComponent(fr.sorbonne_u.components.ComponentI)
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isDeployedComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		isDeployedComponent(ComponentI component)
+	public boolean		isDeployedComponent(String componentURI)
 	{
-		assert	component != null ;
+		assert	componentURI != null ;
 
-		boolean ret = this.deployedComponents.contains(component) ;
+		boolean ret = this.uri2component.containsKey(componentURI) ;
 
 		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
 			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
-						  "called isDeployedComponent(" + component
+						  "called isDeployedComponent(" + componentURI
 						  + ") returning " + ret + ".") ;
 		}
 
@@ -544,15 +546,18 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#addDeployedComponent(fr.sorbonne_u.components.ComponentI)
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#addDeployedComponent(java.lang.String, fr.sorbonne_u.components.ComponentI)
 	 */
 	@Override
-	public void			addDeployedComponent(ComponentI component)
+	public void			addDeployedComponent(
+		String componentURI,
+		ComponentI component
+		)
 	{
-		assert	component != null ;
-		assert	!this.isDeployedComponent(component) ;
+		assert	componentURI != null && component != null ;
+		assert	!this.isDeployedComponent(componentURI) ;
 
-		this.deployedComponents.add(component) ;
+		this.uri2component.put(componentURI, component) ;
 
 		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
 			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
@@ -562,36 +567,24 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#removeDeployedComponent(fr.sorbonne_u.components.ComponentI)
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#removeDeployedComponent(java.lang.String)
 	 */
 	@Override
-	public void			removeDeployedComponent(ComponentI component)
+	public void			removeDeployedComponent(String componentURI)
 	{
-		assert	component != null ;
-		assert	this.isDeployedComponent(component) ;
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
 
-		this.deployedComponents.remove(component) ;
+		this.uri2component.remove(componentURI) ;
 
 		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
 			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
-						  "called removeDeployedComponent(" + component
+						  "called removeDeployedComponent(" + componentURI
 						  + ") ...done.") ;
 		}
 	}
 
 	/**
-	 * check if the deployment is completed, and start all of the deployed
-	 * components.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	deploymentDone
-	 * post	this.allStarted
-	 * post	!this.isShutdown()
-	 * </pre>
-	 * 
-	 * @throws Exception  <i>todo.</i>
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#start()
 	 */
 	@Override
@@ -599,7 +592,7 @@ implements	ComponentVirtualMachineI
 	{
 		assert	this.deploymentDone() ;
 
-		for(ComponentI c : this.deployedComponents) {
+		for(ComponentI c : this.uri2component.values()) {
 			if (!c.isStarted()) {
 				c.start() ;	
 			}
@@ -612,16 +605,25 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
-	 * check if all of the deployed component have been started, and perform
-	 * the execute method on all of them.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.allStarted
-	 * post	true				// no more postconditions.
-	 * </pre>
-	 * 
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#startComponent(java.lang.String)
+	 */
+	@Override
+	public void			startComponent(String componentURI)
+	throws Exception
+	{
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		this.uri2component.get(componentURI).start() ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
+						  "called startComponent(" +
+								  	componentURI + ") ...done") ;
+		}
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#execute()
 	 */
 	@Override
@@ -629,7 +631,7 @@ implements	ComponentVirtualMachineI
 	{
 		assert	this.allStarted() ;
 
-		for(ComponentI c : this.deployedComponents) {
+		for(ComponentI c : this.uri2component.values()) {
 			if (c.hasItsOwnThreads()) {
 				c.runTask(new AbstractComponent.AbstractTask() {
 					@Override
@@ -651,6 +653,35 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#executeComponent(java.lang.String)
+	 */
+	@Override
+	public void			executeComponent(String componentURI)
+	throws Exception
+	{
+		assert	componentURI != null ;
+		assert	this.componentStarted(componentURI) ;
+
+		this.uri2component.get(componentURI).runTask(
+				new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								this.getOwner().execute() ;
+							} catch (Exception e) {
+								throw new RuntimeException(e) ;
+							}
+						}
+				}) ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
+						  "called executeComponent(" +
+									componentURI + ") ...done") ;
+		}
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#finalise()
 	 */
 	@Override
@@ -658,7 +689,7 @@ implements	ComponentVirtualMachineI
 	{
 		assert	this.allStarted() ;
 
-		for(ComponentI c : this.deployedComponents) {
+		for(ComponentI c : this.uri2component.values()) {
 			c.finalise() ;
 		}
 
@@ -671,6 +702,25 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#finaliseComponent(java.lang.String)
+	 */
+	@Override
+	public void			finaliseComponent(String componentURI)
+	throws Exception
+	{
+		assert	componentURI != null ;
+		assert	this.componentStarted(componentURI) ;
+
+		this.uri2component.get(componentURI).finalise() ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
+						  "called finaliseComponent(" +
+									componentURI + ") ...done") ;
+		}
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#shutdown()
 	 */
 	@Override
@@ -678,7 +728,7 @@ implements	ComponentVirtualMachineI
 	{
 		assert	this.allFinalised() ;
 
-		for(ComponentI c : this.deployedComponents) {
+		for(ComponentI c : this.uri2component.values()) {
 			c.shutdown() ;
 		}
 
@@ -691,6 +741,24 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#shutdownComponent(java.lang.String)
+	 */
+	@Override
+	public void			shutdownComponent(String componentURI)
+	throws Exception
+	{
+		assert	componentURI != null ;
+		assert	this.componentFinalised(componentURI) ;
+
+		this.uri2component.get(componentURI).shutdown() ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.LIFE_CYCLE,
+				"called shutdownComponent(" + componentURI + ") ...done") ;
+		}
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#shutdownNow()
 	 */
 	@Override
@@ -698,7 +766,7 @@ implements	ComponentVirtualMachineI
 	{
 		assert	this.allFinalised() ;
 
-		for(ComponentI c : this.deployedComponents) {
+		for(ComponentI c : this.uri2component.values()) {
 			c.shutdownNow() ;
 		}
 
@@ -707,6 +775,24 @@ implements	ComponentVirtualMachineI
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			this.logDebug(CVMDebugModes.LIFE_CYCLE,
 						  "called shutdownNow() ...done") ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#shutdownNowComponent(java.lang.String)
+	 */
+	@Override
+	public void			shutdownNowComponent(String componentURI)
+	throws Exception
+	{
+		assert	componentURI != null ;
+		assert	this.componentFinalised(componentURI) ;
+
+		this.uri2component.get(componentURI).shutdown() ;
+
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.LIFE_CYCLE,
+				"called shutdownNowComponent(" + componentURI + ") ...done") ;
 		}
 	}
 
@@ -768,6 +854,19 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentStarted(java.lang.String)
+	 */
+	@Override
+	public boolean		componentStarted(String componentURI)
+	throws Exception
+	{
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		return this.uri2component.get(componentURI).isStarted() ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#allFinalised()
 	 */
 	@Override
@@ -777,16 +876,41 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentFinalised(java.lang.String)
+	 */
+	@Override
+	public boolean		componentFinalised(String componentURI)
+	throws Exception
+	{
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		return this.uri2component.get(componentURI).isFinalised() ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isShutdown()
 	 */
 	@Override
 	public boolean		isShutdown()
 	{
 		boolean ret = true ;
-		for(ComponentI c : this.deployedComponents) {
+		for(ComponentI c : this.uri2component.values()) {
 			ret = ret && c.isShutdown() ;
 		}
 		return ret ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentShutdown(java.lang.String)
+	 */
+	@Override
+	public boolean		componentShutdown(String componentURI)
+	{
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		return this.uri2component.get(componentURI).isShutdown() ;
 	}
 
 	/**
@@ -796,10 +920,22 @@ implements	ComponentVirtualMachineI
 	public boolean		isTerminated()
 	{
 		boolean ret = true ;
-		for(ComponentI c : this.deployedComponents) {
+		for(ComponentI c : this.uri2component.values()) {
 			ret = ret && c.isTerminated() ;
 		}
 		return ret ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentTerminated(java.lang.String)
+	 */
+	@Override
+	public boolean		componentTerminated(String componentURI)
+	{
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		return this.uri2component.get(componentURI).isTerminated() ;
 	}
 
 	/**
@@ -841,6 +977,45 @@ implements	ComponentVirtualMachineI
 	}
 
 	// ------------------------------------------------------------------------
+	// Component management
+	// ------------------------------------------------------------------------
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#doPortConnection(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void			doPortConnection(
+		String componentURI,
+		String outboundPortURI,
+		String inboundPortURI,
+		String connectorClassname
+		) throws Exception
+	{
+		assert	componentURI != null && outboundPortURI != null &&
+					inboundPortURI != null && connectorClassname != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		this.uri2component.get(componentURI).doPortConnection(
+					outboundPortURI, inboundPortURI, connectorClassname);
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#doPortDisconnection(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void			doPortDisconnection(
+		String componentURI,
+		String outboundPortURI
+		) throws Exception
+	{
+		assert	componentURI != null && outboundPortURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		this.uri2component.get(componentURI).
+								doPortDisconnection(outboundPortURI) ;
+	}
+
+	// ------------------------------------------------------------------------
 	// Debugging
 	// ------------------------------------------------------------------------
 
@@ -860,6 +1035,30 @@ implements	ComponentVirtualMachineI
 		String logEntry = this.logPrefix() + "|" + dm + "|" + message ;
 		System.out.println(logEntry) ;
 		this.debugginLogger.logMessage(logEntry) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#toggleTracing(java.lang.String)
+	 */
+	@Override
+	public void			toggleTracing(String componentURI)
+	{
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		this.uri2component.get(componentURI).toggleTracing() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#toggleLogging(java.lang.String)
+	 */
+	@Override
+	public void			toggleLogging(String componentURI)
+	{
+		assert	componentURI != null ;
+		assert	this.isDeployedComponent(componentURI) ;
+
+		this.uri2component.get(componentURI).toggleLogging() ;
 	}
 }
 //-----------------------------------------------------------------------------

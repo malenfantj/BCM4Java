@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.basic_cs;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -80,10 +82,10 @@ extends		AbstractCVM
 
 	/** Reference to the provider component to share between deploy
 	 *  and shutdown.													*/
-	protected URIProvider	uriProvider ;
+	protected String	uriProviderURI ;
 	/** Reference to the consumer component to share between deploy
 	 *  and shutdown.													*/
-	protected URIConsumer	uriConsumer ;
+	protected String	uriConsumerURI ;
 
 	/**
 	 * instantiate the components, publish their port and interconnect them.
@@ -117,29 +119,36 @@ extends		AbstractCVM
 		// --------------------------------------------------------------------
 
 		// create the provider component
-		this.uriProvider = new URIProvider(PROVIDER_COMPONENT_URI,
-										   URIProviderInboundPortURI) ;
-		assert	this.isDeployedComponent(this.uriProvider) ;
+		this.uriProviderURI =
+			AbstractComponent.createComponent(
+					URIProvider.class.getCanonicalName(),
+					new Object[]{PROVIDER_COMPONENT_URI,
+								 URIProviderInboundPortURI}) ;
+		assert	this.isDeployedComponent(this.uriProviderURI) ;
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
-		this.uriProvider.toggleTracing() ;
-		this.uriProvider.toggleLogging() ;
+		this.toggleTracing(this.uriProviderURI) ;
+		this.toggleLogging(this.uriProviderURI) ;
 
 		// create the consumer component
-		this.uriConsumer = new URIConsumer(CONSUMER_COMPONENT_URI,
-									  	   URIGetterOutboundPortURI) ;
-		assert	this.isDeployedComponent(uriConsumer) ;
+		this.uriConsumerURI =
+			AbstractComponent.createComponent(
+					URIConsumer.class.getCanonicalName(),
+					new Object[]{CONSUMER_COMPONENT_URI,
+								 URIGetterOutboundPortURI}) ;
+		assert	this.isDeployedComponent(this.uriConsumerURI) ;
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
-		this.uriConsumer.toggleTracing() ;
-		this.uriConsumer.toggleLogging() ;
+		this.toggleTracing(this.uriConsumerURI) ;
+		this.toggleLogging(this.uriConsumerURI) ;
 		
 		// --------------------------------------------------------------------
 		// Connection phase
 		// --------------------------------------------------------------------
 
 		// do the connection
-		this.uriConsumer.doPortConnection(
+		this.doPortConnection(
+				this.uriConsumerURI,
 				URIGetterOutboundPortURI,
 				URIProviderInboundPortURI,
 				URIServiceConnector.class.getCanonicalName()) ;
@@ -169,7 +178,9 @@ extends		AbstractCVM
 	{
 		// Port disconnections can be done here for static architectures
 		// otherwise, they can be done in the finalise methods of components.
-		this.uriConsumer.doPortDisconnection(URIGetterOutboundPortURI) ;
+		this.doPortDisconnection(
+				this.uriConsumerURI,
+				URIGetterOutboundPortURI) ;
 
 		super.finalise();
 	}
@@ -191,10 +202,6 @@ extends		AbstractCVM
 	{
 		assert	this.allFinalised() ;
 		// any disconnection not done yet can be performed here
-
-		// print logs on files, if previously activated
-		this.uriConsumer.printExecutionLogOnFile("consumer") ;
-		this.uriProvider.printExecutionLogOnFile("provider") ;
 
 		super.shutdown();
 	}

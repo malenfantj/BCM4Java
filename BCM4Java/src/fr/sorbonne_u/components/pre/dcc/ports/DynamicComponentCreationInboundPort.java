@@ -94,8 +94,9 @@ implements	DynamicComponentCreationI
 					@Override
 					public String call() throws Exception {
 						return ((DynamicComponentCreator)this.getOwner()).
-									createComponent(fClassname,
-													fConstructorParams) ;
+									createOtherComponent(
+											fClassname,
+											fConstructorParams) ;
 					}
 				}) ;
 	}

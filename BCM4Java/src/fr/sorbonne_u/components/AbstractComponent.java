@@ -1138,7 +1138,7 @@ implements	ComponentI
 	 * @param nbThreads				number of threads to be created in the component pool.
 	 * @param nbSchedulableThreads	number of threads to be created in the component schedulable pool.
 	 */
-	public				AbstractComponent(
+	protected			AbstractComponent(
 		int nbThreads,
 		int nbSchedulableThreads
 		)
@@ -1166,7 +1166,7 @@ implements	ComponentI
 	 * @param nbThreads					number of threads to be created in the component pool.
 	 * @param nbSchedulableThreads		number of threads to be created in the component schedulable pool.
 	 */
-	public				AbstractComponent(
+	protected			AbstractComponent(
 		String reflectionInboundPortURI,
 		int nbThreads,
 		int nbSchedulableThreads
@@ -1238,7 +1238,9 @@ implements	ComponentI
 		this.addInterfacesFromAnnotations() ;
 		this.addPluginsFromAnnotations() ;
 
-		AbstractCVM.getCVM().addDeployedComponent(this) ;
+		AbstractCVM.getCVM().addDeployedComponent(
+								reflectionInboundPortURI, 
+								this) ;
 
 		assert	this.innerComponents != null ;
 		assert	this.requiredInterfaces != null ;
@@ -1299,6 +1301,43 @@ implements	ComponentI
 		}
 
 		return ret ;
+	}
+
+	/**
+	 * create a component instantiated from the class of the given class name
+	 * and initialised by the constructor which parameters are given.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	reflInboundPortURI != null and classname != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param classname			name of the class from which the component is created.
+	 * @param constructorParams	parameters to be passed to the constructor.
+	 * @return					the URI of the reflection inbound port of the new component.
+	 * @throws Exception		if the creation did not succeed.
+	 */
+	public static String	createComponent(
+		String classname,
+		Object[] constructorParams
+		) throws Exception
+	{
+		assert	classname != null && constructorParams != null ;
+
+		Class<?> cl = Class.forName(classname) ;
+		assert	cl != null ;
+		Constructor<?> cons =
+			AbstractComponentHelper.getConstructor(cl, constructorParams) ;
+		assert	cons != null ;
+		cons.setAccessible(true) ;
+		AbstractComponent component =
+			(AbstractComponent) cons.newInstance(constructorParams) ;
+		String[] ret =
+			component.findInboundPortURIsFromInterface(ReflectionI.class) ;
+		assert	ret != null && ret.length == 1 && ret[0] != null ;
+		return ret[0] ;
 	}
 
 	// ------------------------------------------------------------------------

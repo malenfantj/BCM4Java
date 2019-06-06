@@ -43,6 +43,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Set;
+
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
 import fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrierClient;
@@ -687,11 +689,12 @@ implements	DistributedComponentVirtualMachineI
 		assert	this.isInitialised() ;
 
 		try {
-			DynamicComponentCreator dcc =
-				new DynamicComponentCreator(
-						AbstractDistributedCVM.thisJVMURI +
-											DCC_INBOUNDPORT_URI_SUFFIX) ;
-			assert	this.isDeployedComponent(dcc) ;
+			String dccURI =
+				AbstractComponent.createComponent(
+					DynamicComponentCreator.class.getCanonicalName(),
+					new Object[]{AbstractDistributedCVM.thisJVMURI +
+									DCC_INBOUNDPORT_URI_SUFFIX}) ;
+			assert	this.isDeployedComponent(dccURI) ;
 		} catch (Exception e) {
 			System.out.println("The dynamic component creator has not been "
 											+ "successfully deployed!") ;

@@ -90,7 +90,7 @@ extends		AbstractComponent
 	 * @param outboundPortURI	URI of the URI getter outbound port.
 	 * @throws Exception			<i>todo.</i>
 	 */
-	public				URIConsumer(
+	protected				URIConsumer(
 		String uri,
 		String outboundPortURI
 		) throws Exception
@@ -224,6 +224,7 @@ extends		AbstractComponent
 	public void			finalise() throws Exception
 	{
 		this.logMessage("stopping consumer component.") ;
+		this.printExecutionLogOnFile("consumer");
 		// This is the place where to clean up resources, such as
 		// disconnecting and unpublishing ports that will be destroyed
 		// when shutting down.

@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.chm;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
 // Jacques.Malenfant@lip6.fr
@@ -84,12 +86,17 @@ extends		AbstractCVM
 		// Creation phase
 		// --------------------------------------------------------------------
 
-		ConcurrentMapComponent<String,Integer> cmc =
-					new ConcurrentMapComponent<>(CONCURRENT_MAP_RIP_URI, 5) ;
-		cmc.toggleTracing() ;
+		String cmcURI =
+			AbstractComponent.createComponent(
+				ConcurrentMapComponent.class.getCanonicalName(),
+				new Object[]{CONCURRENT_MAP_RIP_URI, 5}) ;
+		this.toggleTracing(cmcURI) ;
 
-		TesterComponent tc = new TesterComponent(CONCURRENT_MAP_RIP_URI) ;
-		tc.toggleTracing() ;
+		String tcURI =
+			AbstractComponent.createComponent(
+				TesterComponent.class.getCanonicalName(),
+				new Object[]{CONCURRENT_MAP_RIP_URI}) ;
+		this.toggleTracing(tcURI) ;
 
 		super.deploy();
 	}

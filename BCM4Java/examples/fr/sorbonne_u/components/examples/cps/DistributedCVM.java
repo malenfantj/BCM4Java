@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.cps;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -78,13 +80,17 @@ extends		AbstractDistributedCVM
 	public void			instantiateAndPublish() throws Exception
 	{
 		if (thisJVMURI.equals(VALUE_CONSUMER_JVM_URI)) {
-			ValueConsumer c =
-				new ValueConsumer(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-			c.toggleTracing();
+			String vcURI =
+				AbstractComponent.createComponent(
+						ValueConsumer.class.getCanonicalName(),
+						new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI}) ;
+			this.toggleTracing(vcURI) ;
 		} else if (thisJVMURI.equals(VALUE_PROVIDER_JVM_URI)) {
-			RandomValueProvider s =
-				new RandomValueProvider(VALUE_PROVIDER_INBOUND_PORT_URI) ;
-			s.toggleTracing() ;
+			String rvpURI =
+				AbstractComponent.createComponent(
+						RandomValueProvider.class.getCanonicalName(),
+						new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI}) ;
+			this.toggleTracing(rvpURI) ;
 		} else {
 			throw new RuntimeException("Uknown JVM URI: " + thisJVMURI) ;
 		}

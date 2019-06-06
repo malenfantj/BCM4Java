@@ -68,14 +68,14 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				ReflectionClient
+public class			ReflectionClient
 extends		AbstractComponent
 {
 	protected ReflectionOutboundPort rObp ;
 	protected String					serverRIPURI ;
 	protected MyServiceOutboundPort	servicePort ;
 
-	public				ReflectionClient(
+	protected			ReflectionClient(
 		String serverRIPURI
 		) throws Exception
 	{

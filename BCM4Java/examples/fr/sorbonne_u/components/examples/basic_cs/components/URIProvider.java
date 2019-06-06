@@ -107,7 +107,7 @@ extends		AbstractComponent
 	 * @param providerPortURI	the URI of the port exposing the service.
 	 * @throws Exception			<i>todo.</i>
 	 */
-	public				URIProvider(
+	protected				URIProvider(
 		String uriPrefix,
 		String providerPortURI
 		) throws Exception
@@ -178,6 +178,7 @@ extends		AbstractComponent
 	public void			finalise() throws Exception
 	{
 		this.logMessage("stopping provider component.") ;
+		this.printExecutionLogOnFile("provider") ;
 		super.finalise();
 	}
 

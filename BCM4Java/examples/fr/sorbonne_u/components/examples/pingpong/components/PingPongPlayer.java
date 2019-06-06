@@ -102,7 +102,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				PingPongPlayer
+public class			PingPongPlayer
 extends		AbstractComponent
 {
 	/** The number of exchanges to be done before stopping.				*/
@@ -179,7 +179,7 @@ extends		AbstractComponent
 	 * @param otherPingPongTwoWayPortURI			URI of the other player two way port.
 	 * @throws Exception							<i>todo.</i>
 	 */
-	public				PingPongPlayer(
+	protected			PingPongPlayer(
 		String uri,
 		boolean hasService,
 		String player1PingPongInboundPortURI,

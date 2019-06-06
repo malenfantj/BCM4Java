@@ -109,7 +109,7 @@ extends		AbstractComponent
 	 * @param chmReflectionIBPUri	URI of the concurrent map reflection inbound port.
 	 * @throws Exception				<i>to do.</i>
 	 */
-	public				TesterComponent(String chmReflectionIBPUri)
+	protected			TesterComponent(String chmReflectionIBPUri)
 	throws Exception
 	{
 		super(1, 5) ;

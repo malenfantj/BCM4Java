@@ -70,7 +70,7 @@ extends		AbstractComponent
 		
 	}
 
-	public				ContinuationExamples()
+	protected				ContinuationExamples()
 	{
 		super(1, 0) ;
 

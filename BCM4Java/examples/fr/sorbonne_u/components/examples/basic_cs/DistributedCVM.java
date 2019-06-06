@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.basic_cs;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -77,8 +79,12 @@ extends		AbstractDistributedCVM
 	protected static String			URIGetterOutboundPortURI = "oport" ;
 	protected static String			URIProviderInboundPortURI = "iport" ;
 
-	protected URIProvider	uriProvider ;
-	protected URIConsumer	uriConsumer ;
+	/** Reference to the provider component to share between deploy
+	 *  and shutdown.													*/
+	protected String	uriProviderURI ;
+	/** Reference to the consumer component to share between deploy
+	 *  and shutdown.													*/
+	protected String	uriConsumerURI ;
 
 	public				DistributedCVM(String[] args, int xLayout, int yLayout)
 	throws Exception
@@ -130,27 +136,32 @@ extends		AbstractDistributedCVM
 		if (thisJVMURI.equals(PROVIDER_JVM_URI)) {
 
 			// create the provider component
-			this.uriProvider =
-				new URIProvider(PROVIDER_COMPONENT_URI,
-								URIProviderInboundPortURI) ;
+			this.uriProviderURI =
+					AbstractComponent.createComponent(
+							URIProvider.class.getCanonicalName(),
+							new Object[]{PROVIDER_COMPONENT_URI,
+										 URIProviderInboundPortURI}) ;
+			assert	this.isDeployedComponent(this.uriProviderURI) ;
 			// make it trace its operations; comment and uncomment the line to see
 			// the difference
-			uriProvider.toggleTracing() ;
-			uriProvider.toggleLogging() ;
-			assert	this.uriConsumer == null && this.uriProvider != null ;
+			this.toggleTracing(this.uriProviderURI) ;
+			this.toggleLogging(this.uriProviderURI) ;
+			assert	this.uriConsumerURI == null && this.uriProviderURI != null ;
 
 		} else if (thisJVMURI.equals(CONSUMER_JVM_URI)) {
 
 			// create the consumer component
-			this.uriConsumer = new URIConsumer(CONSUMER_COMPONENT_URI,
-											   URIGetterOutboundPortURI) ;
+			this.uriConsumerURI =
+					AbstractComponent.createComponent(
+							URIConsumer.class.getCanonicalName(),
+							new Object[]{CONSUMER_COMPONENT_URI,
+										 URIGetterOutboundPortURI}) ;
+			assert	this.isDeployedComponent(this.uriConsumerURI) ;
 			// make it trace its operations; comment and uncomment the line to see
 			// the difference
-			uriConsumer.toggleTracing() ;
-			uriConsumer.toggleLogging() ;
-			// add it to the deployed components
-			this.addDeployedComponent(uriConsumer) ;
-			assert	this.uriConsumer != null && this.uriProvider == null ;
+			this.toggleTracing(this.uriConsumerURI) ;
+			this.toggleLogging(this.uriConsumerURI) ;
+			assert	this.uriConsumerURI != null && this.uriProviderURI == null ;
 
 		} else {
 
@@ -180,18 +191,17 @@ extends		AbstractDistributedCVM
 
 		if (thisJVMURI.equals(PROVIDER_JVM_URI)) {
 
-			assert	this.uriConsumer == null && this.uriProvider != null ;
+			assert	this.uriConsumerURI == null && this.uriProviderURI != null ;
 
 		} else if (thisJVMURI.equals(CONSUMER_JVM_URI)) {
 
-			assert	this.uriConsumer != null && this.uriProvider == null ;
+			assert	this.uriConsumerURI != null && this.uriProviderURI == null ;
 			// do the connection
-			this.uriConsumer.doPortConnection(
+			this.doPortConnection(
+				this.uriConsumerURI,
 				URIGetterOutboundPortURI,
 				URIProviderInboundPortURI,
 				URIServiceConnector.class.getCanonicalName()) ;
-			assert	this.uriConsumer.isPortConnected(
-												URIGetterOutboundPortURI) ;
 
 		} else {
 
@@ -213,11 +223,13 @@ extends		AbstractDistributedCVM
 
 		if (thisJVMURI.equals(PROVIDER_JVM_URI)) {
 
+			assert	this.uriConsumerURI == null && this.uriProviderURI != null ;
 			// nothing to be done on the provider side
 
 		} else if (thisJVMURI.equals(CONSUMER_JVM_URI)) {
 
-			this.uriConsumer.doPortDisconnection(URIGetterOutboundPortURI) ;
+			assert	this.uriConsumerURI != null && this.uriProviderURI == null ;
+			this.doPortDisconnection(this.uriConsumerURI, URIGetterOutboundPortURI) ;
 
 		} else {
 
@@ -236,18 +248,12 @@ extends		AbstractDistributedCVM
 	{
 		if (thisJVMURI.equals(PROVIDER_JVM_URI)) {
 
-			assert	this.uriConsumer == null && this.uriProvider != null ;
-			// print logs on files, if activated
-			this.uriProvider.printExecutionLogOnFile("provider") ;
-
+			assert	this.uriConsumerURI == null && this.uriProviderURI != null ;
 			// any disconnection not done yet can be performed here
 
 		} else if (thisJVMURI.equals(CONSUMER_JVM_URI)) {
 
-			assert	this.uriConsumer != null && this.uriProvider == null ;
-			// print logs on files, if activated
-			this.uriConsumer.printExecutionLogOnFile("consumer") ;
-
+			assert	this.uriConsumerURI != null && this.uriProviderURI == null ;
 			// any disconnection not done yet can be performed here
 
 		} else {

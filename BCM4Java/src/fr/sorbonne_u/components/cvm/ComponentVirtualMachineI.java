@@ -104,14 +104,14 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	component != null
+	 * pre	componentURI != null
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param component	component to be tested.
-	 * @return			true if component is deployed, false otherwise.
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if component is deployed, false otherwise.
 	 */
-	public boolean		isDeployedComponent(ComponentI component) ;
+	public boolean		isDeployedComponent(String componentURI) ;
 
 	/**
 	 * add a component to the set of deployed components on the CVM.
@@ -119,14 +119,18 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	componentURI != null
 	 * pre	component != null
-	 * pre	!this.isDeployedComponent(component)
-	 * post	this.isDeployedComponent(component)
+	 * pre	!this.isDeployedComponent(componentURI)
+	 * post	this.isDeployedComponent(componentURI)
 	 * </pre>
 	 *
-	 * @param component	component to be added.
+	 * @param componentURI	URI of the component to be added.
+	 * @param component		component to be added.
 	 */
-	public void			addDeployedComponent(ComponentI component) ;
+	public void			addDeployedComponent(
+		String componentURI,
+		ComponentI component) ;
 
 	/**
 	 * remove a component from the set of deployed components on the CVM.
@@ -134,17 +138,18 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	component != null
-	 * pre	this.isDeployedComponent(component)
-	 * post	!this.isDeployedComponent(component)
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	!this.isDeployedComponent(componentURI)
 	 * </pre>
 	 *
-	 * @param component	component to be removed.
+	 * @param componentURI	URI of the component to be removed.
 	 */
-	public void			removeDeployedComponent(ComponentI component) ;
+	public void			removeDeployedComponent(String componentURI) ;
 
 	/**
-	 * start the execution of the deployed components.
+	 * check if the deployment is completed and start the execution of
+	 * the deployed components.
 	 * 
 	 * <pre>
 	 * pre	this.deploymentDone()
@@ -155,7 +160,24 @@ public interface			ComponentVirtualMachineI
 	public void			start() throws Exception ;
 
 	/**
-	 * perform the execute method on all of the deployed components, calling it as
+	 * start the given component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	this.componentStarted(componentURI)
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be started.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			startComponent(String componentURI) throws Exception ;
+
+	/**
+	 * check if all of the deployed component have been started and perform
+	 * the execute method on all of the deployed components, calling it as
 	 * an asynchronous task.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -168,6 +190,22 @@ public interface			ComponentVirtualMachineI
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public void			execute() throws Exception ;
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentStarted(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be executed.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			executeComponent(String componentURI) throws Exception ;
 
 	/**
 	 * perform the execute method on all of the deployed components, calling it
@@ -183,6 +221,23 @@ public interface			ComponentVirtualMachineI
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public void			finalise() throws Exception ;
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentStarted(componentURI)
+	 * post	this.componentFinalised(componentURI)
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be finalised.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			finaliseComponent(String componentURI)
+	throws Exception ;
 
 	/**
 	 * shut down the CVM, synchronising with the other JVM when distributed,
@@ -202,6 +257,23 @@ public interface			ComponentVirtualMachineI
 	public void			shutdown() throws Exception ;
 
 	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentFinalised(componentURI)
+	 * post	this.componentShutdown(componentURI)
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be shutdown.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			shutdownComponent(String componentURI)
+	throws Exception ;
+
+	/**
 	 * shut down the CVM now, synchronising with the other sites when
 	 * distributed, i.e. all of the locally deployed components in the
 	 * CVM are shut down; inspired from the Java Executor framework.
@@ -217,6 +289,23 @@ public interface			ComponentVirtualMachineI
 	public void			shutdownNow() throws Exception ;
 
 	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentFinalised(componentURI)
+	 * post	this.componentShutdown(componentURI)
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be shutdown now.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			shutdownNowComponent(String componentURI)
+	throws Exception ;
+
+	/**
 	 * true if the initialisation has been done.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -226,7 +315,7 @@ public interface			ComponentVirtualMachineI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			true if the initialisation has been done.
+	 * @return				true if the initialisation has been done.
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public boolean		isInitialised() throws Exception ;
@@ -242,7 +331,7 @@ public interface			ComponentVirtualMachineI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			true if all of the static components have been instantiated and their ports published when necessary.
+	 * @return				true if all of the static components have been instantiated and their ports published when necessary.
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public boolean		isIntantiatedAndPublished()
@@ -259,7 +348,7 @@ public interface			ComponentVirtualMachineI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			true if all of the static components have their ports connected when necessary.
+	 * @return				true if all of the static components have their ports connected when necessary.
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public boolean		isInterconnected() throws Exception ;
@@ -274,14 +363,14 @@ public interface			ComponentVirtualMachineI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			true if the deployment has been done.
+	 * @return				true if the deployment has been done.
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public boolean		deploymentDone() throws Exception ;
 
 	/**
 	 * return true if the CVM has been started (i.e. all of the locally
-	 * deployed components in the CVM).
+	 * statically deployed components in the CVM).
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -290,10 +379,28 @@ public interface			ComponentVirtualMachineI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			true if the CVM has been started.
+	 * @return				true if the CVM has been started.
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public boolean		allStarted() throws Exception ;
+
+	/**
+	 * return true if the component has been started.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the component has been started.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public boolean		componentStarted(String componentURI)
+	throws Exception ;
 
 	/**
 	 * return true if the CVM has been finalised (i.e. all of the locally
@@ -306,14 +413,33 @@ public interface			ComponentVirtualMachineI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			true if the CVM has been finalised.
+	 * @return				true if the CVM has been finalised.
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public boolean		allFinalised() throws Exception ;
 
 	/**
-	 * return true if the CVM has been shut down (i.e. all of the locally
+	 * return true if the CVM has been finalised (i.e. all of the locally
 	 * deployed components in the CVM).
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the component has been finalised.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public boolean		componentFinalised(String componentURI)
+	throws Exception ;
+
+	/**
+	 * return true if the CVM has been shut down (i.e. all of the locally
+	 * statically deployed components in the CVM).
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -327,8 +453,24 @@ public interface			ComponentVirtualMachineI
 	public boolean		isShutdown() ;
 
 	/**
-	 * return true if the CVM has terminated (i.e. all of the locally deployed
-	 * components in the CVM).
+	 * return true if the component has been shut down.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the component has been shut down.
+	 */
+	public boolean		componentShutdown(String componentURI) ;
+
+	/**
+	 * return true if the CVM has terminated (i.e. all of the locally
+	 * statically deployed components in the CVM).
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -340,6 +482,22 @@ public interface			ComponentVirtualMachineI
 	 * @return	true if the CVM has terminated.
 	 */
 	public boolean		isTerminated() ;
+
+	/**
+	 * return true if the component has terminated.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the CVM has terminated.
+	 */
+	public boolean		componentTerminated(String componentURI) ;
 
 	/**
 	 * start the complete standard life-cycle of the component virtual
@@ -377,6 +535,50 @@ public interface			ComponentVirtualMachineI
 	throws	InterruptedException ;
 
 	// ------------------------------------------------------------------------
+	// Component management
+	// ------------------------------------------------------------------------
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI
+	 * @param outboundPortURI
+	 * @param inboundPortURI
+	 * @param connectorClassname
+	 * @throws Exception 
+	 */
+	public void			doPortConnection(
+		String componentURI,
+		String outboundPortURI,
+		String inboundPortURI,
+		String connectorClassname) throws Exception ;
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI
+	 * @param outboundPortURI
+	 * @throws Exception 
+	 */
+	public void			doPortDisconnection(
+			String componentURI,
+			String outboundPortURI) throws Exception ;
+
+	// ------------------------------------------------------------------------
 	// Debugging
 	// ------------------------------------------------------------------------
 
@@ -404,9 +606,39 @@ public interface			ComponentVirtualMachineI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param dm			the debug mode triggering this entry.
+	 * @param dm		the debug mode triggering this entry.
 	 * @param message	the debugging message to be added to the entry.
 	 */
 	public void			logDebug(CVMDebugModesI dm, String message) ;
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component
+	 */
+	public void			toggleTracing(String componentURI) ;
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component
+	 */
+	public void			toggleLogging(String componentURI) ;
 }
 //-----------------------------------------------------------------------------

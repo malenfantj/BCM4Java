@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.examples.ddeployment_cs;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -67,16 +69,17 @@ extends		AbstractCVM
 	protected static String		PROVIDER_JVM_URI = AbstractCVM.thisJVMURI ;
 	protected static String		CONSUMER_JVM_URI = AbstractCVM.thisJVMURI ;
 
-	protected DynamicAssembler	da ;
-
 	/**
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
 	 */
 	@Override
 	public void			deploy() throws Exception
 	{
-		this.da = new DynamicAssembler(CONSUMER_JVM_URI,
-				   					  PROVIDER_JVM_URI) ;
+		@SuppressWarnings("unused")
+		String daURI =
+			AbstractComponent.createComponent(
+					DynamicAssembler.class.getCanonicalName(),
+					new Object[]{CONSUMER_JVM_URI, PROVIDER_JVM_URI}) ;
 
 		// deployment done
 		super.deploy() ;

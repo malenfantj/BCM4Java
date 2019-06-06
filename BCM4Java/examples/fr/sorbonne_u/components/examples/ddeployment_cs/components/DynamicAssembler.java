@@ -72,7 +72,7 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  */
 @RequiredInterfaces(required = {DynamicComponentCreationI.class,
 							   URIConsumerLaunchI.class})
-public class				DynamicAssembler
+public class			DynamicAssembler
 extends		AbstractComponent
 {
 	// -------------------------------------------------------------------------
@@ -108,7 +108,7 @@ extends		AbstractComponent
 	 * @param providerJVMURI				URI of the JVM that will hold the provider component or the empty string for single-JVM executions.
 	 * @throws Exception					<i>todo.</i>
 	 */
-	public				DynamicAssembler(
+	protected			DynamicAssembler(
 		String consumerJVMURI,
 		String providerJVMURI
 		) throws Exception

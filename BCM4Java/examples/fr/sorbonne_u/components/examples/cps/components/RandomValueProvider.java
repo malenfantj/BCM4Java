@@ -88,7 +88,7 @@ extends		AbstractComponent
 	 * @param valueProvidingInboundPortURI	URI to be used to create the inbound port.
 	 * @throws Exception						<i>todo.</i>
 	 */
-	public				RandomValueProvider(
+	protected				RandomValueProvider(
 		String valueProvidingInboundPortURI
 		) throws Exception
 	{
