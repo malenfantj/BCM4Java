@@ -1327,13 +1327,13 @@ implements	ComponentI
 		assert	classname != null && constructorParams != null ;
 
 		Class<?> cl = Class.forName(classname) ;
-		assert	cl != null ;
+		assert	cl != null && AbstractComponentHelper.isComponentClass(cl) ;
 		Constructor<?> cons =
 			AbstractComponentHelper.getConstructor(cl, constructorParams) ;
 		assert	cons != null ;
 		cons.setAccessible(true) ;
 		AbstractComponent component =
-			(AbstractComponent) cons.newInstance(constructorParams) ;
+			(AbstractComponent)cons.newInstance(constructorParams) ;
 		String[] ret =
 			component.findInboundPortURIsFromInterface(ReflectionI.class) ;
 		assert	ret != null && ret.length == 1 && ret[0] != null ;

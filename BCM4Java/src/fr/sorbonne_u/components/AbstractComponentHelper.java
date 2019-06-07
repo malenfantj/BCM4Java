@@ -39,7 +39,9 @@ import java.lang.reflect.Modifier;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>AbstractComponentHelper</code>
+ * The class <code>AbstractComponentHelper</code> defines a set of static
+ * methods used in the class <code>AbstractComponent</code> but also in
+ * some others.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -55,10 +57,54 @@ import java.lang.reflect.Modifier;
  */
 public class			AbstractComponentHelper
 {
-	public static boolean		protectedConstructorsOnly(Class<?> cl)
+	/**
+	 * return true if the given class represents a component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	cl != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param cl	a class to be checked.
+	 * @return		true if the class represents a component.
+	 */
+	public static boolean	isComponentClass(Class<?> cl)
 	{
+		assert	cl != null ;
+
+		boolean ret = false ;
+		while (!cl.equals(Object.class) && !ret) {
+			if (cl.equals(AbstractComponent.class)) {
+				ret = true ;
+			}
+			cl = cl.getSuperclass() ;
+		}
+		return ret && protectedConstructorsOnly(cl) ;
+	}
+
+	/**
+	 * return true if the class and all of its superclasses up to
+	 * <code>AbstractComponent</code> have protected constructors
+	 * only.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	cl != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param cl	a class that represents a component to be checked.
+	 * @return		true if the class and all of its superclasses have protected constructors only.
+	 */
+	public static boolean	protectedConstructorsOnly(Class<?> cl)
+	{
+		assert	cl != null ;
+
 		boolean ret = true ;
-		while (cl != Object.class && ret) {
+		while (!cl.equals(Object.class) && ret) {
 			Constructor<?>[] cons = cl.getDeclaredConstructors() ;
 			for(int i = 0 ; i < cons.length && ret ; i++) {
 				ret = Modifier.isProtected(cons[i].getModifiers()) ;
