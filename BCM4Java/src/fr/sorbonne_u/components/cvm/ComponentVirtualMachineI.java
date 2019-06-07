@@ -539,44 +539,54 @@ public interface			ComponentVirtualMachineI
 	// ------------------------------------------------------------------------
 
 	/**
-	 * 
+	 * connect the given outbound port of the given component to the
+	 * inbound port of another component using the given connector class
+	 * to instantiate the connector.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	componentURI != null
+	 * pre	outboundPortURI != null
+	 * pre	inboundPortURI != null
+	 * pre	connectorClassname != null
+	 * pre	this.isDeployedComponent(componentURI)
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param componentURI
-	 * @param outboundPortURI
-	 * @param inboundPortURI
-	 * @param connectorClassname
-	 * @throws Exception 
+	 * @param componentURI			URI of the component reflection inbound port.
+	 * @param outboundPortURI		URI of the outbound port of the component.
+	 * @param inboundPortURI		URI of the inbound port of the other component.
+	 * @param connectorClassname	name of the class instantiating the connector.
+	 * @throws Exception 			<i>todo.</i>
 	 */
 	public void			doPortConnection(
 		String componentURI,
 		String outboundPortURI,
 		String inboundPortURI,
-		String connectorClassname) throws Exception ;
+		String connectorClassname
+		) throws Exception ;
 
 	/**
-	 * 
+	 * disconnect the given outbound port of the given component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	componentURI != null
+	 * pre	outboundPortURI != null
+	 * pre	this.isDeployedComponent(componentURI)
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param componentURI
-	 * @param outboundPortURI
-	 * @throws Exception 
+	 * @param componentURI		URI of the component reflection inbound port.
+	 * @param outboundPortURI	URI of the outbound port of the component.
+	 * @throws Exception 		<i>todo.</i>
 	 */
 	public void			doPortDisconnection(
-			String componentURI,
-			String outboundPortURI) throws Exception ;
+		String componentURI,
+		String outboundPortURI
+		) throws Exception ;
 
 	// ------------------------------------------------------------------------
 	// Debugging

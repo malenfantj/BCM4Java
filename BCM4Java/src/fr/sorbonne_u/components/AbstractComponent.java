@@ -311,7 +311,7 @@ implements	ComponentI
 	// ------------------------------------------------------------------------
 
 	/** current state in the component life-cycle.						*/
-	protected ComponentState				state ;
+	protected ComponentState			state ;
 	/** inner components owned by this component.						*/
 	protected final Vector<ComponentI>	innerComponents ;
 
@@ -609,7 +609,7 @@ implements	ComponentI
 	 * post	this.isPluginFacilitiesConfigured()
 	 * </pre>
 	 *
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		configurePluginFacilities() throws Exception
 	{
@@ -652,7 +652,7 @@ implements	ComponentI
 	 * post	!this.isPluginFacilitiesConfigured()
 	 * </pre>
 	 *
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		unConfigurePluginFacilitites() throws Exception
 	{
@@ -733,7 +733,7 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
+	 * @param pluginURI		unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		finalisePlugin(String pluginURI) throws Exception
@@ -767,7 +767,7 @@ implements	ComponentI
 	 * post	!this.isIntalled(pluginURI)
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
+	 * @param pluginURI		unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		uninstallPlugin(String pluginURI) throws Exception
@@ -826,7 +826,6 @@ implements	ComponentI
 	 *
 	 * @param pluginURI	unique plug-in identifier.
 	 * @return			the corresponding installed plug-in or null if none.
-	 * @throws Exception	<i>todo.</i>
 	 */
 	protected PluginI	getPlugin(String pluginURI)
 	{
@@ -850,7 +849,7 @@ implements	ComponentI
 	 * post	this.isInitialised(pluginURI)
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
+	 * @param pluginURI		unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		initialisePlugin(String pluginURI)
@@ -893,7 +892,7 @@ implements	ComponentI
 	// ------------------------------------------------------------------------
 
 	/**	The logger for this component.									*/
-	protected Logger				executionLog ;
+	protected Logger			executionLog ;
 	/** The tracer for this component.									*/
 	protected TracerOnConsole	tracer ;
 
@@ -1259,7 +1258,7 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param ac		component object on which the invariant is checked.
+	 * @param ac	component object on which the invariant is checked.
 	 * @return		true if the invariant holds, false otherwise.
 	 */
 	protected static boolean		checkInvariant(AbstractComponent ac)
@@ -1969,8 +1968,8 @@ implements	ComponentI
 	 * post p.equals(this.findPortFromURI(p.getPortURI()))
 	 * </pre>
 	 *
-	 * @param p		port to be added.
-	 * @throws Exception		<i>todo.</i>
+	 * @param p				port to be added.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		addPort(PortI p) throws Exception
 	{
@@ -2028,8 +2027,8 @@ implements	ComponentI
 	 * post	!exist(PortI p1 : this.findPortsFromInterface(p.getImplementedInterface())) { p1.equals(p)) ; }
 	 * </pre>
 	 *
-	 * @param p		port to be removed.
-	 * @throws Exception		<i>todo.</i>
+	 * @param p				port to be removed.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		removePort(PortI p) throws Exception
 	{
@@ -2498,7 +2497,7 @@ implements	ComponentI
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 */
-	public static abstract class		AbstractTask
+	public static abstract class	AbstractTask
 	implements	ComponentI.ComponentTask
 	{
 		protected AbstractComponent	owner ;
@@ -2529,7 +2528,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.ComponentTask)
 	 */
 	@Override
-	public Future<?>		runTask(ComponentTask t)
+	public Future<?>	runTask(ComponentTask t)
 	{
 		assert	this.isStarted() ;
 		assert	t != null ;
@@ -2578,7 +2577,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask)
 	 */
 	@Override
-	public Future<?>		runTask(String executorServiceURI, ComponentTask t)
+	public Future<?>	runTask(String executorServiceURI, ComponentTask t)
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceURI(executorServiceURI) ;
@@ -2593,7 +2592,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask)
 	 */
 	@Override
-	public Future<?>		runTask(int executorServiceIndex, ComponentTask t)
+	public Future<?>	runTask(int executorServiceIndex, ComponentTask t)
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
@@ -2944,7 +2943,7 @@ implements	ComponentI
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be executed on the component.
 	 * @return						a future value embedding the result of the task.
-	 * @throws Exception				if exception raised by the task.
+	 * @throws Exception			if exception raised by the task.
 	 */
 	protected <T> Future<T>		handleRequest(
 		int executorServiceIndex,
@@ -3058,7 +3057,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
-	public <T> void		handleRequestAsync(ComponentService<T> request)
+	public <T> void			handleRequestAsync(ComponentService<T> request)
 	throws Exception
 	{
 		assert	this.isStarted() ;
@@ -3084,7 +3083,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
-	public <T> void		handleRequestAsync(
+	public <T> void			handleRequestAsync(
 		String executorServiceURI,
 		ComponentService<T> request
 		) throws Exception
@@ -3102,7 +3101,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
-	public <T> void		handleRequestAsync(
+	public <T> void			handleRequestAsync(
 		int executorServiceIndex,
 		ComponentService<T> request
 		) throws Exception
@@ -3133,7 +3132,7 @@ implements	ComponentI
 	 * @param u						time unit in which the delay is expressed.
 	 * @return						a scheduled future to synchronise with the task.
 	 */
-	protected <T> ScheduledFuture<T>		scheduleRequest(
+	protected <T> ScheduledFuture<T>	scheduleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request,
 		long delay,
@@ -3201,7 +3200,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> T 		scheduleRequestSync(
+	public <T> T 			scheduleRequestSync(
 		int executorServiceIndex,
 		ComponentService<T> request,
 		long delay,
@@ -3221,7 +3220,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public void			scheduleRequestAsync(
+	public void				scheduleRequestAsync(
 		ComponentService<?> request,
 		long delay,
 		TimeUnit u
@@ -3241,7 +3240,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public void			scheduleRequestAsync(
+	public void				scheduleRequestAsync(
 		String executorServiceURI,
 		ComponentService<?> request,
 		long delay,
@@ -3263,7 +3262,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public void			scheduleRequestAsync(
+	public void				scheduleRequestAsync(
 		int executorServiceIndex,
 		ComponentService<?> request,
 		long delay,
@@ -3294,7 +3293,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#getComponentDefinitionClassName()
 	 */
 	@Override
-	public String		getComponentDefinitionClassName()
+	public String			getComponentDefinitionClassName()
 	throws Exception
 	{
 		return this.getClass().getCanonicalName() ;
@@ -3304,7 +3303,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#getComponentAnnotations()
 	 */
 	@Override
-	public Annotation[]	getComponentAnnotations() throws Exception
+	public Annotation[]		getComponentAnnotations() throws Exception
 	{
 		return this.getClass().getAnnotations() ;
 	}
@@ -3313,7 +3312,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#getComponentLoader()
 	 */
 	@Override
-	public ClassLoader	getComponentLoader() throws Exception
+	public ClassLoader		getComponentLoader() throws Exception
 	{
 		return this.getClass().getClassLoader() ;
 	}

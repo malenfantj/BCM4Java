@@ -309,7 +309,7 @@ implements	PortI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception
+	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		addPortToOwner() throws Exception
 	{

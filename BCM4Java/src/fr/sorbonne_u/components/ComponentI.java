@@ -97,7 +97,7 @@ import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			ComponentI
+public interface		ComponentI
 {
 	// ------------------------------------------------------------------------
 	// Internal behaviour requests
@@ -113,7 +113,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param states		states in which the components is tested to be.
+	 * @param states	states in which the components is tested to be.
 	 * @return			true if the component is in one of the given states.
 	 */
 	public boolean		isInStateAmong(ComponentStateI[] states) ;
@@ -453,8 +453,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param portURI	URI of the component's port.
-	 * @return			the interface implemented by the port.
+	 * @param portURI		URI of the component's port.
+	 * @return				the interface implemented by the port.
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
 	public Class<?>		getPortImplementedInterface(String portURI)
@@ -471,9 +471,9 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter		interface for which ports are sought.
-	 * @return			array of port URIs exposing <code>inter</code>.
-	 * @throws Exception <i>todo.</i>
+	 * @param inter			interface for which ports are sought.
+	 * @return				array of port URIs exposing <code>inter</code>.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public String[]		findPortURIsFromInterface(Class<?> inter)
 	throws Exception ;
@@ -490,8 +490,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter		interface for which ports are sought.
-	 * @return			array of inbound port URIs exposing inter.
+	 * @param inter			interface for which ports are sought.
+	 * @return				array of inbound port URIs exposing inter.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public String[]		findInboundPortURIsFromInterface(Class<?> inter)
@@ -508,8 +508,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter		interface for which ports are sought.
-	 * @return			array of outbound port URIs exposing inter.
+	 * @param inter			interface for which ports are sought.
+	 * @return				array of outbound port URIs exposing inter.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public String[]		findOutboundPortURIsFromInterface(Class<?> inter)
@@ -527,8 +527,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param portURI	port URI to be tested.
-	 * @return			true if the port with the given URI exists.
+	 * @param portURI		port URI to be tested.
+	 * @return				true if the port with the given URI exists.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isPortExisting(String portURI)
@@ -545,8 +545,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param portURI	URI of the component's port.
-	 * @return			true if the port with the given URI is connected.
+	 * @param portURI		URI of the component's port.
+	 * @return				true if the port with the given URI is connected.
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
 	public boolean		isPortConnected(String portURI)
@@ -569,7 +569,7 @@ public interface			ComponentI
 	 * @param portURI		URI of the component's port to be connected.
 	 * @param otherPortURI	URI of the other port to be connected with.
 	 * @param connector		connector to be used in the connection.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			doPortConnection(
 		String portURI,
@@ -593,8 +593,8 @@ public interface			ComponentI
 	 *
 	 * @param portURI		URI of the component's port to be connected.
 	 * @param otherPortURI	URI of the other port to be connected with.
-	 * @param ccname			connector class name to be used in the connection.
-	 * @throws Exception		<i>todo.</i>
+	 * @param ccname		connector class name to be used in the connection.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			doPortConnection(
 		String portURI,
@@ -614,7 +614,7 @@ public interface			ComponentI
 	 * post	!this.isPortConnected(portURI)
 	 * </pre>
 	 *
-	 * @param portURI	URI of the component's port to be connected.
+	 * @param portURI		URI of the component's port to be connected.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			doPortDisconnection(
@@ -665,8 +665,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
-	 * @return 			true if the named plug-in is installed into this component.
+	 * @param pluginURI		unique plug-in identifier.
+	 * @return 				true if the named plug-in is installed into this component.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isInstalled(String pluginURI) throws Exception ;
@@ -681,8 +681,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI	URI of the plug-in to be tested.
-	 * @return			true if the plug-in is installed and initialised.
+	 * @param pluginURI		URI of the plug-in to be tested.
+	 * @return				true if the plug-in is installed and initialised.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isInitialised(String pluginURI) throws Exception ;
@@ -701,7 +701,7 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param logger		the logger to be set.
+	 * @param logger	the logger to be set.
 	 */
 	public void			setLogger(Logger logger) ;
 
@@ -1106,8 +1106,8 @@ public interface			ComponentI
 	 * </pre>
 	 *
 	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t					component task to be executed as main task.
-	 * @return					a <code>Future</code> representing pending completion of the task.
+	 * @param t						component task to be executed as main task.
+	 * @return						a <code>Future</code> representing pending completion of the task.
 	 */
 	public Future<?>		runTask(String executorServiceURI, ComponentTask t) ;
 
@@ -1164,10 +1164,10 @@ public interface			ComponentI
 	 * </pre>
 	 *
 	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t					task to be scheduled.
-	 * @param delay				delay after which the task must be run.
-	 * @param u					time unit in which the delay is expressed.
-	 * @return					a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t						task to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
 	public ScheduledFuture<?>	scheduleTask(
 		String executorServiceURI,
@@ -1222,7 +1222,7 @@ public interface			ComponentI
 	 *
 	 * @param t				task to be scheduled.
 	 * @param initialDelay	delay after which the task begins to run.
-	 * @param period			period between successive executions.
+	 * @param period		period between successive executions.
 	 * @param u				time unit in which the initial delay and the period are expressed.
 	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
@@ -1253,11 +1253,11 @@ public interface			ComponentI
 	 * </pre>
 	 *
 	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t					task to be scheduled.
-	 * @param initialDelay		delay after which the task begins to run.
+	 * @param t						task to be scheduled.
+	 * @param initialDelay			delay after which the task begins to run.
 	 * @param period				period between successive executions.
-	 * @param u					time unit in which the initial delay and the period are expressed.
-	 * @return					a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param u						time unit in which the initial delay and the period are expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
 	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
 		String executorServiceURI,
@@ -1347,11 +1347,11 @@ public interface			ComponentI
 	 * </pre>
 	 *
 	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t					task to be scheduled.
-	 * @param initialDelay		delay after which the task begins to run.
-	 * @param delay				delay between the termination of one execution and the beginning of the next.
-	 * @param u					time unit in which the initial delay and the delay are expressed.
-	 * @return					a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t						task to be scheduled.
+	 * @param initialDelay			delay after which the task begins to run.
+	 * @param delay					delay between the termination of one execution and the beginning of the next.
+	 * @param u						time unit in which the initial delay and the delay are expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
 	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
 		String executorServiceURI,
@@ -1500,10 +1500,10 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>				the type of the value returned by the request.
+	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request			service request to be executed on the component.
-	 * @return					the result of the task.
+	 * @param request				service request to be executed on the component.
+	 * @return						the result of the task.
 	 * @throws Exception			if exception raised by the task.
 	 */
 	public <T> T		handleRequestSync(
@@ -1526,9 +1526,9 @@ public interface			ComponentI
 	 *
 	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request	service request to be executed on the component.
-	 * @return			the result of the task.
-	 * @throws Exception	if exception raised by the task.
+	 * @param request				service request to be executed on the component.
+	 * @return						the result of the task.
+	 * @throws Exception			if exception raised by the task.
 	 */
 	public <T> T		handleRequestSync(
 		int executorServiceIndex,
@@ -1552,7 +1552,7 @@ public interface			ComponentI
 	 *
 	 * @param <T>			the type of the value returned by the request.
 	 * @param request		service request to be executed on the component.
-	 * @throws Exception		if exception raised by the task.
+	 * @throws Exception	if exception raised by the task.
 	 */
 	public <T> void		handleRequestAsync(ComponentService<T> request)
 	throws Exception ;
@@ -1573,9 +1573,9 @@ public interface			ComponentI
 	 * </pre>
 	 *
 	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI		URI of the executor service that will run the task.
+	 * @param executorServiceURI	URI of the executor service that will run the task.
 	 * @param request				service request to be executed on the component.
-	 * @throws Exception				if exception raised by the task.
+	 * @throws Exception			if exception raised by the task.
 	 */
 	public <T> void		handleRequestAsync(
 		String executorServiceURI,
@@ -1600,7 +1600,7 @@ public interface			ComponentI
 	 * @param <T>					the type of the value returned by the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be executed on the component.
-	 * @throws Exception				if exception raised by the task.
+	 * @throws Exception			if exception raised by the task.
 	 */
 	public <T> void		handleRequestAsync(
 		int executorServiceIndex,
@@ -1647,7 +1647,7 @@ public interface			ComponentI
 	 * </pre>
 	 *
 	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI		URI of the executor service that will run the task.
+	 * @param executorServiceURI	URI of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.
 	 * @param u						time unit in which the delay is expressed.
@@ -1727,9 +1727,9 @@ public interface			ComponentI
 	 * </pre>
 	 *
 	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request			service request to be scheduled.
-	 * @param delay				delay after which the task must be run.
-	 * @param u					time unit in which the delay is expressed.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
 	 */
 	public void			scheduleRequestAsync(
 		String executorServiceURI,
@@ -1775,8 +1775,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the canonical name of the Java class implementing this component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the canonical name of the Java class implementing this component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public String		getComponentDefinitionClassName() throws Exception ;
 
@@ -1790,8 +1790,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the annotations put on the Java class implementing the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the annotations put on the Java class implementing the component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Annotation[]	getComponentAnnotations() throws Exception ;
 
@@ -1806,8 +1806,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the loader of the Java class implementing the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the loader of the Java class implementing the component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ClassLoader	getComponentLoader() throws Exception ;
 
@@ -1821,8 +1821,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the signatures of the component services.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the signatures of the component services.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ServiceSignature[]		getComponentServiceSignatures()
 	throws Exception ;
@@ -1837,8 +1837,8 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the signatures of the component constructors.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the signatures of the component constructors.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ConstructorSignature[]	getComponentConstructorSignatures()
 	throws Exception ;
@@ -1852,9 +1852,9 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param parameters		parameters to be passed to the component constructor.
+	 * @param parameters	parameters to be passed to the component constructor.
 	 * @return				a Java refercne to the object implementing the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ComponentI	newInstance(Object[] parameters) throws Exception ;
 
@@ -1868,10 +1868,10 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param name		name of the service.
+	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @return			the result of the service invocation.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the result of the service invocation.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Object		invokeService(String name, Object[] params)
 	throws Exception ;
@@ -1886,10 +1886,10 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param name		name of the service.
+	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @return			the result of the service invocation.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the result of the service invocation.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception ;
@@ -1904,9 +1904,9 @@ public interface			ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param name		name of the service.
+	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception ;
@@ -1927,7 +1927,7 @@ public interface			ComponentI
 	 * @param serviceName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception						<i>todo.</i>
+	 * @throws Exception					<i>todo.</i>
 	 */
 	public void			insertBeforeService(
 		String serviceName,
@@ -1951,7 +1951,7 @@ public interface			ComponentI
 	 * @param serviceName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception						<i>todo.</i>
+	 * @throws Exception					<i>todo.</i>
 	 */
 	public void			insertAfterService(
 		String serviceName,
