@@ -169,7 +169,7 @@ extends		AbstractComponent
 						@Override
 						public void run() {
 							try {
-								((URIConsumer)this.getOwner()).
+								((URIConsumer)this.getTaskOwner()).
 													getURIandPrint() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
@@ -208,7 +208,7 @@ extends		AbstractComponent
 				@Override
 				public void run() {
 					try {
-						((URIConsumer)this.getOwner()).getURIandPrint() ;
+						((URIConsumer)this.getTaskOwner()).getURIandPrint() ;
 					} catch (Exception e) {
 						throw new RuntimeException(e) ;
 					}

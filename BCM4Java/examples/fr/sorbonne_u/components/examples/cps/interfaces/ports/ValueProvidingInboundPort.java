@@ -93,7 +93,7 @@ implements	ValueProvidingI
 				new AbstractComponent.AbstractService<Integer>() {
 					@Override
 					public Integer call() throws Exception {
-						return ((RandomValueProvider)this.getOwner()).
+						return ((RandomValueProvider)this.getServiceOwner()).
 											returnIntegerValue() ;
 					}
 				}) ;

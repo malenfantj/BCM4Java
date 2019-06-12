@@ -135,7 +135,7 @@ implements	MapReading<K,V>,
 					@Override
 					public V call() throws Exception {
 						return ((ConcurrentMapComponent<K,V>)
-											this.getOwner()).get(key) ;
+											this.getServiceOwner()).get(key) ;
 					}
 				}) ;
 	}
@@ -153,7 +153,7 @@ implements	MapReading<K,V>,
 					@Override
 					public Integer call() throws Exception {
 						return ((ConcurrentMapComponent<K,V>)
-									this.getOwner()).size() ;
+									this.getServiceOwner()).size() ;
 					}
 				}) ;
 	}
@@ -170,7 +170,7 @@ implements	MapReading<K,V>,
 					@SuppressWarnings("unchecked")
 					@Override
 					public Boolean call() throws Exception {
-						return ((ConcurrentMapComponent<K,V>)this.getOwner()).
+						return ((ConcurrentMapComponent<K,V>)this.getServiceOwner()).
 												containsValue(value) ;
 					}
 				}) ;
@@ -191,7 +191,7 @@ implements	MapReading<K,V>,
 					@Override
 					public Boolean call() throws Exception {
 						return ((ConcurrentMapComponent<K,V>)
-									this.getOwner()).containsKey(key) ;
+									this.getServiceOwner()).containsKey(key) ;
 					}
 				}) ;
 	}
@@ -209,7 +209,7 @@ implements	MapReading<K,V>,
 					@Override
 					public Boolean call() throws Exception {
 						return ((ConcurrentMapComponent<K,V>)
-									this.getOwner()).isEmpty() ;
+									this.getServiceOwner()).isEmpty() ;
 					}
 				}) ;
 	}

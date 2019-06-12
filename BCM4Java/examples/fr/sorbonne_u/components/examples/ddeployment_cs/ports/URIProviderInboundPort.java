@@ -145,7 +145,7 @@ implements	URIProviderI
 				new AbstractComponent.AbstractService<String>() {
 					@Override
 					public String call() throws Exception {
-						return ((DynamicURIProvider)this.getOwner()).
+						return ((DynamicURIProvider)this.getServiceOwner()).
 									provideURIService() ;
 					}
 				}) ;
@@ -162,7 +162,7 @@ implements	URIProviderI
 				new AbstractComponent.AbstractService<String[]>() {
 					@Override
 					public String[] call() throws Exception {
-						return ((DynamicURIProvider)this.getOwner()).
+						return ((DynamicURIProvider)this.getServiceOwner()).
 								provideURIsService(numberOfRequestedURIs) ;
 					}
 				}) ;

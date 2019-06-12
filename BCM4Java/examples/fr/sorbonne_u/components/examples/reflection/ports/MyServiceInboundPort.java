@@ -85,7 +85,7 @@ implements	MyServiceI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							((ReflectionServer)this.getOwner()).test() ;
+							((ReflectionServer)this.getServiceOwner()).test() ;
 							return null;
 						}
 					});

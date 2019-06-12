@@ -57,7 +57,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().installPlugin(plugin) ;
+							this.getServiceOwner().installPlugin(plugin) ;
 							return null ;
 						}
 					}) ;
@@ -74,7 +74,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().initialisePlugin(pluginURI) ;
+							this.getServiceOwner().initialisePlugin(pluginURI) ;
 							return null ;
 						}
 					}) ;
@@ -90,7 +90,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().finalisePlugin(pluginURI) ;
+							this.getServiceOwner().finalisePlugin(pluginURI) ;
 							return null;
 						}
 					}) ;
@@ -107,7 +107,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().uninstallPlugin(pluginId) ;
+							this.getServiceOwner().uninstallPlugin(pluginId) ;
 							return null;
 						}
 					}) ;
@@ -127,7 +127,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().toggleLogging() ;
+							this.getServiceOwner().toggleLogging() ;
 							return null;
 						}
 					}) ;
@@ -143,7 +143,7 @@ implements	IntercessionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getOwner().setLogger(logger) ;
+						this.getServiceOwner().setLogger(logger) ;
 						return null ;
 					}
 				}) ;
@@ -159,7 +159,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().toggleTracing() ;
+							this.getServiceOwner().toggleTracing() ;
 							return null;
 						}
 					}) ;
@@ -175,7 +175,7 @@ implements	IntercessionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getOwner().setTracer(tracer) ;
+						this.getServiceOwner().setTracer(tracer) ;
 						return null ;
 					}
 				}) ;
@@ -191,7 +191,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().logMessage(message) ;
+							this.getServiceOwner().logMessage(message) ;
 							return null;
 						}
 					}) ;
@@ -207,7 +207,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().printExecutionLog() ;
+							this.getServiceOwner().printExecutionLog() ;
 							return null;
 						}
 					}) ;
@@ -224,7 +224,8 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().printExecutionLogOnFile(fileName) ;
+							this.getServiceOwner().
+										printExecutionLogOnFile(fileName) ;
 							return null;
 						}
 					}) ;
@@ -240,7 +241,7 @@ implements	IntercessionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getOwner().traceMessage(message) ;
+						this.getServiceOwner().traceMessage(message) ;
 						return null ;
 					}
 				}) ;
@@ -261,7 +262,8 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().addRequiredInterface(inter) ;
+							this.getServiceOwner().
+											addRequiredInterface(inter) ;
 							return null;
 						}
 					}) ;
@@ -278,7 +280,8 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().removeRequiredInterface(inter) ;
+							this.getServiceOwner().
+											removeRequiredInterface(inter) ;
 							return null;
 						}
 					}) ;
@@ -294,7 +297,7 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().addOfferedInterface(inter) ;
+							this.getServiceOwner().addOfferedInterface(inter) ;
 							return null;
 						}
 					}) ;
@@ -311,7 +314,8 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getOwner().removeOfferedInterface(inter) ;
+							this.getServiceOwner().
+											removeOfferedInterface(inter) ;
 							return null;
 						}
 					}) ;
@@ -335,7 +339,8 @@ implements	IntercessionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getOwner().doPortConnection(portURI, otherPortURI, ccname) ;
+						this.getServiceOwner().
+							doPortConnection(portURI, otherPortURI, ccname) ;
 						return null ;
 					}
 				}) ;
@@ -352,7 +357,7 @@ implements	IntercessionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getOwner().doPortDisconnection(portURI) ;
+						this.getServiceOwner().doPortDisconnection(portURI) ;
 						return null ;
 					}
 				}) ;
@@ -373,7 +378,8 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<ComponentI>() {
 						@Override
 						public ComponentI call() throws Exception {
-							return this.getOwner().newInstance(parameters) ;
+							return this.getServiceOwner().
+													newInstance(parameters) ;
 						}
 					}) ;
 	}
@@ -389,7 +395,8 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Object>() {
 						@Override
 						public Object call() throws Exception {
-							return this.getOwner().invokeService(name, params) ;
+							return this.getServiceOwner().
+												invokeService(name, params) ;
 						}
 					}) ;
 	}
@@ -405,7 +412,8 @@ implements	IntercessionI
 					new AbstractComponent.AbstractService<Object>() {
 						@Override
 						public Object call() throws Exception {
-							return this.getOwner().invokeServiceSync(name, params) ;
+							return this.getServiceOwner().
+											invokeServiceSync(name, params) ;
 						}
 					}) ;
 	}
@@ -421,7 +429,7 @@ implements	IntercessionI
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
-					this.getOwner().invokeServiceAsync(name, params) ;
+					this.getServiceOwner().invokeServiceAsync(name, params) ;
 					return null ;
 				}
 			}) ;
@@ -441,7 +449,7 @@ implements	IntercessionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getOwner().insertBeforeService(
+						this.getServiceOwner().insertBeforeService(
 											methodName,
 											parametersCanonicalClassNames,
 											code) ;
@@ -464,7 +472,7 @@ implements	IntercessionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getOwner().insertBeforeService(
+						this.getServiceOwner().insertBeforeService(
 									methodName,
 									parametersCanonicalClassNames,
 									code) ;

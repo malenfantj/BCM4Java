@@ -97,7 +97,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().hasInstalledPlugins() ;
+							return this.getServiceOwner().hasInstalledPlugins() ;
 						}
 					}) ;
 	}
@@ -112,7 +112,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isInstalled(pluginId) ;
+							return this.getServiceOwner().isInstalled(pluginId) ;
 						}
 					}) ;
 	}
@@ -128,7 +128,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<PluginI>() {
 						@Override
 						public PluginI call() throws Exception {
-							return this.getOwner().getPlugin(pluginURI) ;
+							return this.getServiceOwner().getPlugin(servicePluginURI) ;
 						}
 					}) ;
 	}
@@ -144,7 +144,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isInitialised(pluginURI) ;
+							return this.getServiceOwner().isInitialised(servicePluginURI) ;
 						}
 					}) ;
 	}
@@ -163,7 +163,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isLogging() ;
+							return this.getServiceOwner().isLogging() ;
 						}
 					}) ;
 	}
@@ -178,7 +178,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isTracing() ;
+							return this.getServiceOwner().isTracing() ;
 						}
 					}) ;
 	}
@@ -198,7 +198,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isInStateAmong(states) ;
+							return this.getServiceOwner().isInStateAmong(states) ;
 						}
 					}) ;
 	}
@@ -214,7 +214,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().notInStateAmong(states) ;
+							return this.getServiceOwner().notInStateAmong(states) ;
 						}
 					}) ;
 	}
@@ -229,7 +229,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().hasItsOwnThreads() ;
+							return this.getServiceOwner().hasItsOwnThreads() ;
 						}
 					}) ;
 	}
@@ -244,7 +244,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().hasSerialisedExecution() ;
+							return this.getServiceOwner().hasSerialisedExecution() ;
 						}
 					}) ;
 	}
@@ -259,7 +259,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().canScheduleTasks() ;
+							return this.getServiceOwner().canScheduleTasks() ;
 						}
 					}) ;
 	}
@@ -274,7 +274,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Integer>() {
 						@Override
 						public Integer call() throws Exception {
-							return this.getOwner().getTotalNumberOfThreads() ;
+							return this.getServiceOwner().getTotalNumberOfThreads() ;
 						}
 					}) ;
 	}
@@ -293,7 +293,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Class<?>[]>() {
 						@Override
 						public Class<?>[] call() throws Exception {
-							return this.getOwner().getInterfaces() ;
+							return this.getServiceOwner().getInterfaces() ;
 						}
 					}) ;
 	}
@@ -308,7 +308,7 @@ implements	IntrospectionI
 				new AbstractComponent.AbstractService<Class<?>>() {
 					@Override
 					public Class<?> call() throws Exception {
-						return this.getOwner().getInterface(inter) ;
+						return this.getServiceOwner().getInterface(inter) ;
 					}
 				}) ;
 	}
@@ -323,7 +323,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Class<?>[]>() {
 						@Override
 						public Class<?>[] call() throws Exception {
-							return this.getOwner().getRequiredInterfaces() ;
+							return this.getServiceOwner().getRequiredInterfaces() ;
 						}
 					}) ;
 	}
@@ -339,7 +339,7 @@ implements	IntrospectionI
 				new AbstractComponent.AbstractService<Class<?>>() {
 					@Override
 					public Class<?> call() throws Exception {
-						return this.getOwner().getRequiredInterface(inter) ;
+						return this.getServiceOwner().getRequiredInterface(inter) ;
 					}
 				}) ;
 	}
@@ -354,7 +354,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Class<?>[]>() {
 						@Override
 						public Class<?>[] call() throws Exception {
-							return this.getOwner().getOfferedInterfaces() ;
+							return this.getServiceOwner().getOfferedInterfaces() ;
 						}
 					}) ;
 	}
@@ -370,7 +370,7 @@ implements	IntrospectionI
 				new AbstractComponent.AbstractService<Class<?>>() {
 					@Override
 					public Class<?> call() throws Exception {
-						return this.getOwner().getOfferedInterface(inter) ;
+						return this.getServiceOwner().getOfferedInterface(inter) ;
 					}
 				}) ;
 	}
@@ -385,7 +385,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isInterface(inter) ;
+							return this.getServiceOwner().isInterface(inter) ;
 						}
 					}) ;
 	}
@@ -401,7 +401,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isRequiredInterface(inter) ;
+							return this.getServiceOwner().isRequiredInterface(inter) ;
 						}
 					}) ;
 	}
@@ -416,7 +416,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isOfferedInterface(inter) ;
+							return this.getServiceOwner().isOfferedInterface(inter) ;
 						}
 					}) ;
 	}
@@ -436,7 +436,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
-							return this.getOwner().findPortURIsFromInterface(inter) ;
+							return this.getServiceOwner().findPortURIsFromInterface(inter) ;
 						}
 					}) ;
 	}
@@ -452,7 +452,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
-							return this.getOwner().findInboundPortURIsFromInterface(inter) ;
+							return this.getServiceOwner().findInboundPortURIsFromInterface(inter) ;
 						}
 					}) ;
 	}
@@ -468,7 +468,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
-							return this.getOwner().findOutboundPortURIsFromInterface(inter) ;
+							return this.getServiceOwner().findOutboundPortURIsFromInterface(inter) ;
 						}
 					}) ;
 	}
@@ -484,7 +484,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Class<?>>() {
 						@Override
 						public Class<?> call() throws Exception {
-							return this.getOwner().getPortImplementedInterface(portURI) ;
+							return this.getServiceOwner().getPortImplementedInterface(portURI) ;
 						}
 					}) ;
 	}
@@ -499,7 +499,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isPortExisting(portURI) ;
+							return this.getServiceOwner().isPortExisting(portURI) ;
 						}
 					}) ;
 	}
@@ -515,7 +515,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getOwner().isPortConnected(portURI) ;
+							return this.getServiceOwner().isPortConnected(portURI) ;
 						}
 					}) ;
 	}
@@ -534,7 +534,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<String>() {
 						@Override
 						public String call() throws Exception {
-							return this.getOwner().getComponentDefinitionClassName() ;
+							return this.getServiceOwner().getComponentDefinitionClassName() ;
 						}
 					}) ;
 	}
@@ -549,7 +549,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Annotation[]>() {
 						@Override
 						public Annotation[] call() throws Exception {
-							return this.getOwner().getComponentAnnotations() ;
+							return this.getServiceOwner().getComponentAnnotations() ;
 						}
 					}) ;
 	}
@@ -564,7 +564,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<ClassLoader>() {
 						@Override
 						public ClassLoader call() throws Exception {
-							return this.getOwner().getComponentLoader() ;
+							return this.getServiceOwner().getComponentLoader() ;
 						}
 					}) ;
 	}
@@ -580,7 +580,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<ServiceSignature[]>() {
 						@Override
 						public ServiceSignature[] call() throws Exception {
-							return this.getOwner().getComponentServiceSignatures() ;
+							return this.getServiceOwner().getComponentServiceSignatures() ;
 						}
 					}) ;
 	}
@@ -596,7 +596,7 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<ConstructorSignature[]>() {
 						@Override
 						public ConstructorSignature[] call() throws Exception {
-							return this.getOwner().getComponentConstructorSignatures() ;
+							return this.getServiceOwner().getComponentConstructorSignatures() ;
 						}
 					}) ;
 	}

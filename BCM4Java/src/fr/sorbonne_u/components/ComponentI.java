@@ -1075,7 +1075,22 @@ public interface		ComponentI
 		 *
 		 * @return	the reference to the component owner of the executor service that will execute this task.
 		 */
-		public ComponentI	getOwner() ;
+		public ComponentI	getTaskOwner() ;
+
+		/**
+		 * return the reference to the component owner or its plug-in
+		 * that will execute this task.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true			// no precondition.
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @return	 the reference to the component owner or its plug-in that will execute this task.
+		 */
+		public Object		getTaskProviderReference() ;
 	}
 
 	/**
@@ -1104,7 +1119,19 @@ public interface		ComponentI
 	@FunctionalInterface
 	public interface	FComponentTask
 	{
-		public void		run() ;
+		/**
+		 * a piece of code to be run as a task on the owner component.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	owner != null
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @param owner		owner component.
+		 */
+		public void		run(ComponentI owner) ;
 	}
 
 	/**
@@ -1771,7 +1798,7 @@ public interface		ComponentI
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
-	public interface			ComponentService<V>
+	public interface		ComponentService<V>
 	extends Callable<V>
 	{
 		/**
@@ -1802,10 +1829,10 @@ public interface		ComponentI
 		 *
 		 * @return	the reference to the component owner of the executor service that will execute this service call.
 		 */
-		public ComponentI	getOwner() ;
+		public AbstractComponent	getServiceOwner() ;
 
 		/**
-		 * return the reference to the component owner or its plugin
+		 * return the reference to the component owner or its plug-in
 		 * that will execute this request.
 		 * 
 		 * <p><strong>Contract</strong></p>
@@ -1846,7 +1873,22 @@ public interface		ComponentI
 	@FunctionalInterface
 	public interface	FComponentService<T>
 	{
-		public T		apply() throws Exception ;
+		/**
+		 * apply the service on the owner component.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	owner != null
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @param owner			owner component.
+		 * @return				the result of the service.
+		 * @throws Exception	<i>to do.</i>
+		 */
+		public T		apply(ComponentI owner)
+		throws Exception ;
 	}
 
 	/**

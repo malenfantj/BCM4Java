@@ -168,7 +168,7 @@ implements	PingPongTwoWayI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).pingPong() ;
+						((PingPongPlayer)this.getServiceOwner()).pingPong() ;
 						return null;
 					}
 				}) ;

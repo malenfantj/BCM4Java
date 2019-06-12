@@ -176,9 +176,9 @@ implements	PluginI
 		 * post	true			// no postcondition.
 		 * </pre>
 		 *
-		 * @param plugin					plug-in to be installed.
+		 * @param plugin				plug-in to be installed.
 		 * @param pluginInboundPortURI	URI of the plug-in inbound port of the owner component.
-		 * @throws Exception		<i>todo.</i>
+		 * @throws Exception			<i>todo.</i>
 		 */
 		public void		doInstallPluginOn(
 			PluginI plugin,
@@ -266,15 +266,15 @@ implements	PluginI
 	 * </pre>
 	 *
 	 * @param pluginInboundPortURI	URI of the plug-in management inbound port of the component.
-	 * @param plugin					plug-in to be installed.
+	 * @param taskPlugin					plug-in to be installed.
 	 * @throws Exception		<i>todo.</i>
 	 */
 	public static void	installPluginOn(
 		final String pluginInboundPortURI,
-		final PluginI plugin
+		final PluginI pluginToInstall
 		) throws Exception
 	{
-		assert	pluginInboundPortURI != null && plugin != null ;
+		assert	pluginInboundPortURI != null && pluginToInstall != null ;
 
 		Fake fake = new Fake() {} ;
 		fake.runTask(
@@ -282,8 +282,8 @@ implements	PluginI
 				@Override
 				public void run() {
 					try {
-						((Fake)this.getOwner()).doInstallPluginOn(
-									plugin, pluginInboundPortURI) ;
+						((Fake)this.getTaskOwner()).doInstallPluginOn(
+									pluginToInstall, pluginInboundPortURI) ;
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
@@ -319,7 +319,7 @@ implements	PluginI
 				@Override
 				public void run() {
 					try {
-						((Fake) this.getOwner()).doFinalise(
+						((Fake) this.getTaskOwner()).doFinalise(
 								pluginInboundPortURI, pluginURI) ;
 					} catch (Exception e) {
 						throw new RuntimeException(e) ;
@@ -356,7 +356,7 @@ implements	PluginI
 				@Override
 				public void run() {
 					try {
-						((Fake) this.getOwner()).
+						((Fake) this.getTaskOwner()).
 							doUnistallPluginFrom(
 									pluginInboundPortURI, pluginURI) ;
 					} catch (Exception e) {

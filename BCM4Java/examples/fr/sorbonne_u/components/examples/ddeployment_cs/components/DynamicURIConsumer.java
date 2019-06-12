@@ -195,7 +195,7 @@ extends		AbstractComponent
 						@Override
 						public void run() {
 							try {
-								((DynamicURIConsumer)this.getOwner()).
+								((DynamicURIConsumer)this.getTaskOwner()).
 														getURIandPrint() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;

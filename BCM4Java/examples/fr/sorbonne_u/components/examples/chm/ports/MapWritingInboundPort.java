@@ -133,7 +133,7 @@ implements	MapWriting<K,V>
 					@Override
 					public V call() throws Exception {
 						return ((ConcurrentMapComponent<K,V>)
-										this.getOwner()).put(key, value) ;
+										this.getServiceOwner()).put(key, value) ;
 					}
 				}) ;
 	}
@@ -153,7 +153,7 @@ implements	MapWriting<K,V>
 					@Override
 					public V call() throws Exception {
 						return ((ConcurrentMapComponent<K,V>)
-										this.getOwner()).remove(key) ;
+										this.getServiceOwner()).remove(key) ;
 					}
 				}) ;
 	}

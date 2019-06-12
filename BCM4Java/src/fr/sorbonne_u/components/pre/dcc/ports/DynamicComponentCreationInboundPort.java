@@ -93,7 +93,7 @@ implements	DynamicComponentCreationI
 				new AbstractComponent.AbstractService<String>() {
 					@Override
 					public String call() throws Exception {
-						return ((DynamicComponentCreator)this.getOwner()).
+						return ((DynamicComponentCreator)this.getServiceOwner()).
 									createOtherComponent(
 											fClassname,
 											fConstructorParams) ;

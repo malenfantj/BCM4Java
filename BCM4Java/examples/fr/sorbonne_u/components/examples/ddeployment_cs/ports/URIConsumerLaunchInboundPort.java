@@ -86,7 +86,7 @@ implements	URIConsumerLaunchI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							((DynamicURIConsumer)this.getOwner()).
+							((DynamicURIConsumer)this.getServiceOwner()).
 										getURIandPrint() ;
 							return null;
 						}

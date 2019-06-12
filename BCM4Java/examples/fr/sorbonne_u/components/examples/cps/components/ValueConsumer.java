@@ -317,7 +317,7 @@ extends		AbstractComponent
 				@Override
 				public void run() {
 					try {
-						((ValueConsumer)this.getOwner()).
+						((ValueConsumer)this.getTaskOwner()).
 												computeAndThenPrint() ;
 					} catch (Exception e) {
 						throw new RuntimeException(e) ;
@@ -446,7 +446,7 @@ extends		AbstractComponent
 						@Override
 						public void run() {
 							try {
-								((ValueConsumer)this.getOwner()).
+								((ValueConsumer)this.getTaskOwner()).
 													computeAndThenPrint() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;

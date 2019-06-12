@@ -2269,7 +2269,7 @@ implements	ComponentI
 						@Override
 						public void run() {
 							try {
-								this.getOwner().execute() ;
+								this.getTaskOwner().execute() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
 							}
@@ -2500,7 +2500,48 @@ implements	ComponentI
 	public static abstract class	AbstractTask
 	implements	ComponentI.ComponentTask
 	{
-		protected AbstractComponent	owner ;
+		protected AbstractComponent	taskOwner ;
+		protected final String		taskPluginURI ;
+		protected Object			taskPlugin ;
+
+		/**
+		 * create a task which uses the owner component method only.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true			// no precondition.
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 */
+		public				AbstractTask()
+		{
+			super() ;
+			this.taskPluginURI = null ;
+			this.taskPlugin = null ;
+		}
+
+		/**
+		 * create a task which uses both the owner component method and
+		 * methods of its designated plug-in.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	pluginURI != null
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @param pluginURI	URI of a plug-in installed on the owner.
+		 */
+		public				AbstractTask(String pluginURI)
+		{
+			super();
+			assert	pluginURI != null ;
+			this.taskPluginURI = pluginURI;
+			this.taskPlugin = null ;
+		}
 
 		/**
 		 * @see fr.sorbonne_u.components.ComponentI.ComponentTask#setOwnerReference(fr.sorbonne_u.components.ComponentI)
@@ -2511,16 +2552,61 @@ implements	ComponentI
 			assert	owner != null ;
 			assert	owner instanceof AbstractComponent ;
 
-			this.owner = (AbstractComponent) owner ;
+			try {
+				assert this.taskPluginURI == null ||
+										owner.isInstalled(taskPluginURI) ;
+			} catch (Exception e) {
+				throw new RuntimeException(e) ;
+			}
+
+			this.taskOwner = (AbstractComponent) owner ;
+			if (this.taskPluginURI != null) {
+				this.taskPlugin =
+						this.taskOwner.getPlugin(this.taskPluginURI) ;
+			}
+
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.ComponentI.ComponentTask#getOwner()
+		 * @see fr.sorbonne_u.components.ComponentI.ComponentTask#getTaskOwner()
 		 */
 		@Override
-		public AbstractComponent	getOwner()
+		public AbstractComponent	getTaskOwner()
 		{
-			return this.owner ;
+			return this.taskOwner ;
+		}
+
+		/**
+		 * @see fr.sorbonne_u.components.ComponentI.ComponentTask#getTaskProviderReference()
+		 */
+		@Override
+		public Object		getTaskProviderReference()
+		{
+			if (this.taskPluginURI == null) {
+				return this.taskOwner ;
+			} else {
+				return this.taskPlugin ;
+			}
+		}
+
+		/**
+		 * run a lambda expression as a task, providing it the owner as
+		 * parameter.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	t != null
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @param t			lambda defining the task to be executed.
+		 */
+		protected void		runTaskLambda(FComponentTask t)
+		{
+			assert	t != null ;
+
+			t.run(this.getTaskOwner()) ;
 		}
 	}
 
@@ -2582,7 +2668,7 @@ implements	ComponentI
 		return this.runTask(
 					new AbstractTask() {
 						@Override
-						public void run() { t.run() ; }
+						public void run() { this.runTaskLambda(t) ; }
 					});
 	}
 
@@ -2613,11 +2699,12 @@ implements	ComponentI
 		FComponentTask t
 		)
 	{
-		return this.runTask(executorServiceURI, 
-							new AbstractTask() {
-								@Override
-								public void run() { t.run() ; }
-							}) ;
+		return this.runTask(
+					executorServiceURI, 
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}) ;
 	}
 
 	/**
@@ -2642,11 +2729,12 @@ implements	ComponentI
 	@Override
 	public <T> Future<T>	runTask(int executorServiceIndex, FComponentTask t)
 	{
-		return this.runTask(executorServiceIndex,
-							new AbstractTask() {
-								@Override
-								public void run() { t.run() ; }
-							});
+		return this.runTask(
+					executorServiceIndex,
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					});
 	}
 
 	/**
@@ -2680,10 +2768,10 @@ implements	ComponentI
 		)
 	{
 		return this.scheduleTask(
-						new AbstractTask() {
-							@Override
-							public void run() { t.run() ; }
-						}, delay, u) ;
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, delay, u) ;
 	}
 
 	/**
@@ -2718,11 +2806,12 @@ implements	ComponentI
 		TimeUnit u
 		)
 	{
-		return this.scheduleTask(executorServiceURI, 
-								 new AbstractTask() {
-									@Override
-									public void run() { t.run() ; }
-								 }, delay, u) ;
+		return this.scheduleTask(
+					executorServiceURI, 
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, delay, u) ;
 	}
 
 	/**
@@ -2760,11 +2849,12 @@ implements	ComponentI
 		TimeUnit u
 		)
 	{
-		return this.scheduleTask(executorServiceIndex,
-								 new AbstractTask() {
-									@Override
-									public void run() { t.run() ; }
-								 }, delay, u) ;
+		return this.scheduleTask(
+					executorServiceIndex,
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, delay, u) ;
 	}
 
 	/**
@@ -2801,10 +2891,10 @@ implements	ComponentI
 		)
 	{
 		return this.scheduleTaskAtFixedRate(
-							new AbstractTask() {
-								@Override
-								public void run() { t.run() ; }
-							}, initialDelay, period, u) ;
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, initialDelay, period, u) ;
 	}
 
 	/**
@@ -2844,11 +2934,11 @@ implements	ComponentI
 		)
 	{
 		return this.scheduleTaskAtFixedRate(
-								executorServiceURI,
-								new AbstractTask() {
-									@Override
-									public void run() { t.run() ; }
-								}, initialDelay, period, u) ;
+					executorServiceURI,
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, initialDelay, period, u) ;
 	}
 
 	/**
@@ -2891,11 +2981,11 @@ implements	ComponentI
 		)
 	{
 		return this.scheduleTaskAtFixedRate(
-								executorServiceIndex,
-								new AbstractTask() {
-									@Override
-									public void run() { t.run() ; }
-								}, initialDelay, period, u) ;
+					executorServiceIndex,
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, initialDelay, period, u) ;
 	}
 
 	/**
@@ -2932,10 +3022,10 @@ implements	ComponentI
 		)
 	{
 		return this.scheduleTaskWithFixedDelay(
-								new AbstractTask() {
-									@Override
-									public void run() { t.run() ; }
-								}, initialDelay, delay, u) ;
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, initialDelay, delay, u) ;
 	}
 
 	/**
@@ -2975,11 +3065,11 @@ implements	ComponentI
 		)
 	{
 		return this.scheduleTaskWithFixedDelay(
-								executorServiceURI,
-								new AbstractTask() {
-									@Override
-									public void run() { t.run() ; }
-								}, initialDelay, delay, u);
+					executorServiceURI,
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, initialDelay, delay, u);
 	}
 
 	/**
@@ -3022,11 +3112,11 @@ implements	ComponentI
 		)
 	{
 		return this.scheduleTaskWithFixedDelay(
-								executorServiceIndex,
-								new AbstractTask() {
-									@Override
-									public void run() { t.run() ; }
-								}, initialDelay, delay, u);
+					executorServiceIndex,
+					new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+					}, initialDelay, delay, u);
 	}
 
 	// ------------------------------------------------------------------------
@@ -3049,11 +3139,12 @@ implements	ComponentI
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 */
-	public static abstract class		AbstractService<V>
+	public static abstract class	AbstractService<V>
 	implements	ComponentI.ComponentService<V>
 	{
-		protected AbstractComponent	owner ;
-		protected final String		pluginURI ;
+		protected AbstractComponent	serviceOwner ;
+		protected final String		servicePluginURI ;
+		protected PluginI			servicePlugin ;
 
 		/**
 		 * create a service callable which calls a service directly
@@ -3069,7 +3160,7 @@ implements	ComponentI
 		 */
 		public				AbstractService()
 		{
-			this.pluginURI = null ;
+			this.servicePluginURI = null ;
 		}
 
 		/**
@@ -3089,12 +3180,9 @@ implements	ComponentI
 		{
 			assert	pluginURI != null ;
 
-			this.pluginURI = pluginURI ;
+			this.servicePluginURI = pluginURI ;
 		}
 
-		/**
-		 * @see fr.sorbonne_u.components.ComponentI.ComponentTask#setOwnerReference(fr.sorbonne_u.components.ComponentI)
-		 */
 		@Override
 		public void			setOwnerReference(ComponentI owner)
 		{
@@ -3102,22 +3190,26 @@ implements	ComponentI
 			assert	owner instanceof AbstractComponent ;
 
 			try {
-				assert	this.pluginURI == null ||
-									owner.isInstalled(pluginURI) ;
+				assert	this.servicePluginURI == null ||
+										owner.isInstalled(servicePluginURI) ;
 			} catch (Exception e) {
 				throw new RuntimeException(e) ;
 			}
 
-			this.owner = (AbstractComponent) owner ;
+			this.serviceOwner = (AbstractComponent)owner ;
+			if (this.servicePluginURI != null) {
+				this.servicePlugin =
+						this.serviceOwner.getPlugin(this.servicePluginURI) ;
+			}
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.ComponentI.ComponentService#getOwner()
+		 * @see fr.sorbonne_u.components.ComponentI.ComponentService#getServiceOwner()
 		 */
 		@Override
-		public AbstractComponent	getOwner()
+		public AbstractComponent	getServiceOwner()
 		{
-			return this.owner ;
+			return this.serviceOwner ;
 		}
 
 		/**
@@ -3126,15 +3218,34 @@ implements	ComponentI
 		@Override
 		public Object		getServiceProviderReference()
 		{
-			if (this.pluginURI == null) {
-				return this.owner ;
+			if (this.servicePluginURI == null) {
+				return this.serviceOwner ;
 			} else {
-				try {
-					return this.owner.getPlugin(this.pluginURI) ;
-				} catch (Exception e) {
-					throw new RuntimeException(e) ;
-				}
+				return this.servicePlugin ;
 			}
+		}
+
+		/**
+		 * call a service lambda on the owner component passing the correct
+		 * parameters.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	sl != null
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @param sl			lambda expression representing a service execution.
+		 * @return				the result of the lambda expression.
+		 * @throws Exception	<i>to do.</i>
+		 */
+		protected V			callServiceLambda(FComponentService<V> sl)
+		throws Exception
+		{
+			assert	sl != null ;
+
+			return sl.apply(this.getServiceOwner()) ;
 		}
 	}
 
@@ -3166,7 +3277,7 @@ implements	ComponentI
 	 * @return						a future value embedding the result of the task.
 	 * @throws Exception			if exception raised by the task.
 	 */
-	protected <T> Future<T>		handleRequest(
+	protected <T,C,P> Future<T>		handleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request
 		) throws Exception
@@ -3252,7 +3363,7 @@ implements	ComponentI
 							new AbstractService<T>() {
 								@Override
 								public T call() throws Exception {
-									return request.apply() ;
+									return this.callServiceLambda(request) ;
 								}								
 							}) ;
 	}
@@ -3289,7 +3400,7 @@ implements	ComponentI
 							new AbstractService<T>() {
 								@Override
 								public T call() throws Exception {
-									return request.apply() ;
+									return this.callServiceLambda(request) ;
 								}
 							}) ;
 	}
@@ -3324,7 +3435,7 @@ implements	ComponentI
 							new AbstractService<T>() {
 								@Override
 								public T call() throws Exception {
-									return request.apply() ;
+									return this.callServiceLambda(request) ;
 								}
 							}) ;
 	}
@@ -3366,7 +3477,7 @@ implements	ComponentI
 		this.handleRequestAsync(new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}) ;
 	}
@@ -3402,7 +3513,7 @@ implements	ComponentI
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}) ;
 	}
@@ -3436,7 +3547,7 @@ implements	ComponentI
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}) ;
 	}
@@ -3516,7 +3627,7 @@ implements	ComponentI
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}, delay, u) ;
 	}
@@ -3559,7 +3670,7 @@ implements	ComponentI
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}, delay, u) ;
 	}
@@ -3600,7 +3711,7 @@ implements	ComponentI
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}, delay, u) ;
 	}
@@ -3638,7 +3749,7 @@ implements	ComponentI
 		this.scheduleRequestAsync(new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								  }, delay, u);
 	}
@@ -3679,7 +3790,7 @@ implements	ComponentI
 		this.scheduleRequestAsync(executorServiceURI, new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}, delay, u) ;
 	}
@@ -3718,7 +3829,7 @@ implements	ComponentI
 		this.scheduleRequestAsync(executorServiceIndex, new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
-										return request.apply() ;
+										return this.callServiceLambda(request) ;
 									}
 								}, delay, u) ;
 	}
@@ -3840,7 +3951,7 @@ implements	ComponentI
 						new AbstractService<Object>() {
 							@Override
 							public Object call() throws Exception {
-								return m.invoke(this.getOwner(), params) ;
+								return m.invoke(this.getServiceOwner(), params) ;
 							}
 						}) ;
 	}
@@ -3861,7 +3972,7 @@ implements	ComponentI
 						new AbstractService<Object>() {
 							@Override
 							public Object call() throws Exception {
-								return m.invoke(this.getOwner(), params) ;
+								return m.invoke(this.getServiceOwner(), params) ;
 							}
 						}) ;
 	}
@@ -3882,7 +3993,7 @@ implements	ComponentI
 						new AbstractService<Object>() {
 							@Override
 							public Object call() throws Exception {
-								return m.invoke(this.getOwner(), params) ;
+								return m.invoke(this.getServiceOwner(), params) ;
 							}
 						}) ;
 	}

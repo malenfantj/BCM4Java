@@ -88,7 +88,7 @@ implements	PingPongI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).play() ;
+						((PingPongPlayer)this.getServiceOwner()).play() ;
 						return null;
 					}
 				}) ;
@@ -104,7 +104,7 @@ implements	PingPongI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).playOnDataPull() ;
+						((PingPongPlayer)this.getServiceOwner()).playOnDataPull() ;
 						return null;
 					}
 				}) ;
@@ -120,7 +120,7 @@ implements	PingPongI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).playOnDataReception(b) ;
+						((PingPongPlayer)this.getServiceOwner()).playOnDataReception(b) ;
 						return null;
 					}
 				}) ;
@@ -136,7 +136,7 @@ implements	PingPongI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).pingPong() ;
+						((PingPongPlayer)this.getServiceOwner()).pingPong() ;
 						return null;
 					}
 				}) ;
@@ -152,7 +152,7 @@ implements	PingPongI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).goToService() ;
+						((PingPongPlayer)this.getServiceOwner()).goToService() ;
 						return null;
 					}
 				}) ;
@@ -168,7 +168,7 @@ implements	PingPongI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).hit(b) ;
+						((PingPongPlayer)this.getServiceOwner()).hit(b) ;
 						return null;
 					}
 				}) ;

@@ -95,7 +95,7 @@ extends		AbstractDataTwoWayPort
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).hit((Ball) d) ;
+						((PingPongPlayer)this.getServiceOwner()).hit((Ball) d) ;
 						return null;
 					}
 				}) ;

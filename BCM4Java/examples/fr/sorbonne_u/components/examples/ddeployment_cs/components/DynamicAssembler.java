@@ -152,7 +152,7 @@ extends		AbstractComponent
 							@Override
 							public void run() {
 								try {
-									((DynamicAssembler)this.getOwner()).
+									((DynamicAssembler)this.getTaskOwner()).
 															dynamicDeploy() ;
 								} catch (Exception e) {
 									throw new RuntimeException(e) ;
@@ -321,7 +321,7 @@ extends		AbstractComponent
 						@Override
 						public void run() {
 							try {
-								((DynamicAssembler)this.getOwner()).launch() ;
+								((DynamicAssembler)this.getTaskOwner()).launch() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
 							}

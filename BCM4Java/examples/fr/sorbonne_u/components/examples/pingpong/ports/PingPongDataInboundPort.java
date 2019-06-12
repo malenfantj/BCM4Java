@@ -90,7 +90,7 @@ extends		AbstractDataInboundPort
 				new AbstractComponent.AbstractService<DataOfferedI.DataI>() {
 					@Override
 					public DataOfferedI.DataI call() throws Exception {
-						return ((PingPongPlayer)this.getOwner()).getBall() ;
+						return ((PingPongPlayer)this.getServiceOwner()).getBall() ;
 					}
 				}) ;
 	}

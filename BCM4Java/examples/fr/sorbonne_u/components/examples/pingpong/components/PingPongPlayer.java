@@ -509,7 +509,7 @@ extends		AbstractComponent
 						public void run() {
 							try {
 								Thread.sleep(500) ;
-								((PingPongPlayer)this.getOwner()).
+								((PingPongPlayer)this.getTaskOwner()).
 											pingPongOutboundPort.play() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
@@ -571,7 +571,7 @@ extends		AbstractComponent
 						public void run() {
 							try {
 								Thread.sleep(500) ;
-								((PingPongPlayer)this.getOwner()).
+								((PingPongPlayer)this.getTaskOwner()).
 									pingPongOutboundPort.playOnDataPull() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
@@ -629,7 +629,7 @@ extends		AbstractComponent
 						public void run() {
 							try {
 								Thread.sleep(500) ;
-								((PingPongPlayer)this.getOwner()).
+								((PingPongPlayer)this.getTaskOwner()).
 									pingPongDataInboundPort.send(b) ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
@@ -676,7 +676,7 @@ extends		AbstractComponent
 					public void run() {
 						try {
 							Thread.sleep(500) ;
-							((PingPongPlayer)this.getOwner()).
+							((PingPongPlayer)this.getTaskOwner()).
 								pingPongTwoWayPort.getOut().pingPong() ;
 						} catch (Exception e) {
 							throw new RuntimeException(e) ;
@@ -696,7 +696,7 @@ extends		AbstractComponent
 							Ball b = new Ball() ;
 							b.incrementNumberOfHits() ;
 							Thread.sleep(500) ;
-							((PingPongPlayer)this.getOwner()).
+							((PingPongPlayer)this.getTaskOwner()).
 								pingpongDataTwoWayPort.getOut().send(b) ;
 						} catch (Exception e) {
 							throw new RuntimeException(e) ;
@@ -737,7 +737,7 @@ extends		AbstractComponent
 					public void run() {
 						try {
 							Thread.sleep(500) ;
-							((PingPongPlayer)this.getOwner()).
+							((PingPongPlayer)this.getTaskOwner()).
 								pingpongDataTwoWayPort.getOut().send(b) ;
 						} catch (Exception e) {
 							throw new RuntimeException(e) ;

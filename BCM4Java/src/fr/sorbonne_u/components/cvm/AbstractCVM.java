@@ -637,7 +637,7 @@ implements	ComponentVirtualMachineI
 					@Override
 					public void run() {
 						try {
-							this.getOwner().execute() ;
+							this.getTaskOwner().execute() ;
 						} catch (Exception e) {
 							throw new RuntimeException(e) ;
 						}
@@ -667,7 +667,7 @@ implements	ComponentVirtualMachineI
 						@Override
 						public void run() {
 							try {
-								this.getOwner().execute() ;
+								this.getTaskOwner().execute() ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
 							}

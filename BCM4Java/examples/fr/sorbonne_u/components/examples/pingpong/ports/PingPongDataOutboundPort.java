@@ -90,7 +90,7 @@ extends		AbstractDataOutboundPort
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						((PingPongPlayer)this.getOwner()).
+						((PingPongPlayer)this.getServiceOwner()).
 										playOnDataReception((Ball) d) ;
 						return null;
 					}

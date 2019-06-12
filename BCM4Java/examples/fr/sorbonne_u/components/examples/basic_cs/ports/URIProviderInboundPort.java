@@ -145,8 +145,7 @@ implements	URIProviderI
 		// defining the service to be called (to be contrasted with the
 		// anonymous class used in provideURIs.
 		return this.getOwner().handleRequestSync(
-						() -> ((URIProvider)this.getOwner()).
-													provideURIService()) ;
+						owner -> ((URIProvider)owner).provideURIService()) ;
 	}
 
 	/**
@@ -160,7 +159,7 @@ implements	URIProviderI
 				new AbstractComponent.AbstractService<String[]>() {
 					@Override
 					public String[] call() throws Exception {
-						return ((URIProvider)this.getOwner()).
+						return ((URIProvider)this.getServiceOwner()).
 								provideURIsService(numberOfRequestedURIs) ;
 					}
 				}) ;
