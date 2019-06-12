@@ -141,14 +141,12 @@ implements	URIProviderI
 	{
 		// the handleRequestSync wait for the result before returning to the
 		// caller; hence it is a synchronous remote method invocation.
+		// Here, we illustrate the use of Java 8 lambda expressions in
+		// defining the service to be called (to be contrasted with the
+		// anonymous class used in provideURIs.
 		return this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<String>() {
-					@Override
-					public String call() throws Exception {
-						return ((URIProvider)this.getOwner()).
-									provideURIService() ;
-					}
-				}) ;
+						() -> ((URIProvider)this.getOwner()).
+													provideURIService()) ;
 	}
 
 	/**

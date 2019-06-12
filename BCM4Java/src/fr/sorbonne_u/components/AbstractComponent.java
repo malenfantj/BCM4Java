@@ -706,7 +706,7 @@ implements	ComponentI
 
 		assert	this.isInstalled(plugin.getPluginURI()) :
 					new PostconditionException("Plug-in "
-						+ plugin.getPluginURI()  + " not installed correctly!") ;
+						+ plugin.getPluginURI() + " not installed correctly!") ;
 	}
 
 	/**
@@ -2527,8 +2527,9 @@ implements	ComponentI
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.ComponentTask)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Future<?>	runTask(ComponentTask t)
+	public <T> Future<T>	runTask(ComponentTask t)
 	{
 		assert	this.isStarted() ;
 		assert	t != null ;
@@ -2569,15 +2570,30 @@ implements	ComponentI
 						public boolean	isDone()
 						{ return true ; }
 					} ;
-					return f ;
+					return (Future<T>) f ;
 		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.FComponentTask)
+	 */
+	@Override
+	public <T> Future<T> runTask(FComponentTask t) {
+		return this.runTask(
+					new AbstractTask() {
+						@Override
+						public void run() { t.run() ; }
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask)
 	 */
 	@Override
-	public Future<?>	runTask(String executorServiceURI, ComponentTask t)
+	public <T> Future<T>	runTask(
+		String executorServiceURI,
+		ComponentTask t
+		)
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceURI(executorServiceURI) ;
@@ -2589,25 +2605,55 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask)
 	 */
 	@Override
-	public Future<?>	runTask(int executorServiceIndex, ComponentTask t)
+	public <T> Future<T>	runTask(
+		String executorServiceURI,
+		FComponentTask t
+		)
+	{
+		return this.runTask(executorServiceURI, 
+							new AbstractTask() {
+								@Override
+								public void run() { t.run() ; }
+							}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> Future<T>	runTask(int executorServiceIndex, ComponentTask t)
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
 		assert	t != null ;
 
 		t.setOwnerReference(this) ;
-		return this.executorServices.get(executorServiceIndex).
+		return (Future<T>) this.executorServices.get(executorServiceIndex).
 										getExecutorService().submit(t) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.FComponentTask)
+	 */
+	@Override
+	public <T> Future<T>	runTask(int executorServiceIndex, FComponentTask t)
+	{
+		return this.runTask(executorServiceIndex,
+							new AbstractTask() {
+								@Override
+								public void run() { t.run() ; }
+							});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTask(
+	public <T> ScheduledFuture<T>	scheduleTask(
 		ComponentTask t,
 		long delay,
 		TimeUnit u
@@ -2624,10 +2670,27 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTask(
+		FComponentTask t,
+		long delay,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTask(
+						new AbstractTask() {
+							@Override
+							public void run() { t.run() ; }
+						}, delay, u) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTask(
+	public <T> ScheduledFuture<T>	scheduleTask(
 		String executorServiceURI,
 		ComponentTask t,
 		long delay,
@@ -2645,10 +2708,29 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTask(
+	public <T> ScheduledFuture<T>	scheduleTask(
+		String executorServiceURI,
+		FComponentTask t,
+		long delay,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTask(executorServiceURI, 
+								 new AbstractTask() {
+									@Override
+									public void run() { t.run() ; }
+								 }, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTask(
 		int executorServiceIndex,
 		ComponentTask t,
 		long delay,
@@ -2661,16 +2743,35 @@ implements	ComponentI
 		assert	t != null && delay >= 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return ((ComponentSchedulableExecutorServiceManager)
+		return (ScheduledFuture<T>)
+				((ComponentSchedulableExecutorServiceManager)
 					this.executorServices.get(executorServiceIndex)).
 						getScheduledExecutorService().schedule(t, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTask(
+		int executorServiceIndex,
+		FComponentTask t,
+		long delay,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTask(executorServiceIndex,
+								 new AbstractTask() {
+									@Override
+									public void run() { t.run() ; }
+								 }, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
 		ComponentTask t,
 		long initialDelay,
 		long period,
@@ -2689,10 +2790,28 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+		FComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTaskAtFixedRate(
+							new AbstractTask() {
+								@Override
+								public void run() { t.run() ; }
+							}, initialDelay, period, u) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -2713,10 +2832,31 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+		String executorServiceURI,
+		FComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTaskAtFixedRate(
+								executorServiceURI,
+								new AbstractTask() {
+									@Override
+									public void run() { t.run() ; }
+								}, initialDelay, period, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
@@ -2731,17 +2871,38 @@ implements	ComponentI
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return ((ComponentSchedulableExecutorServiceManager)
-				this.executorServices.get(executorServiceIndex)).
-					getScheduledExecutorService().
-						scheduleAtFixedRate(t, initialDelay, period, u) ;
+		return (ScheduledFuture<T>)
+				((ComponentSchedulableExecutorServiceManager)
+					this.executorServices.get(executorServiceIndex)).
+						getScheduledExecutorService().
+							scheduleAtFixedRate(t, initialDelay, period, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+		int executorServiceIndex,
+		FComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTaskAtFixedRate(
+								executorServiceIndex,
+								new AbstractTask() {
+									@Override
+									public void run() { t.run() ; }
+								}, initialDelay, period, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
 		ComponentTask t,
 		long initialDelay,
 		long delay,
@@ -2760,10 +2921,28 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+		FComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTaskWithFixedDelay(
+								new AbstractTask() {
+									@Override
+									public void run() { t.run() ; }
+								}, initialDelay, delay, u) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -2784,10 +2963,31 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+		String executorServiceURI,
+		FComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTaskWithFixedDelay(
+								executorServiceURI,
+								new AbstractTask() {
+									@Override
+									public void run() { t.run() ; }
+								}, initialDelay, delay, u);
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
@@ -2802,10 +3002,31 @@ implements	ComponentI
 		assert	t != null && initialDelay >= 0  && delay > 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return ((ComponentSchedulableExecutorServiceManager)
-				this.executorServices.get(executorServiceIndex)).
-					getScheduledExecutorService().
-						scheduleWithFixedDelay(t, initialDelay, delay, u) ;
+		return (ScheduledFuture<T>)
+				((ComponentSchedulableExecutorServiceManager)
+					this.executorServices.get(executorServiceIndex)).
+						getScheduledExecutorService().
+							scheduleWithFixedDelay(t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+		int executorServiceIndex,
+		FComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		)
+	{
+		return this.scheduleTaskWithFixedDelay(
+								executorServiceIndex,
+								new AbstractTask() {
+									@Override
+									public void run() { t.run() ; }
+								}, initialDelay, delay, u);
 	}
 
 	// ------------------------------------------------------------------------
@@ -2918,18 +3139,18 @@ implements	ComponentI
 	}
 
 	/**
-	 * execute a request represented by a <code>Callable</code> on the
+	 * execute a request represented by a <code>ComponentService</code> on the
 	 * component.
 	 * 
 	 * <p><strong>Description</strong></p>
 	 * 
 	 * Uniform API entry to execute a call on the component.  The call, that
 	 * represents a method call on the object representing the component, is
-	 * embedded in a <code>Callable</code> object.  In concurrent components,
-	 * the Java executor framework is used to handle such requests.  Sequential
-	 * components may simply use this method to handle requests, or they may
-	 * bypass it by directly calling the method on the object representing the
-	 * component for the sought of efficiency.
+	 * embedded in a <code>ComponentService</code> object.  In concurrent
+	 * components, the Java executor framework is used to handle such requests.
+	 * Sequential components may simply use this method to handle requests, or
+	 * they may bypass it by directly calling the method on the object
+	 * representing the component for the sought of efficiency.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -3020,6 +3241,23 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(fr.sorbonne_u.components.ComponentI.FComponentService)
+	 */
+	@Override
+	public <T> T		handleRequestSync(
+		FComponentService<T> request
+		) throws Exception
+	{
+		return this.handleRequestSync(
+							new AbstractService<T>() {
+								@Override
+								public T call() throws Exception {
+									return request.apply() ;
+								}								
+							}) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
@@ -3038,6 +3276,25 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService)
+	 */
+	@Override
+	public <T> T		handleRequestSync(
+		String executorServiceURI,
+		FComponentService<T> request
+		) throws Exception
+	{
+		return this.handleRequestSync(
+							executorServiceURI,
+							new AbstractService<T>() {
+								@Override
+								public T call() throws Exception {
+									return request.apply() ;
+								}
+							}) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
@@ -3051,6 +3308,25 @@ implements	ComponentI
 		assert	request != null ;
 
 		return this.handleRequest(executorServiceIndex, request).get() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.FComponentService)
+	 */
+	@Override
+	public <T> T		handleRequestSync(
+		int executorServiceIndex,
+		FComponentService<T> request
+		) throws Exception
+	{
+		return this.handleRequestSync(
+							executorServiceIndex,
+							new AbstractService<T>() {
+								@Override
+								public T call() throws Exception {
+									return request.apply() ;
+								}
+							}) ;
 	}
 
 	/**
@@ -3080,6 +3356,22 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(fr.sorbonne_u.components.ComponentI.FComponentService)
+	 */
+	@Override
+	public <T> void			handleRequestAsync(
+		FComponentService<T> request
+		) throws Exception
+	{
+		this.handleRequestAsync(new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
@@ -3098,6 +3390,24 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService)
+	 */
+	@Override
+	public <T> void			handleRequestAsync(
+		String executorServiceURI,
+		FComponentService<T> request
+		) throws Exception
+	{
+		this.handleRequestAsync(executorServiceURI,
+								new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
@@ -3111,6 +3421,24 @@ implements	ComponentI
 		assert	request != null ;
 
 		this.handleRequest(executorServiceIndex, request) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(int, fr.sorbonne_u.components.ComponentI.FComponentService)
+	 */
+	@Override
+	public <T> void			handleRequestAsync(
+		int executorServiceIndex,
+		FComponentService<T> request
+		) throws Exception
+	{
+		this.handleRequestAsync(executorServiceIndex,
+								new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}) ;
 	}
 
 	/**
@@ -3175,6 +3503,25 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> T			scheduleRequestSync(
+		FComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws InterruptedException, ExecutionException
+	{
+		return this.scheduleRequestSync(
+								new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}, delay, u) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
@@ -3194,6 +3541,27 @@ implements	ComponentI
 				this.getExecutorServiceIndex(executorServiceURI) ;
 		return this.scheduleRequestSync(executorServiceIndex,
 													request, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> T			scheduleRequestSync(
+		String executorServiceURI,
+		FComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws InterruptedException, ExecutionException
+	{
+		return this.scheduleRequestSync(
+								executorServiceURI,
+								new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}, delay, u) ;
 	}
 
 	/**
@@ -3217,11 +3585,32 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(int, fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> T			scheduleRequestSync(
+		int executorServiceIndex,
+		FComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws InterruptedException, ExecutionException
+	{
+		return this.scheduleRequestSync(
+								executorServiceIndex,
+								new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}, delay, u) ;
+	}
+		
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public void				scheduleRequestAsync(
-		ComponentService<?> request,
+	public <T> void			scheduleRequestAsync(
+		ComponentService<T> request,
 		long delay,
 		TimeUnit u
 		)
@@ -3237,12 +3626,30 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> void			scheduleRequestAsync(
+		FComponentService<T> request,
+		long delay,
+		TimeUnit u
+		)
+	{
+		this.scheduleRequestAsync(new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								  }, delay, u);
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public void				scheduleRequestAsync(
+	public <T> void			scheduleRequestAsync(
 		String executorServiceURI,
-		ComponentService<?> request,
+		ComponentService<T> request,
 		long delay,
 		TimeUnit u
 		)
@@ -3259,12 +3666,31 @@ implements	ComponentI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> void			scheduleRequestAsync(
+		String executorServiceURI,
+		FComponentService<T> request,
+		long delay,
+		TimeUnit u
+		)
+	{
+		this.scheduleRequestAsync(executorServiceURI, new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}, delay, u) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public void				scheduleRequestAsync(
+	public <T> void			scheduleRequestAsync(
 		int executorServiceIndex,
-		ComponentService<?> request,
+		ComponentService<T> request,
 		long delay,
 		TimeUnit u
 		)
@@ -3276,6 +3702,25 @@ implements	ComponentI
 		assert	request != null && delay >= 0 && u != null ;
 
 		this.scheduleRequest(executorServiceIndex, request, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(int, fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> void			scheduleRequestAsync(
+		int executorServiceIndex,
+		FComponentService<T> request,
+		long delay,
+		TimeUnit u
+		)
+	{
+		this.scheduleRequestAsync(executorServiceIndex, new AbstractService<T>() {
+									@Override
+									public T call() throws Exception {
+										return request.apply() ;
+									}
+								}, delay, u) ;
 	}
 
 	// ------------------------------------------------------------------------

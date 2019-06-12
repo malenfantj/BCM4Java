@@ -1079,7 +1079,36 @@ public interface		ComponentI
 	}
 
 	/**
-	 * run the component task as main task of the component.
+	 * The interface <code>FComponentTask</code> is a functional interface
+	 * allowing to use Java 8 lambda-expressions to create service tasks to be
+	 * submitted to components.
+	 *
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p>
+	 * Thanks to Christian Abou-Haidar, Tahar Hidja, Jonathan Huang and
+	 * Félix Jean-Baptiste, students at INSTA, 2019 master 1 promotion
+	 * in software development, who where the first to suggest this extension. 
+	 * </p>
+	 * 
+	 * <p><strong>Invariant</strong></p>
+	 * 
+	 * <pre>
+	 * invariant		true
+	 * </pre>
+	 * 
+	 * <p>Created on : 2019-06-07</p>
+	 * 
+	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+	 */
+	@FunctionalInterface
+	public interface	FComponentTask
+	{
+		public void		run() ;
+	}
+
+	/**
+	 * run the <code>ComponentTask</code> as a task of the component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1092,10 +1121,26 @@ public interface		ComponentI
 	 * @param t	component task to be executed as main task.
 	 * @return	a <code>Future</code> representing pending completion of the task.
 	 */
-	public Future<?>		runTask(ComponentTask t) ;
+	public <T> Future<T>	runTask(ComponentTask t) ;
 
 	/**
-	 * run the component task  on the given executor service.
+	 * run the lambda expression as a task of the component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	t != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t	component task to be executed as main task.
+	 * @return	a <code>Future</code> representing pending completion of the task.
+	 */
+	public <T> Future<T>	runTask(FComponentTask t) ;
+
+	/**
+	 * run the <code>ComponentTask</code> on the given executor service.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1109,10 +1154,31 @@ public interface		ComponentI
 	 * @param t						component task to be executed as main task.
 	 * @return						a <code>Future</code> representing pending completion of the task.
 	 */
-	public Future<?>		runTask(String executorServiceURI, ComponentTask t) ;
+	public <T> Future<T>	runTask(
+		String executorServiceURI,
+		ComponentTask t) ;
 
 	/**
-	 * run the component task on the given executor service.
+	 * run the lambda expression on the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	t != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param t						component task to be executed as main task.
+	 * @return						a <code>Future</code> representing pending completion of the task.
+	 */
+	public <T> Future<T>	runTask(
+		String executorServiceURI,
+		FComponentTask t) ;
+
+	/**
+	 * run the <code>ComponentTask</code> on the given executor service.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1126,10 +1192,29 @@ public interface		ComponentI
 	 * @param t						component task to be executed as main task.
 	 * @return						a <code>Future</code> representing pending completion of the task.
 	 */
-	public Future<?>		runTask(int executorServiceIndex, ComponentTask t) ;
+	public <T> Future<T>	runTask(int executorServiceIndex, ComponentTask t) ;
 
 	/**
-	 * schedule a task to be run after a given delay.
+	 * run the lambda expression on the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	t != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param t						component task to be executed as main task.
+	 * @return						a <code>Future</code> representing pending completion of the task.
+	 */
+	public <T> Future<T>	runTask(
+		int executorServiceIndex,
+		FComponentTask t) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1145,14 +1230,36 @@ public interface		ComponentI
 	 * @param u		time unit in which the delay is expressed.
 	 * @return		a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTask(
+	public <T> ScheduledFuture<T>	scheduleTask(
 		ComponentTask t,
 		long delay, 
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task to be run after a given delay on the given executor
-	 * service.
+	 * schedule a lambda expression to be run after a given delay.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t		task to be scheduled.
+	 * @param delay	delay after which the task must be run.
+	 * @param u		time unit in which the delay is expressed.
+	 * @return		a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTask(
+		FComponentTask t,
+		long delay, 
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay on
+	 * the given executor service.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1169,15 +1276,40 @@ public interface		ComponentI
 	 * @param u						time unit in which the delay is expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTask(
+	public <T> ScheduledFuture<T>	scheduleTask(
 		String executorServiceURI,
 		ComponentTask t,
 		long delay, 
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task to be run after a given delay on the given executor
-	 * service.
+	 * schedule a lambda expression to be run after a given delay on
+	 * the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param t						task to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTask(
+		String executorServiceURI,
+		FComponentTask t,
+		long delay, 
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay on
+	 * the given executor service.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1194,18 +1326,44 @@ public interface		ComponentI
 	 * @param u						time unit in which the delay is expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTask(
+	public <T> ScheduledFuture<T>	scheduleTask(
 		int executorServiceIndex, 
 		ComponentTask t,
 		long delay, 
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task that becomes enabled first after the given initial delay,
-	 * and subsequently with the given period; that is executions will commence
-	 * after <code>initialDelay</code> then <code>initialDelay+period</code>,
-	 * then <code>initialDelay + 2 * period</code>, and so on. If any execution
-	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * schedule a lambda expression to be run after a given delay on
+	 * the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param t						task to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTask(
+		int executorServiceIndex, 
+		FComponentTask t,
+		long delay, 
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, then
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution of
+	 * the task encounters an exception, subsequent executions are suppressed.
 	 * Otherwise, the task will only terminate via cancellation or termination
 	 * of the executor. If any execution of this task takes longer than its
 	 * period, then subsequent executions may start late, but will not
@@ -1226,17 +1384,51 @@ public interface		ComponentI
 	 * @param u				time unit in which the initial delay and the period are expressed.
 	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
 		ComponentTask t,
 		long initialDelay,
 		long period,
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task that becomes enabled first after the given initial delay,
-	 * and subsequently with the given period; that is executions will commence
-	 * after <code>initialDelay</code> then <code>initialDelay+period</code>,
-	 * then <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * schedule a lambda expression that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, then
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution of
+	 * the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t				task to be scheduled.
+	 * @param initialDelay	delay after which the task begins to run.
+	 * @param period		period between successive executions.
+	 * @param u				time unit in which the initial delay and the period are expressed.
+	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+		FComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, then
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
 	 * of the task encounters an exception, subsequent executions are suppressed.
 	 * Otherwise, the task will only terminate via cancellation or termination
 	 * of the executor. If any execution of this task takes longer than its
@@ -1259,7 +1451,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the period are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -1267,10 +1459,46 @@ public interface		ComponentI
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task that becomes enabled first after the given initial delay,
-	 * and subsequently with the given period; that is executions will commence
-	 * after <code>initialDelay</code> then <code>initialDelay+period</code>,
-	 * then <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * schedule a lambda expression that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, then
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param t						task to be scheduled.
+	 * @param initialDelay			delay after which the task begins to run.
+	 * @param period				period between successive executions.
+	 * @param u						time unit in which the initial delay and the period are expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+		String executorServiceURI,
+		FComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
 	 * of the task encounters an exception, subsequent executions are suppressed.
 	 * Otherwise, the task will only terminate via cancellation or termination
 	 * of the executor. If any execution of this task takes longer than its
@@ -1289,11 +1517,11 @@ public interface		ComponentI
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param t						task to be scheduled.
 	 * @param initialDelay			delay after which the task begins to run.
-	 * @param period					period between successive executions.
+	 * @param period				period between successive executions.
 	 * @param u						time unit in which the initial delay and the period are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTaskAtFixedRate(
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
@@ -1301,12 +1529,47 @@ public interface		ComponentI
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task that becomes enabled first after the given initial delay,
-	 * and subsequently with the given delay between the termination of one
-	 * execution and the beginning of the next. If any execution of the task
-	 * encounters an exception, subsequent executions are suppressed.
+	 * schedule a lambda expression that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
 	 * Otherwise, the task will only terminate via cancellation or termination
-	 * of the executor.
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param t						task to be scheduled.
+	 * @param initialDelay			delay after which the task begins to run.
+	 * @param period				period between successive executions.
+	 * @param u						time unit in which the initial delay and the period are expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+		int executorServiceIndex,
+		FComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1323,19 +1586,48 @@ public interface		ComponentI
 	 * @param u				time unit in which the initial delay and the delay are expressed.
 	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
 		ComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task that becomes enabled first after the given initial delay,
-	 * and subsequently with the given delay between the termination of one
-	 * execution and the beginning of the next. If any execution of the task
-	 * encounters an exception, subsequent executions are suppressed.
-	 * Otherwise, the task will only terminate via cancellation or termination
-	 * of the executor.
+	 * schedule a lambda expression that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t				task to be scheduled.
+	 * @param initialDelay	delay after which the task begins to run.
+	 * @param delay			delay between the termination of one execution and the beginning of the next.
+	 * @param u				time unit in which the initial delay and the delay are expressed.
+	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+		FComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1353,7 +1645,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the delay are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -1361,12 +1653,43 @@ public interface		ComponentI
 		TimeUnit u) ;
 
 	/**
-	 * schedule a task that becomes enabled first after the given initial delay,
-	 * and subsequently with the given delay between the termination of one
-	 * execution and the beginning of the next. If any execution of the task
-	 * encounters an exception, subsequent executions are suppressed.
-	 * Otherwise, the task will only terminate via cancellation or termination
-	 * of the executor.
+	 * schedule a lambda expression that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param t						task to be scheduled.
+	 * @param initialDelay			delay after which the task begins to run.
+	 * @param delay					delay between the termination of one execution and the beginning of the next.
+	 * @param u						time unit in which the initial delay and the delay are expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+		String executorServiceURI,
+		FComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1384,9 +1707,40 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the delay are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public ScheduledFuture<?>	scheduleTaskWithFixedDelay(
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u) ;
+
+	/**
+	 * schedule a lambda expression that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param t						task to be scheduled.
+	 * @param initialDelay			delay after which the task begins to run.
+	 * @param delay					delay between the termination of one execution and the beginning of the next.
+	 * @param u						time unit in which the initial delay and the delay are expressed.
+	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 */
+	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+		int executorServiceIndex,
+		FComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u) ;
@@ -1467,7 +1821,36 @@ public interface		ComponentI
 	}
 
 	/**
-	 * execute a request represented by a <code>Callable</code> on the
+	 * The interface <code>FComponentService</code> is a functional interface
+	 * allowing to use Java 8 lambda-expressions to create service tasks to be
+	 * submitted to components.
+	 *
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p>
+	 * Thanks to Christian Abou-Haidar, Tahar Hidja, Jonathan Huang and
+	 * Félix Jean-Baptiste, students at INSTA, 2019 master 1 promotion
+	 * in software development, who where the first to suggest this extension. 
+	 * </p>
+	 * 
+	 * <p><strong>Invariant</strong></p>
+	 * 
+	 * <pre>
+	 * invariant		true
+	 * </pre>
+	 * 
+	 * <p>Created on : 2019-06-07</p>
+	 * 
+	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+	 */
+	@FunctionalInterface
+	public interface	FComponentService<T>
+	{
+		public T		apply() throws Exception ;
+	}
+
+	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
 	 * component, but synchronously, i.e. waiting for the result and returning
 	 * it to the caller.
 	 * 
@@ -1479,16 +1862,37 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>		the type of the value returned by the request.
-	 * @param request	service request to be executed on the component.
-	 * @return			the result of the task.
+	 * @param <T>			the type of the value returned by the request.
+	 * @param request		service request to be executed on the component.
+	 * @return				the result of the task.
 	 * @throws Exception	if exception raised by the task.
 	 */
 	public <T> T		handleRequestSync(ComponentService<T> request)
 	throws Exception ;
 
 	/**
-	 * execute a request represented by a <code>Callable</code> on the
+	 * execute a request represented by a lambda expression on the
+	 * component, but synchronously, i.e. waiting for the result and returning
+	 * it to the caller.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	task != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>			the type of the value returned by the request.
+	 * @param request		service request to be executed on the component.
+	 * @return				the result of the task.
+	 * @throws Exception	if exception raised by the task.
+	 */
+	public <T> T		handleRequestSync(FComponentService<T> request)
+	throws Exception ;
+
+	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
 	 * component, but synchronously, i.e. waiting for the result and returning
 	 * it to the caller.
 	 * 
@@ -1512,7 +1916,31 @@ public interface		ComponentI
 		) throws Exception ;
 
 	/**
-	 * execute a request represented by a <code>Callable</code> on the
+	 * execute a request represented by a lambda expression on the
+	 * component, but synchronously, i.e. waiting for the result and returning
+	 * it to the caller.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	task != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @return						the result of the task.
+	 * @throws Exception			if exception raised by the task.
+	 */
+	public <T> T		handleRequestSync(
+		String executorServiceURI,
+		FComponentService<T> request
+		) throws Exception ;
+
+	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
 	 * component, but synchronously, i.e. waiting for the result and returning
 	 * it to the caller.
 	 * 
@@ -1533,6 +1961,30 @@ public interface		ComponentI
 	public <T> T		handleRequestSync(
 		int executorServiceIndex,
 		ComponentService<T> request
+		) throws Exception ;
+
+	/**
+	 * execute a request represented by a lambda expression on the
+	 * component, but synchronously, i.e. waiting for the result and returning
+	 * it to the caller.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	task != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @return						the result of the task.
+	 * @throws Exception			if exception raised by the task.
+	 */
+	public <T> T		handleRequestSync(
+		int executorServiceIndex,
+		FComponentService<T> request
 		) throws Exception ;
 
 	/**
@@ -1558,6 +2010,28 @@ public interface		ComponentI
 	throws Exception ;
 
 	/**
+	 * execute a request represented by a lambda expression on
+	 * the component, but asynchronously, i.e. without waiting for the result
+	 * but returning the control immediately to the caller.
+	 * 
+	 * TODO: introduce distributed future variables to return a future value.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	task != null 
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>			the type of the value returned by the request.
+	 * @param request		service request to be executed on the component.
+	 * @throws Exception	if exception raised by the task.
+	 */
+	public <T> void		handleRequestAsync(FComponentService<T> request)
+	throws Exception ;
+
+	/**
 	 * execute a request represented by a <code>ComponentService</code> on
 	 * the component, but asynchronously, i.e. without waiting for the result
 	 * but returning the control immediately to the caller.
@@ -1580,6 +2054,31 @@ public interface		ComponentI
 	public <T> void		handleRequestAsync(
 		String executorServiceURI,
 		ComponentService<T> request
+		) throws Exception ;
+
+	/**
+	 * execute a request represented by a lambda expression on
+	 * the component, but asynchronously, i.e. without waiting for the result
+	 * but returning the control immediately to the caller.
+	 * 
+	 * TODO: introduce distributed future variables to return a future value.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	task != null 
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @throws Exception			if exception raised by the task.
+	 */
+	public <T> void		handleRequestAsync(
+		String executorServiceURI,
+		FComponentService<T> request
 		) throws Exception ;
 
 	/**
@@ -1608,8 +2107,33 @@ public interface		ComponentI
 		) throws Exception ;
 
 	/**
-	 * schedule a service for execution after a given delay, forcing the caller
-	 * to wait for the result.
+	 * execute a request represented by a lambda expression on
+	 * the component, but asynchronously, i.e. without waiting for the result
+	 * but returning the control immediately to the caller.
+	 * 
+	 * TODO: introduce distributed future variables to return a future value.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	task != null 
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @throws Exception			if exception raised by the task.
+	 */
+	public <T> void		handleRequestAsync(
+		int executorServiceIndex,
+		FComponentService<T> request
+		) throws Exception ;
+
+	/**
+	 * schedule a <code>ComponentService</code> for execution after a given
+	 * delay, forcing the caller to wait for the result.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1634,8 +2158,34 @@ public interface		ComponentI
 		TimeUnit u) throws InterruptedException, ExecutionException ;
 
 	/**
-	 * schedule a service for execution after a given delay, forcing the caller
-	 * to wait for the result.
+	 * schedule a lambda expression for execution after a given
+	 * delay, forcing the caller to wait for the result.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	s != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a scheduled future to synchronise with the task.
+	 * @throws ExecutionException	<i>todo.</i>
+	 * @throws InterruptedException	<i>todo.</i>
+	 */
+	public <T> T		scheduleRequestSync(
+		FComponentService<T> request,
+		long delay, 
+		TimeUnit u) throws InterruptedException, ExecutionException ;
+
+	/**
+	 * schedule a <code>ComponentService</code> for execution after a given
+	 * delay, forcing the caller to wait for the result.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1663,8 +2213,37 @@ public interface		ComponentI
 		) throws InterruptedException, ExecutionException ;
 
 	/**
-	 * schedule a service for execution after a given delay, forcing the caller
-	 * to wait for the result.
+	 * schedule a lambda expression for execution after a given
+	 * delay, forcing the caller to wait for the result.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	s != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a scheduled future to synchronise with the task.
+	 * @throws ExecutionException	<i>todo.</i>
+	 * @throws InterruptedException	<i>todo.</i>
+	 */
+	public <T> T		scheduleRequestSync(
+		String executorServiceURI,
+		FComponentService<T> request,
+		long delay, 
+		TimeUnit u
+		) throws InterruptedException, ExecutionException ;
+
+	/**
+	 * schedule a <code>ComponentService</code> for execution after a given
+	 * delay, forcing the caller to wait for the result.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1692,8 +2271,38 @@ public interface		ComponentI
 		) throws InterruptedException, ExecutionException ;
 
 	/**
-	 * schedule a service for execution after a given delay, without making the
-	 * caller wait of giving it a possibility to synchronise with the result.
+	 * schedule a lambda expression for execution after a given
+	 * delay, forcing the caller to wait for the result.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	s != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 * @return						a scheduled future to synchronise with the task.
+	 * @throws ExecutionException	<i>todo.</i>
+	 * @throws InterruptedException	<i>todo.</i>
+	 */
+	public <T> T		scheduleRequestSync(
+		int executorServiceIndex,
+		FComponentService<T> request,
+		long delay, 
+		TimeUnit u
+		) throws InterruptedException, ExecutionException ;
+
+	/**
+	 * schedule a <code>ComponentService</code> for execution after a given
+	 * delay, without making the caller wait of giving it a possibility to
+	 * synchronise with the result.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1708,14 +2317,38 @@ public interface		ComponentI
 	 * @param delay		delay after which the task must be run.
 	 * @param u			time unit in which the delay is expressed.
 	 */
-	public void			scheduleRequestAsync(
-		ComponentService<?> request,
+	public <T> void			scheduleRequestAsync(
+		ComponentService<T> request,
 		long delay, 
 		TimeUnit u) ;
 
 	/**
-	 * schedule a service for execution after a given delay, without making the
-	 * caller wait of giving it a possibility to synchronise with the result.
+	 * schedule a lambda expression for execution after a given
+	 * delay, without making the caller wait of giving it a possibility to
+	 * synchronise with the result.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	s != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param request	service request to be scheduled.
+	 * @param delay		delay after which the task must be run.
+	 * @param u			time unit in which the delay is expressed.
+	 */
+	public <T> void			scheduleRequestAsync(
+		FComponentService<T> request,
+		long delay, 
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentService</code> for execution after a given
+	 * delay, without making the caller wait of giving it a possibility to
+	 * synchronise with the result.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1731,15 +2364,41 @@ public interface		ComponentI
 	 * @param delay					delay after which the task must be run.
 	 * @param u						time unit in which the delay is expressed.
 	 */
-	public void			scheduleRequestAsync(
+	public <T> void			scheduleRequestAsync(
 		String executorServiceURI,
-		ComponentService<?> request,
+		ComponentService<T> request,
 		long delay, 
 		TimeUnit u) ;
 
 	/**
-	 * schedule a service for execution after a given delay, without making the
-	 * caller wait of giving it a possibility to synchronise with the result.
+	 * schedule a lambda expression for execution after a given
+	 * delay, without making the caller wait of giving it a possibility to
+	 * synchronise with the result.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	s != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 */
+	public <T> void			scheduleRequestAsync(
+		String executorServiceURI,
+		FComponentService<T> request,
+		long delay, 
+		TimeUnit u) ;
+
+	/**
+	 * schedule a <code>ComponentService</code> for execution after a given
+	 * delay, without making the caller wait of giving it a possibility to
+	 * synchronise with the result.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1755,9 +2414,34 @@ public interface		ComponentI
 	 * @param delay					delay after which the task must be run.
 	 * @param u						time unit in which the delay is expressed.
 	 */
-	public void			scheduleRequestAsync(
+	public <T> void		scheduleRequestAsync(
 		int executorServiceIndex,
-		ComponentService<?> request,
+		ComponentService<T> request,
+		long delay, 
+		TimeUnit u) ;
+
+	/**
+	 * schedule a lambda expression for execution after a given
+	 * delay, without making the caller wait of giving it a possibility to
+	 * synchronise with the result.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	s != null and delay &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param request				service request to be scheduled.
+	 * @param delay					delay after which the task must be run.
+	 * @param u						time unit in which the delay is expressed.
+	 */
+	public <T> void		scheduleRequestAsync(
+		int executorServiceIndex,
+		FComponentService<T> request,
 		long delay, 
 		TimeUnit u) ;
 
