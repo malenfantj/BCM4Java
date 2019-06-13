@@ -36,6 +36,9 @@ package fr.sorbonne_u.components;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
 
 //------------------------------------------------------------------------------
 /**
@@ -57,6 +60,78 @@ import java.lang.reflect.Modifier;
  */
 public class			AbstractComponentHelper
 {
+	private static final Map<Class<?>, Class<?>> equivalentTypeMap =
+															new HashMap<>(18) ;
+
+	static{
+		equivalentTypeMap.put(boolean.class, Boolean.class);
+		equivalentTypeMap.put(byte.class, Byte.class);
+		equivalentTypeMap.put(char.class, Character.class);
+		equivalentTypeMap.put(float.class, Float.class);
+		equivalentTypeMap.put(int.class, Integer.class);
+		equivalentTypeMap.put(long.class, Long.class);
+		equivalentTypeMap.put(short.class, Short.class);
+		equivalentTypeMap.put(double.class, Double.class);
+		equivalentTypeMap.put(void.class, Void.class);
+		equivalentTypeMap.put(Boolean.class, boolean.class);
+		equivalentTypeMap.put(Byte.class, byte.class);
+		equivalentTypeMap.put(Character.class, char.class);
+		equivalentTypeMap.put(Float.class, float.class);
+		equivalentTypeMap.put(Integer.class, int.class);
+		equivalentTypeMap.put(Long.class, long.class);
+		equivalentTypeMap.put(Short.class, short.class);
+		equivalentTypeMap.put(Double.class, double.class);
+		equivalentTypeMap.put(Void.class, void.class);
+	}
+
+	/**
+	 * get the class equivalent to the provided one, either the wrapper of
+	 * a primitive or the otehr way around.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param type
+	 * @return
+	 */
+	protected static Class<?>	getEquivalentType(Class<?> type)
+	{
+		return equivalentTypeMap.get(type) ;
+	}
+
+	/**
+	 * return true if the two classes are equivalent i.e., are either assignable
+	 * from each other or one is the wrapper of the other.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param class1	a class to be tested.
+	 * @param class2	a class to be tested.
+	 * @return			true if the two classes are equivalent.
+	 */
+	protected static boolean	areEquivalentTypes(
+		Class<?> class1,
+		Class<?> class2
+		)
+	{
+		if (class1.isPrimitive()) {
+			class1 = getEquivalentType(class1) ;
+		}
+		if (class2.isPrimitive()) {
+			class2 = getEquivalentType(class2) ;
+		}
+		return class1.isAssignableFrom(class2) ;
+	}
+
 	/**
 	 * return true if the given class represents a component.
 	 * 
@@ -74,14 +149,11 @@ public class			AbstractComponentHelper
 	{
 		assert	cl != null ;
 
-		boolean ret = false ;
-		while (!cl.equals(Object.class) && !ret) {
-			if (cl.equals(AbstractComponent.class)) {
-				ret = true ;
-			}
-			cl = cl.getSuperclass() ;
-		}
-		return ret && protectedConstructorsOnly(cl) ;
+		// All component classes must inherit from AbstractComponent
+		boolean ret = AbstractComponent.class.isAssignableFrom(cl) ;
+		// Component classes can only have protected constructors
+		ret &= protectedConstructorsOnly(cl) ;
+		return ret  ;
 	}
 
 	/**
@@ -137,29 +209,26 @@ public class			AbstractComponentHelper
 		) throws NoSuchMethodException, SecurityException
 	{
 		Constructor<?> cons = null ;
-		Class<?>[] parameterTypes = new Class[constructorParams.length] ;
-		Class<?>[] parameterWithPrimitiveTypes =
-									new Class[constructorParams.length] ;
+		Class<?>[] actualsTypes = new Class[constructorParams.length] ;
 		for (int i = 0 ; i < constructorParams.length ; i++) {
-			parameterTypes[i] = constructorParams[i].getClass() ;
-			parameterWithPrimitiveTypes[i] = parameterTypes[i] ;
-			if (isWrapper(parameterWithPrimitiveTypes[i])) {
-				parameterWithPrimitiveTypes[i] =
-						class2type(parameterWithPrimitiveTypes[i]) ;
-			}
+			actualsTypes[i] = constructorParams[i].getClass() ;
 		}
 		boolean found = false ;
-		while (cl != Object.class && !found) {
-			try {
-				cons = cl.getDeclaredConstructor(parameterTypes) ;
-				found = true ;
-			} catch (NoSuchMethodException e) {
-				try {
-					cons = cl.getDeclaredConstructor(
-										parameterWithPrimitiveTypes) ;
-					found = true ;
-				} catch (NoSuchMethodException e1) {
-					 ;
+		while (!cl.equals(Object.class) && !found) {
+			Constructor<?>[] constructors = cl.getDeclaredConstructors() ;
+			for (int i = 0 ; i < constructors.length && !found ; i++) {
+				Class<?>[] formalsTypes = constructors[i].getParameterTypes() ;
+				if (formalsTypes.length == actualsTypes.length) {
+					boolean compatibleTypes = true ;
+					for(int j = 0; j < formalsTypes.length &&
+													compatibleTypes ; j++) {
+						compatibleTypes =
+								isAssignable(actualsTypes[i], formalsTypes[i]) ;
+					}
+					if (compatibleTypes) {
+						found = true ;
+						cons = constructors[i] ;
+					}
 				}
 			}
 			cl = cl.getSuperclass() ;
@@ -172,77 +241,28 @@ public class			AbstractComponentHelper
 	}
 
 	/**
-	 * return the class representing the primitive type for which
-	 * <code>c</code> is the corresponding wrapper class.
+	 * return true if a value of the actual can be assigned to the formal.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	c != null
-	 * pre	isWrapper(c)
-	 * post	return != null
-	 * </pre>
-	 *
-	 * @param c	a primitive type wrapper class.
-	 * @return	the class representing the primitive type for which <code>c</code> is the corresponding wrapper class.
-	 */
-	public static Class<?> 		class2type(Class<?> c)
-	{
-		assert	c != null ;
-		assert	isWrapper(c) ;
-
-		Class<?> type = null ;
-		if (c == Byte.class) {
-			type = byte.class ;
-		} else if (c == Short.class) {
-			type = short.class ;
-		} else if (c == Integer.class) {
-			type = int.class ;
-		} else if (c == Long.class) {
-			type = long.class ;
-		} else if (c == Character.class) {
-			type = char.class ;
-		} else if (c == Float.class) {
-			type = float.class ;
-		} else if (c == Double.class) {
-			type = double.class ;
-		} else if (c == Boolean.class) {
-			type = boolean.class ;
-		} else if (c == Void.class) {
-			type = void.class ;
-		}
-
-		assert	type != null ;
-
-		return type ;
-	}
-
-	/**
-	 * return true if the class <code>c</code> is a wrapper class for a
-	 * primitive type.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	c != null
+	 * pre	fromClass != null and toClass != null
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param c	class to be tested.
-	 * @return	true if the class <code>c</code> is a wrapper class for a primitive type.
+	 * @param fromClass	actual parameter type which values must be assigned to the formal parameter.
+	 * @param toClass	class typing a formal parameter to be assigned.
+	 * @return			true if a value of the actual can be assigned to the formal.
 	 */
-	public static boolean 	isWrapper(Class<?> c)
+	private static boolean	isAssignable(Class<?> fromClass, Class<?> toClass)
 	{
-		assert	c != null ;
+		return toClass.isAssignableFrom(fromClass) ||
+									areEquivalentTypes(fromClass, toClass) ;
+	}
 
-		boolean ret = false ;
-		if (c == Byte.class || c == Short.class || c == Integer.class ||
-			c == Long.class || c == Character.class || c == Float.class ||
-			c == Double.class || c == Boolean.class || c == Void.class)
-		{
-			ret = true ;
-		}
-		return ret ;
+	public static void	main(String[] args)
+	{
+		System.out.println(isComponentClass(DynamicComponentCreator.class)) ;
 	}
 }
 //------------------------------------------------------------------------------

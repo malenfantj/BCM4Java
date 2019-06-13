@@ -1265,7 +1265,7 @@ implements	ComponentI
 	{
 		assert	ac != null ;
 
-		boolean ret = true ;
+		boolean ret = AbstractComponentHelper.isComponentClass(ac.getClass()) ;
 
 		ret &= ac.innerComponents != null ;
 		ret &= ac.isConcurrent == (ac.executorServices.size() > 0) ;
@@ -1305,6 +1305,27 @@ implements	ComponentI
 	/**
 	 * create a component instantiated from the class of the given class name
 	 * and initialised by the constructor which parameters are given.
+	 * 
+	 * <p><strong<Description</strong></p>
+	 * 
+	 * <p>
+	 * Due to the use of reflection to find the appropriate constructor in the
+	 * component class, BCM does not currently apply the constructor selection
+	 * rules that the Java compiler would apply. The actual parameters types
+	 * must in fact match exactly the formal parameters ones. This is a common
+	 * problem that Java software using reflection face when looking up
+	 * constructors and methods. This forces to avoid sophisticated overriding
+	 * of constructors in component classes and in their call sequences. When
+	 * several constructors can apply, the first to be found is used rather
+	 * than the most specific in compiled Java.
+	 * </p>
+	 * <p>
+	 * If the <code>NoSuchMethodException</code> is thrown, it is likely that
+	 * the match between the actual parameters types and the formal parameters
+	 * ones has not been found by the current algorithm. Programmers must the
+	 * try to change the types of the formal parameters to simplify the
+	 * constructor selection.
+	 * </p>
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 

@@ -61,7 +61,7 @@ import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationInboundPor
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 @OfferedInterfaces(offered = {DynamicComponentCreationI.class})
-public class				DynamicComponentCreator
+public class			DynamicComponentCreator
 extends		AbstractComponent
 {
 	protected DynamicComponentCreationInboundPort	p ;
@@ -79,7 +79,7 @@ extends		AbstractComponent
 	 * @param dynamicComponentCreationInboundPortURI	URI of the port offering the service
 	 * @throws Exception <i>todo.</i>
 	 */
-	public				DynamicComponentCreator(
+	protected			DynamicComponentCreator(
 		String dynamicComponentCreationInboundPortURI
 		) throws Exception
 	{
