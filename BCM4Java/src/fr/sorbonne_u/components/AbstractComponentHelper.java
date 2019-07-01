@@ -223,7 +223,7 @@ public class			AbstractComponentHelper
 					for(int j = 0; j < formalsTypes.length &&
 													compatibleTypes ; j++) {
 						compatibleTypes =
-								isAssignable(actualsTypes[i], formalsTypes[i]) ;
+								isAssignable(actualsTypes[j], formalsTypes[j]) ;
 					}
 					if (compatibleTypes) {
 						found = true ;
