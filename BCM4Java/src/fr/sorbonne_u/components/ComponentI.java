@@ -1148,7 +1148,7 @@ public interface		ComponentI
 	 * @param t	component task to be executed as main task.
 	 * @return	a <code>Future</code> representing pending completion of the task.
 	 */
-	public <T> Future<T>	runTask(ComponentTask t) ;
+	public Future<Object>	runTask(ComponentTask t) ;
 
 	/**
 	 * run the lambda expression as a task of the component.
@@ -1164,7 +1164,7 @@ public interface		ComponentI
 	 * @param t	component task to be executed as main task.
 	 * @return	a <code>Future</code> representing pending completion of the task.
 	 */
-	public <T> Future<T>	runTask(FComponentTask t) ;
+	public Future<Object>	runTask(FComponentTask t) ;
 
 	/**
 	 * run the <code>ComponentTask</code> on the given executor service.
@@ -1181,7 +1181,7 @@ public interface		ComponentI
 	 * @param t						component task to be executed as main task.
 	 * @return						a <code>Future</code> representing pending completion of the task.
 	 */
-	public <T> Future<T>	runTask(
+	public Future<Object>	runTask(
 		String executorServiceURI,
 		ComponentTask t) ;
 
@@ -1200,7 +1200,7 @@ public interface		ComponentI
 	 * @param t						component task to be executed as main task.
 	 * @return						a <code>Future</code> representing pending completion of the task.
 	 */
-	public <T> Future<T>	runTask(
+	public Future<Object>	runTask(
 		String executorServiceURI,
 		FComponentTask t) ;
 
@@ -1219,7 +1219,7 @@ public interface		ComponentI
 	 * @param t						component task to be executed as main task.
 	 * @return						a <code>Future</code> representing pending completion of the task.
 	 */
-	public <T> Future<T>	runTask(int executorServiceIndex, ComponentTask t) ;
+	public Future<Object>	runTask(int executorServiceIndex, ComponentTask t) ;
 
 	/**
 	 * run the lambda expression on the given executor service.
@@ -1236,7 +1236,7 @@ public interface		ComponentI
 	 * @param t						component task to be executed as main task.
 	 * @return						a <code>Future</code> representing pending completion of the task.
 	 */
-	public <T> Future<T>	runTask(
+	public Future<Object>	runTask(
 		int executorServiceIndex,
 		FComponentTask t) ;
 
@@ -1257,7 +1257,7 @@ public interface		ComponentI
 	 * @param u		time unit in which the delay is expressed.
 	 * @return		a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		ComponentTask t,
 		long delay, 
 		TimeUnit u) ;
@@ -1279,7 +1279,7 @@ public interface		ComponentI
 	 * @param u		time unit in which the delay is expressed.
 	 * @return		a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		FComponentTask t,
 		long delay, 
 		TimeUnit u) ;
@@ -1303,7 +1303,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the delay is expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		String executorServiceURI,
 		ComponentTask t,
 		long delay, 
@@ -1328,7 +1328,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the delay is expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		String executorServiceURI,
 		FComponentTask t,
 		long delay, 
@@ -1353,7 +1353,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the delay is expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		int executorServiceIndex, 
 		ComponentTask t,
 		long delay, 
@@ -1378,7 +1378,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the delay is expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		int executorServiceIndex, 
 		FComponentTask t,
 		long delay, 
@@ -1411,7 +1411,7 @@ public interface		ComponentI
 	 * @param u				time unit in which the initial delay and the period are expressed.
 	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		ComponentTask t,
 		long initialDelay,
 		long period,
@@ -1444,7 +1444,7 @@ public interface		ComponentI
 	 * @param u				time unit in which the initial delay and the period are expressed.
 	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		FComponentTask t,
 		long initialDelay,
 		long period,
@@ -1478,7 +1478,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the period are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -1513,7 +1513,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the period are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
@@ -1548,7 +1548,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the period are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
@@ -1583,7 +1583,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the period are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
@@ -1613,7 +1613,7 @@ public interface		ComponentI
 	 * @param u				time unit in which the initial delay and the delay are expressed.
 	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		ComponentTask t,
 		long initialDelay,
 		long delay,
@@ -1642,7 +1642,7 @@ public interface		ComponentI
 	 * @param u				time unit in which the initial delay and the delay are expressed.
 	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		FComponentTask t,
 		long initialDelay,
 		long delay,
@@ -1672,7 +1672,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the delay are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -1703,7 +1703,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the delay are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
@@ -1734,7 +1734,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the delay are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
@@ -1765,7 +1765,7 @@ public interface		ComponentI
 	 * @param u						time unit in which the initial delay and the delay are expressed.
 	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
 	 */
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
@@ -2355,6 +2355,7 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>		return type of the request.
 	 * @param request	service request to be scheduled.
 	 * @param delay		delay after which the task must be run.
 	 * @param u			time unit in which the delay is expressed.
@@ -2378,6 +2379,7 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>		return type of the request.
 	 * @param request	service request to be scheduled.
 	 * @param delay		delay after which the task must be run.
 	 * @param u			time unit in which the delay is expressed.
@@ -2401,6 +2403,7 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					return type of the request.
 	 * @param executorServiceURI	URI of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.
@@ -2426,6 +2429,7 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					return type of the request.
 	 * @param executorServiceURI	URI of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.
@@ -2451,6 +2455,7 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					return type of the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.
@@ -2476,6 +2481,7 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
+	 * @param <T>					return type of the request.
 	 * @param executorServiceIndex	index of the executor service that will run the task.
 	 * @param request				service request to be scheduled.
 	 * @param delay					delay after which the task must be run.

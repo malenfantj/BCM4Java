@@ -86,7 +86,7 @@ public class			AbstractComponentHelper
 
 	/**
 	 * get the class equivalent to the provided one, either the wrapper of
-	 * a primitive or the otehr way around.
+	 * a primitive or the other way around.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -95,11 +95,15 @@ public class			AbstractComponentHelper
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param type
-	 * @return
+	 * @param type	a Java predefined type as a class or a wrapper class.
+	 * @return		the corresponding wrapper or type class.
 	 */
 	protected static Class<?>	getEquivalentType(Class<?> type)
 	{
+		if (!equivalentTypeMap.containsKey(type)) {
+			throw new RuntimeException("unknown type pr wrapper class: " +
+											type.getCanonicalName()) ;
+		}
 		return equivalentTypeMap.get(type) ;
 	}
 

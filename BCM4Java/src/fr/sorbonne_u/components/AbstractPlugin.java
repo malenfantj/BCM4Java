@@ -266,7 +266,7 @@ implements	PluginI
 	 * </pre>
 	 *
 	 * @param pluginInboundPortURI	URI of the plug-in management inbound port of the component.
-	 * @param taskPlugin					plug-in to be installed.
+	 * @param pluginToInstall		plug-in to be installed.
 	 * @throws Exception		<i>todo.</i>
 	 */
 	public static void	installPluginOn(

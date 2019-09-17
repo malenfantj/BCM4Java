@@ -1306,7 +1306,7 @@ implements	ComponentI
 	 * create a component instantiated from the class of the given class name
 	 * and initialised by the constructor which parameters are given.
 	 * 
-	 * <p><strong<Description</strong></p>
+	 * <p><strong>Description</strong></p>
 	 * 
 	 * <p>
 	 * Due to the use of reflection to find the appropriate constructor in the
@@ -2634,9 +2634,8 @@ implements	ComponentI
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.ComponentTask)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Future<T>	runTask(ComponentTask t)
+	public Future<Object>	runTask(ComponentTask t)
 	{
 		assert	this.isStarted() ;
 		assert	t != null ;
@@ -2652,7 +2651,7 @@ implements	ComponentI
 			}
 		} else {
 			t.run() ;
-			Future<?> f =
+			Future<Object> f =
 				new Future<Object>() {
 						@Override
 						public boolean	cancel(boolean arg0)
@@ -2677,7 +2676,7 @@ implements	ComponentI
 						public boolean	isDone()
 						{ return true ; }
 					} ;
-					return (Future<T>) f ;
+					return f ;
 		}
 	}
 
@@ -2685,7 +2684,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.FComponentTask)
 	 */
 	@Override
-	public <T> Future<T> runTask(FComponentTask t) {
+	public Future<Object> runTask(FComponentTask t) {
 		return this.runTask(
 					new AbstractTask() {
 						@Override
@@ -2697,7 +2696,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask)
 	 */
 	@Override
-	public <T> Future<T>	runTask(
+	public Future<Object>	runTask(
 		String executorServiceURI,
 		ComponentTask t
 		)
@@ -2715,7 +2714,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask)
 	 */
 	@Override
-	public <T> Future<T>	runTask(
+	public Future<Object>	runTask(
 		String executorServiceURI,
 		FComponentTask t
 		)
@@ -2733,14 +2732,15 @@ implements	ComponentI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Future<T>	runTask(int executorServiceIndex, ComponentTask t)
+	public Future<Object>	runTask(int executorServiceIndex, ComponentTask t)
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
 		assert	t != null ;
 
 		t.setOwnerReference(this) ;
-		return (Future<T>) this.executorServices.get(executorServiceIndex).
+		return (Future<Object>)
+					this.executorServices.get(executorServiceIndex).
 										getExecutorService().submit(t) ;
 	}
 
@@ -2748,7 +2748,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.FComponentTask)
 	 */
 	@Override
-	public <T> Future<T>	runTask(int executorServiceIndex, FComponentTask t)
+	public Future<Object>	runTask(int executorServiceIndex, FComponentTask t)
 	{
 		return this.runTask(
 					executorServiceIndex,
@@ -2762,7 +2762,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		ComponentTask t,
 		long delay,
 		TimeUnit u
@@ -2782,7 +2782,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		FComponentTask t,
 		long delay,
 		TimeUnit u
@@ -2799,7 +2799,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		String executorServiceURI,
 		ComponentTask t,
 		long delay,
@@ -2820,7 +2820,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		String executorServiceURI,
 		FComponentTask t,
 		long delay,
@@ -2840,7 +2840,7 @@ implements	ComponentI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		int executorServiceIndex,
 		ComponentTask t,
 		long delay,
@@ -2853,7 +2853,7 @@ implements	ComponentI
 		assert	t != null && delay >= 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return (ScheduledFuture<T>)
+		return (ScheduledFuture<Object>)
 				((ComponentSchedulableExecutorServiceManager)
 					this.executorServices.get(executorServiceIndex)).
 						getScheduledExecutorService().schedule(t, delay, u) ;
@@ -2863,7 +2863,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTask(
+	public ScheduledFuture<Object>	scheduleTask(
 		int executorServiceIndex,
 		FComponentTask t,
 		long delay,
@@ -2882,7 +2882,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		ComponentTask t,
 		long initialDelay,
 		long period,
@@ -2904,7 +2904,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		FComponentTask t,
 		long initialDelay,
 		long period,
@@ -2922,7 +2922,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -2946,7 +2946,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
@@ -2967,7 +2967,7 @@ implements	ComponentI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
@@ -2982,7 +2982,7 @@ implements	ComponentI
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return (ScheduledFuture<T>)
+		return (ScheduledFuture<Object>)
 				((ComponentSchedulableExecutorServiceManager)
 					this.executorServices.get(executorServiceIndex)).
 						getScheduledExecutorService().
@@ -2993,7 +2993,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskAtFixedRate(
+	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
@@ -3013,7 +3013,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		ComponentTask t,
 		long initialDelay,
 		long delay,
@@ -3035,7 +3035,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		FComponentTask t,
 		long initialDelay,
 		long delay,
@@ -3053,7 +3053,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
@@ -3077,7 +3077,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
@@ -3098,7 +3098,7 @@ implements	ComponentI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
@@ -3113,7 +3113,7 @@ implements	ComponentI
 		assert	t != null && initialDelay >= 0  && delay > 0 && u != null ;
 
 		t.setOwnerReference(this) ;
-		return (ScheduledFuture<T>)
+		return (ScheduledFuture<Object>)
 				((ComponentSchedulableExecutorServiceManager)
 					this.executorServices.get(executorServiceIndex)).
 						getScheduledExecutorService().
@@ -3124,7 +3124,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public <T> ScheduledFuture<T>	scheduleTaskWithFixedDelay(
+	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
@@ -3298,7 +3298,7 @@ implements	ComponentI
 	 * @return						a future value embedding the result of the task.
 	 * @throws Exception			if exception raised by the task.
 	 */
-	protected <T,C,P> Future<T>		handleRequest(
+	protected <T> Future<T>		handleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request
 		) throws Exception
