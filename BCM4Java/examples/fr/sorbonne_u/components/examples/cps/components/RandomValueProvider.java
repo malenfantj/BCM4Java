@@ -63,7 +63,7 @@ import org.apache.commons.math3.random.Well19937c;
  */
 // -----------------------------------------------------------------------------
 @OfferedInterfaces(offered = {ValueProvidingI.class})
-public class				RandomValueProvider
+public class			RandomValueProvider
 extends		AbstractComponent
 //-----------------------------------------------------------------------------
 {
@@ -88,7 +88,7 @@ extends		AbstractComponent
 	 * @param valueProvidingInboundPortURI	URI to be used to create the inbound port.
 	 * @throws Exception						<i>todo.</i>
 	 */
-	protected				RandomValueProvider(
+	protected			RandomValueProvider(
 		String valueProvidingInboundPortURI
 		) throws Exception
 	{
@@ -122,7 +122,7 @@ extends		AbstractComponent
 	 * @param valueProvidingInboundPortURI	URI to be used to create the inbound port.
 	 * @throws Exception						<i>todo.</i>
 	 */
-	public				RandomValueProvider(
+	protected			RandomValueProvider(
 		String reflectionInboundPortURI,
 		String valueProvidingInboundPortURI
 		) throws Exception
