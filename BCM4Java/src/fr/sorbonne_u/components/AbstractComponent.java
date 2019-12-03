@@ -1241,11 +1241,6 @@ implements	ComponentI
 								reflectionInboundPortURI, 
 								this) ;
 
-//		assert	this.innerComponents != null ;
-//		assert	this.requiredInterfaces != null ;
-//		assert	this.offeredInterfaces != null ;
-//		assert	this.interfaces2ports != null ;
-//		assert	this.portURIs2ports != null ;
 		assert	AbstractComponent.checkInvariant(this) ;
 	}
 
@@ -1268,28 +1263,22 @@ implements	ComponentI
 
 		boolean ret = AbstractComponentHelper.isComponentClass(ac.getClass()) ;
 
-		System.out.println("checkInvariant 1 " + ret) ;
 		ret &= ac.innerComponents != null ;
 		ret &= ac.isConcurrent == (ac.executorServices.size() > 0) ;
 		ret &= ac.isConcurrent == (ac.nbThreads > 0 ||
 								   ac.nbSchedulableThreads > 0 ||
 								   ac.executorServices.size() > 0) ;
-		System.out.println("checkInvariant 1.5 " + ret) ;
 		ret &= ac.canScheduleTasks == (ac.hasUserDefinedSchedulableThreads()) ;
 		ret &= ac.canScheduleTasks == (ac.nbSchedulableThreads > 0 ||
 									  ac.hasUserDefinedSchedulableThreads()) ;
 		ret &= ac.installedPlugins != null ;
-		System.out.println("checkInvariant 1.7 " + ret) ;
 		ret &= ac.executionLog != null || !ac.isLogging() ;
 		ret &= ac.executionLog == null ||
 							(ac.isLogging() == ac.executionLog.isLogging()) ;
-		System.out.println("checkInvariant 1.8 " + ret) ;
 		ret &= ac.requiredInterfaces != null ;
 		ret &= ac.offeredInterfaces != null ;
 		ret &= ac.interfaces2ports != null ;
 		ret &= ac.portURIs2ports != null ;
-
-		System.out.println("checkInvariant 2 " + ret) ;
 
 		if (ret) {
 			for (Class<?> inter : ac.interfaces2ports.keySet()) {
@@ -1307,7 +1296,6 @@ implements	ComponentI
 				}
 			}
 		}
-		System.out.println("checkInvariant 3 " + ret) ;
 
 		return ret ;
 	}
