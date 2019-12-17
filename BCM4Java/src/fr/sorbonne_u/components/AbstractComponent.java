@@ -1225,11 +1225,8 @@ implements	ComponentI
 			this.standardSchedulableHandlerIndex = -1 ;
 		}
 
-		this.addOfferedInterface(ReflectionI.class) ;
 		try {
-			ReflectionInboundPort rip =
-					new ReflectionInboundPort(reflectionInboundPortURI, this) ;
-			rip.publishPort() ;
+			this.configureReflection(reflectionInboundPortURI) ;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
@@ -1242,6 +1239,46 @@ implements	ComponentI
 								this) ;
 
 		assert	AbstractComponent.checkInvariant(this) ;
+	}
+
+	/**
+	 * configure the reflection offered interface and its inbound port;
+	 * extensions of <code>AbstractComponent</code> that need to offer
+	 * an extended reflection interface must redefine this method to
+	 * offer the right reflection interface and create the right
+	 * reflection inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	reflectionInboundPortURI != null
+	 * post	this.isOfferedInterface(ReflectionI.class)
+	 * post	this.findInboundPortURIsFromInterface(ReflectionI.class) != null
+	 * post	this.findInboundPortURIsFromInterface(ReflectionI.class).length == 1
+	 * post	this.findInboundPortURIsFromInterface(ReflectionI.class)[0].equals(reflectionInboundPortURI)
+	 * </pre>
+	 * 
+	 * @param reflectionInboundPortURI	URI of the reflection inbound port to be created.
+	 * @throws Exception				<i>TODO</i>.
+	 */
+	protected void		configureReflection(String reflectionInboundPortURI)
+	throws Exception
+	{
+		assert	reflectionInboundPortURI != null ;
+
+		this.addOfferedInterface(ReflectionI.class) ;
+		try {
+			ReflectionInboundPort rip =
+					new ReflectionInboundPort(reflectionInboundPortURI, this) ;
+			rip.publishPort() ;
+		} catch (Exception e) {
+			throw new RuntimeException(e) ;
+		}
+
+		assert	this.isOfferedInterface(ReflectionI.class) ;
+		assert	this.findInboundPortURIsFromInterface(ReflectionI.class) != null ;
+		assert	this.findInboundPortURIsFromInterface(ReflectionI.class).length == 1 ;
+		assert	this.findInboundPortURIsFromInterface(ReflectionI.class)[0].equals(reflectionInboundPortURI) ; 
 	}
 
 	/**
