@@ -1,7 +1,5 @@
 package fr.sorbonne_u.components.examples.basic_cs;
 
-import fr.sorbonne_u.components.AbstractComponent;
-
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -36,6 +34,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.basic_cs.components.URIConsumer;
 import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
@@ -66,7 +65,7 @@ import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				DistributedCVM
+public class			DistributedCVM
 extends		AbstractDistributedCVM
 {
 	protected static final String	PROVIDER_COMPONENT_URI = "my-URI-provider" ;

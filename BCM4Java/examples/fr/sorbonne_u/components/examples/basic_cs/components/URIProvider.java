@@ -65,7 +65,7 @@ import fr.sorbonne_u.components.ports.PortI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 @OfferedInterfaces(offered = {URIProviderI.class})
-public class				URIProvider
+public class			URIProvider
 extends		AbstractComponent
 {
 	// ------------------------------------------------------------------------

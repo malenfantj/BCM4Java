@@ -59,7 +59,7 @@ import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				URIServiceConnector
+public class			URIServiceConnector
 extends		AbstractConnector
 implements	URIConsumerI
 {

@@ -58,7 +58,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				URIProviderInboundPort
+public class			URIProviderInboundPort
 extends		AbstractInboundPort
 implements	URIProviderI
 {

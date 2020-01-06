@@ -52,7 +52,7 @@ import fr.sorbonne_u.components.interfaces.OfferedI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			URIProviderI
+public interface		URIProviderI
 extends		OfferedI
 {
 	/**

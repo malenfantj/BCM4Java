@@ -71,7 +71,7 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
 // The next annotation requires that the referenced interface is added to
 // the required interfaces of the component.
 @RequiredInterfaces(required = {URIConsumerI.class})
-public class				URIConsumer
+public class			URIConsumer
 extends		AbstractComponent
 {
 	// ------------------------------------------------------------------------
