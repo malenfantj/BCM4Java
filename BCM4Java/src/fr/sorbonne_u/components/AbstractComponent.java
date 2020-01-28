@@ -104,14 +104,14 @@ import java.lang.reflect.Modifier;
  * <code>handleRequest</code> passing it this task as parameter.
  * </p>
  * <p>
- * Components can be passive or active.  Passive components do not have their
+ * Components can be passive or active. Passive components do not have their
  * own thread, so any call they serve will use the thread of the caller. 
  * <code>handleRequest</code> simply calls the component service in the
  * thread of the caller component. Active components use their own threads
  * to perform the tasks.which are managed through the Java Executor framework
  * that implements the concurrent servicing of requests.  At creation time,
  * components may be given 0, 1 or more threads as well as 0, 1 or more
- * schedulable threads.  Schedulable threads are useful when some service
+ * schedulable threads. Schedulable threads are useful when some service
  * or task must be executed at some specific (real) time or after some
  * specific (real) duration.
  * </p>
@@ -312,8 +312,156 @@ implements	ComponentI
 
 	/** current state in the component life-cycle.						*/
 	protected ComponentState			state ;
+
+	// ------------------------------------------------------------------------
+	// Inner components management
+	// ------------------------------------------------------------------------
+
 	/** inner components owned by this component.						*/
-	protected final Vector<ComponentI>	innerComponents ;
+	private final Vector<ComponentI>	innerComponents ;
+	/** reference to the immediate composite component containing this
+	 *  component as subcomponent.										*/
+	private AbstractComponent			composite ;
+
+	/**
+	 * sets the reference to the composite component containing immediately
+	 * this component ; the composite component must have this component as
+	 * subcomponent for this method to succeed otherwise an assertion exception
+	 * is raised.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	composite != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param composite		the reference to the composite component containing immediately this component.
+	 */
+	private void		setCompositeComponentReference(
+		AbstractComponent composite
+		)
+	{
+		assert	this.composite == null ;
+		this.composite = composite ;
+	}
+
+	/**
+	 * return true if this component is a subcomponent of a composite.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if this component is a subcomponent of a composite.
+	 */
+	protected boolean	isSubcomponent()
+	{
+		return this.composite != null ;
+	}
+
+	/**
+	 * get the reference to the immediate composite component containing
+	 * this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isSubcomponent()
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the reference to the immediate composite component containing this component.
+	 */
+	protected AbstractComponent	getCompositeComponentReference()
+	{
+		assert	this.isSubcomponent() ;
+
+		return composite ;
+	}
+
+	/**
+	 * find the inbound port with the given URI of a subcomponent that has
+	 * the given reflection inbound port URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param subcomponentURI	the URI of the reflection inbound port of the subcomponent.
+	 * @param portURI			the URI of the port that is sought.
+	 * @return					the reference on the inbound port of the subcomponent.
+	 */
+	protected InboundPortI	findSubcomponentInboundPortFromURI(
+		String subcomponentURI,
+		String portURI
+		)
+	{
+		ComponentI subcomponent = null ;
+		synchronized (this.innerComponents) {
+			for (ComponentI c : this.innerComponents) {
+				try {
+					if (c.findPortURIsFromInterface(ReflectionI.class)[0].
+													equals(subcomponentURI)) {
+						subcomponent = c ;
+						break ;
+					}
+				} catch (Exception e) {
+					throw new RuntimeException(e) ;
+				}
+			}
+		}
+
+		return ((AbstractComponent)subcomponent).
+										findInboundPortFromURI(this, portURI) ;
+	}
+
+	/**
+	 * finds an inbound port of this component from its URI if it is a
+	 * subcomponent of the given composite.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	composite != null
+	 * pre	portURI != null
+	 * post	return == null || return.getPortURI().equals(portURI)
+	 * </pre>
+	 *
+	 * @param composite	the reference to a component that must be the composite that has this component as subcomponent.
+	 * @param portURI	the URI a the sought port.
+	 * @return			the port with the given URI or null if not found.
+	 */
+	private InboundPortI	findInboundPortFromURI(
+		ComponentI composite,
+		String portURI
+		)
+	{
+		assert	composite != null :
+					new PreconditionException("composite must not be null!") ;
+		assert	this.notInStateAmong(new ComponentStateI[]{
+							ComponentState.TERMINATED
+							}) :
+					new PreconditionException("Component must not be"
+												+ " in Terminated state!") ;
+		assert	portURI != null :
+					new PreconditionException("Port URI is null!") ;
+
+		InboundPortI p = null ;
+		if (this.composite == composite) {
+			synchronized (this.portURIs2ports) {
+				p = (InboundPortI) this.portURIs2ports.get(portURI) ;
+			}
+		}
+
+		return p ;
+	}
 
 	// ------------------------------------------------------------------------
 	// Internal concurrency management
@@ -321,7 +469,7 @@ implements	ComponentI
 
 	/** true if the component executes concurrently.						*/
 	protected boolean					isConcurrent ;
-	/** true if the component can schedule tasks.						*/
+	/** true if the component can schedule tasks.							*/
 	protected boolean					canScheduleTasks ;
 
 	/** the executor service in charge of handling component requests.	*/
@@ -1234,10 +1382,6 @@ implements	ComponentI
 		this.addInterfacesFromAnnotations() ;
 		this.addPluginsFromAnnotations() ;
 
-		AbstractCVM.getCVM().addDeployedComponent(
-								reflectionInboundPortURI, 
-								this) ;
-
 		assert	AbstractComponent.checkInvariant(this) ;
 	}
 
@@ -1381,6 +1525,38 @@ implements	ComponentI
 	{
 		assert	classname != null && constructorParams != null ;
 
+		ComponentI component =
+				instantiateComponent(classname, constructorParams) ;
+		String[] ret =
+				component.findInboundPortURIsFromInterface(ReflectionI.class) ;
+		assert	ret != null && ret.length == 1 && ret[0] != null ;
+
+		AbstractCVM.getCVM().addDeployedComponent(ret[0], component) ;
+
+		return ret[0] ;
+	}
+
+	/**
+	 * instantiate a component instantiated from the class of the given class
+	 * name and initialised by the constructor which parameters are given.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param classname			name of the class from which the component is created.
+	 * @param constructorParams	parameters to be passed to the constructor.
+	 * @return					the Java reference on the object representing the new component.
+	 * @throws Exception		if the creation did not succeed.
+	 */
+	protected static ComponentI	instantiateComponent(
+		String classname,
+		Object[] constructorParams
+		) throws Exception
+	{
 		Class<?> cl = Class.forName(classname) ;
 		assert	cl != null && AbstractComponentHelper.isComponentClass(cl) ;
 		Constructor<?> cons =
@@ -1389,9 +1565,62 @@ implements	ComponentI
 		cons.setAccessible(true) ;
 		AbstractComponent component =
 			(AbstractComponent)cons.newInstance(constructorParams) ;
+		return component ;
+	}
+
+	/**
+	 * create a subcomponent instantiated from the class of the given class
+	 * name and initialised by the constructor which parameters are given.
+	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p>
+	 * Due to the use of reflection to find the appropriate constructor in the
+	 * component class, BCM does not currently apply the constructor selection
+	 * rules that the Java compiler would apply. The actual parameters types
+	 * must in fact match exactly the formal parameters ones. This is a common
+	 * problem that Java software using reflection face when looking up
+	 * constructors and methods. This forces to avoid sophisticated overriding
+	 * of constructors in component classes and in their call sequences. When
+	 * several constructors can apply, the first to be found is used rather
+	 * than the most specific in compiled Java.
+	 * </p>
+	 * <p>
+	 * If the <code>NoSuchMethodException</code> is thrown, it is likely that
+	 * the match between the actual parameters types and the formal parameters
+	 * ones has not been found by the current algorithm. Programmers must the
+	 * try to change the types of the formal parameters to simplify the
+	 * constructor selection.
+	 * </p>
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param classname			name of the class from which the component is created.
+	 * @param constructorParams	parameters to be passed to the constructor.
+	 * @return					the URI of the reflection inbound port of the new component.
+	 * @throws Exception		if the creation did not succeed.
+	 */
+	protected String	createSubcomponent(
+		String classname,
+		Object[] constructorParams
+		) throws Exception
+	{
+		assert	classname != null && constructorParams != null ;
+
+		ComponentI component =
+				instantiateComponent(classname, constructorParams) ;
 		String[] ret =
-			component.findInboundPortURIsFromInterface(ReflectionI.class) ;
+				component.findInboundPortURIsFromInterface(ReflectionI.class) ;
 		assert	ret != null && ret.length == 1 && ret[0] != null ;
+
+		this.innerComponents.add(component) ;
+		((AbstractComponent)component).setCompositeComponentReference(this) ;
+
 		return ret[0] ;
 	}
 
