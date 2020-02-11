@@ -59,7 +59,7 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			IntercessionI
+public interface		IntercessionI
 extends		OfferedI,
 			RequiredI
 {
@@ -92,7 +92,7 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
+	 * @param pluginURI		unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			finalisePlugin(String pluginURI) throws Exception ;
@@ -107,7 +107,7 @@ extends		OfferedI,
 	 * post	!this.isIntalled(pluginURI)
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
+	 * @param pluginURI		unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			uninstallPlugin(String pluginURI) throws Exception ;
@@ -123,7 +123,7 @@ extends		OfferedI,
 	 * post	this.isInitialised(pluginURI)
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
+	 * @param pluginURI		unique plug-in identifier.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			initialisePlugin(String pluginURI) throws Exception ;
@@ -143,7 +143,7 @@ extends		OfferedI,
 	 * </pre>
 	 *
 	 * @param logger		the logger to be set.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			setLogger(Logger logger) throws Exception ;
 
@@ -157,7 +157,7 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			toggleLogging() throws Exception ;
 
@@ -173,8 +173,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param message	string to be written on the log.
-	 * @throws Exception		<i>todo.</i>
+	 * @param message		string to be written on the log.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			logMessage(String message) throws Exception ;
 
@@ -188,7 +188,7 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			printExecutionLog() throws Exception ;
 
@@ -202,8 +202,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param fileName	the file to output the log.
-	 * @throws Exception		<i>todo.</i>
+	 * @param fileName		the file to output the log.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			printExecutionLogOnFile(String fileName)
 	throws	Exception ;
@@ -219,7 +219,7 @@ extends		OfferedI,
 	 * </pre>
 	 *
 	 * @param tracer		the tracer to be added.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			setTracer(TracerOnConsole tracer) throws	Exception ;
 
@@ -233,7 +233,7 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			toggleTracing() throws Exception ;
 
@@ -247,8 +247,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param message	trace message to be output.
-	 * @throws Exception		<i>todo.</i>
+	 * @param message		trace message to be output.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			traceMessage(String message) throws	Exception ;
 
@@ -268,8 +268,8 @@ extends		OfferedI,
 	 * post	this.isRequiredInterface(inter)
 	 * </pre>
 	 *
-	 * @param inter	required interface to be added.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			required interface to be added.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			addRequiredInterface(Class<?> inter) throws Exception ;
 
@@ -285,8 +285,8 @@ extends		OfferedI,
 	 * post	!this.isRequiredInterface(inter)
 	 * </pre>
 	 *
-	 * @param inter required interface to be removed.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter 		required interface to be removed.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			removeRequiredInterface(Class<?> inter)
 	throws Exception ;
@@ -303,8 +303,8 @@ extends		OfferedI,
 	 * post	this.isOfferedInterface(inter)
 	 * </pre>
 	 *
-	 * @param inter offered interface to be added.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter 		offered interface to be added.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			addOfferedInterface(Class<?> inter) throws Exception ;
 
@@ -320,8 +320,8 @@ extends		OfferedI,
 	 * post	!this.isOfferedInterface(inter)
 	 * </pre>
 	 *
-	 * @param inter	offered interface ot be removed
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			offered interface ot be removed
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			removeOfferedInterface(Class<?> inter)
 	throws Exception ;
@@ -346,8 +346,8 @@ extends		OfferedI,
 	 *
 	 * @param portURI		URI of the component's port to be connected.
 	 * @param otherPortURI	URI of the other port to be connected with.
-	 * @param ccname			connector class name to be used in the connection.
-	 * @throws Exception		<i>todo.</i>
+	 * @param ccname		connector class name to be used in the connection.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			doPortConnection(
 		String portURI,
@@ -370,7 +370,7 @@ extends		OfferedI,
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port to be connected.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			doPortDisconnection(
 		String portURI
@@ -390,9 +390,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param parameters		parameters to be passed to the component constructor.
-	 * @return				a Java refercne to the object implementing the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @param parameters	parameters to be passed to the component constructor.
+	 * @return				a Java reference to the object implementing the component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ComponentI	newInstance(Object[] parameters) throws Exception ;
 
@@ -406,10 +406,10 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param name		name of the service.
+	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @return			the result of the service invocation.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the result of the service invocation.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Object		invokeService(String name, Object[] params)
 	throws Exception ;
@@ -424,10 +424,10 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param name		name of the service.
+	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @return			the result of the service invocation.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the result of the service invocation.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception ;
@@ -442,9 +442,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param name		name of the service.
+	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception ;
@@ -462,10 +462,10 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param methodName						name of the service method to be modified.
+	 * @param methodName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception						<i>todo.</i>
+	 * @throws Exception					<i>todo.</i>
 	 */
 	public void			insertBeforeService(
 		String methodName,
@@ -486,10 +486,10 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param methodName						name of the service method to be modified.
+	 * @param methodName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception						<i>todo.</i>
+	 * @throws Exception					<i>todo.</i>
 	 */
 	public void			insertAfterService(
 		String methodName,

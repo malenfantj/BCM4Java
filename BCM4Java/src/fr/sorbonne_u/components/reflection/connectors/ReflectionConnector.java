@@ -299,12 +299,12 @@ implements	ReflectionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getTotalNUmberOfThreads()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getTotalNumberOfThreads()
 	 */
 	@Override
-	public int			getTotalNUmberOfThreads() throws Exception
+	public int			getTotalNumberOfThreads() throws Exception
 	{
-		return ((IntrospectionI)this.offering).getTotalNUmberOfThreads() ;
+		return ((IntrospectionI)this.offering).getTotalNumberOfThreads() ;
 	}
 
 	// ------------------------------------------------------------------------

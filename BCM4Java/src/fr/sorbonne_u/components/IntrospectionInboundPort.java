@@ -265,10 +265,10 @@ implements	IntrospectionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getTotalNUmberOfThreads()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getTotalNumberOfThreads()
 	 */
 	@Override
-	public int			getTotalNUmberOfThreads() throws Exception
+	public int			getTotalNumberOfThreads() throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Integer>() {

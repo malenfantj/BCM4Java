@@ -60,7 +60,7 @@ package fr.sorbonne_u.components.reflection.interfaces;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			ReflectionI
+public interface		ReflectionI
 extends		IntrospectionI,
 			IntercessionI
 {

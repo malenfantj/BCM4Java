@@ -60,7 +60,7 @@ import java.lang.annotation.Annotation;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			IntrospectionI
+public interface		IntrospectionI
 extends		OfferedI,
 			RequiredI
 {
@@ -78,8 +78,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	true if the component has some installed plug-ins.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the component has some installed plug-ins.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		hasInstalledPlugins() throws Exception ;
 
@@ -93,8 +93,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
-	 * @return 			true if the named plug-in is installed into this component.
+	 * @param pluginURI		unique plug-in identifier.
+	 * @return 				true if the named plug-in is installed into this component.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isInstalled(String pluginURI) throws Exception ;
@@ -110,8 +110,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI	unique plug-in identifier.
-	 * @return			the corresponding installed plug-in or null if none.
+	 * @param pluginURI		unique plug-in identifier.
+	 * @return				the corresponding installed plug-in or null if none.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public PluginI		getPlugin(String pluginURI) throws Exception ;
@@ -126,8 +126,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI	URI of the plug-in to be tested.
-	 * @return			true if the plug-in is installed and initialised.
+	 * @param pluginURI		URI of the plug-in to be tested.
+	 * @return				true if the plug-in is installed and initialised.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isInitialised(String pluginURI) throws Exception ;
@@ -146,8 +146,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	true if the logging is currently active, false otherwise.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the logging is currently active, false otherwise.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isLogging() throws Exception ;
 
@@ -161,8 +161,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	true if the tracing is currently active, false otherwise.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the tracing is currently active, false otherwise.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isTracing() throws Exception ;
 
@@ -181,8 +181,8 @@ extends		OfferedI,
 	 * </pre>
 	 *
 	 * @param states		states in which the components is tested to be.
-	 * @return			true if the component is in one of the given states.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the component is in one of the given states.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isInStateAmong(ComponentStateI[] states)
 	throws Exception ;
@@ -198,8 +198,8 @@ extends		OfferedI,
 	 * </pre>
 	 *
 	 * @param states		states in which the components is tested not to be.
-	 * @return			true if the component is in none of the given states.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the component is in none of the given states.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		notInStateAmong(ComponentStateI[] states)
 	throws Exception ;
@@ -214,8 +214,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	true if the component executes concurrently with its own threads.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the component executes concurrently with its own threads.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		hasItsOwnThreads() throws Exception ;
 
@@ -229,10 +229,10 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the number of threads, schedulable or not, in the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the number of threads, schedulable or not, in the component.
+	 * @throws Exception	<i>todo.</i>
 	 */
-	public int			getTotalNUmberOfThreads() throws Exception ;
+	public int			getTotalNumberOfThreads() throws Exception ;
 
 	/**
 	 * return true if the component guarantees a serialised execution of its services.
@@ -252,8 +252,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	true if the component guarantees a serialised execution of its services.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the component guarantees a serialised execution of its services.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		hasSerialisedExecution() throws Exception ;
 
@@ -268,8 +268,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	true if the component can schedule tasks running after a specific delay or periodically.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				true if the component can schedule tasks running after a specific delay or periodically.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		canScheduleTasks() throws Exception ;
 
@@ -287,8 +287,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	interfaces required and offered by the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				interfaces required and offered by the component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Class<?>[]	getInterfaces() throws Exception ;
 
@@ -305,9 +305,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter	the interface to be checked for.
-	 * @return		the corresponding component interface or null if any.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			the interface to be checked for.
+	 * @return				the corresponding component interface or null if any.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Class<?>		getInterface(Class<?> inter) throws Exception ;
 
@@ -321,8 +321,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	required interfaces of this component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				required interfaces of this component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Class<?>[]	getRequiredInterfaces() throws Exception ;
 
@@ -339,9 +339,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter	the interface to be checked for.
-	 * @return		the corresponding component interface or null if any.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			the interface to be checked for.
+	 * @return				the corresponding component interface or null if any.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Class<?>		getRequiredInterface(Class<?> inter) throws Exception ;
 
@@ -355,8 +355,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	offered interfaces of this component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				offered interfaces of this component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Class<?>[]	getOfferedInterfaces() throws Exception ;
 
@@ -373,9 +373,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter	the interface to be checked for.
-	 * @return		the corresponding component interface or null if any.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			the interface to be checked for.
+	 * @return				the corresponding component interface or null if any.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Class<?>		getOfferedInterface(Class<?> inter) throws Exception ;
 
@@ -390,9 +390,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter	interface to be checked for.
-	 * @return		true if inter is an interface of this component.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			interface to be checked for.
+	 * @return				true if inter is an interface of this component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isInterface(Class<?> inter) throws Exception ;
 
@@ -407,9 +407,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter	interface to be checked for.
-	 * @return		true if inter is a required interface of this component.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			interface to be checked for.
+	 * @return				true if inter is a required interface of this component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isRequiredInterface(Class<?> inter) throws Exception ;
 
@@ -424,9 +424,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter	interface to be checked for.
-	 * @return		true if inter is an offered interface of this component.
-	 * @throws Exception		<i>todo.</i>
+	 * @param inter			interface to be checked for.
+	 * @return				true if inter is an offered interface of this component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public boolean		isOfferedInterface(Class<?> inter) throws Exception ;
 
@@ -445,9 +445,9 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter		interface for which ports are sought.
-	 * @return			array of port URIs exposing <code>inter</code>.
-	 * @throws Exception <i>todo.</i>
+	 * @param inter			interface for which ports are sought.
+	 * @return				array of port URIs exposing <code>inter</code>.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public String[]		findPortURIsFromInterface(Class<?> inter)
 	throws Exception ;
@@ -464,8 +464,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter		interface for which ports are sought.
-	 * @return			array of inbound port URIs exposing inter.
+	 * @param inter			interface for which ports are sought.
+	 * @return				array of inbound port URIs exposing inter.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public String[]		findInboundPortURIsFromInterface(Class<?> inter)
@@ -482,8 +482,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param inter		interface for which ports are sought.
-	 * @return			array of outbound port URIs exposing inter.
+	 * @param inter			interface for which ports are sought.
+	 * @return				array of outbound port URIs exposing inter.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public String[]		findOutboundPortURIsFromInterface(Class<?> inter)
@@ -501,12 +501,11 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param portURI	port URI to be tested.
-	 * @return			true if the port with the given URI exists.
+	 * @param portURI		port URI to be tested.
+	 * @return				true if the port with the given URI exists.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public boolean		isPortExisting(String portURI)
-	throws Exception ;
+	public boolean		isPortExisting(String portURI) throws Exception ;
 
 	/**
 	 * return the interface implemented by the port.
@@ -519,8 +518,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param portURI	URI of the component's port.
-	 * @return			the interface implemented by the port.
+	 * @param portURI		URI of the component's port.
+	 * @return				the interface implemented by the port.
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
 	public Class<?>		getPortImplementedInterface(String portURI)
@@ -537,8 +536,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param portURI	URI of the component's port.
-	 * @return			true if the port with the given URI is connected.
+	 * @param portURI		URI of the component's port.
+	 * @return				true if the port with the given URI is connected.
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
 	public boolean		isPortConnected(String portURI)
@@ -558,8 +557,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the canonical name of the Java class implementing this component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the canonical name of the Java class implementing this component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public String		getComponentDefinitionClassName() throws Exception ;
 
@@ -573,8 +572,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the annotations put on the Java class implementing the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the annotations put on the Java class implementing the component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public Annotation[]	getComponentAnnotations() throws Exception ;
 
@@ -589,8 +588,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the loader of the Java class implementing the component.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the loader of the Java class implementing the component.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ClassLoader	getComponentLoader() throws Exception ;
 
@@ -604,8 +603,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the signatures of the component services.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the signatures of the component services.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ServiceSignature[]		getComponentServiceSignatures()
 	throws Exception ;
@@ -620,8 +619,8 @@ extends		OfferedI,
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return	the signatures of the component constructors.
-	 * @throws Exception		<i>todo.</i>
+	 * @return				the signatures of the component constructors.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	public ConstructorSignature[]	getComponentConstructorSignatures()
 	throws Exception ;

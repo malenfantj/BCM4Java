@@ -128,7 +128,7 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param states		states in which the components is tested not to be.
+	 * @param states	states in which the components is tested not to be.
 	 * @return			true if the component is in none of the given states.
 	 */
 	public boolean		notInStateAmong(ComponentStateI[] states) ;
@@ -148,7 +148,7 @@ public interface		ComponentI
 	public boolean		hasItsOwnThreads() ;
 
 	/**
-	 * return the number of threads, schedulable or not, in the component.
+	 * return	the number of threads, schedulable or not, in the component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 

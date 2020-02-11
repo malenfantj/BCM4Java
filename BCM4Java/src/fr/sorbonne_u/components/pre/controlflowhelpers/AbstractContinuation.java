@@ -46,12 +46,11 @@ import fr.sorbonne_u.components.AbstractComponent;
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * To use the continuation-passing style, a method must declared a
- * continuation parameter of type
- * <code>AbstractContinuation&lt;ParameterType&gt;</code>
- * with the desired parameter type and result type. Then, to call
- * the method a continuation must be created as a concrete subclass
- * of <code>AbstractContinuation&lt;ParameterType&gt;</code>
+ * To use the continuation-passing style, a method must declare a
+ * continuation parameter of type {@code AbstractContinuation<ParameterType>}
+ * with the desired parameter type. Then, to call the method a continuation
+ * must be created as a concrete subclass of
+ * {@code AbstractContinuation<ParameterType>}
  * that implements the protected abstract method <code>runWith</code>.
  * This method receives as actual parameter the value computed before
  * and defines in its body the rest of the computation, including most
