@@ -1,38 +1,37 @@
 package fr.sorbonne_u.components;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
@@ -48,7 +47,7 @@ import fr.sorbonne_u.components.helpers.TracerOnConsole;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The interface <code>ComponentI</code> serves as common supertype for all
  * classes that implements components in this component model.
@@ -99,9 +98,9 @@ import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
  */
 public interface		ComponentI
 {
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Internal behaviour requests
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return true if the component is in one of the mentioned component states.
@@ -290,9 +289,9 @@ public interface		ComponentI
 	 */
 	public boolean		hasUserDefinedSchedulableThreads() ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Implemented interfaces
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return all interfaces required or offered by this component.
@@ -438,9 +437,9 @@ public interface		ComponentI
 	 */
 	public boolean		isOfferedInterface(Class<?> inter) ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Port management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return the interface implemented by the port.
@@ -637,9 +636,9 @@ public interface		ComponentI
 	 */
 	public void			removePort(String portURI) throws Exception ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-ins facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return true if the component has some installed plug-ins.
@@ -687,9 +686,9 @@ public interface		ComponentI
 	 */
 	public boolean		isInitialised(String pluginURI) throws Exception ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Logging facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * set a logger for this component.
@@ -830,9 +829,9 @@ public interface		ComponentI
 	 */
 	public boolean		isTracing() ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Component life cycle
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * start the component; this method is automatically called by the component
@@ -1018,9 +1017,9 @@ public interface		ComponentI
 	public boolean		awaitTermination(long timeout, TimeUnit unit)
 	throws InterruptedException ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Task execution
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * The interface <code>ComponentTask</code> is meant to group under a
@@ -1772,9 +1771,9 @@ public interface		ComponentI
 		long delay,
 		TimeUnit u) ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Request handling
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * The interface <code>ComponentService</code> is meant to group under a
@@ -2493,9 +2492,9 @@ public interface		ComponentI
 		long delay, 
 		TimeUnit u) ;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Reflection facility
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return the canonical name of the Java class implementing this component.
@@ -2691,4 +2690,4 @@ public interface		ComponentI
 		String code
 		) throws Exception ;
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

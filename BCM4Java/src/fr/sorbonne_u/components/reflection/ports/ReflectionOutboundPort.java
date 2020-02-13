@@ -1,38 +1,37 @@
 package fr.sorbonne_u.components.reflection.ports;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.annotation.Annotation;
 import fr.sorbonne_u.components.ComponentI;
@@ -47,7 +46,7 @@ import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>ReflectionOutboundPort</code> defines the outbound port
  * associated the interface <code>ReflectionI</code>.
@@ -70,9 +69,9 @@ implements	ReflectionI
 {
 	private static final long serialVersionUID = 1L;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	public				ReflectionOutboundPort(
 		String uri,
@@ -89,9 +88,9 @@ implements	ReflectionI
 		super(ReflectionI.class, owner) ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-ins facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#installPlugin(fr.sorbonne_u.components.PluginI)
@@ -165,9 +164,9 @@ implements	ReflectionI
 		return ((ReflectionI)this.connector).isInitialised(pluginURI) ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Logging facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#toggleLogging()
@@ -260,9 +259,9 @@ implements	ReflectionI
 		((ReflectionI)this.connector).printExecutionLogOnFile(fileName) ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Internal behaviour requests
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
@@ -320,9 +319,9 @@ implements	ReflectionI
 		return ((IntrospectionI)this.connector).getTotalNumberOfThreads() ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Implemented interfaces management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getInterfaces()
@@ -445,9 +444,9 @@ implements	ReflectionI
 		return ((ReflectionI)this.connector).isOfferedInterface(inter) ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Port management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#findPortURIsFromInterface(java.lang.Class)
@@ -532,9 +531,9 @@ implements	ReflectionI
 		((ReflectionI)this.connector).doPortDisconnection(portURI) ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Reflection facility
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentDefinitionClassName()
@@ -626,6 +625,36 @@ implements	ReflectionI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#execute()
+	 */
+	@Override
+	public void			execute() throws Exception
+	{
+		((IntercessionI)this.connector).execute() ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 */
+	@Override
+	public void			runTask(AbstractRemoteComponentTask t) throws Exception
+	{
+		((IntercessionI)this.connector).runTask(t) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(java.lang.String, fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 */
+	@Override
+	public void			runTask(
+		String executorServiceURI,
+		AbstractRemoteComponentTask t
+		) throws Exception
+	{
+		((IntercessionI)this.connector).runTask(executorServiceURI, t) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
@@ -655,4 +684,4 @@ implements	ReflectionI
 					methodName, parametersCanonicalClassNames, code) ;
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
