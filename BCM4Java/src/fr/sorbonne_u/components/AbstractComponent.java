@@ -2615,13 +2615,24 @@ implements	ComponentI
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e) ;
 		}
-		for (int i = 0 ; i < this.executorServices.size() ; i++) {
-			this.executorServices.get(i).shutdown() ;
-		}
-		this.state = ComponentState.SHUTTINGDOWN ;
-		if (!this.isConcurrent && !this.canScheduleTasks) {
-			this.state = ComponentState.SHUTDOWN ;
-		}
+
+		Thread t = new Thread() {
+						/**
+						 * @see java.lang.Thread#run()
+						 */
+						@Override
+						public void run() {
+							for (int i = 0 ; i < executorServices.size() ; i++) {
+								executorServices.get(i).shutdown() ;
+							}
+							state = ComponentState.SHUTTINGDOWN ;
+							// TODO: make sure the pools are really shut down.
+							if (!isConcurrent && !canScheduleTasks) {
+								state = ComponentState.SHUTDOWN ;
+							}
+						}
+					} ;
+		t.start() ;
 	}
 
 	/**
@@ -2649,10 +2660,19 @@ implements	ComponentI
 			throw new ComponentShutdownException(e1) ;
 		}
 
-		for (int i = 0 ; i < this.executorServices.size() ; i++) {
-			this.executorServices.get(i).shutdownNow() ;
-		}
-		this.state = ComponentState.SHUTDOWN ;
+		Thread t = new Thread() {
+						/**
+						 * @see java.lang.Thread#run()
+						 */
+						@Override
+						public void run() {
+							for (int i = 0 ; i < executorServices.size() ; i++) {
+								executorServices.get(i).shutdown() ;
+							}
+							state = ComponentState.SHUTDOWN ;
+						}
+					} ;
+		t.start() ;
 	}
 
 	/**
