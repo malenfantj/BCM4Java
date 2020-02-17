@@ -145,8 +145,51 @@ extends		AbstractComponent
 		String componentURI =
 				AbstractComponent.createComponent(
 									classname, constructorParams) ;
-		AbstractCVM.getCVM().startComponent(componentURI) ;
 		return componentURI ;
+	}
+
+	/**
+	 * return true if the component having the given reflection inbound port
+	 * URI is deployed on the CVM executing this method.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	reflectionInboundPortURI != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the created component.
+	 * @return							true if the corresponding component is deployed on the CVM executing this method.
+	 * @throws Exception				<i>todo.</i>
+	 */
+	public boolean		isDeployedComponent(String reflectionInboundPortURI)
+	throws Exception
+	{
+		return AbstractCVM.getCVM().isDeployedComponent(
+											reflectionInboundPortURI) ;
+	}
+
+	/**
+	 * start a previously created component on the CVM executing this method.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the created component.
+	 * @throws Exception				<i>todo.</i>
+	 */
+	public void			startComponent(String reflectionInboundPortURI)
+	throws Exception
+	{
+		assert	AbstractCVM.getCVM().isDeployedComponent(
+													reflectionInboundPortURI) ;
+
+		AbstractCVM.getCVM().startComponent(reflectionInboundPortURI) ;
 	}
 }
 //-----------------------------------------------------------------------------

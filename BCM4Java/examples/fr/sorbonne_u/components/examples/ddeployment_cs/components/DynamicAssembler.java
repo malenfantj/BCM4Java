@@ -270,6 +270,7 @@ extends		AbstractComponent
 			this.portToProviderJVM.createComponent(
 								DynamicURIProvider.class.getCanonicalName(),
 								new Object[]{PROVIDED_URI_PREFIX}) ;
+		this.portToProviderJVM.startComponent(providerRIPURI) ;
 
 		// call the dynamic component creator of the consumer JVM to create
 		// the provider component
@@ -277,6 +278,7 @@ extends		AbstractComponent
 			this.portToConsumerJVM.createComponent(
 								DynamicURIConsumer.class.getCanonicalName(),
 								new Object[]{}) ;
+		this.portToConsumerJVM.startComponent(consumerRIPURI) ;
 
 		this.addRequiredInterface(ReflectionI.class) ;
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this) ;

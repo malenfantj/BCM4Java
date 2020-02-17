@@ -71,5 +71,27 @@ implements	DynamicComponentCreationI
 		return ((DynamicComponentCreationI)this.offering).
 							createComponent(classname, constructorParams) ;
 	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isDeployedComponent(java.lang.String)
+	 */
+	@Override
+	public boolean		isDeployedComponent(String reflectionInboundPortURI)
+	throws Exception
+	{
+		return ((DynamicComponentCreationI)this.offering).
+								isDeployedComponent(reflectionInboundPortURI) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#startComponent(java.lang.String)
+	 */
+	@Override
+	public void			startComponent(String reflectionInboundPortURI)
+	throws Exception
+	{
+		((DynamicComponentCreationI)this.offering).
+									startComponent(reflectionInboundPortURI) ;
+	}
 }
 //-----------------------------------------------------------------------------

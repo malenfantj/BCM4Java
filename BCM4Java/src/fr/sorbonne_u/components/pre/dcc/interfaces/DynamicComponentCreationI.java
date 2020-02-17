@@ -68,16 +68,52 @@ extends		OfferedI,
 	 * <pre>
 	 * pre	classname != null and constructorParams != null
 	 * post	return != null
+	 * post	isDeployedComponent(return)
 	 * </pre>
 	 *
 	 * @param classname			name of the class from which to instantiate the component.
 	 * @param constructorParams	parameters to be passed to the constructor of the component instantiation class.
 	 * @return					URI of the reflection inbound port of the created component.
-	 * @throws Exception			<i>todo.</i>
+	 * @throws Exception		<i>todo.</i>
 	 */
 	public String		createComponent(
 		String classname,
 		Object[] constructorParams
 		) throws Exception ;
+
+	/**
+	 * return true if the component having the given reflection inbound port
+	 * URI is deployed on the CVM executing this method.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	reflectionInboundPortURI != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the created component.
+	 * @return							true if the corresponding component is deployed on the CVM executing this method.
+	 * @throws Exception				<i>todo.</i>
+	 */
+	public boolean		isDeployedComponent(String reflectionInboundPortURI)
+	throws Exception ;
+	
+	/**
+	 * start a previously created component on the CVM executing this method.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	reflectionInboundPortURI != null
+	 * pre	isDeployedComponent(reflectionInboundPortURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the created component.
+	 * @throws Exception				<i>todo.</i>
+	 */
+	public void			startComponent(String reflectionInboundPortURI)
+	throws Exception ;
 }
 //-----------------------------------------------------------------------------

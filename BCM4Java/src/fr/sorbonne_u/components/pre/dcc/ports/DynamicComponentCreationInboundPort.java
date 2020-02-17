@@ -87,16 +87,52 @@ implements	DynamicComponentCreationI
 		Object[] constructorParams
 		) throws Exception
 	{
-		final String fClassname = classname ;
-		final Object[] fConstructorParams = constructorParams ;
 		return this.getOwner().handleRequestSync(
 				new AbstractComponent.AbstractService<String>() {
 					@Override
 					public String call() throws Exception {
 						return ((DynamicComponentCreator)this.getServiceOwner()).
 									createOtherComponent(
-											fClassname,
-											fConstructorParams) ;
+											classname,
+											constructorParams) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isDeployedComponent(java.lang.String)
+	 */
+	@Override
+	public boolean		isDeployedComponent(String reflectionInboundPortURI)
+	throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Boolean>() {
+					@Override
+					public Boolean call() throws Exception {
+						return ((DynamicComponentCreator)
+									this.getServiceOwner()).
+											isDeployedComponent(
+													reflectionInboundPortURI) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#startComponent(java.lang.String)
+	 */
+	@Override
+	public void			startComponent(String reflectionInboundPortURI)
+	throws Exception
+	{
+		this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((DynamicComponentCreator)
+								this.getServiceOwner()).
+									startComponent(reflectionInboundPortURI) ;
+						return null ;
 					}
 				}) ;
 	}
