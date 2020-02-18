@@ -1269,6 +1269,9 @@ implements	ComponentI
 	// Creation, constructors, invariant
 	// ------------------------------------------------------------------------
 
+	/** URI of the (unique) reflection inbound port of the component.		*/
+	protected final String			reflectionInboundPortURI ;
+
 	/**
 	 * create a passive component if both <code>nbThreads</code> and
 	 * <code>nbSchedulableThreads</code> are both zero, and an active one with
@@ -1328,6 +1331,7 @@ implements	ComponentI
 					new PreconditionException("Number of schedulable threads"
 														+ " is negative!") ;
 
+		this.reflectionInboundPortURI = reflectionInboundPortURI ;
 		this.innerComponents = new Vector<ComponentI>() ;
 		this.isConcurrent = false ;
 		this.canScheduleTasks = false ;
@@ -2630,6 +2634,9 @@ implements	ComponentI
 							if (!isConcurrent && !canScheduleTasks) {
 								state = ComponentState.SHUTDOWN ;
 							}
+							AbstractCVM.getCVM().
+									removeDeployedComponent(
+													reflectionInboundPortURI) ;
 						}
 					} ;
 		t.start() ;
@@ -2670,6 +2677,9 @@ implements	ComponentI
 								executorServices.get(i).shutdown() ;
 							}
 							state = ComponentState.SHUTDOWN ;
+							AbstractCVM.getCVM().
+									removeDeployedComponent(
+													reflectionInboundPortURI) ;
 						}
 					} ;
 		t.start() ;
