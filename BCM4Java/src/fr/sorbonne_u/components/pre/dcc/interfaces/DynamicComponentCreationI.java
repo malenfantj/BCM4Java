@@ -80,6 +80,91 @@ extends		OfferedI,
 		String classname,
 		Object[] constructorParams
 		) throws Exception ;
+	
+	/**
+	 * start a previously created component on the CVM executing this method.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	reflectionInboundPortURI != null
+	 * pre	isDeployedComponent(reflectionInboundPortURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the created component.
+	 * @throws Exception				<i>todo.</i>
+	 */
+	public void			startComponent(String reflectionInboundPortURI)
+	throws Exception ;
+	
+	/**
+	 * make the execute method of the component run as a task.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentStarted(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be executed.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			executeComponent(String componentURI)
+	throws Exception ;
+
+	/**
+	 * finalise the component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentStarted(componentURI)
+	 * post	this.componentFinalised(componentURI)
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be finalised.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			finaliseComponent(String componentURI)
+	throws Exception ;
+
+	/**
+	 * shutdown the component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentFinalised(componentURI)
+	 * post	this.componentShutdown(componentURI)
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be shutdown.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			shutdownComponent(String componentURI)
+	throws Exception ;
+
+	/**
+	 * shutdown the component immediately.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.componentFinalised(componentURI)
+	 * post	this.componentShutdown(componentURI)
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be shutdown now.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public void			shutdownNowComponent(String componentURI)
+	throws Exception ;
 
 	/**
 	 * return true if the component having the given reflection inbound port
@@ -98,22 +183,78 @@ extends		OfferedI,
 	 */
 	public boolean		isDeployedComponent(String reflectionInboundPortURI)
 	throws Exception ;
-	
+
 	/**
-	 * start a previously created component on the CVM executing this method.
+	 * return true if the component has been started.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	reflectionInboundPortURI != null
-	 * pre	isDeployedComponent(reflectionInboundPortURI)
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the created component.
-	 * @throws Exception				<i>todo.</i>
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the component has been started.
+	 * @throws Exception	<i>to do.</i>
 	 */
-	public void			startComponent(String reflectionInboundPortURI)
+	public boolean		componentStarted(String componentURI)
+	throws Exception ;
+
+	/**
+	 * return true if the CVM has been finalised (i.e. all of the locally
+	 * deployed components in the CVM).
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the component has been finalised.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public boolean		componentFinalised(String componentURI)
+	throws Exception ;
+
+	/**
+	 * return true if the component has been shut down.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the component has been shut down.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public boolean		componentShutdown(String componentURI)
+	throws Exception ;
+
+	/**
+	 * return true if the component has terminated.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	componentURI != null
+	 * pre	this.isDeployedComponent(componentURI)
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param componentURI	URI of the component to be tested.
+	 * @return				true if the component has terminated.
+	 * @throws Exception	<i>to do.</i>
+	 */
+	public boolean		componentTerminated(String componentURI) 
 	throws Exception ;
 }
 //-----------------------------------------------------------------------------

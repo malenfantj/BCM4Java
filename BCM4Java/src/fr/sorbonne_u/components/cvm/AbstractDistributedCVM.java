@@ -843,7 +843,7 @@ implements	DistributedComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#isInitialised()
 	 */
 	@Override
-	public boolean		isInitialised() throws Exception
+	public boolean		isInitialised()
 	{
 		return this.state == CVMState.INITIALISED ;
 	}
@@ -852,7 +852,7 @@ implements	DistributedComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isIntantiatedAndPublished()
 	 */
 	@Override
-	public boolean		isIntantiatedAndPublished() throws Exception
+	public boolean		isIntantiatedAndPublished()
 	{
 		return	this.state == CVMState.INSTANTIATED_AND_PUBLISHED ;
 	}
@@ -861,7 +861,7 @@ implements	DistributedComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isInterconnected()
 	 */
 	@Override
-	public boolean		isInterconnected() throws Exception
+	public boolean		isInterconnected()
 	{
 		return	this.state == CVMState.INTERCONNECTED ;
 	}
@@ -870,7 +870,7 @@ implements	DistributedComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploymentDone()
 	 */
 	@Override
-	public boolean		deploymentDone() throws Exception
+	public boolean		deploymentDone()
 	{
 		return this.state == CVMState.DEPLOYMENT_DONE ;
 	}

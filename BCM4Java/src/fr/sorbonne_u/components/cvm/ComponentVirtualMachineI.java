@@ -192,7 +192,7 @@ public interface			ComponentVirtualMachineI
 	public void			execute() throws Exception ;
 
 	/**
-	 * 
+	 * make the execute method of the component run as a task.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -223,7 +223,7 @@ public interface			ComponentVirtualMachineI
 	public void			finalise() throws Exception ;
 
 	/**
-	 * 
+	 * finalise the component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -257,7 +257,7 @@ public interface			ComponentVirtualMachineI
 	public void			shutdown() throws Exception ;
 
 	/**
-	 * 
+	 * shutdown the component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -289,7 +289,7 @@ public interface			ComponentVirtualMachineI
 	public void			shutdownNow() throws Exception ;
 
 	/**
-	 * 
+	 * shutdown the component immediately.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -316,9 +316,8 @@ public interface			ComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @return				true if the initialisation has been done.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		isInitialised() throws Exception ;
+	public boolean		isInitialised() ;
 
 	/**
 	 * return true if all of the static components have been instantiated and
@@ -332,10 +331,8 @@ public interface			ComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @return				true if all of the static components have been instantiated and their ports published when necessary.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		isIntantiatedAndPublished()
-	throws Exception ;
+	public boolean		isIntantiatedAndPublished() ;
 
 	/**
 	 * return true if all of the static components have their ports connected
@@ -349,9 +346,8 @@ public interface			ComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @return				true if all of the static components have their ports connected when necessary.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		isInterconnected() throws Exception ;
+	public boolean		isInterconnected() ;
 
 	/**
 	 * return true if the deployment has been done.
@@ -364,9 +360,8 @@ public interface			ComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @return				true if the deployment has been done.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		deploymentDone() throws Exception ;
+	public boolean		deploymentDone() ;
 
 	/**
 	 * return true if the CVM has been started (i.e. all of the locally
@@ -380,9 +375,8 @@ public interface			ComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @return				true if the CVM has been started.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		allStarted() throws Exception ;
+	public boolean		allStarted() ;
 
 	/**
 	 * return true if the component has been started.
@@ -397,10 +391,8 @@ public interface			ComponentVirtualMachineI
 	 *
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been started.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		componentStarted(String componentURI)
-	throws Exception ;
+	public boolean		componentStarted(String componentURI) ;
 
 	/**
 	 * return true if the CVM has been finalised (i.e. all of the locally
@@ -414,9 +406,8 @@ public interface			ComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @return				true if the CVM has been finalised.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		allFinalised() throws Exception ;
+	public boolean		allFinalised() ;
 
 	/**
 	 * return true if the CVM has been finalised (i.e. all of the locally
@@ -432,10 +423,8 @@ public interface			ComponentVirtualMachineI
 	 *
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been finalised.
-	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		componentFinalised(String componentURI)
-	throws Exception ;
+	public boolean		componentFinalised(String componentURI) ;
 
 	/**
 	 * return true if the CVM has been shut down (i.e. all of the locally

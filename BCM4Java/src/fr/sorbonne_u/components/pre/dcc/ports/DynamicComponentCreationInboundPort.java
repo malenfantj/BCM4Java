@@ -100,6 +100,97 @@ implements	DynamicComponentCreationI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#startComponent(java.lang.String)
+	 */
+	@Override
+	public void			startComponent(String reflectionInboundPortURI)
+	throws Exception
+	{
+		this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((DynamicComponentCreator)
+								this.getServiceOwner()).
+									startComponent(reflectionInboundPortURI) ;
+						return null ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#executeComponent(java.lang.String)
+	 */
+	@Override
+	public void			executeComponent(String componentURI) throws Exception
+	{
+		this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((DynamicComponentCreator)
+								this.getServiceOwner()).
+									executeComponent(componentURI) ; ;
+						return null ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#finaliseComponent(java.lang.String)
+	 */
+	@Override
+	public void			finaliseComponent(String componentURI) throws Exception {
+		this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((DynamicComponentCreator)
+								this.getServiceOwner()).
+									finaliseComponent(componentURI) ; ;
+						return null ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#shutdownComponent(java.lang.String)
+	 */
+	@Override
+	public void			shutdownComponent(String componentURI) throws Exception
+	{
+		this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((DynamicComponentCreator)
+								this.getServiceOwner()).
+									shutdownComponent(componentURI) ; ;
+						return null ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#shutdownNowComponent(java.lang.String)
+	 */
+	@Override
+	public void			shutdownNowComponent(String componentURI)
+	throws Exception
+	{
+		this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Void>() {
+					@Override
+					public Void call() throws Exception {
+						((DynamicComponentCreator)
+								this.getServiceOwner()).
+									shutdownNowComponent(componentURI) ; ;
+						return null ;
+					}
+				}) ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isDeployedComponent(java.lang.String)
 	 */
 	@Override
@@ -119,20 +210,71 @@ implements	DynamicComponentCreationI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#startComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentStarted(java.lang.String)
 	 */
 	@Override
-	public void			startComponent(String reflectionInboundPortURI)
+	public boolean		componentStarted(String componentURI) throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Boolean>() {
+					@Override
+					public Boolean call() throws Exception {
+						return ((DynamicComponentCreator)
+									this.getServiceOwner()).
+										componentStarted(componentURI) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentFinalised(java.lang.String)
+	 */
+	@Override
+	public boolean		componentFinalised(String componentURI)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
+		return this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Boolean>() {
 					@Override
-					public Void call() throws Exception {
-						((DynamicComponentCreator)
-								this.getServiceOwner()).
-									startComponent(reflectionInboundPortURI) ;
-						return null ;
+					public Boolean call() throws Exception {
+						return ((DynamicComponentCreator)
+									this.getServiceOwner()).
+										componentFinalised(componentURI) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentShutdown(java.lang.String)
+	 */
+	@Override
+	public boolean		componentShutdown(String componentURI) throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Boolean>() {
+					@Override
+					public Boolean call() throws Exception {
+						return ((DynamicComponentCreator)
+									this.getServiceOwner()).
+										componentShutdown(componentURI) ;
+					}
+				}) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentTerminated(java.lang.String)
+	 */
+	@Override
+	public boolean		componentTerminated(String componentURI)
+	throws Exception
+	{
+		return this.getOwner().handleRequestSync(
+				new AbstractComponent.AbstractService<Boolean>() {
+					@Override
+					public Boolean call() throws Exception {
+						return ((DynamicComponentCreator)
+									this.getServiceOwner()).
+										componentTerminated(componentURI) ;
 					}
 				}) ;
 	}

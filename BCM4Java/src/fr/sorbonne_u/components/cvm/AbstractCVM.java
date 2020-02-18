@@ -800,7 +800,7 @@ implements	ComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isInitialised()
 	 */
 	@Override
-	public boolean		isInitialised() throws Exception
+	public boolean		isInitialised()
 	{
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
@@ -812,7 +812,7 @@ implements	ComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isIntantiatedAndPublished()
 	 */
 	@Override
-	public boolean		isIntantiatedAndPublished() throws Exception
+	public boolean		isIntantiatedAndPublished()
 	{
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
@@ -824,7 +824,7 @@ implements	ComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isInterconnected()
 	 */
 	@Override
-	public boolean		isInterconnected() throws Exception
+	public boolean		isInterconnected()
 	{
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
@@ -836,7 +836,7 @@ implements	ComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#deploymentDone()
 	 */
 	@Override
-	public boolean		deploymentDone() throws Exception
+	public boolean		deploymentDone()
 	{
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
@@ -848,7 +848,7 @@ implements	ComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#allStarted()
 	 */
 	@Override
-	public boolean		allStarted() throws Exception
+	public boolean		allStarted()
 	{
 		return this.state == CVMState.START_DONE ;
 	}
@@ -858,7 +858,6 @@ implements	ComponentVirtualMachineI
 	 */
 	@Override
 	public boolean		componentStarted(String componentURI)
-	throws Exception
 	{
 		assert	componentURI != null ;
 		assert	this.isDeployedComponent(componentURI) ;
@@ -870,7 +869,7 @@ implements	ComponentVirtualMachineI
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#allFinalised()
 	 */
 	@Override
-	public boolean		allFinalised() throws Exception
+	public boolean		allFinalised()
 	{
 		return this.state == CVMState.FINALISE_DONE ;
 	}
@@ -880,7 +879,6 @@ implements	ComponentVirtualMachineI
 	 */
 	@Override
 	public boolean		componentFinalised(String componentURI)
-	throws Exception
 	{
 		assert	componentURI != null ;
 		assert	this.isDeployedComponent(componentURI) ;
