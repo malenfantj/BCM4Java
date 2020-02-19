@@ -660,7 +660,7 @@ implements	ComponentVirtualMachineI
 	throws Exception
 	{
 		assert	componentURI != null ;
-		assert	this.componentStarted(componentURI) ;
+		assert	this.isStartedComponent(componentURI) ;
 
 		this.uri2component.get(componentURI).runTask(
 				new AbstractComponent.AbstractTask() {
@@ -709,7 +709,7 @@ implements	ComponentVirtualMachineI
 	throws Exception
 	{
 		assert	componentURI != null ;
-		assert	this.componentStarted(componentURI) ;
+		assert	this.isStartedComponent(componentURI) ;
 
 		this.uri2component.get(componentURI).finalise() ;
 
@@ -748,7 +748,7 @@ implements	ComponentVirtualMachineI
 	throws Exception
 	{
 		assert	componentURI != null ;
-		assert	this.componentFinalised(componentURI) ;
+		assert	this.isFinalisedComponent(componentURI) ;
 
 		this.uri2component.get(componentURI).shutdown() ;
 
@@ -786,7 +786,7 @@ implements	ComponentVirtualMachineI
 	throws Exception
 	{
 		assert	componentURI != null ;
-		assert	this.componentFinalised(componentURI) ;
+		assert	this.isFinalisedComponent(componentURI) ;
 
 		this.uri2component.get(componentURI).shutdown() ;
 
@@ -854,10 +854,10 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentStarted(java.lang.String)
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isStartedComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentStarted(String componentURI)
+	public boolean		isStartedComponent(String componentURI)
 	{
 		assert	componentURI != null ;
 		assert	this.isDeployedComponent(componentURI) ;
@@ -875,10 +875,10 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentFinalised(java.lang.String)
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isFinalisedComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentFinalised(String componentURI)
+	public boolean		isFinalisedComponent(String componentURI)
 	{
 		assert	componentURI != null ;
 		assert	this.isDeployedComponent(componentURI) ;
@@ -900,10 +900,10 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentShutdown(java.lang.String)
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isShutdownComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentShutdown(String componentURI)
+	public boolean		isShutdownComponent(String componentURI)
 	{
 		assert	componentURI != null ;
 		assert	this.isDeployedComponent(componentURI) ;
@@ -925,10 +925,10 @@ implements	ComponentVirtualMachineI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#componentTerminated(java.lang.String)
+	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#isTerminatedComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentTerminated(String componentURI)
+	public boolean		isTerminatedComponent(String componentURI)
 	{
 		assert	componentURI != null ;
 		assert	this.isDeployedComponent(componentURI) ;

@@ -392,7 +392,7 @@ public interface			ComponentVirtualMachineI
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been started.
 	 */
-	public boolean		componentStarted(String componentURI) ;
+	public boolean		isStartedComponent(String componentURI) ;
 
 	/**
 	 * return true if the CVM has been finalised (i.e. all of the locally
@@ -424,7 +424,7 @@ public interface			ComponentVirtualMachineI
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been finalised.
 	 */
-	public boolean		componentFinalised(String componentURI) ;
+	public boolean		isFinalisedComponent(String componentURI) ;
 
 	/**
 	 * return true if the CVM has been shut down (i.e. all of the locally
@@ -455,7 +455,7 @@ public interface			ComponentVirtualMachineI
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been shut down.
 	 */
-	public boolean		componentShutdown(String componentURI) ;
+	public boolean		isShutdownComponent(String componentURI) ;
 
 	/**
 	 * return true if the CVM has terminated (i.e. all of the locally
@@ -486,7 +486,7 @@ public interface			ComponentVirtualMachineI
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the CVM has terminated.
 	 */
-	public boolean		componentTerminated(String componentURI) ;
+	public boolean		isTerminatedComponent(String componentURI) ;
 
 	/**
 	 * start the complete standard life-cycle of the component virtual

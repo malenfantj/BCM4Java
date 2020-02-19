@@ -199,7 +199,7 @@ extends		OfferedI,
 	 * @return				true if the component has been started.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		componentStarted(String componentURI)
+	public boolean		isStartedComponent(String componentURI)
 	throws Exception ;
 
 	/**
@@ -218,7 +218,7 @@ extends		OfferedI,
 	 * @return				true if the component has been finalised.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		componentFinalised(String componentURI)
+	public boolean		isFinalisedComponent(String componentURI)
 	throws Exception ;
 
 	/**
@@ -236,7 +236,7 @@ extends		OfferedI,
 	 * @return				true if the component has been shut down.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		componentShutdown(String componentURI)
+	public boolean		isShutdownComponent(String componentURI)
 	throws Exception ;
 
 	/**
@@ -254,7 +254,7 @@ extends		OfferedI,
 	 * @return				true if the component has terminated.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public boolean		componentTerminated(String componentURI) 
+	public boolean		isTerminatedComponent(String componentURI) 
 	throws Exception ;
 }
 //-----------------------------------------------------------------------------

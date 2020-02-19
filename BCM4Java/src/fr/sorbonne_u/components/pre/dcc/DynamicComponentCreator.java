@@ -186,7 +186,7 @@ extends		AbstractComponent
 	 */
 	public void			executeComponent(String componentURI) throws Exception
 	{
-		assert	AbstractCVM.getCVM().componentStarted(componentURI) ;
+		assert	AbstractCVM.getCVM().isStartedComponent(componentURI) ;
 
 		AbstractCVM.getCVM().executeComponent(componentURI) ;
 	}
@@ -208,7 +208,7 @@ extends		AbstractComponent
 	public void			finaliseComponent(String componentURI)
 	throws Exception 
 	{
-		assert	AbstractCVM.getCVM().componentStarted(componentURI) ;
+		assert	AbstractCVM.getCVM().isStartedComponent(componentURI) ;
 
 		AbstractCVM.getCVM().finaliseComponent(componentURI) ;
 	}
@@ -230,7 +230,7 @@ extends		AbstractComponent
 	public void			shutdownComponent(String componentURI)
 	throws Exception
 	{
-		assert	AbstractCVM.getCVM().componentFinalised(componentURI) ;
+		assert	AbstractCVM.getCVM().isFinalisedComponent(componentURI) ;
 
 		AbstractCVM.getCVM().shutdownComponent(componentURI) ;
 	}
@@ -252,7 +252,7 @@ extends		AbstractComponent
 	public void			shutdownNowComponent(String componentURI)
 	throws Exception
 	{
-		assert	AbstractCVM.getCVM().componentFinalised(componentURI) ;
+		assert	AbstractCVM.getCVM().isFinalisedComponent(componentURI) ;
 
 		AbstractCVM.getCVM().shutdownNowComponent(componentURI) ;
 	}
@@ -291,9 +291,9 @@ extends		AbstractComponent
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been started.
 	 */
-	public boolean		componentStarted(String componentURI)
+	public boolean		isStartedComponent(String componentURI)
 	{
-		return AbstractCVM.getCVM().componentStarted(componentURI) ;
+		return AbstractCVM.getCVM().isStartedComponent(componentURI) ;
 	}
 
 	/**
@@ -311,9 +311,9 @@ extends		AbstractComponent
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been finalised.
 	 */
-	public boolean		componentFinalised(String componentURI)
+	public boolean		isFinalisedComponent(String componentURI)
 	{
-		return AbstractCVM.getCVM().componentFinalised(componentURI) ;
+		return AbstractCVM.getCVM().isFinalisedComponent(componentURI) ;
 	}
 
 	/**
@@ -330,9 +330,9 @@ extends		AbstractComponent
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the component has been shut down.
 	 */
-	public boolean		componentShutdown(String componentURI)
+	public boolean		isShutdownComponent(String componentURI)
 	{
-		return AbstractCVM.getCVM().componentShutdown(componentURI) ;
+		return AbstractCVM.getCVM().isShutdownComponent(componentURI) ;
 	}
 
 	/**
@@ -349,9 +349,9 @@ extends		AbstractComponent
 	 * @param componentURI	URI of the component to be tested.
 	 * @return				true if the CVM has terminated.
 	 */
-	public boolean		componentTerminated(String componentURI) 
+	public boolean		isTerminatedComponent(String componentURI) 
 	{
-		return AbstractCVM.getCVM().componentTerminated(componentURI) ;
+		return AbstractCVM.getCVM().isTerminatedComponent(componentURI) ;
 	}
 }
 //-----------------------------------------------------------------------------

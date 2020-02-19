@@ -153,45 +153,45 @@ implements	DynamicComponentCreationI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentStarted(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isStartedComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentStarted(String componentURI) throws Exception
+	public boolean		isStartedComponent(String componentURI) throws Exception
 	{
 		return ((DynamicComponentCreationI)this.connector).
-								componentStarted(componentURI) ;
+								isStartedComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentFinalised(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isFinalisedComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentFinalised(String componentURI)
+	public boolean		isFinalisedComponent(String componentURI)
 	throws Exception
 	{
 		return ((DynamicComponentCreationI)this.connector).
-								componentFinalised(componentURI) ;
+								isFinalisedComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentShutdown(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isShutdownComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentShutdown(String componentURI) throws Exception
+	public boolean		isShutdownComponent(String componentURI) throws Exception
 	{
 		return ((DynamicComponentCreationI)this.connector).
-								componentShutdown(componentURI) ;
+								isShutdownComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#componentTerminated(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isTerminatedComponent(java.lang.String)
 	 */
 	@Override
-	public boolean		componentTerminated(String componentURI)
+	public boolean		isTerminatedComponent(String componentURI)
 	throws Exception
 	{
 		return ((DynamicComponentCreationI)this.connector).
-								componentTerminated(componentURI) ;
+								isTerminatedComponent(componentURI) ;
 	}
 }
 //-----------------------------------------------------------------------------
