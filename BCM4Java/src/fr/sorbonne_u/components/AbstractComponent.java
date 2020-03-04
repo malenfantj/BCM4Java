@@ -3639,6 +3639,89 @@ implements	ComponentI
 	}
 
 	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
+	 * component.
+	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * This method is meant to be used when programmers need to manage within
+	 * a component requests with futures. It can be requests executed as
+	 * services of the component or calls to other components which are
+	 * synchronous but that the calling component wants to manage as
+	 * asynchronous tasks.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.validExecutorServiceURI(executorServiceURI)
+	 * pre	request != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @return						a future value embedding the result of the task.
+	 * @throws Exception			if exception raised by the task.
+	 */
+	protected <T> Future<T>		handleRequest(
+		String executorServiceURI,
+		ComponentService<T> request
+		) throws Exception
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	request != null ;
+
+		int executorServiceIndex =
+				this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.handleRequest(executorServiceIndex, request) ;
+	}
+
+	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
+	 * component.
+	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * This method is meant to be used when programmers need to manage within
+	 * a component requests with futures. It can be requests executed as
+	 * services of the component or calls to other components which are
+	 * synchronous but that the calling component wants to manage as
+	 * asynchronous tasks.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.validExecutorServiceIndex(this.standardRequestHandlerIndex) ||
+	 *      this.validExecutorServiceIndex(this.standardSchedulableHandlerIndex)
+	 * pre	request != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param request				service request to be executed on the component.
+	 * @return						a future value embedding the result of the task.
+	 * @throws Exception			if exception raised by the task.
+	 */
+	protected <T> Future<T>		handleRequest(
+		ComponentService<T> request
+		) throws Exception
+	{
+		if (this.validExecutorServiceIndex(this.standardRequestHandlerIndex)) {
+			return this.handleRequest(this.standardRequestHandlerIndex,
+									  request) ;
+		} else {
+			assert this.validExecutorServiceIndex(
+										this.standardSchedulableHandlerIndex) ;
+			return this.handleRequest(this.standardSchedulableHandlerIndex,
+									  request) ;
+		}
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
@@ -3661,8 +3744,7 @@ implements	ComponentI
 								request).get() ;
 			}
 		} else {
-			request.setOwnerReference(this) ;
-			return request.call() ;
+			return this.handleRequest(-1, request).get() ;
 		}
 	}
 

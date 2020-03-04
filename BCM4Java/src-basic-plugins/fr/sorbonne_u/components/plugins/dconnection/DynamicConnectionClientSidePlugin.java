@@ -319,7 +319,6 @@ extends		AbstractPlugin
 	 * </pre>
 	 *
 	 * @param requiredInterface		client-side interface through which the connection is made.
-	 * @param serverReflectionInboundPortURI	URI of the reflection inbound port of the server component.
 	 * @param offeredInterface		server-side interface through which the connection is made.
 	 * @param connectionDescriptor	describes how to create the outbound port and the connector.
 	 * @return						the URI of the outbound port of the connection.

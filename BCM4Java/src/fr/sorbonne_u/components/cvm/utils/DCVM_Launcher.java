@@ -148,15 +148,18 @@ public class				DCVM_Launcher
 		List<String> commandRegistry = new ArrayList<String>() ;
 		String globalRegistryHostname =
 				this.configurationParameters.getGlobalRegistryHostname() ;
+		String globalRegistryDir =
+			this.ensureTrainlingSlash(hosts2dirs.get(globalRegistryHostname)) ;
 		commandRegistry.add("java") ;
 		commandRegistry.add("-ea") ;
 		commandRegistry.add("-cp") ;
-		commandRegistry.add("jars/*");
+		commandRegistry.add(globalRegistryDir + "jars/*");
 		commandRegistry.add("-Djava.security.manager");
-		commandRegistry.add("-Djava.security.policy=dcvm.policy");
 		commandRegistry.add(
-					"fr.sorbonne_u.components.registry.GlobalRegistry") ;
-		commandRegistry.add("config.xml");
+				"-Djava.security.policy=" + globalRegistryDir + "dcvm.policy") ;
+		commandRegistry.add(
+				"fr.sorbonne_u.components.registry.GlobalRegistry") ;
+		commandRegistry.add(globalRegistryDir + "config.xml");
 		ProcessBuilder pbRegistry = new ProcessBuilder(commandRegistry) ;
 		pbRegistry.directory(
 			new File(hosts2dirs.get(globalRegistryHostname))) ;
@@ -165,15 +168,18 @@ public class				DCVM_Launcher
 		List<String> commandBarrier = new ArrayList<String>() ;
 		String cyclicBarrierHostname =
 				this.configurationParameters.getCyclicBarrierHostname() ;
+		String cyclicBarrierDir =
+			this.ensureTrainlingSlash(hosts2dirs.get(cyclicBarrierHostname)) ;
 		commandBarrier.add("java") ;
 		commandBarrier.add("-ea") ;
 		commandBarrier.add("-cp") ;
-		commandBarrier.add("jars/*");
+		commandBarrier.add(cyclicBarrierDir + "jars/*");
 		commandBarrier.add("-Djava.security.manager");
-		commandBarrier.add("-Djava.security.policy=dcvm.policy");
 		commandBarrier.add(
-					"fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrier") ;
-		commandBarrier.add("config.xml");
+				"-Djava.security.policy=" + cyclicBarrierDir + "dcvm.policy") ;
+		commandBarrier.add(
+				"fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrier") ;
+		commandBarrier.add(cyclicBarrierDir + "config.xml");
 		ProcessBuilder pbBarrier = new ProcessBuilder(commandBarrier) ;
 		pbBarrier.directory(
 			new File(hosts2dirs.get(cyclicBarrierHostname))) ;
@@ -188,6 +194,9 @@ public class				DCVM_Launcher
 				System.out.println("Starting " + jvmURIs[i] + "...") ;
 			}
 
+			String jvmDir =
+				this.ensureTrainlingSlash(
+								hosts2dirs.get(jvms2hosts.get(jvmURIs[i]))) ;
 			List<String> command = new ArrayList<String>() ;
 			command.add("java") ;
 			command.add("-ea") ;
@@ -202,8 +211,7 @@ public class				DCVM_Launcher
 			command.add(jvmURIs[i]) ;
 			command.add("config.xml");
 			ProcessBuilder pbConsumer = new ProcessBuilder(command) ;
-			pbConsumer.directory(
-					new File(hosts2dirs.get(jvms2hosts.get(jvmURIs[i])))) ;
+			pbConsumer.directory(new File(jvmDir)) ;
 			jvmProcesses[i] = pbConsumer.start() ;
 
 			if (DEBUG) {
@@ -223,6 +231,34 @@ public class				DCVM_Launcher
 			for (int i = 0 ; i < jvmProcesses.length ; i++) {
 					System.out.println("exit status " + jvmURIs[i] + " = " +
 											jvmProcesses[i].exitValue()) ;
+			}
+		}
+	}
+
+	/**
+	 * return a string which points to the same directory as the parameter
+	 * but which ends with a trailing slash.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param directory	a directory name (Unix).
+	 * @return			the same directory but with a trailing slash.
+	 */
+	protected String	ensureTrainlingSlash(String directory)
+	{
+		if (directory == null || directory.equals("")) {
+			return "./" ;
+		} else {
+			assert directory.length() >= 1 ;
+			if (directory.endsWith("/")) {
+				return directory ;
+			} else {
+				return directory + "/" ;
 			}
 		}
 	}
