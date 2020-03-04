@@ -201,15 +201,15 @@ public class				DCVM_Launcher
 			command.add("java") ;
 			command.add("-ea") ;
 			if (reflectiveJVMs.contains(jvmURIs[i])) {
-				command.add("-javaagent:hotswap.jar") ;
+				command.add("-javaagent:" + jvmDir + "hotswap.jar") ;
 			}
 			command.add("-cp") ;
-			command.add("jars/*") ;
+			command.add(jvmDir + "jars/*") ;
 			command.add("-Djava.security.manager") ;
-			command.add("-Djava.security.policy=dcvm.policy") ;
+			command.add("-Djava.security.policy=" + jvmDir + "dcvm.policy") ;
 			command.add(jvms2mainclasses.get(jvmURIs[i])) ;
 			command.add(jvmURIs[i]) ;
-			command.add("config.xml");
+			command.add(jvmDir + "config.xml");
 			ProcessBuilder pbConsumer = new ProcessBuilder(command) ;
 			pbConsumer.directory(new File(jvmDir)) ;
 			jvmProcesses[i] = pbConsumer.start() ;
