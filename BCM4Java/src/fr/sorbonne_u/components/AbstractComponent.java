@@ -43,6 +43,7 @@ import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -78,6 +79,7 @@ import javassist.util.HotSwapAgent;
 import java.io.FileNotFoundException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -2926,29 +2928,42 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 * run the <code>ComponentTask</code> on the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	t != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @return								a future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	@Override
-	public Future<Object>	runTask(ComponentTask t)
+	protected Future<?>		runTaskOnComponent(
+		int executorServiceIndex,
+		ComponentTask t
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	t != null ;
 
-		if (this.isConcurrent) {
-			if (this.validExecutorServiceIndex(
-										this.standardRequestHandlerIndex)) {
-				return this.runTask(this.standardRequestHandlerIndex, t) ;
-			} else {
-				assert	this.validExecutorServiceIndex(
-									this.standardSchedulableHandlerIndex) ;
-				return this.runTask(this.standardSchedulableHandlerIndex, t) ;
-			}
+		t.setOwnerReference(this) ;
+		if (this.hasItsOwnThreads() &&
+						this.validExecutorServiceIndex(executorServiceIndex)) {
+			return this.executorServices.get(executorServiceIndex).
+												getExecutorService().submit(t) ;
 		} else {
 			t.run() ;
-			Future<Object> f =
+			Future<?> f =
 				new Future<Object>() {
 						@Override
-						public boolean	cancel(boolean arg0)
+						public boolean	cancel(boolean maybeInterrupted)
 						{ return false ; }
 
 						@Override
@@ -2957,8 +2972,9 @@ implements	ComponentI
 						{ return null ; }
 
 						@Override
-						public Object get(long arg0, TimeUnit arg1)
-						throws 	InterruptedException, ExecutionException,
+						public Object get(long timeout, TimeUnit unit)
+						throws 	InterruptedException,
+								ExecutionException,
 							   	TimeoutException
 						{ return null ; }
 
@@ -2975,25 +2991,28 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.FComponentTask)
+	 * run the <code>ComponentTask</code> on the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.validExecutorServiceURI(executorServiceURI)
+	 * pre	t != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @return								a future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	@Override
-	public Future<Object> runTask(FComponentTask t) {
-		return this.runTask(
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t) ; }
-					});
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask)
-	 */
-	@Override
-	public Future<Object>	runTask(
+	protected Future<?>		runTaskOnComponent(
 		String executorServiceURI,
 		ComponentTask t
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceURI(executorServiceURI) ;
@@ -3001,66 +3020,262 @@ implements	ComponentI
 
 		int executorServiceIndex =
 						this.getExecutorServiceIndex(executorServiceURI) ;
-		return this.runTask(executorServiceIndex, t) ;
+		return this.runTaskOnComponent(executorServiceIndex, t) ;
+	}
+
+	/**
+	 * run the <code>ComponentTask</code> on the standard executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	t != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								component task to be executed as main task.
+	 * @return								a future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected Future<?>		runTaskOnComponent(ComponentTask t)
+	throws	AssertionError,
+			RejectedExecutionException
+	{
+		if (this.hasItsOwnThreads()) {
+			if (this.validExecutorServiceIndex(
+											this.standardRequestHandlerIndex)) {
+				return this.runTaskOnComponent(
+									this.standardRequestHandlerIndex, t) ;
+			} else {
+				assert	this.validExecutorServiceIndex(
+										this.standardSchedulableHandlerIndex) ;
+				return this.runTaskOnComponent(
+									this.standardSchedulableHandlerIndex, t) ;
+			}
+		} else {
+			return this.runTaskOnComponent(-1, t) ;
+		}			
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 */
+	@Override
+	public void 		runTask(ComponentTask t)
+	throws	AssertionError,
+			RejectedExecutionException
+	{
+		this.runTaskOnComponent(t) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(fr.sorbonne_u.components.ComponentI.FComponentTask)
+	 */
+	@Override
+	public void 		runTask(FComponentTask t)
+	throws	AssertionError,
+			RejectedExecutionException
+	{
+		this.runTask(new AbstractTask() {
+						@Override
+						public void run() { this.runTaskLambda(t); }
+		 			 }) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 */
+	@Override
+	public void			runTask(int executorServiceIndex, ComponentTask t)
+	throws	AssertionError,
+			RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	t != null ;
+
+		this.runTaskOnComponent(executorServiceIndex, t) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask)
+	 */
+	@Override
+	public void			runTask(
+		String executorServiceURI,
+		ComponentTask t
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	t != null ;
+
+		int executorServiceIndex =
+						this.getExecutorServiceIndex(executorServiceURI) ;
+		this.runTask(executorServiceIndex, t) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask)
 	 */
 	@Override
-	public Future<Object>	runTask(
+	public void			runTask(
 		String executorServiceURI,
 		FComponentTask t
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.runTask(
-					executorServiceURI, 
-					new AbstractTask() {
+		this.runTask(executorServiceURI, 
+					 new AbstractTask() {
 						@Override
 						public void run() { this.runTaskLambda(t); }
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Future<Object>	runTask(int executorServiceIndex, ComponentTask t)
-	{
-		assert	this.isStarted() ;
-		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
-		assert	t != null ;
-
-		t.setOwnerReference(this) ;
-		return (Future<Object>)
-					this.executorServices.get(executorServiceIndex).
-										getExecutorService().submit(t) ;
+					 }) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#runTask(int, fr.sorbonne_u.components.ComponentI.FComponentTask)
 	 */
 	@Override
-	public Future<Object>	runTask(int executorServiceIndex, FComponentTask t)
+	public void			runTask(int executorServiceIndex, FComponentTask t)
+	throws	AssertionError,
+			RejectedExecutionException
 	{
-		return this.runTask(
-					executorServiceIndex,
-					new AbstractTask() {
+		this.runTask(executorServiceIndex,
+					 new AbstractTask() {
 						@Override
 						public void run() { this.runTaskLambda(t); }
-					});
+					 });
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay
+	 * on the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.validExecutorServiceIndex(executorServiceIndex)
+	 * pre	this.isSchedulable(executorServiceIndex)
+	 * pre	{@code t != null and delay > 0 and u != null}
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskOnComponent(
+		int executorServiceIndex,
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
+		assert	t != null && delay > 0 && u != null ;
+
+		t.setOwnerReference(this) ;
+		return ((ComponentSchedulableExecutorServiceManager)
+					this.executorServices.get(executorServiceIndex)).
+						getScheduledExecutorService().schedule(t, delay, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay
+	 * on the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.validExecutorServiceURI(executorServiceURI)
+	 * pre	this.isSchedulable(executorServiceIndex)
+	 * pre	{@code t != null and delay > 0 and u != null}
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskOnComponent(
+		String executorServiceURI,
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	t != null ;
+
+		int executorServiceIndex =
+							this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.scheduleTaskOnComponent(executorServiceIndex, t, delay, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay
+	 * on the given executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	this.validExecutorServiceIndex(this.standardSchedulableHandlerIndex)
+	 * pre	{@code t != null and delay > 0 and u != null}
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskOnComponent(
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.canScheduleTasks() ;
+		assert	this.validExecutorServiceIndex(
+										this.standardSchedulableHandlerIndex) ;
+
+		return this.scheduleTaskOnComponent(
+							this.standardSchedulableHandlerIndex, t, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		ComponentTask t,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
@@ -3068,37 +3283,37 @@ implements	ComponentI
 									this.standardSchedulableHandlerIndex) ;
 		assert	t != null && delay >= 0 && u != null ;
 
-		return this.scheduleTask(this.standardSchedulableHandlerIndex,
-															t, delay, u) ;
+		this.scheduleTask(this.standardSchedulableHandlerIndex, t, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		FComponentTask t,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTask(
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					}, delay, u) ;
+		this.scheduleTask(new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+						  }, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		String executorServiceURI,
 		ComponentTask t,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceURI(executorServiceURI) ;
@@ -3106,123 +3321,266 @@ implements	ComponentI
 		assert	t != null && delay >= 0 && u != null ;
 
 		int executorServiceIndex =
-				this.getExecutorServiceIndex(executorServiceURI) ;
-		return this.scheduleTask(executorServiceIndex, t, delay, u) ;
+							this.getExecutorServiceIndex(executorServiceURI) ;
+		this.scheduleTask(executorServiceIndex, t, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		String executorServiceURI,
 		FComponentTask t,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTask(
-					executorServiceURI, 
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					}, delay, u) ;
+		this.scheduleTask(executorServiceURI, 
+						  new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+						  }, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		int executorServiceIndex,
 		ComponentTask t,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
 		assert	this.isSchedulable(executorServiceIndex) ;
 		assert	t != null && delay >= 0 && u != null ;
 
-		t.setOwnerReference(this) ;
-		return (ScheduledFuture<Object>)
-				((ComponentSchedulableExecutorServiceManager)
-					this.executorServices.get(executorServiceIndex)).
-						getScheduledExecutorService().schedule(t, delay, u) ;
+		this.scheduleTaskOnComponent(executorServiceIndex, t, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTask(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		int executorServiceIndex,
 		FComponentTask t,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTask(
-					executorServiceIndex,
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					}, delay, u) ;
+		this.scheduleTask(executorServiceIndex,
+						  new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+						  }, delay, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskAtFixedRateOnComponent(
+		int executorServiceIndex,
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
+		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
+
+		t.setOwnerReference(this) ;
+		return ((ComponentSchedulableExecutorServiceManager)
+					this.executorServices.get(executorServiceIndex)).
+						getScheduledExecutorService().
+							scheduleAtFixedRate(t, initialDelay, period, u) ;
+		}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskAtFixedRateOnComponent(
+		String executorServiceURI,
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	t != null ;
+
+		int executorServiceIndex =
+							this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.scheduleTaskAtFixedRateOnComponent(
+							executorServiceIndex, t, initialDelay, period, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskAtFixedRateOnComponent(
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.validExecutorServiceIndex(
+											this.standardRequestHandlerIndex) ;
+
+		return this.scheduleTaskAtFixedRateOnComponent(
+										standardSchedulableHandlerIndex,
+										t, initialDelay, period, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		ComponentTask t,
 		long initialDelay,
 		long period,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
 		assert	this.validExecutorServiceIndex(
-								this.standardSchedulableHandlerIndex) ;
+										this.standardSchedulableHandlerIndex) ;
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
 
-		return this.scheduleTaskAtFixedRate(
-									this.standardSchedulableHandlerIndex,
-											t, initialDelay, period, u) ;
+		this.scheduleTaskAtFixedRate(this.standardSchedulableHandlerIndex,
+									 t, initialDelay, period, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		FComponentTask t,
 		long initialDelay,
 		long period,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTaskAtFixedRate(
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					}, initialDelay, period, u) ;
+		this.scheduleTaskAtFixedRate(
+						new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+						}, initialDelay, period, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
 		long period,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
@@ -3232,42 +3590,43 @@ implements	ComponentI
 
 		int executorServiceIndex =
 						this.getExecutorServiceIndex(executorServiceURI) ;
-		return this.scheduleTaskAtFixedRate(executorServiceIndex,
-											t, initialDelay, period, u);
+		this.scheduleTaskAtFixedRate(executorServiceIndex,
+									 t, initialDelay, period, u);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
 		long period,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTaskAtFixedRate(
-					executorServiceURI,
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					}, initialDelay, period, u) ;
+		this.scheduleTaskAtFixedRate(
+						executorServiceURI,
+						new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+						}, initialDelay, period, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
 		long period,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
@@ -3275,27 +3634,24 @@ implements	ComponentI
 		assert	this.isSchedulable(executorServiceIndex) ;
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null ;
 
-		t.setOwnerReference(this) ;
-		return (ScheduledFuture<Object>)
-				((ComponentSchedulableExecutorServiceManager)
-					this.executorServices.get(executorServiceIndex)).
-						getScheduledExecutorService().
-							scheduleAtFixedRate(t, initialDelay, period, u) ;
+		this.scheduleTaskAtFixedRateOnComponent(executorServiceIndex,
+												t, initialDelay, period, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskAtFixedRate(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
 		long period,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTaskAtFixedRate(
+		this.scheduleTaskAtFixedRate(
 					executorServiceIndex,
 					new AbstractTask() {
 						@Override
@@ -3304,15 +3660,149 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	@Override
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	protected ScheduledFuture<?>	scheduleTaskWithFixedDelayOnComponent(
+		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
+		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null ;
+
+		t.setOwnerReference(this) ;
+		return ((ComponentSchedulableExecutorServiceManager)
+				this.executorServices.get(executorServiceIndex)).
+					getScheduledExecutorService().scheduleWithFixedDelay(
+												t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskWithFixedDelayOnComponent(
+		String executorServiceURI,
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceURI(executorServiceURI) ;
+		assert	t != null ;
+
+		int executorServiceIndex =
+							this.getExecutorServiceIndex(executorServiceURI) ;
+		return this.scheduleTaskWithFixedDelayOnComponent(
+							executorServiceIndex, t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isStarted()
+	 * pre	this.canScheduleTasks()
+	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskWithFixedDelayOnComponent(
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.validExecutorServiceIndex(
+										this.standardSchedulableHandlerIndex) ;
+
+		return this.scheduleTaskWithFixedDelayOnComponent(
+										this.standardSchedulableHandlerIndex,
+										t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public void			scheduleTaskWithFixedDelay(
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
@@ -3320,23 +3810,23 @@ implements	ComponentI
 									this.standardSchedulableHandlerIndex) ;
 		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null ;
 
-		return this.scheduleTaskWithFixedDelay(
-									this.standardSchedulableHandlerIndex,
-											t, initialDelay, delay, u) ;
+		this.scheduleTaskWithFixedDelay(this.standardSchedulableHandlerIndex,
+										t, initialDelay, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		FComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTaskWithFixedDelay(
+		this.scheduleTaskWithFixedDelay(
 					new AbstractTask() {
 						@Override
 						public void run() { this.runTaskLambda(t); }
@@ -3347,13 +3837,14 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
@@ -3362,43 +3853,44 @@ implements	ComponentI
 		assert	t != null && initialDelay >= 0  && delay > 0 && u != null ;
 
 		int executorServiceIndex =
-				this.getExecutorServiceIndex(executorServiceURI) ;
-		return this.scheduleTaskWithFixedDelay(executorServiceIndex,
-												t, initialDelay, delay, u) ;
+							this.getExecutorServiceIndex(executorServiceURI) ;
+		this.scheduleTaskWithFixedDelay(executorServiceIndex,
+										t, initialDelay, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTaskWithFixedDelay(
-					executorServiceURI,
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					}, initialDelay, delay, u);
+		this.scheduleTaskWithFixedDelay(
+						executorServiceURI,
+						new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+						}, initialDelay, delay, u);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(int, fr.sorbonne_u.components.ComponentI.ComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
@@ -3406,32 +3898,29 @@ implements	ComponentI
 		assert	this.isSchedulable(executorServiceIndex) ;
 		assert	t != null && initialDelay >= 0  && delay > 0 && u != null ;
 
-		t.setOwnerReference(this) ;
-		return (ScheduledFuture<Object>)
-				((ComponentSchedulableExecutorServiceManager)
-					this.executorServices.get(executorServiceIndex)).
-						getScheduledExecutorService().
-							scheduleWithFixedDelay(t, initialDelay, delay, u) ;
+		this.scheduleTaskWithFixedDelayOnComponent(executorServiceIndex,
+												   t, initialDelay, delay, u) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleTaskWithFixedDelay(int, fr.sorbonne_u.components.ComponentI.FComponentTask, long, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
-		return this.scheduleTaskWithFixedDelay(
-					executorServiceIndex,
-					new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					}, initialDelay, delay, u);
+		this.scheduleTaskWithFixedDelay(
+						executorServiceIndex,
+						new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+						}, initialDelay, delay, u);
 	}
 
 	// ------------------------------------------------------------------------
@@ -3586,55 +4075,66 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @return						a future value embedding the result of the task.
-	 * @throws Exception			if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be executed on the component.
+	 * @return								a future value embedding the result of the task.
+	 * @throws AssertionError				if the component is not started, the index is not valid or the request is null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	protected <T> Future<T>		handleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request
-		) throws Exception
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	request != null ;
 
 		request.setOwnerReference(this) ;
-		if (this.validExecutorServiceIndex(executorServiceIndex)) {
+		if (this.hasItsOwnThreads() &&
+						this.validExecutorServiceIndex(executorServiceIndex)) {
 			return this.executorServices.get(executorServiceIndex).
-									getExecutorService().submit(request) ;
+										getExecutorService().submit(request) ;
 		} else {
 			final ComponentService<T> t = request ;
 			return new Future<T>() {
-							@Override
-							public boolean	cancel(boolean arg0)
-							{ return false ; }
+						@Override
+						public boolean	cancel(boolean mayInterruptIfRunning)
+						{ return false ; }
 
-							@Override
-							public T		get()
-							throws	InterruptedException, ExecutionException
-							{
-								try {
-									return t.call() ;
-								} catch (Exception e) {
-									throw new ExecutionException(e) ;
-								}
+						@Override
+						public T		get()
+						throws	InterruptedException,
+								ExecutionException
+						{
+							try {
+								return t.call() ;
+							} catch (Exception e) {
+								throw new ExecutionException(e) ;
 							}
-							@Override
-							public T		get(long arg0, TimeUnit arg1)
-							throws	InterruptedException,
-									ExecutionException, TimeoutException
-							{ return null ; }
+						}
 
-							@Override
-							public boolean	isCancelled()
-							{ return false ; }
+						@Override
+						public T		get(long timeout, TimeUnit unit)
+						throws	InterruptedException,
+								ExecutionException,
+								TimeoutException
+						{ 	try {
+								return t.call() ;
+							} catch (Exception e) {
+								throw new ExecutionException(e) ;
+							}
+						}
 
-							@Override
-							public boolean	isDone()
-							{ return true ; }
-						} ;
+						@Override
+						public boolean	isCancelled()
+						{ return false ; }
+
+						@Override
+						public boolean	isDone()
+						{ return true ; }
+					} ;
 		}
 	}
 
@@ -3663,12 +4163,14 @@ implements	ComponentI
 	 * @param executorServiceURI	URI of the executor service that will run the task.
 	 * @param request				service request to be executed on the component.
 	 * @return						a future value embedding the result of the task.
-	 * @throws Exception			if exception raised by the task.
+	 * @throws AssertionError				if the component is not started, the URI is not valid or the request is null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	protected <T> Future<T>		handleRequest(
 		String executorServiceURI,
 		ComponentService<T> request
-		) throws Exception
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceURI(executorServiceURI) ;
@@ -3701,24 +4203,46 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param request				service request to be executed on the component.
-	 * @return						a future value embedding the result of the task.
-	 * @throws Exception			if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be executed on the component.
+	 * @return								a future value embedding the result of the task.
+	 * @throws AssertionError				if the component is not started or the request is null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	protected <T> Future<T>		handleRequest(
 		ComponentService<T> request
-		) throws Exception
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		if (this.validExecutorServiceIndex(this.standardRequestHandlerIndex)) {
 			return this.handleRequest(this.standardRequestHandlerIndex,
 									  request) ;
-		} else {
-			assert this.validExecutorServiceIndex(
-										this.standardSchedulableHandlerIndex) ;
+		} else if (this.validExecutorServiceIndex(
+										this.standardSchedulableHandlerIndex)) {
 			return this.handleRequest(this.standardSchedulableHandlerIndex,
 									  request) ;
+		} else {
+			return this.handleRequest(-1, request) ;
 		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
+	 */
+	@Override
+	public <T> T		handleRequestSync(
+		int executorServiceIndex,
+		ComponentService<T> request
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	request != null ;
+
+		return this.handleRequest(executorServiceIndex, request).get() ;
 	}
 
 	/**
@@ -3726,7 +4250,10 @@ implements	ComponentI
 	 */
 	@Override
 	public <T> T			handleRequestSync(ComponentService<T> request)
-	throws Exception
+	throws	AssertionError,
+			RejectedExecutionException,
+			InterruptedException,
+			ExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	request != null ;
@@ -3754,7 +4281,10 @@ implements	ComponentI
 	@Override
 	public <T> T		handleRequestSync(
 		FComponentService<T> request
-		) throws Exception
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		return this.handleRequestSync(
 							new AbstractService<T>() {
@@ -3769,10 +4299,13 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
-	public <T> T			handleRequestSync(
+	public <T> T		handleRequestSync(
 		String executorServiceURI,
 		ComponentService<T> request
-		) throws Exception 
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceURI(executorServiceURI) ;
@@ -3790,7 +4323,10 @@ implements	ComponentI
 	public <T> T		handleRequestSync(
 		String executorServiceURI,
 		FComponentService<T> request
-		) throws Exception
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		return this.handleRequestSync(
 							executorServiceURI,
@@ -3803,29 +4339,16 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
-	 */
-	@Override
-	public <T> T			handleRequestSync(
-		int executorServiceIndex,
-		ComponentService<T> request
-		) throws Exception
-	{
-		assert	this.isStarted() ;
-		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
-		assert	request != null ;
-
-		return this.handleRequest(executorServiceIndex, request).get() ;
-	}
-
-	/**
 	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.FComponentService)
 	 */
 	@Override
 	public <T> T		handleRequestSync(
 		int executorServiceIndex,
 		FComponentService<T> request
-		) throws Exception
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		return this.handleRequestSync(
 							executorServiceIndex,
@@ -3835,118 +4358,6 @@ implements	ComponentI
 									return this.callServiceLambda(request) ;
 								}
 							}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(fr.sorbonne_u.components.ComponentI.ComponentService)
-	 */
-	@Override
-	public <T> void			handleRequestAsync(ComponentService<T> request)
-	throws Exception
-	{
-		assert	this.isStarted() ;
-		assert	request != null ;
-
-		if (this.hasItsOwnThreads()) {
-			if (this.validExecutorServiceIndex(
-										this.standardRequestHandlerIndex)) {
-				this.handleRequest(this.standardRequestHandlerIndex, request) ;
-			} else {
-				assert	this.validExecutorServiceIndex(
-									this.standardSchedulableHandlerIndex) ;
-				this.handleRequest(this.standardSchedulableHandlerIndex,
-								   request) ;
-			}
-		} else {
-			request.setOwnerReference(this) ;
-			request.call();
-		}
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(fr.sorbonne_u.components.ComponentI.FComponentService)
-	 */
-	@Override
-	public <T> void			handleRequestAsync(
-		FComponentService<T> request
-		) throws Exception
-	{
-		this.handleRequestAsync(new AbstractService<T>() {
-									@Override
-									public T call() throws Exception {
-										return this.callServiceLambda(request) ;
-									}
-								}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
-	 */
-	@Override
-	public <T> void			handleRequestAsync(
-		String executorServiceURI,
-		ComponentService<T> request
-		) throws Exception
-	{
-		assert	this.isStarted() ;
-		assert	this.validExecutorServiceURI(executorServiceURI) ;
-		assert	request != null ;
-
-		int executorServiceIndex =
-				this.getExecutorServiceIndex(executorServiceURI) ;
-		this.handleRequest(executorServiceIndex, request) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService)
-	 */
-	@Override
-	public <T> void			handleRequestAsync(
-		String executorServiceURI,
-		FComponentService<T> request
-		) throws Exception
-	{
-		this.handleRequestAsync(executorServiceURI,
-								new AbstractService<T>() {
-									@Override
-									public T call() throws Exception {
-										return this.callServiceLambda(request) ;
-									}
-								}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
-	 */
-	@Override
-	public <T> void			handleRequestAsync(
-		int executorServiceIndex,
-		ComponentService<T> request
-		) throws Exception
-	{
-		assert	this.isStarted() ;
-		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
-		assert	request != null ;
-
-		this.handleRequest(executorServiceIndex, request) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestAsync(int, fr.sorbonne_u.components.ComponentI.FComponentService)
-	 */
-	@Override
-	public <T> void			handleRequestAsync(
-		int executorServiceIndex,
-		FComponentService<T> request
-		) throws Exception
-	{
-		this.handleRequestAsync(executorServiceIndex,
-								new AbstractService<T>() {
-									@Override
-									public T call() throws Exception {
-										return this.callServiceLambda(request) ;
-									}
-								}) ;
 	}
 
 	/**
@@ -3961,19 +4372,22 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a scheduled future to synchronise with the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the component is not started, this index is not valid, the executor is not schedulable or the request in null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	protected <T> ScheduledFuture<T>	scheduleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request,
 		long delay,
 		TimeUnit u
-		)
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
@@ -3988,9 +4402,29 @@ implements	ComponentI
 	}
 
 	/**
-	 * FIXME: does not make sense in the remote call case unless we have
-	 * distributed future variables!
-	 * 
+	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
+	 */
+	@Override
+	public <T> T 			scheduleRequestSync(
+		int executorServiceIndex,
+		ComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
+	{
+		assert	this.isStarted() ;
+		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
+		assert	this.isSchedulable(executorServiceIndex) ;
+		assert	request != null && delay >= 0 && u != null ;
+
+		return this.scheduleRequest(
+						executorServiceIndex, request, delay, u).get() ;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
@@ -3998,7 +4432,10 @@ implements	ComponentI
 		ComponentService<T> request,
 		long delay,
 		TimeUnit u
-		) throws InterruptedException, ExecutionException
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.canScheduleTasks() ;
@@ -4018,7 +4455,10 @@ implements	ComponentI
 		FComponentService<T> request,
 		long delay,
 		TimeUnit u
-		) throws InterruptedException, ExecutionException
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		return this.scheduleRequestSync(
 								new AbstractService<T>() {
@@ -4038,7 +4478,10 @@ implements	ComponentI
 		ComponentService<T> request,
 		long delay,
 		TimeUnit u
-		) throws InterruptedException, ExecutionException
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		assert	this.isStarted() ;
 		assert	this.validExecutorServiceURI(executorServiceURI) ;
@@ -4046,9 +4489,9 @@ implements	ComponentI
 		assert	request != null && delay >= 0 && u != null ;
 
 		int executorServiceIndex =
-				this.getExecutorServiceIndex(executorServiceURI) ;
+							this.getExecutorServiceIndex(executorServiceURI) ;
 		return this.scheduleRequestSync(executorServiceIndex,
-													request, delay, u) ;
+										request, delay, u) ;
 	}
 
 	/**
@@ -4060,7 +4503,10 @@ implements	ComponentI
 		FComponentService<T> request,
 		long delay,
 		TimeUnit u
-		) throws InterruptedException, ExecutionException
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		return this.scheduleRequestSync(
 								executorServiceURI,
@@ -4073,26 +4519,6 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public <T> T 			scheduleRequestSync(
-		int executorServiceIndex,
-		ComponentService<T> request,
-		long delay,
-		TimeUnit u
-		) throws InterruptedException, ExecutionException
-	{
-		assert	this.isStarted() ;
-		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
-		assert	this.isSchedulable(executorServiceIndex) ;
-		assert	request != null && delay >= 0 && u != null ;
-
-		return this.scheduleRequest(executorServiceIndex, request, delay, u).
-																	get() ;
-	}
-
-	/**
 	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestSync(int, fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
 	 */
 	@Override
@@ -4101,129 +4527,14 @@ implements	ComponentI
 		FComponentService<T> request,
 		long delay,
 		TimeUnit u
-		) throws InterruptedException, ExecutionException
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException
 	{
 		return this.scheduleRequestSync(
 								executorServiceIndex,
 								new AbstractService<T>() {
-									@Override
-									public T call() throws Exception {
-										return this.callServiceLambda(request) ;
-									}
-								}, delay, u) ;
-	}
-		
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public <T> void			scheduleRequestAsync(
-		ComponentService<T> request,
-		long delay,
-		TimeUnit u
-		)
-	{
-		assert	this.isStarted() ;
-		assert	this.canScheduleTasks() ;
-		assert	this.validExecutorServiceIndex(
-									this.standardSchedulableHandlerIndex) ;
-		assert	request != null && delay >= 0 && u != null ;
-
-		this.scheduleRequestAsync(this.standardSchedulableHandlerIndex,
-														request, delay, u) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public <T> void			scheduleRequestAsync(
-		FComponentService<T> request,
-		long delay,
-		TimeUnit u
-		)
-	{
-		this.scheduleRequestAsync(new AbstractService<T>() {
-									@Override
-									public T call() throws Exception {
-										return this.callServiceLambda(request) ;
-									}
-								  }, delay, u);
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public <T> void			scheduleRequestAsync(
-		String executorServiceURI,
-		ComponentService<T> request,
-		long delay,
-		TimeUnit u
-		)
-	{
-		assert	this.isStarted() ;
-		assert	this.canScheduleTasks() ;
-		assert	this.validExecutorServiceURI(executorServiceURI) ;
-		assert	this.isSchedulable(executorServiceURI) ;
-		assert	request != null && delay >= 0 && u != null ;
-
-		int executorServiceIndex =
-				this.getExecutorServiceIndex(executorServiceURI) ;
-		this.scheduleRequest(executorServiceIndex, request, delay, u) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public <T> void			scheduleRequestAsync(
-		String executorServiceURI,
-		FComponentService<T> request,
-		long delay,
-		TimeUnit u
-		)
-	{
-		this.scheduleRequestAsync(executorServiceURI, new AbstractService<T>() {
-									@Override
-									public T call() throws Exception {
-										return this.callServiceLambda(request) ;
-									}
-								}, delay, u) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(int, fr.sorbonne_u.components.ComponentI.ComponentService, long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public <T> void			scheduleRequestAsync(
-		int executorServiceIndex,
-		ComponentService<T> request,
-		long delay,
-		TimeUnit u
-		)
-	{
-		assert	this.isStarted() ;
-		assert	this.canScheduleTasks() ;
-		assert	this.validExecutorServiceIndex(executorServiceIndex) ;
-		assert	this.isSchedulable(executorServiceIndex) ;
-		assert	request != null && delay >= 0 && u != null ;
-
-		this.scheduleRequest(executorServiceIndex, request, delay, u) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ComponentI#scheduleRequestAsync(int, fr.sorbonne_u.components.ComponentI.FComponentService, long, java.util.concurrent.TimeUnit)
-	 */
-	@Override
-	public <T> void			scheduleRequestAsync(
-		int executorServiceIndex,
-		FComponentService<T> request,
-		long delay,
-		TimeUnit u
-		)
-	{
-		this.scheduleRequestAsync(executorServiceIndex, new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
 										return this.callServiceLambda(request) ;
@@ -4386,13 +4697,18 @@ implements	ComponentI
 			pTypes[i] = params[i].getClass() ;
 		}
 		Method m = this.getClass().getMethod(name, pTypes) ;
-		this.handleRequestAsync(
-						new AbstractService<Object>() {
-							@Override
-							public Object call() throws Exception {
-								return m.invoke(this.getServiceOwner(), params) ;
+		this.runTask(new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								m.invoke(this.getTaskOwner(), params) ;
+							} catch (IllegalAccessException |
+									 IllegalArgumentException |
+									 InvocationTargetException e) {
+								e.printStackTrace() ;
 							}
-						}) ;
+						}
+					 });
 	}
 
 	/** Javassist classpool containing the component classes.				*/

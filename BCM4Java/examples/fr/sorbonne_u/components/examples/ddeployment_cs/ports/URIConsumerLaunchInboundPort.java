@@ -40,7 +40,7 @@ import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicURICon
 import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>URIConsumerInboundPort</code> implements the inbound port
  * for the <code>URIConsumerLaunchI</code> offered interface.
@@ -82,15 +82,18 @@ implements	URIConsumerLaunchI
 	@Override
 	public void		getURIandPrint() throws Exception
 	{
-		this.owner.handleRequestAsync(
-					new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+					new AbstractComponent.AbstractTask() {
 						@Override
-						public Void call() throws Exception {
-							((DynamicURIConsumer)this.getServiceOwner()).
-										getURIandPrint() ;
-							return null;
+						public void run() {
+							try {
+								((DynamicURIConsumer)this.getTaskOwner()).
+															getURIandPrint() ;
+							} catch (Exception e) {
+								e.printStackTrace(); ;
+							}
 						}
 					}) ;
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

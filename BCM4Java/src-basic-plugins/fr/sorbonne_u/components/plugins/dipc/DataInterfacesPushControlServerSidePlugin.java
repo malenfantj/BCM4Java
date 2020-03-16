@@ -195,20 +195,20 @@ implements	PushControlImplementationI
 
 		final DataInterfacesPushControlServerSidePlugin plugin = this ;
 		ScheduledFuture<?> f =
-			this.owner.scheduleTaskAtFixedRate(
-				new AbstractComponent.AbstractTask() {					
-					@Override
-					public void run() {
-						try {
-							plugin.pushOnPort(portURI) ;
-						} catch (Exception e) {
-							throw new RuntimeException(e);
+			this.scheduleTaskAtFixedRateOnComponent(
+					new AbstractComponent.AbstractTask() {					
+						@Override
+						public void run() {
+							try {
+								plugin.pushOnPort(portURI) ;
+							} catch (Exception e) {
+								throw new RuntimeException(e);
+							}
 						}
-					}
-				},
-				interval,
-				interval,
-				TimeUnit.MILLISECONDS) ;
+					},
+					interval,
+					interval,
+					TimeUnit.MILLISECONDS) ;
 		this.futures.put(portURI, f) ;
 	}
 
@@ -230,21 +230,21 @@ implements	PushControlImplementationI
 
 		final DataInterfacesPushControlServerSidePlugin plugin = this ;
 		ScheduledFuture<?> f =
-			this.owner.scheduleTask(
-				new AbstractComponent.AbstractTask() {
-					@Override
-					public void run() {
-						try {
-							plugin.limitedPushingTask(portURI ,
-													 interval,
-													 n) ;
-						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+			this.scheduleTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								plugin.limitedPushingTask(portURI ,
+														  interval,
+														  n) ;
+							} catch (Exception e) {
+								throw new RuntimeException(e) ;
+							}
 						}
-					}
-				},
-			interval,
-			TimeUnit.MILLISECONDS) ;
+					},
+					interval,
+					TimeUnit.MILLISECONDS) ;
 		this.futures.put(portURI, f) ;
 	}
 
@@ -292,21 +292,21 @@ implements	PushControlImplementationI
 		if (n > 1) {
 			final DataInterfacesPushControlServerSidePlugin plugin = this ;
 			ScheduledFuture<?> f =
-				this.owner.scheduleTask(
-					new AbstractComponent.AbstractTask() {
-						@Override
-						public void run() {
-							try {
-								plugin.limitedPushingTask(portURI ,
-														 interval,
-														 n - 1);
-							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+				this.scheduleTaskOnComponent(
+						new AbstractComponent.AbstractTask() {
+							@Override
+							public void run() {
+								try {
+									plugin.limitedPushingTask(portURI ,
+															  interval,
+															  n - 1);
+								} catch (Exception e) {
+									throw new RuntimeException(e) ;
+								}
 							}
-						}
-					},
-					interval,
-					TimeUnit.MILLISECONDS) ;
+						},
+						interval,
+						TimeUnit.MILLISECONDS) ;
 			this.futures.put(portURI, f) ;
 		}
 	}

@@ -1,5 +1,13 @@
 package fr.sorbonne_u.components;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import fr.sorbonne_u.components.ComponentI.ComponentService;
+import fr.sorbonne_u.components.ComponentI.ComponentTask;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
 // Jacques.Malenfant@lip6.fr
@@ -581,5 +589,532 @@ implements	PluginI
 	{
 		this.owner.logMessage(message) ;
 	}
+
+	/**
+	 * run the <code>ComponentTask</code> on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @return								a future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected Future<?>		runTaskOnComponent(
+			int executorServiceIndex,
+			ComponentTask t
+			) throws	AssertionError,
+						RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+								runTaskOnComponent(executorServiceIndex, t) ;
+	}
+
+	/**
+	 * run the <code>ComponentTask</code> on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @return								a future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected Future<?>		runTaskOnComponent(
+		String executorServiceURI,
+		ComponentTask t
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+								runTaskOnComponent(executorServiceURI, t) ;
+	}
+
+	/**
+	 * run the <code>ComponentTask</code> on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								component task to be executed as main task.
+	 * @return								a future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected Future<?>		runTaskOnComponent(ComponentTask t)
+	throws	AssertionError,
+			RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).runTaskOnComponent(t) ;
+	}	
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay
+	 * on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskOnComponent(
+		int executorServiceIndex,
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+					scheduleTaskOnComponent(executorServiceIndex, t, delay, u) ;
+	}
+
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay
+	 * on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskOnComponent(
+		String executorServiceURI,
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+					scheduleTaskOnComponent(executorServiceURI, t, delay, u) ;
+	}
+
+
+	/**
+	 * schedule a <code>ComponentTask</code> to be run after a given delay
+	 * on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskOnComponent(
+		ComponentTask t,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+									scheduleTaskOnComponent(t, delay, u) ;
+	}
+
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex	index of the executor service that will run the task.
+	 * @param t						task to be scheduled.
+	 * @param initialDelay			delay after which the task begins to run.
+	 * @param period				period between successive executions.
+	 * @param u						time unit in which the initial delay and the period are expressed.
+	 * @return						a scheduled future allowing to cancel and synchronize on the task execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskAtFixedRateOnComponent(
+		int executorServiceIndex,
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+					scheduleTaskAtFixedRateOnComponent(
+							executorServiceIndex, t, initialDelay, period, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskAtFixedRateOnComponent(
+		String executorServiceURI,
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+					scheduleTaskAtFixedRateOnComponent(
+							executorServiceURI, t, initialDelay, period, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given period; that
+	 * is executions will commence after <code>initialDelay</code> then
+	 * <code>initialDelay+period</code>, the
+	 * <code>initialDelay + 2 * period</code>, and so on. If any execution
+	 * of the task encounters an exception, subsequent executions are suppressed.
+	 * Otherwise, the task will only terminate via cancellation or termination
+	 * of the executor. If any execution of this task takes longer than its
+	 * period, then subsequent executions may start late, but will not
+	 * concurrently execute.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskAtFixedRateOnComponent(
+		ComponentTask t,
+		long initialDelay,
+		long period,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+					scheduleTaskAtFixedRateOnComponent(
+												t, initialDelay, period, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskWithFixedDelayOnComponent(
+		int executorServiceIndex,
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+					scheduleTaskWithFixedDelayOnComponent(
+							executorServiceIndex, t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskWithFixedDelayOnComponent(
+		String executorServiceURI,
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+					scheduleTaskWithFixedDelayOnComponent(
+							executorServiceURI, t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * schedule a <code>ComponentTask</code> that becomes enabled first after
+	 * the given initial delay, and subsequently with the given delay between
+	 * the termination of one execution and the beginning of the next. If any
+	 * execution of the task encounters an exception, subsequent executions
+	 * are suppressed. Otherwise, the task will only terminate via cancellation
+	 * or termination of the executor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @return								a scheduled future allowing to cancel and synchronize on the task execution.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected ScheduledFuture<?>	scheduleTaskWithFixedDelayOnComponent(
+		ComponentTask t,
+		long initialDelay,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).
+						scheduleTaskWithFixedDelayOnComponent(
+												t, initialDelay, delay, u) ;
+	}
+
+	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
+	 * owner component.
+	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be executed on the component.
+	 * @return								a future value embedding the result of the task.
+	 * @throws AssertionError				if the component is not started, the index is not valid or the request is null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected <T> Future<T>		handleRequest(
+		int executorServiceIndex,
+		ComponentService<T> request
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).handleRequest(
+											executorServiceIndex, request) ;
+	}
+
+	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
+	 * owner component.
+	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>					the type of the value returned by the request.
+	 * @param executorServiceURI	URI of the executor service that will run the task.
+	 * @param request				service request to be executed on the component.
+	 * @return						a future value embedding the result of the task.
+	 * @throws AssertionError				if the component is not started, the URI is not valid or the request is null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected <T> Future<T>		handleRequest(
+		String executorServiceURI,
+		ComponentService<T> request
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).handleRequest(
+												executorServiceURI, request) ;
+	}
+
+
+	/**
+	 * execute a request represented by a <code>ComponentService</code> on the
+	 * owner component.
+	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * This method is meant to be used when programmers need to manage within
+	 * a component requests with futures. It can be requests executed as
+	 * services of the component or calls to other components which are
+	 * synchronous but that the calling component wants to manage as
+	 * asynchronous tasks.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be executed on the component.
+	 * @return								a future value embedding the result of the task.
+	 * @throws AssertionError				if the component is not started or the request is null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected <T> Future<T>		handleRequest(
+		ComponentService<T> request
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).handleRequest(request) ;
+	}
+
+	/**
+	 * schedule a service for execution after a given delay.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the component is not started, this index is not valid, the executor is not schedulable or the request in null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected <T> ScheduledFuture<T>	scheduleRequest(
+		int executorServiceIndex,
+		ComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.owner).scheduleRequest(
+									executorServiceIndex, request, delay, u) ;
+	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

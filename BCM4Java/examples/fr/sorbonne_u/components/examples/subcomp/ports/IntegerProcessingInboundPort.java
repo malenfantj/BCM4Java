@@ -79,13 +79,15 @@ implements	IntegerProcessingCI
 	@Override
 	public void			process(int i) throws Exception
 	{
-		this.getOwner().handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.getOwner().runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((IntegerProcessingI)this.getServiceOwner()).
-																process(i) ;
-						return null;
+					public void run() {
+						try {
+							((IntegerProcessingI)this.getTaskOwner()).process(i) ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}

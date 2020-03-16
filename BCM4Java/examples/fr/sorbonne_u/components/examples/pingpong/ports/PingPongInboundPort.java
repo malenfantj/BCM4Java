@@ -84,12 +84,15 @@ implements	PingPongI
 	@Override
 	public void			play() throws Exception
 	{
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).play() ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).play() ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}
@@ -100,12 +103,15 @@ implements	PingPongI
 	@Override
 	public void			playOnDataPull() throws Exception
 	{
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).playOnDataPull() ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).playOnDataPull() ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}
@@ -116,12 +122,15 @@ implements	PingPongI
 	@Override
 	public void			playOnDataReception(Ball b) throws Exception
 	{
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).playOnDataReception(b) ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).playOnDataReception(b) ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}
@@ -132,12 +141,15 @@ implements	PingPongI
 	@Override
 	public void			pingPong() throws Exception
 	{
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).pingPong() ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).pingPong() ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}
@@ -148,12 +160,11 @@ implements	PingPongI
 	@Override
 	public void			goToService() throws Exception
 	{
-		this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).goToService() ;
-						return null;
+					public void run() {
+						((PingPongPlayer)this.getTaskOwner()).goToService() ;
 					}
 				}) ;
 	}
@@ -164,12 +175,15 @@ implements	PingPongI
 	@Override
 	public void			hit(Ball b) throws Exception
 	{
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).hit(b) ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).hit(b) ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}

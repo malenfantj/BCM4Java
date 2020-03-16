@@ -82,12 +82,15 @@ implements	IntegerFilteringCI
 	@Override
 	public void			filter(int i) throws Exception
 	{
-		this.getOwner().handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.getOwner().runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((IntegerFilteringI)this.getServiceOwner()).filter(i) ;
-						return null ;
+					public void run() {
+						try {
+							((IntegerFilteringI)this.getTaskOwner()).filter(i) ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}

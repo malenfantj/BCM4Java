@@ -91,12 +91,15 @@ extends		AbstractDataTwoWayPort
 	@Override
 	public void			send(DataTwoWayI.DataI d) throws Exception
 	{
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).hit((Ball) d) ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).hit((Ball) d) ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}

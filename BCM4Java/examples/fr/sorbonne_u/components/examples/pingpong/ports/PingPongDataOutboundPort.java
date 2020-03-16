@@ -86,13 +86,16 @@ extends		AbstractDataOutboundPort
 	@Override
 	public void			receive(DataRequiredI.DataI d) throws Exception
 	{
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).
-										playOnDataReception((Ball) d) ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).
+											playOnDataReception((Ball) d) ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}

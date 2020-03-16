@@ -222,12 +222,15 @@ implements	IntegerProcessingI
 	public void			process(int i) throws Exception
 	{
 		int v = this.process.apply(i) ;
-		this.getCompositeComponentReference().handleRequestAsync(
-			new AbstractComponent.AbstractService<Void>() {
+		this.getCompositeComponentReference().runTask(
+			new AbstractComponent.AbstractTask() {
 				@Override
-				public Void call() throws Exception {
-					((IntegerProcessingI)this.getServiceOwner()).process(v) ;
-					return null;
+				public void run() {
+					try {
+						((IntegerProcessingI)this.getTaskOwner()).process(v) ;
+					} catch (Exception e) {
+						e.printStackTrace() ;
+					}
 				}
 			}) ;
 	}

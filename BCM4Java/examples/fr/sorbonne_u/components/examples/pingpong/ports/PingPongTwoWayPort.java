@@ -164,12 +164,15 @@ implements	PingPongTwoWayI
 	public void			pingPong() throws Exception
 	{
 		//System.out.println("PingPongTwoWayPort>>pingPong()") ;
-		this.owner.handleRequestAsync(
-				new AbstractComponent.AbstractService<Void>() {
+		this.owner.runTask(
+				new AbstractComponent.AbstractTask() {
 					@Override
-					public Void call() throws Exception {
-						((PingPongPlayer)this.getServiceOwner()).pingPong() ;
-						return null;
+					public void run() {
+						try {
+							((PingPongPlayer)this.getTaskOwner()).pingPong() ;
+						} catch (Exception e) {
+							e.printStackTrace() ;
+						}
 					}
 				}) ;
 	}

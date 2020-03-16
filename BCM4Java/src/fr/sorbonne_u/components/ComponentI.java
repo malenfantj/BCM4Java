@@ -36,8 +36,7 @@ package fr.sorbonne_u.components;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
@@ -1144,10 +1143,12 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t	component task to be executed as main task.
-	 * @return	a <code>Future</code> representing pending completion of the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public Future<Object>	runTask(ComponentTask t) ;
+	public void			runTask(ComponentTask t)
+	throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * run the lambda expression as a task of the component.
@@ -1160,10 +1161,12 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t	component task to be executed as main task.
-	 * @return	a <code>Future</code> representing pending completion of the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public Future<Object>	runTask(FComponentTask t) ;
+	public void			runTask(FComponentTask t)
+	throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * run the <code>ComponentTask</code> on the given executor service.
@@ -1176,13 +1179,16 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						component task to be executed as main task.
-	 * @return						a <code>Future</code> representing pending completion of the task.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public Future<Object>	runTask(
+	public void			runTask(
 		String executorServiceURI,
-		ComponentTask t) ;
+		ComponentTask t
+		) throws	AssertionError, RejectedExecutionException ;
+
 
 	/**
 	 * run the lambda expression on the given executor service.
@@ -1195,13 +1201,16 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						component task to be executed as main task.
-	 * @return						a <code>Future</code> representing pending completion of the task.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public Future<Object>	runTask(
+	public void			runTask(
 		String executorServiceURI,
-		FComponentTask t) ;
+		FComponentTask t
+		) throws	AssertionError, RejectedExecutionException ;
+
 
 	/**
 	 * run the <code>ComponentTask</code> on the given executor service.
@@ -1214,11 +1223,14 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						component task to be executed as main task.
-	 * @return						a <code>Future</code> representing pending completion of the task.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public Future<Object>	runTask(int executorServiceIndex, ComponentTask t) ;
+	public void			runTask(int executorServiceIndex, ComponentTask t)
+	throws	AssertionError, RejectedExecutionException ;
+
 
 	/**
 	 * run the lambda expression on the given executor service.
@@ -1231,13 +1243,16 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						component task to be executed as main task.
-	 * @return						a <code>Future</code> representing pending completion of the task.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public Future<Object>	runTask(
+	public void			runTask(
 		int executorServiceIndex,
-		FComponentTask t) ;
+		FComponentTask t
+		) throws	AssertionError, RejectedExecutionException ;
+
 
 	/**
 	 * schedule a <code>ComponentTask</code> to be run after a given delay.
@@ -1251,15 +1266,17 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t		task to be scheduled.
-	 * @param delay	delay after which the task must be run.
-	 * @param u		time unit in which the delay is expressed.
-	 * @return		a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		ComponentTask t,
 		long delay, 
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression to be run after a given delay.
@@ -1273,15 +1290,17 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t		task to be scheduled.
-	 * @param delay	delay after which the task must be run.
-	 * @param u		time unit in which the delay is expressed.
-	 * @return		a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		FComponentTask t,
 		long delay, 
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> to be run after a given delay on
@@ -1296,17 +1315,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		String executorServiceURI,
 		ComponentTask t,
 		long delay, 
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression to be run after a given delay on
@@ -1321,17 +1342,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		String executorServiceURI,
 		FComponentTask t,
 		long delay, 
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> to be run after a given delay on
@@ -1346,17 +1369,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		int executorServiceIndex, 
 		ComponentTask t,
 		long delay, 
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression to be run after a given delay on
@@ -1371,17 +1396,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTask(
+	public void			scheduleTask(
 		int executorServiceIndex, 
 		FComponentTask t,
 		long delay, 
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1404,17 +1431,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t				task to be scheduled.
-	 * @param initialDelay	delay after which the task begins to run.
-	 * @param period		period between successive executions.
-	 * @param u				time unit in which the initial delay and the period are expressed.
-	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		ComponentTask t,
 		long initialDelay,
 		long period,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1437,17 +1466,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t				task to be scheduled.
-	 * @param initialDelay	delay after which the task begins to run.
-	 * @param period		period between successive executions.
-	 * @param u				time unit in which the initial delay and the period are expressed.
-	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		FComponentTask t,
 		long initialDelay,
 		long period,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1470,19 +1501,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param period				period between successive executions.
-	 * @param u						time unit in which the initial delay and the period are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
 		long period,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1505,19 +1538,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param period				period between successive executions.
-	 * @param u						time unit in which the initial delay and the period are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
 		long period,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1540,19 +1575,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param period				period between successive executions.
-	 * @param u						time unit in which the initial delay and the period are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
 		long period,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1575,19 +1612,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param period				period between successive executions.
-	 * @param u						time unit in which the initial delay and the period are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param period						period between successive executions.
+	 * @param u								time unit in which the initial delay and the period are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskAtFixedRate(
+	public void			scheduleTaskAtFixedRate(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
 		long period,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1606,17 +1645,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t				task to be scheduled.
-	 * @param initialDelay	delay after which the task begins to run.
-	 * @param delay			delay between the termination of one execution and the beginning of the next.
-	 * @param u				time unit in which the initial delay and the delay are expressed.
-	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		ComponentTask t,
 		long initialDelay,
 		long delay,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1635,17 +1676,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param t				task to be scheduled.
-	 * @param initialDelay	delay after which the task begins to run.
-	 * @param delay			delay between the termination of one execution and the beginning of the next.
-	 * @param u				time unit in which the initial delay and the delay are expressed.
-	 * @return				a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		FComponentTask t,
 		long initialDelay,
 		long delay,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1664,19 +1707,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param delay					delay between the termination of one execution and the beginning of the next.
-	 * @param u						time unit in which the initial delay and the delay are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		ComponentTask t,
 		long initialDelay,
 		long delay,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1695,19 +1740,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param delay					delay between the termination of one execution and the beginning of the next.
-	 * @param u						time unit in which the initial delay and the delay are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		String executorServiceURI,
 		FComponentTask t,
 		long initialDelay,
 		long delay,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1726,19 +1773,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param delay					delay between the termination of one execution and the beginning of the next.
-	 * @param u						time unit in which the initial delay and the delay are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		ComponentTask t,
 		long initialDelay,
 		long delay,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1757,19 +1806,21 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param t						task to be scheduled.
-	 * @param initialDelay			delay after which the task begins to run.
-	 * @param delay					delay between the termination of one execution and the beginning of the next.
-	 * @param u						time unit in which the initial delay and the delay are expressed.
-	 * @return						a <code>ScheduledFuture</code> representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								task to be scheduled.
+	 * @param initialDelay					delay after which the task begins to run.
+	 * @param delay							delay between the termination of one execution and the beginning of the next.
+	 * @param u								time unit in which the initial delay and the delay are expressed.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	public ScheduledFuture<Object>	scheduleTaskWithFixedDelay(
+	public void			scheduleTaskWithFixedDelay(
 		int executorServiceIndex,
 		FComponentTask t,
 		long initialDelay,
 		long delay,
-		TimeUnit u) ;
+		TimeUnit u
+		) throws	AssertionError, RejectedExecutionException ;
 
 	// -------------------------------------------------------------------------
 	// Request handling
@@ -1903,13 +1954,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>			the type of the value returned by the request.
-	 * @param request		service request to be executed on the component.
-	 * @return				the result of the task.
-	 * @throws Exception	if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be executed on the component.
+	 * @return								the result of the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting
+	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequestSync(ComponentService<T> request)
-	throws Exception ;
+	throws	AssertionError,
+			RejectedExecutionException,
+			InterruptedException,
+			ExecutionException ;
 
 	/**
 	 * execute a request represented by a lambda expression on the
@@ -1924,13 +1981,19 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>			the type of the value returned by the request.
-	 * @param request		service request to be executed on the component.
-	 * @return				the result of the task.
-	 * @throws Exception	if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be executed on the component.
+	 * @return								the result of the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting
+	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequestSync(FComponentService<T> request)
-	throws Exception ;
+			throws	AssertionError,
+			RejectedExecutionException,
+			InterruptedException,
+			ExecutionException ;
 
 	/**
 	 * execute a request represented by a <code>ComponentService</code> on the
@@ -1945,16 +2008,22 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @return						the result of the task.
-	 * @throws Exception			if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param request						service request to be executed on the component.
+	 * @return								the result of the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting
+	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequestSync(
 		String executorServiceURI,
 		ComponentService<T> request
-		) throws Exception ;
+		) 	throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * execute a request represented by a lambda expression on the
@@ -1969,16 +2038,22 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @return						the result of the task.
-	 * @throws Exception			if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param request						service request to be executed on the component.
+	 * @return								the result of the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting
+	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequestSync(
 		String executorServiceURI,
 		FComponentService<T> request
-		) throws Exception ;
+		) 	throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * execute a request represented by a <code>ComponentService</code> on the
@@ -1993,16 +2068,23 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @return						the result of the task.
-	 * @throws Exception			if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be executed on the component.
+	 * @return								the result of the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting
+	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequestSync(
 		int executorServiceIndex,
 		ComponentService<T> request
-		) throws Exception ;
+		) 	throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
+
 
 	/**
 	 * execute a request represented by a lambda expression on the
@@ -2017,160 +2099,22 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @return						the result of the task.
-	 * @throws Exception			if exception raised by the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be executed on the component.
+	 * @return								the result of the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting
+	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequestSync(
 		int executorServiceIndex,
 		FComponentService<T> request
-		) throws Exception ;
-
-	/**
-	 * execute a request represented by a <code>ComponentService</code> on
-	 * the component, but asynchronously, i.e. without waiting for the result
-	 * but returning the control immediately to the caller.
-	 * 
-	 * TODO: introduce distributed future variables to return a future value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null 
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>			the type of the value returned by the request.
-	 * @param request		service request to be executed on the component.
-	 * @throws Exception	if exception raised by the task.
-	 */
-	public <T> void		handleRequestAsync(ComponentService<T> request)
-	throws Exception ;
-
-	/**
-	 * execute a request represented by a lambda expression on
-	 * the component, but asynchronously, i.e. without waiting for the result
-	 * but returning the control immediately to the caller.
-	 * 
-	 * TODO: introduce distributed future variables to return a future value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null 
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>			the type of the value returned by the request.
-	 * @param request		service request to be executed on the component.
-	 * @throws Exception	if exception raised by the task.
-	 */
-	public <T> void		handleRequestAsync(FComponentService<T> request)
-	throws Exception ;
-
-	/**
-	 * execute a request represented by a <code>ComponentService</code> on
-	 * the component, but asynchronously, i.e. without waiting for the result
-	 * but returning the control immediately to the caller.
-	 * 
-	 * TODO: introduce distributed future variables to return a future value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null 
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @throws Exception			if exception raised by the task.
-	 */
-	public <T> void		handleRequestAsync(
-		String executorServiceURI,
-		ComponentService<T> request
-		) throws Exception ;
-
-	/**
-	 * execute a request represented by a lambda expression on
-	 * the component, but asynchronously, i.e. without waiting for the result
-	 * but returning the control immediately to the caller.
-	 * 
-	 * TODO: introduce distributed future variables to return a future value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null 
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @throws Exception			if exception raised by the task.
-	 */
-	public <T> void		handleRequestAsync(
-		String executorServiceURI,
-		FComponentService<T> request
-		) throws Exception ;
-
-	/**
-	 * execute a request represented by a <code>ComponentService</code> on
-	 * the component, but asynchronously, i.e. without waiting for the result
-	 * but returning the control immediately to the caller.
-	 * 
-	 * TODO: introduce distributed future variables to return a future value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null 
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @throws Exception			if exception raised by the task.
-	 */
-	public <T> void		handleRequestAsync(
-		int executorServiceIndex,
-		ComponentService<T> request
-		) throws Exception ;
-
-	/**
-	 * execute a request represented by a lambda expression on
-	 * the component, but asynchronously, i.e. without waiting for the result
-	 * but returning the control immediately to the caller.
-	 * 
-	 * TODO: introduce distributed future variables to return a future value.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null 
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @throws Exception			if exception raised by the task.
-	 */
-	public <T> void		handleRequestAsync(
-		int executorServiceIndex,
-		FComponentService<T> request
-		) throws Exception ;
+		) 	throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentService</code> for execution after a given
@@ -2185,18 +2129,24 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a scheduled future to synchronise with the task.
-	 * @throws ExecutionException	<i>todo.</i>
-	 * @throws InterruptedException	<i>todo.</i>
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting.
+	 * @throws ExecutionException			if the computation threw an exception.
 	 */
 	public <T> T		scheduleRequestSync(
 		ComponentService<T> request,
 		long delay, 
-		TimeUnit u) throws InterruptedException, ExecutionException ;
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * schedule a lambda expression for execution after a given
@@ -2211,18 +2161,24 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a scheduled future to synchronise with the task.
-	 * @throws ExecutionException	<i>todo.</i>
-	 * @throws InterruptedException	<i>todo.</i>
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting.
+	 * @throws ExecutionException			if the computation threw an exception.
 	 */
 	public <T> T		scheduleRequestSync(
 		FComponentService<T> request,
 		long delay, 
-		TimeUnit u) throws InterruptedException, ExecutionException ;
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentService</code> for execution after a given
@@ -2237,21 +2193,26 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a scheduled future to synchronise with the task.
-	 * @throws ExecutionException	<i>todo.</i>
-	 * @throws InterruptedException	<i>todo.</i>
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting.
+	 * @throws ExecutionException			if the computation threw an exception.
 	 */
 	public <T> T		scheduleRequestSync(
 		String executorServiceURI,
 		ComponentService<T> request,
 		long delay, 
 		TimeUnit u
-		) throws InterruptedException, ExecutionException ;
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * schedule a lambda expression for execution after a given
@@ -2266,21 +2227,26 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a scheduled future to synchronise with the task.
-	 * @throws ExecutionException	<i>todo.</i>
-	 * @throws InterruptedException	<i>todo.</i>
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting.
+	 * @throws ExecutionException			if the computation threw an exception.
 	 */
 	public <T> T		scheduleRequestSync(
 		String executorServiceURI,
 		FComponentService<T> request,
 		long delay, 
 		TimeUnit u
-		) throws InterruptedException, ExecutionException ;
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * schedule a <code>ComponentService</code> for execution after a given
@@ -2295,21 +2261,26 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a scheduled future to synchronise with the task.
-	 * @throws ExecutionException	<i>todo.</i>
-	 * @throws InterruptedException	<i>todo.</i>
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting.
+	 * @throws ExecutionException			if the computation threw an exception.
 	 */
 	public <T> T		scheduleRequestSync(
 		int executorServiceIndex,
 		ComponentService<T> request,
 		long delay, 
 		TimeUnit u
-		) throws InterruptedException, ExecutionException ;
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	/**
 	 * schedule a lambda expression for execution after a given
@@ -2324,173 +2295,26 @@ public interface		ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 * @return						a scheduled future to synchronise with the task.
-	 * @throws ExecutionException	<i>todo.</i>
-	 * @throws InterruptedException	<i>todo.</i>
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws InterruptedException			if the current thread was interrupted while waiting.
+	 * @throws ExecutionException			if the computation threw an exception.
 	 */
 	public <T> T		scheduleRequestSync(
 		int executorServiceIndex,
 		FComponentService<T> request,
 		long delay, 
 		TimeUnit u
-		) throws InterruptedException, ExecutionException ;
-
-	/**
-	 * schedule a <code>ComponentService</code> for execution after a given
-	 * delay, without making the caller wait of giving it a possibility to
-	 * synchronise with the result.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>		return type of the request.
-	 * @param request	service request to be scheduled.
-	 * @param delay		delay after which the task must be run.
-	 * @param u			time unit in which the delay is expressed.
-	 */
-	public <T> void			scheduleRequestAsync(
-		ComponentService<T> request,
-		long delay, 
-		TimeUnit u) ;
-
-	/**
-	 * schedule a lambda expression for execution after a given
-	 * delay, without making the caller wait of giving it a possibility to
-	 * synchronise with the result.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>		return type of the request.
-	 * @param request	service request to be scheduled.
-	 * @param delay		delay after which the task must be run.
-	 * @param u			time unit in which the delay is expressed.
-	 */
-	public <T> void			scheduleRequestAsync(
-		FComponentService<T> request,
-		long delay, 
-		TimeUnit u) ;
-
-	/**
-	 * schedule a <code>ComponentService</code> for execution after a given
-	 * delay, without making the caller wait of giving it a possibility to
-	 * synchronise with the result.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					return type of the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 */
-	public <T> void			scheduleRequestAsync(
-		String executorServiceURI,
-		ComponentService<T> request,
-		long delay, 
-		TimeUnit u) ;
-
-	/**
-	 * schedule a lambda expression for execution after a given
-	 * delay, without making the caller wait of giving it a possibility to
-	 * synchronise with the result.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					return type of the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 */
-	public <T> void			scheduleRequestAsync(
-		String executorServiceURI,
-		FComponentService<T> request,
-		long delay, 
-		TimeUnit u) ;
-
-	/**
-	 * schedule a <code>ComponentService</code> for execution after a given
-	 * delay, without making the caller wait of giving it a possibility to
-	 * synchronise with the result.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					return type of the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 */
-	public <T> void		scheduleRequestAsync(
-		int executorServiceIndex,
-		ComponentService<T> request,
-		long delay, 
-		TimeUnit u) ;
-
-	/**
-	 * schedule a lambda expression for execution after a given
-	 * delay, without making the caller wait of giving it a possibility to
-	 * synchronise with the result.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param <T>					return type of the request.
-	 * @param executorServiceIndex	index of the executor service that will run the task.
-	 * @param request				service request to be scheduled.
-	 * @param delay					delay after which the task must be run.
-	 * @param u						time unit in which the delay is expressed.
-	 */
-	public <T> void		scheduleRequestAsync(
-		int executorServiceIndex,
-		FComponentService<T> request,
-		long delay, 
-		TimeUnit u) ;
+		) throws	AssertionError,
+					RejectedExecutionException,
+					InterruptedException,
+					ExecutionException ;
 
 	// -------------------------------------------------------------------------
 	// Reflection facility
