@@ -600,7 +600,7 @@ implements	PluginI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
 	 * @param t								component task to be executed as main task.
 	 * @return								a future allowing to cancel and synchronize on the task execution.
 	 * @throws AssertionError				if the preconditions are not satisfied.

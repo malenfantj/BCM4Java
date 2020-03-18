@@ -42,6 +42,7 @@ import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -469,6 +470,115 @@ implements	ComponentI
 	// Internal concurrency management
 	// ------------------------------------------------------------------------
 
+	/**
+	 * The interface <code>ExecutorServiceFactory</code> proposes a mean to
+	 * provide a factory creating executor service instances to be added to the
+	 * executor services of the component.
+	 *
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p>
+	 * This interface is useful when programmers need to extend standard Java
+	 * thread pools to provide additional services, like gathering execution
+	 * statistics.
+	 * </p>
+	 * 
+	 * <p><strong>Invariant</strong></p>
+	 * 
+	 * <pre>
+	 * invariant		true
+	 * </pre>
+	 * 
+	 * <p>Created on : 2020-03-18</p>
+	 * 
+	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+	 */
+	protected static interface	ExecutorServiceFactory
+	{
+		/**
+		 * create a new executor service (thread pool) with the given number of
+		 * threads.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	{@code nbThreads > 0}
+		 * post	ret != null
+		 * </pre>
+		 *
+		 * @param nbThreads	number of threads to put in the executor service.
+		 * @return			the new executor service with the given number of threads.
+		 */
+		public ExecutorService	createExecutorService(int nbThreads) ;
+	}
+
+	/**
+	 * The class <code>StandardExecutorServiceFactory</code> implements an
+	 * executor service factory creating standard Java thread pools.
+	 *
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p><strong>Invariant</strong></p>
+	 * 
+	 * <pre>
+	 * invariant		true
+	 * </pre>
+	 * 
+	 * <p>Created on : 2020-03-18</p>
+	 * 
+	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+	 */
+	protected static class		StandardExecutorServiceFactory
+	implements	ExecutorServiceFactory
+	{
+		/**
+		 * @see fr.sorbonne_u.components.AbstractComponent.ExecutorServiceFactory#createExecutorService(int)
+		 */
+		@Override
+		public ExecutorService	createExecutorService(int nbThreads)
+		{
+			if (nbThreads == 1) {
+				return Executors.newSingleThreadExecutor() ;
+			} else {
+				return Executors.newFixedThreadPool(nbThreads) ;
+			}
+		}
+	}
+
+	/**
+	 * The class <code>StandardSheduledExecutorServiceFactory</code> implements
+	 * an executor service factory creating standard Java scheduled thread
+	 * pools.
+	 *
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p><strong>Invariant</strong></p>
+	 * 
+	 * <pre>
+	 * invariant		true
+	 * </pre>
+	 * 
+	 * <p>Created on : 2020-03-18</p>
+	 * 
+	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+	 */
+	protected static class		StandardSheduledExecutorServiceFactory
+	implements	ExecutorServiceFactory
+	{
+		/**
+		 * @see fr.sorbonne_u.components.AbstractComponent.ExecutorServiceFactory#createExecutorService(int)
+		 */
+		@Override
+		public ExecutorService	createExecutorService(int nbThreads)
+		{
+			if (nbThreads == 1) {
+				return Executors.newSingleThreadScheduledExecutor() ;
+			} else {
+				return Executors.newScheduledThreadPool(nbThreads) ;
+			}
+		}
+	}
+
 	/** true if the component executes concurrently.						*/
 	protected boolean					isConcurrent ;
 	/** true if the component can schedule tasks.							*/
@@ -523,31 +633,77 @@ implements	ComponentI
 		boolean schedulable
 		)
 	{
+		return this.createNewExecutorService(
+							uri, nbThreads, schedulable,
+							schedulable ?
+								new StandardSheduledExecutorServiceFactory()
+							:	new StandardExecutorServiceFactory()) ;
+	}
+
+	/**
+	 * create a new user-defined executor service under the given URI and
+	 * with the given number of threads.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	uri != null
+	 * pre	!this.validExecutorServiceURI(uri)
+	 * pre	{@code nbThreads > 0}
+	 * pre	factory != null
+	 * pre	schedulable ?
+	 * 			factory.createExecutorService(nbThreads) instanceof
+	 * 												ScheduledExecutorService
+	 * 		:	factory.createExecutorService(nbThreads) instanceof
+	 * 												ExecutorService
+	 * post	this.validExecutorServiceURI(uri)
+	 * </pre>
+	 *
+	 * @param uri			URI of the new executor service.
+	 * @param nbThreads		number of threads of the new executor service.
+	 * @param schedulable	if true, the new executor service is schedulable otherwise it is not.
+	 * @param factory		an executor service factory used to create the new thread pool.
+	 * @return				the index associated with the new executor service.
+	 */
+	protected int			createNewExecutorService(
+		String uri,
+		int nbThreads,
+		boolean schedulable,
+		ExecutorServiceFactory factory
+		)
+	{
 		assert	uri != null : new PreconditionException("uri != null") ;
 		assert	!this.validExecutorServiceURI(uri) :
 					new PreconditionException(
 								"!this.validExecutorServiceURI(uri)") ;
 		assert	nbThreads > 0 : new PreconditionException("nbThreads > 0") ;
+		assert	factory != null : new PreconditionException("factory != null") ;
 		int size_pre = this.executorServices.size() ;
 
 		int index = this.executorServicesNextIndex++ ;
 		assert	index == this.executorServices.size() ;
 		this.executorServicesIndexes.put(uri, index) ;
+
 		ComponentExecutorServiceManager cesm = null ;
+		ExecutorService es = factory.createExecutorService(nbThreads) ;
+
+		assert	schedulable ?
+					es instanceof ScheduledExecutorService
+				:	es instanceof ExecutorService ;
+
 		if (!schedulable) {
-			cesm = new ComponentExecutorServiceManager(uri, nbThreads) ;
+			cesm = new ComponentExecutorServiceManager(uri, nbThreads, es) ;
 		} else {
 			cesm = new ComponentSchedulableExecutorServiceManager(
-															uri, nbThreads) ;
+													   uri, nbThreads, es) ;
 		}
 		this.executorServices.add(cesm) ;
 		this.isConcurrent = true ;
-		if (schedulable) {
-			this.canScheduleTasks = true ;
-		}
+		this.canScheduleTasks = schedulable ;
 
 		assert	this.executorServicesIndexes.get(uri) == index ;
 		assert	this.executorServices.get(index) != null ;
+		assert	uri.equals(this.executorServices.get(index).getURI()) ;
 		assert	this.executorServices.size() == size_pre + 1 ;
 
 		assert	this.validExecutorServiceURI(uri) :
@@ -2938,7 +3094,7 @@ implements	ComponentI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param executorServiceIndex			index of the executor service that will run the task.
 	 * @param t								component task to be executed as main task.
 	 * @return								a future allowing to cancel and synchronize on the task execution.
 	 * @throws AssertionError				if the preconditions are not satisfied.

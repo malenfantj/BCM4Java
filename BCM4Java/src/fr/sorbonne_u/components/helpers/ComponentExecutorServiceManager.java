@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.helpers;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -35,7 +34,6 @@ package fr.sorbonne_u.components.helpers;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 //------------------------------------------------------------------------------
@@ -55,18 +53,20 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				ComponentExecutorServiceManager
+public class			ComponentExecutorServiceManager
 {
 	// ------------------------------------------------------------------------
 	// Constants and variables
 	// ------------------------------------------------------------------------
 
 	/** unique identifier of the executor service within the component. 	*/
-	protected final String		uri ;
-	/** number of threads in the executor service.					 	*/
-	protected int				nbThreads ;
-	/** executor service to run requests and tasks.					 	*/
-	protected ExecutorService	es ;
+	protected final String			uri ;
+	/** number of threads in the executor service.					 		*/
+	protected final int				nbThreads ;
+	/** true if the executor service is schedulable, false otherwise.		*/
+	protected final boolean			schedulable ;
+	/** executor service to run requests and tasks.					 		*/
+	protected final ExecutorService	es ;
 
 	// ------------------------------------------------------------------------
 	// Constructors
@@ -79,33 +79,81 @@ public class				ComponentExecutorServiceManager
 	 * 
 	 * <pre>
 	 * pre	uri != null
-	 * pre	nbThreads &gt; 0
-	 * post	this.executorServiceCreated()
+	 * pre	{@code nbThreads > 0}
+	 * pre	{@code es != null && es instanceof ExecutorService}
+	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param uri		unique identifier of the executor service within the component.
-	 * @param nbThreads	number of threads in the executor service.
+	 * @param uri			unique identifier of the executor service within the component.
+	 * @param nbThreads		number of threads in the executor service.
+	 * @param schedulable	true if the executor service is schedulable, false otherwise.
+	 * @param es			executor service to run requests and tasks.
 	 */
-	public				ComponentExecutorServiceManager(
+	protected			ComponentExecutorServiceManager(
 		String uri,
-		int nbThreads
+		int nbThreads,
+		boolean schedulable,
+		ExecutorService	es
 		)
 	{
 		super() ;
 
 		assert	uri != null ;
 		assert	nbThreads > 0 ;
+		assert	es != null ;
+		assert	es instanceof ExecutorService ;
 
 		this.uri = uri ;
 		this.nbThreads = nbThreads ;
-		this.createExecutorService() ;
+		this.schedulable = schedulable ;
+		this.es = es ;
+	}
 
-		assert	this.executorServiceCreated() ;
+	/**
+	 * create a manager with the given URI and the given number of threads.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	uri != null
+	 * pre	{@code nbThreads > 0}
+	 * pre	{@code es != null && es instanceof ExecutorService}
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri			unique identifier of the executor service within the component.
+	 * @param nbThreads		number of threads in the executor service.
+	 * @param es			executor service to run requests and tasks.
+	 */
+	public				ComponentExecutorServiceManager(
+		String uri,
+		int nbThreads,
+		ExecutorService	es
+		)
+	{
+		this(uri, nbThreads, false, es) ;
 	}
 
 	// ------------------------------------------------------------------------
 	// Methods
 	// ------------------------------------------------------------------------
+
+	/**
+	 * return the URI associated with the executor service in its component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the URI associated with the executor service in its component.
+	 */
+	public String		getURI()
+	{
+		return this.uri ;
+	}
 
 	/**
 	 * return true if the executor service can schedule tasks and false
@@ -122,24 +170,7 @@ public class				ComponentExecutorServiceManager
 	 */
 	public boolean		isSchedulable()
 	{
-		return false ;
-	}
-
-	/**
-	 * return true of the executor service has been created.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true of the executor service has been created.
-	 */
-	public boolean		executorServiceCreated()
-	{
-		return this.es != null ;
+		return this.schedulable ;
 	}
 
 	/**
@@ -149,7 +180,7 @@ public class				ComponentExecutorServiceManager
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * post	{@code ret > 0}
 	 * </pre>
 	 *
 	 * @return	the number of threads in the executor service.
@@ -160,32 +191,12 @@ public class				ComponentExecutorServiceManager
 	}
 
 	/**
-	 * create the executor service with the defined number of threads.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	this.executorServiceCreated()
-	 * </pre>
-	 *
-	 */
-	public void			createExecutorService()
-	{
-		if (this.nbThreads == 1) {
-			this.es = Executors.newSingleThreadExecutor() ;
-		} else {
-			this.es = Executors.newFixedThreadPool(this.nbThreads) ;
-		}
-	}
-
-	/**
 	 * return the executor service held by this manager.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	!this.isSchedulable()
+	 * pre	this.executorServiceCreated()
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -193,8 +204,6 @@ public class				ComponentExecutorServiceManager
 	 */
 	public ExecutorService	getExecutorService()
 	{
-		assert	!this.isSchedulable() ;
-
 		return this.es ;
 	}
 

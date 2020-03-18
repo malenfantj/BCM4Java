@@ -1,12 +1,6 @@
 package fr.sorbonne_u.components.helpers;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -39,9 +33,13 @@ import java.util.concurrent.TimeUnit;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-//------------------------------------------------------------------------------
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+
+// -----------------------------------------------------------------------------
 /**
- * The class <code>ComponentSchedulableExecutorServiceManager</code>
+ * The class <code>ComponentSchedulableExecutorServiceManager</code> implements
+ * an executor service manager for scheduled pool threads.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -58,17 +56,9 @@ import java.util.concurrent.TimeUnit;
 public class				ComponentSchedulableExecutorServiceManager
 extends		ComponentExecutorServiceManager
 {
-	// ------------------------------------------------------------------------
-	// Constants and variables
-	// ------------------------------------------------------------------------
-
-	/** schedulable executor service to schedule and run requests and
-	 *  tasks. 															*/
-	protected ScheduledExecutorService	ses ;
-
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * create a schedulable executor service manager with the given URI and
@@ -78,19 +68,26 @@ extends		ComponentExecutorServiceManager
 	 * 
 	 * <pre>
 	 * pre	uri != null
-	 * pre	nbThreads &gt; 0
-	 * post	this.executorServiceCreated()
+	 * pre	{@code nbThreads > 0}
+	 * pre	es != null
+	 * pre	es instanceof ScheduledExecutorService 
+	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @param uri		unique identifier of the executor service within the component.
 	 * @param nbThreads	number of threads in the executor service.
+	 * @param es		scheduled executor service to run requests and tasks (scheduled or not).
 	 */
 	public				ComponentSchedulableExecutorServiceManager(
 		String uri,
-		int nbThreads
+		int nbThreads,
+		ExecutorService	es
 		)
 	{
-		super(uri, nbThreads) ;
+		super(uri, nbThreads, true, es) ;
+
+		assert	es != null ;
+		assert	es instanceof ScheduledExecutorService ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -98,75 +95,7 @@ extends		ComponentExecutorServiceManager
 	// ------------------------------------------------------------------------
 
 	/**
-	 * return true if the executor service can schedule tasks and false
-	 * otherwise.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true if the executor service can schedule tasks and false otherwise.
-	 */
-	@Override
-	public boolean		isSchedulable()
-	{
-		return true ;
-	}
-
-	/**
-	 * return true of the executor service has been created.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true of the executor service has been created.
-	 */
-	@Override
-	public boolean		executorServiceCreated()
-	{
-		return this.ses != null ;
-	}
-
-	/**
-	 * create the schedulable executor service with the defined number of
-	 * threads.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	this.executorServiceCreated()
-	 * </pre>
-	 *
-	 */
-	@Override
-	public void			createExecutorService()
-	{
-		if (this.nbThreads == 1) {
-			this.ses = Executors.newSingleThreadScheduledExecutor() ;
-		} else {
-			this.ses = Executors.newScheduledThreadPool(this.nbThreads) ;
-		}
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.helpers.ComponentExecutorServiceManager#getExecutorService()
-	 */
-	@Override
-	public ExecutorService	getExecutorService()
-	{
-		return this.getScheduledExecutorService() ;
-	}
-
-	/**
-	 * return	the schedulable executor service held by this manager.
+	 * return the schedulable executor service held by this manager.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -181,95 +110,7 @@ extends		ComponentExecutorServiceManager
 	{
 		assert	this.isSchedulable() ;
 
-		return this.ses ;
-	}
-
-	/**
-	 * shutdown the executor service of this manager.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 */
-	public void			shutdown()
-	{
-		this.ses.shutdown() ;
-	}
-
-	/**
-	 * shutdown the executor service of this manager now.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 */
-	public void			shutdownNow()
-	{
-		this.ses.shutdownNow() ;
-	}
-
-	/**
-	 * return true if the schedulable executor service is shutdown.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true if the schedulable executor service is shutdown.
-	 */
-	public boolean		isShutdown()
-	{
-		return this.ses.isShutdown() ;
-	}
-
-	/**
-	 * return true if the schedulable executor service is terminated.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true if the schedulable executor service is terminated.
-	 */
-	public boolean		isTerminated()
-	{
-		return this.ses.isTerminated() ;
-	}
-
-	/**
-	 * await the termination of the schedulable executor service.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	timeout &gt;= 0
-	 * preaunit != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param timeout				maximum time to wait for the termination.
-	 * @param unit					time unit to interpret the time out value.
-	 * @return						true if this executor terminated and false if the timeout elapsed before termination.
-	 * @throws InterruptedException	if interrupted while waiting.
-	 */
-	public boolean		awaitTermination(long timeout, TimeUnit unit)
-	throws	InterruptedException
-	{
-		return this.ses.awaitTermination(timeout, unit) ;
+		return (ScheduledExecutorService) this.es ;
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
