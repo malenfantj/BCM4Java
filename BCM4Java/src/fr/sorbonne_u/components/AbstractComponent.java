@@ -2778,6 +2778,7 @@ implements	ComponentI
 			throw new ComponentShutdownException(e) ;
 		}
 
+		boolean isSubcomponent = this.isSubcomponent() ;
 		Thread t = new Thread() {
 						/**
 						 * @see java.lang.Thread#run()
@@ -2792,9 +2793,11 @@ implements	ComponentI
 							if (!isConcurrent && !canScheduleTasks) {
 								state = ComponentState.SHUTDOWN ;
 							}
-							AbstractCVM.getCVM().
+							if (!isSubcomponent) {
+								AbstractCVM.getCVM().
 									removeDeployedComponent(
 													reflectionInboundPortURI) ;
+							}
 						}
 					} ;
 		t.start() ;
@@ -2825,6 +2828,7 @@ implements	ComponentI
 			throw new ComponentShutdownException(e1) ;
 		}
 
+		boolean isSubcomponent = this.isSubcomponent() ;
 		Thread t = new Thread() {
 						/**
 						 * @see java.lang.Thread#run()
@@ -2835,9 +2839,11 @@ implements	ComponentI
 								executorServices.get(i).shutdown() ;
 							}
 							state = ComponentState.SHUTDOWN ;
-							AbstractCVM.getCVM().
-									removeDeployedComponent(
+							if (!isSubcomponent) {
+								AbstractCVM.getCVM().
+										removeDeployedComponent(
 													reflectionInboundPortURI) ;
+							}
 						}
 					} ;
 		t.start() ;

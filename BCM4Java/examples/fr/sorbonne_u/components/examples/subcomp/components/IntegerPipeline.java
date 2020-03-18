@@ -211,8 +211,7 @@ implements	IntegerFilteringI,
 
 		this.createSubcomponent(
 				IntegerProcessor.class.getCanonicalName(),
-				new Object[]{process,
-							 integerProcessorProcessingIBP_URI}) ;
+				new Object[]{process, integerProcessorProcessingIBP_URI}) ;
 	}
 
 	// -------------------------------------------------------------------------

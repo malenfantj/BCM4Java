@@ -1,11 +1,5 @@
 package fr.sorbonne_u.components.examples.subcomp.deploynents;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.AbstractPort;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -38,6 +32,10 @@ import fr.sorbonne_u.components.AbstractPort;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import java.util.function.Function;
+import java.util.function.Predicate;
+import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.examples.subcomp.components.IntegerPipeline;
 import fr.sorbonne_u.components.examples.subcomp.components.PipelineClient;

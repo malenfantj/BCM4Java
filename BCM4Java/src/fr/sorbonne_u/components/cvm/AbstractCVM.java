@@ -35,7 +35,6 @@ package fr.sorbonne_u.components.cvm;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -325,7 +324,7 @@ implements	ComponentVirtualMachineI
 	// ------------------------------------------------------------------------
 
 	/** map from URI of reflection inbound ports to deployed components.*/
-	protected final Map<String, ComponentI>	uri2component ;
+	protected final ConcurrentHashMap<String, ComponentI>	uri2component ;
 	/** the state of the component virtual machine.						*/
 	protected CVMState						state ;
 	/** true if the CVM currently running is distributed.				*/
@@ -572,6 +571,12 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			removeDeployedComponent(String componentURI)
 	{
+		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
+			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
+						  "called removeDeployedComponent(" + componentURI
+						  + ").") ;
+		}
+
 		assert	componentURI != null ;
 		assert	this.isDeployedComponent(componentURI) ;
 
