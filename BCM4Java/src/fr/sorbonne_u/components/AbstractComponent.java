@@ -493,7 +493,7 @@ implements	ComponentI
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 */
-	protected static interface	ExecutorServiceFactory
+	public static interface		ExecutorServiceFactory
 	{
 		/**
 		 * create a new executor service (thread pool) with the given number of

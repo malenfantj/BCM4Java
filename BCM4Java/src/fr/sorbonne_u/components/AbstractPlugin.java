@@ -5,6 +5,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import fr.sorbonne_u.components.AbstractComponent.ExecutorServiceFactory;
 import fr.sorbonne_u.components.ComponentI.ComponentService;
 import fr.sorbonne_u.components.ComponentI.ComponentTask;
 
@@ -588,6 +589,71 @@ implements	PluginI
 	protected void		logMessage(String message)
 	{
 		this.owner.logMessage(message) ;
+	}
+
+	/**
+	 * create a new user-defined executor service under the given URI and
+	 * with the given number of threads.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	uri != null
+	 * pre	!this.validExecutorServiceURI(uri)
+	 * pre	nbThreads &gt; 0
+	 * post	this.validExecutorServiceURI(uri)
+	 * </pre>
+	 *
+	 * @param uri			URI of the new executor service.
+	 * @param nbThreads		number of threads of the new executor service.
+	 * @param schedulable	if true, the new executor service is schedulable otherwise it is not.
+	 * @return				the index associated with the new executor service.
+	 */
+	protected int			createNewExecutorService(
+		String uri,
+		int nbThreads,
+		boolean schedulable
+		)
+	{
+		return ((AbstractComponent)this.owner).
+						createNewExecutorService(uri, nbThreads, schedulable) ;
+	}
+
+	/**
+	 * create a new user-defined executor service under the given URI and
+	 * with the given number of threads.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	uri != null
+	 * pre	!this.validExecutorServiceURI(uri)
+	 * pre	{@code nbThreads > 0}
+	 * pre	factory != null
+	 * pre	schedulable ?
+	 * 			factory.createExecutorService(nbThreads) instanceof
+	 * 												ScheduledExecutorService
+	 * 		:	factory.createExecutorService(nbThreads) instanceof
+	 * 												ExecutorService
+	 * post	this.validExecutorServiceURI(uri)
+	 * </pre>
+	 *
+	 * @param uri			URI of the new executor service.
+	 * @param nbThreads		number of threads of the new executor service.
+	 * @param schedulable	if true, the new executor service is schedulable otherwise it is not.
+	 * @param factory		an executor service factory used to create the new thread pool.
+	 * @return				the index associated with the new executor service.
+	 */
+	protected int			createNewExecutorService(
+		String uri,
+		int nbThreads,
+		boolean schedulable,
+		ExecutorServiceFactory factory
+		)
+	{
+		return ((AbstractComponent)this.owner).
+							createNewExecutorService(uri, nbThreads,
+													 schedulable, factory) ;
 	}
 
 	/**
