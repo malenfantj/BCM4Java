@@ -1,7 +1,8 @@
 package fr.sorbonne_u.components.ports;
 
+import java.rmi.Remote;
+
 //Copyright Jacques Malenfant, Sorbonne Universite.
-//
 //Jacques.Malenfant@lip6.fr
 //
 //This software is a computer program whose purpose is to provide a
@@ -66,6 +67,7 @@ import fr.sorbonne_u.components.connectors.ConnectorI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface			PortI
+extends		Remote
 {
 	// ------------------------------------------------------------------------
 	// Self-properties management

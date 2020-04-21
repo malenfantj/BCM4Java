@@ -1,0 +1,62 @@
+
+
+--------------------------------------------------------------------------------
+21/04/2020
+--------------------------------------------------------------------------------
+
+This release corrects a bug introduced by the "new" semantics of RMI as it
+appeared with jdk1.8.0_241: methods inherited by a remote interface are no
+longer considered as remote if the interface that declares the method is
+not itself remote. Before this release, programmers could architect interfaces
+using the following pattern:
+
+public interface A {
+  public void m(...) throws Exception ;
+}  
+
+public interface B extends A, Remote {
+
+}
+
+and then method m would be considered as remote. As per jdk1.8.0_241, this is
+no longer the case: A must extend Remote in order for m to be considered as
+remote.
+
+To solve the problems related to this new semantics, the interface PortI now
+extends Remote.
+
+--------------------------------------------------------------------------------
+10/04/2020
+--------------------------------------------------------------------------------
+
+This release presents only minor modifications:
+
+- added the possibility to create executor services on components from a
+  plug-in.
+
+--------------------------------------------------------------------------------
+26/03/2020
+--------------------------------------------------------------------------------
+
+This release presents some important modifications:
+
+- The series of methods in AbstractComponent which submit requests and tasks
+  to the component have been modified to explicit the exact exceptions that
+  they throw to facilitate the exception handling in the calling code.
+
+- The series of methods handleRequestAsync has been eliminated to clarify the
+  role of the different requests/tasks submission methods. Now, all methods
+  referring to requests are synchronous and all methods referring to tasks are
+  asynchronous.
+
+- The series of methods in AbstractComponent which submit requests and tasks
+  to the component has also been clarified to have on one side internal
+  (protected) methods that return futures, which can be used inside components
+  to run requests and tasks asynchronously and synchronise on these futures,
+  and external (public) methods that do not return futures because BCM does not
+  have futures for RMI call yet.
+
+- In AbstractComponent, the creation of pool of threads have been modified to
+  use executor service factories, which allows programmers to create customised
+  pools.
+  
