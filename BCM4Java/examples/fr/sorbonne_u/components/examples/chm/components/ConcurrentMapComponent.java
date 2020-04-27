@@ -66,7 +66,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * <p>
  * As this implementation uses more than one thread in the component, it also
  * illustrates how to use Java synchronisation tools to manage the accesses
- * to shared variables inside the component.
+ * to shared variables inside the component. a {@code ReentrantReadWriteLock}
+ * is used to manage the concurrency among reading and writing threads. As
+ * explained in the preceding paragraph, the fact that the thread pool used
+ * to serve writing requests has only one thread itself guarantees the mutual
+ * exclusion among writing actions, but the lock will also manage the access
+ * rights between reading and writing threads. Such an organisation of
+ * concurrency is actually an overshoot most of the time; here, it is used to
+ * show in one example two distinct, overlapping but also complementary
+ * techniques.
  * </p>
  * <p>
  * The URI used for the two pools of threads are provided as public String
@@ -105,7 +113,7 @@ extends		AbstractComponent
 
 	/** the hash map implementing the data structure and containing the
 	 *  entries.															*/
-	protected final HashMap<K,V>					hm ;
+	protected final HashMap<K,V>				hm ;
 	/** read/write lock controlling the accesses to the hash map.			*/
 	protected final ReentrantReadWriteLock		hashMapLock ;
 
