@@ -471,9 +471,9 @@ implements	ComponentI
 	// ------------------------------------------------------------------------
 
 	/**
-	 * The interface <code>ExecutorServiceFactory</code> proposes a mean to
-	 * provide a factory creating executor service instances to be added to the
-	 * executor services of the component.
+	 * The functional interface <code>ExecutorServiceFactory</code> proposes a
+	 * mean to provide a factory creating executor service instances to be
+	 * added to the executor services of the component.
 	 *
 	 * <p><strong>Description</strong></p>
 	 * 
@@ -493,6 +493,7 @@ implements	ComponentI
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 */
+	@FunctionalInterface
 	public static interface		ExecutorServiceFactory
 	{
 		/**

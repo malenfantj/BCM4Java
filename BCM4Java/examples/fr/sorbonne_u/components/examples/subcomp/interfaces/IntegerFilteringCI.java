@@ -41,6 +41,15 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
+ * Nota: since Java 8, Oracle jdk release 241, methods inherited by a remote
+ * interface are no longer considered remote if the inherited interface is
+ * not itself remote; to bypass this, methods must be redefined in the remote
+ * method. Marking them with {@code @Override} stresses the design objective to
+ * share identical signatures between the implementation interface and the
+ * component interface.
+ * </p>
+ * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
@@ -56,6 +65,10 @@ extends		OfferedI,
 			RequiredI,
 			IntegerFilteringI
 {
-	
+	/**
+	 * @see fr.sorbonne_u.components.examples.subcomp.interfaces.IntegerFilteringI#filter(int)
+	 */
+	@Override
+	public void			filter(int i) throws Exception ;
 }
 // -----------------------------------------------------------------------------

@@ -45,9 +45,19 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
  * The interface simply adds to <code>PushControlImplementationI</code>
  * the <code>OfferedI</code> and <code>RequiredI</code> to make it a
  * component interface.
+ * </p>
+ * <p>
+ * Nota: since Java 8, Oracle jdk release 241, methods inherited by a remote
+ * interface are no longer considered remote if the inherited interface is
+ * not itself remote; to bypass this, methods must be redefined in the remote
+ * method. Marking them with {@code @Override} stresses the design objective to
+ * share identical signatures between the implementation interface and the
+ * component interface.
+ * </p>
  * 
  * <p>Created on : 2018-01-26</p>
  * 
@@ -58,5 +68,42 @@ extends		PushControlImplementationI,
 			OfferedI,
 			RequiredI
 {
+	/**
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#isPortExisting(java.lang.String)
+	 */
+	@Override
+	public boolean			isPortExisting(String portURI) throws Exception ;
+
+	/**
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#startUnlimitedPushing(java.lang.String, long)
+	 */
+	@Override
+	public void				startUnlimitedPushing(
+		String portURI,
+		final long interval
+		) throws Exception ;
+
+	/**
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#startLimitedPushing(java.lang.String, long, int)
+	 */
+	@Override
+	public void				startLimitedPushing(
+		String portURI,
+		final long interval,
+		final int n
+		) throws Exception ;
+
+	/**
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#currentlyPushesData(java.lang.String)
+	 */
+	@Override
+	public boolean			currentlyPushesData(String portURI)
+	throws Exception ;
+
+	/**
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#stopPushing(java.lang.String)
+	 */
+	@Override
+	public void				stopPushing(String portURI) throws Exception ;
 }
 //-----------------------------------------------------------------------------
