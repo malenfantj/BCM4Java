@@ -1,6 +1,17 @@
 
 
 --------------------------------------------------------------------------------
+11/05/2020
+--------------------------------------------------------------------------------
+
+This release completes the corrections made in the previous release to
+cater for interfaces used in BCM tools and examples that were using
+Java interfaces as implementation interfaces for components that are
+inherited by component interfaces and therefore no longer considered
+as remote methods. The applied correction is simply to redeclare the
+inherited methods in the remote interface.
+
+--------------------------------------------------------------------------------
 21/04/2020
 --------------------------------------------------------------------------------
 
