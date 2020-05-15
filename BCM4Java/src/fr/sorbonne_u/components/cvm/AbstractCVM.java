@@ -90,15 +90,24 @@ implements	ComponentVirtualMachineI
 	// CVM state
 	// ------------------------------------------------------------------------
 
-	/** The singleton pattern: one instance of CVM per JVM.				*/
+	/** URI of the (unique) JVM running BCM for mono-JVM deployments.		*/
+	public static final String				MONO_JVM_JVMURI = "thisJVM" ;
+	/** name of the host running BCM for mono-JVM deployments.				*/
+	public static final String				MONO_JVM_HOSTNAME = "localhost" ;
+
+	/** The singleton pattern: one instance of CVM per JVM.					*/
 	protected static AbstractCVM			theCVM ;
-	/** URI of the current JVM in the deployment platform.				*/
-	protected final static String			thisJVMURI = "thisCVM" ;
-	/**	Enables or not debugging messages.								*/
+	/** URI of the current JVM in the deployment platform; note that
+	 *  only one object from {@code AbstractCVM} can exist in one JVM.		*/
+	protected final String					thisJVMURI ;
+	/** name of the host on which the JVM is running; this field must be
+	 *  effectively final after the instance creation.						*/
+	protected String						thisHostname ;
+	/**	Enables or not debugging messages.									*/
 	public static final Set<CVMDebugModesI>	DEBUG_MODE =
 											new HashSet<CVMDebugModesI>() ;
 	/** suffix for the dynamic component creator component inbound
-	 *  port URI.														*/
+	 *  port URI.															*/
 	public static final String				DCC_INBOUNDPORT_URI_SUFFIX =
 												"-dcc" ;
 	// ------------------------------------------------------------------------
@@ -143,7 +152,7 @@ implements	ComponentVirtualMachineI
 	}
 
 	// ------------------------------------------------------------------------
-	// Accessing the current component virtual machine
+	// Accessing the current component virtual machine information
 	// ------------------------------------------------------------------------
 
 	/**
@@ -162,6 +171,40 @@ implements	ComponentVirtualMachineI
 	public static AbstractCVM	getCVM()
 	{
 		return AbstractCVM.theCVM ;
+	}
+
+	/**
+	 * return the URI of the JVM running this component virtual machine.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the URI of the JVM running this component virtual machine.
+	 */
+	public static String	getThisJVMURI()
+	{
+		return AbstractCVM.getCVM().thisJVMURI ;
+	}
+
+	/**
+	 * return the name of the host running this component virtual machine.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the name of the host running this component virtual machine.
+	 */
+	public static String	getHostname()
+	{
+		return AbstractCVM.getCVM().thisHostname ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -368,16 +411,41 @@ implements	ComponentVirtualMachineI
 	 * post	AbstractCVM.localRegistryInitialised()
 	 * </pre>
 	 *
-	 * @param isDistributed	true if the CVM is distributed, false otherwise
-	 * @throws Exception  	<i>to do.</i>
+	 * @param isDistributed	true if the CVM is distributed, false otherwise.
+	 * @throws Exception	true if the CVM is distributed, false otherwise.
 	 */
 	public				AbstractCVM(
 		boolean isDistributed
 		) throws Exception
 	{
+		this(isDistributed, AbstractCVM.MONO_JVM_JVMURI);
+	}
+
+	/**
+	 * actual creator for CVM.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code thisJVMURI != null && thisHostName != null}
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param isDistributed	true if the CVM is distributed, false otherwise.
+	 * @param thisJVMURI	URI of the current JVM in the deployment platform.
+	 * @param thisHostName	name of the host on which the JVM is running.
+	 * @throws Exception	true if the CVM is distributed, false otherwise.
+	 */
+	protected			AbstractCVM(
+		boolean isDistributed,
+		String thisJVMURI
+		) throws Exception
+	{
 		super() ;
 
 		AbstractCVM.theCVM = this ;
+		this.thisJVMURI = thisJVMURI ;
+		this.thisHostname = AbstractCVM.MONO_JVM_HOSTNAME ;
 		this.uri2component = new ConcurrentHashMap<>() ;
 		this.state = null ;
 		AbstractCVM.isDistributed = isDistributed ;
@@ -393,7 +461,7 @@ implements	ComponentVirtualMachineI
 				String dccURI =
 					AbstractComponent.createComponent(
 						DynamicComponentCreator.class.getCanonicalName(),
-						new Object[]{AbstractCVM.thisJVMURI +
+						new Object[]{AbstractCVM.getThisJVMURI() +
 											DCC_INBOUNDPORT_URI_SUFFIX}) ;
 				assert	this.isDeployedComponent(dccURI) ;
 			} catch (Exception e) {
@@ -492,11 +560,11 @@ implements	ComponentVirtualMachineI
 	/**
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#getHostName()
 	 */
-	@Override
-	public String		getHostName()
-	{
-		return "localhost" ;
-	}
+//	@Override
+//	public String		getHostName()
+//	{
+//		return "localhost" ;
+//	}
 
 	/**
 	 * simply set the <code>deploymentDone</code> flag to true, so it should

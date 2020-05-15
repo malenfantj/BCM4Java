@@ -65,9 +65,9 @@ extends		AbstractCVM
 	}
 
 	// single-JVM execution
-	protected static String		ASSEMBLER_JVM_URI = AbstractCVM.thisJVMURI ;
-	protected static String		PROVIDER_JVM_URI = AbstractCVM.thisJVMURI ;
-	protected static String		CONSUMER_JVM_URI = AbstractCVM.thisJVMURI ;
+	protected static String		ASSEMBLER_JVM_URI = AbstractCVM.getThisJVMURI() ;
+	protected static String		PROVIDER_JVM_URI = AbstractCVM.getThisJVMURI() ;
+	protected static String		CONSUMER_JVM_URI = AbstractCVM.getThisJVMURI() ;
 
 	/**
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()

@@ -82,7 +82,7 @@ public interface			ComponentVirtualMachineI
 	 *
 	 * @return	the host name of this component virtual machine.
 	 */
-	public String		getHostName() ;
+	//public String		getHostName() ;
 
 	/**
 	 * instantiate, publish and interconnect the components.

@@ -1,7 +1,15 @@
+--------------------------------------------------------------------------------
+05/15/2020
+--------------------------------------------------------------------------------
+
+The way the URI of a JVM is accessed in a component virtual machine has been
+changed to standardise and unify it between AbstractCVM and
+AbstractDistributedCVM. Now the static method AbstractCVM#getThisJVMURI is
+operational to do so.
 
 
 --------------------------------------------------------------------------------
-11/05/2020
+05/11/2020
 --------------------------------------------------------------------------------
 
 This release completes the corrections made in the previous release to
@@ -12,7 +20,7 @@ as remote methods. The applied correction is simply to redeclare the
 inherited methods in the remote interface.
 
 --------------------------------------------------------------------------------
-21/04/2020
+04/21/2020
 --------------------------------------------------------------------------------
 
 This release corrects a bug introduced by the "new" semantics of RMI as it
@@ -37,7 +45,7 @@ To solve the problems related to this new semantics, the interface PortI now
 extends Remote.
 
 --------------------------------------------------------------------------------
-10/04/2020
+04/10/2020
 --------------------------------------------------------------------------------
 
 This release presents only minor modifications:
@@ -46,7 +54,7 @@ This release presents only minor modifications:
   plug-in.
 
 --------------------------------------------------------------------------------
-26/03/2020
+03/26/2020
 --------------------------------------------------------------------------------
 
 This release presents some important modifications:

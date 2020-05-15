@@ -179,16 +179,12 @@ implements	DistributedComponentVirtualMachineI
 	public final static boolean			RMI_REGISTRY_ON_ALL_HOSTS = true ;
 	/** parameters obtained form the xml configuration file.				*/
 	protected ConfigurationParameters	configurationParameters ;
-	/** URI of the current JVM in the deployment platform.				*/
-	protected static String				thisJVMURI ;
-	/** name of the host on which the JVM is running.						*/
-	protected static String				thisHostname ;
 	/** name of the JVMs creating RMI registry.							*/
-	protected static Set<String>			rmiRegistryCreators ;
+	protected static Set<String>		rmiRegistryCreators ;
 	/** name of the hosts holding RMI registry.							*/
-	protected static Set<String>			rmiRegistryHosts ;
+	protected static Set<String>		rmiRegistryHosts ;
 	/** port number used for the RMI registry.							*/
-	protected static int					rmiRegistryPort ;
+	protected static int				rmiRegistryPort ;
 	/**	reference to the RMI registry.									*/
 	protected static Registry			theRMIRegistry ;
 
@@ -252,7 +248,7 @@ implements	DistributedComponentVirtualMachineI
 												AbstractCVM.isDistributed) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
 					"called publishPort(" + portURI +
-					") on the host " + AbstractDistributedCVM.thisHostname) ;
+					") on the host " + AbstractCVM.getHostname()) ;
 		}
 
 		AbstractCVM.localPublishPort(port) ;
@@ -280,8 +276,7 @@ implements	DistributedComponentVirtualMachineI
 			}
 
 			AbstractDistributedCVM.GLOBAL_REGISTRY_CLIENT.
-					put(portURI,
-						"rmi=" + AbstractDistributedCVM.thisHostname) ;
+					put(portURI, "rmi=" + AbstractCVM.getHostname()) ;
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
 				AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
@@ -326,7 +321,7 @@ implements	DistributedComponentVirtualMachineI
 												AbstractCVM.isDistributed) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
 					"called unpublishPort( " + portURI +
-					") on the host " + AbstractDistributedCVM.thisHostname) ;
+					") on the host " + AbstractCVM.getHostname()) ;
 		}
 
 		AbstractCVM.localUnpublishPort(port) ;
@@ -389,7 +384,7 @@ implements	DistributedComponentVirtualMachineI
 												AbstractCVM.isDistributed) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
 					"called getRemoteReference(" + remoteURI +
-					") on the host " + AbstractDistributedCVM.thisHostname
+					") on the host " + AbstractCVM.getHostname()
 					+ " returning " + reference + ".") ;
 		}
 
@@ -488,31 +483,26 @@ implements	DistributedComponentVirtualMachineI
 		int yLayout
 		) throws Exception
 	{
-		super(true) ;
+		super(true, args[0]) ;
 
 		assert	args != null && args.length > 1 ;
 
-		// this line will only be executed if a DCVM is created, which means
-		// that the CVM currently running is indeed distributed.
-		// Otherwise, a local CVM will be used.
-		AbstractDistributedCVM.thisJVMURI = args[0] ;
 		File configFile = new File(args[1]) ;
 		ConfigurationFileParser cfp = new ConfigurationFileParser() ;
 		if (!cfp.validateConfigurationFile(configFile)) {
 			throw new Exception("invalid configuration file " + args[1]) ;
 		}
 		this.configurationParameters = cfp.parseConfigurationFile(configFile) ;
-		AbstractDistributedCVM.thisHostname =
+		this.thisHostname =
 			this.configurationParameters.getJvmURIs2hosts().
-								get(AbstractDistributedCVM.thisJVMURI) ;
-		assert	AbstractDistributedCVM.thisHostname != null :
+											get(AbstractCVM.getThisJVMURI()) ;
+		assert	AbstractCVM.getHostname() != null :
 				new ConfigurationException("Hostname of JVM " +
-										   AbstractDistributedCVM.thisJVMURI +
+										   AbstractCVM.getThisJVMURI() +
 										   " undefined!") ;
 
 		this.debugginLogger =
-			new Logger("dcvm_" +
-					   AbstractDistributedCVM.thisHostname.replace('.', '_')) ;
+			new Logger("dcvm_" + AbstractCVM.getHostname().replace('.', '_')) ;
 
 		// Redirecting the stdout and stderr to a window frame.
 		// Currently works only when everything runs on the localhost.
@@ -538,7 +528,7 @@ implements	DistributedComponentVirtualMachineI
 
 		// RMI registry creation
 		if (AbstractDistributedCVM.rmiRegistryCreators.contains(
-									AbstractDistributedCVM.thisJVMURI)) {
+												AbstractCVM.getThisJVMURI())) {
 			AbstractDistributedCVM.theRMIRegistry =
 							LocateRegistry.createRegistry(rmiRegistryPort) ;
 		} else {
@@ -550,8 +540,8 @@ implements	DistributedComponentVirtualMachineI
 			new DCVMCyclicBarrierClient(
 					this.configurationParameters.getCyclicBarrierHostname(),
 					this.configurationParameters.getCyclicBarrierPort(),
-					AbstractDistributedCVM.thisHostname,
-					AbstractDistributedCVM.thisJVMURI) ;
+					AbstractCVM.getHostname(),
+					AbstractCVM.getThisJVMURI()) ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -561,11 +551,11 @@ implements	DistributedComponentVirtualMachineI
 	/**
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#getHostName()
 	 */
-	@Override
-	public String		getHostName()
-	{
-		return AbstractDistributedCVM.thisHostname ;
-	}
+//	@Override
+//	public String		getHostName()
+//	{
+//		return AbstractDistributedCVM.thisHostname ;
+//	}
 
 	// ------------------------------------------------------------------------
 	// Life-cycle
@@ -692,7 +682,7 @@ implements	DistributedComponentVirtualMachineI
 			String dccURI =
 				AbstractComponent.createComponent(
 					DynamicComponentCreator.class.getCanonicalName(),
-					new Object[]{AbstractDistributedCVM.thisJVMURI +
+					new Object[]{AbstractCVM.getThisJVMURI() +
 									DCC_INBOUNDPORT_URI_SUFFIX}) ;
 			assert	this.isDeployedComponent(dccURI) ;
 		} catch (Exception e) {
@@ -885,7 +875,7 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public String		logPrefix()
 	{
-		return AbstractDistributedCVM.thisJVMURI ;
+		return AbstractCVM.getThisJVMURI() ;
 	}	
 }
 //-----------------------------------------------------------------------------
