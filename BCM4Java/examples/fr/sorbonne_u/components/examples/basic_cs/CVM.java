@@ -1,38 +1,37 @@
 package fr.sorbonne_u.components.examples.basic_cs;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
@@ -40,7 +39,7 @@ import fr.sorbonne_u.components.examples.basic_cs.components.URIConsumer;
 import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
 import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>CVM</code> implements the single JVM assembly for the basic
  * client/server example.
@@ -66,13 +65,13 @@ public class			CVM
 extends		AbstractCVM
 {
 	/** URI of the provider component (convenience).						*/
-	protected static final String	PROVIDER_COMPONENT_URI = "my-URI-provider" ;
+	protected static final String	PROVIDER_COMPONENT_URI = "my-URI-provider";
 	/** URI of the consumer component (convenience).						*/
-	protected static final String	CONSUMER_COMPONENT_URI = "my-URI-consumer" ;
-	/** URI of the provider outbound port (simplifies the connection).	*/
-	protected static final String	URIGetterOutboundPortURI = "oport" ;
+	protected static final String	CONSUMER_COMPONENT_URI = "my-URI-consumer";
+	/** URI of the provider outbound port (simplifies the connection).		*/
+	protected static final String	URIGetterOutboundPortURI = "oport";
 	/** URI of the consumer inbound port (simplifies the connection).		*/
-	protected static final String	URIProviderInboundPortURI = "iport" ;
+	protected static final String	URIProviderInboundPortURI = "iport";
 
 	public				CVM() throws Exception
 	{
@@ -80,11 +79,11 @@ extends		AbstractCVM
 	}
 
 	/** Reference to the provider component to share between deploy
-	 *  and shutdown.													*/
-	protected String	uriProviderURI ;
+	 *  and shutdown.														*/
+	protected String	uriProviderURI;
 	/** Reference to the consumer component to share between deploy
-	 *  and shutdown.													*/
-	protected String	uriConsumerURI ;
+	 *  and shutdown.														*/
+	protected String	uriConsumerURI;
 
 	/**
 	 * instantiate the components, publish their port and interconnect them.
@@ -103,9 +102,9 @@ extends		AbstractCVM
 	{
 		assert	!this.deploymentDone() ;
 
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		// Configuration phase
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 
 		// debugging mode configuration; comment and uncomment the line to see
 		// the difference
@@ -113,37 +112,37 @@ extends		AbstractCVM
 //		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING) ;
 //		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.COMPONENT_DEPLOYMENT) ;
 
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		// Creation phase
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 
 		// create the provider component
 		this.uriProviderURI =
 			AbstractComponent.createComponent(
 					URIProvider.class.getCanonicalName(),
 					new Object[]{PROVIDER_COMPONENT_URI,
-								 URIProviderInboundPortURI}) ;
-		assert	this.isDeployedComponent(this.uriProviderURI) ;
+								 URIProviderInboundPortURI});
+		assert	this.isDeployedComponent(this.uriProviderURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
-		this.toggleTracing(this.uriProviderURI) ;
-		this.toggleLogging(this.uriProviderURI) ;
+		this.toggleTracing(this.uriProviderURI);
+		this.toggleLogging(this.uriProviderURI);
 
 		// create the consumer component
 		this.uriConsumerURI =
 			AbstractComponent.createComponent(
 					URIConsumer.class.getCanonicalName(),
 					new Object[]{CONSUMER_COMPONENT_URI,
-								 URIGetterOutboundPortURI}) ;
-		assert	this.isDeployedComponent(this.uriConsumerURI) ;
+								 URIGetterOutboundPortURI});
+		assert	this.isDeployedComponent(this.uriConsumerURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
-		this.toggleTracing(this.uriConsumerURI) ;
-		this.toggleLogging(this.uriConsumerURI) ;
+		this.toggleTracing(this.uriConsumerURI);
+		this.toggleLogging(this.uriConsumerURI);
 		
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		// Connection phase
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 
 		// do the connection
 		this.doPortConnection(
@@ -161,12 +160,12 @@ extends		AbstractCVM
 		// component as the references to objects used to implement component
 		// features must not be shared among components.
 
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		// Deployment done
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 
 		super.deploy();
-		assert	this.deploymentDone() ;
+		assert	this.deploymentDone();
 	}
 
 	/**
@@ -177,9 +176,8 @@ extends		AbstractCVM
 	{
 		// Port disconnections can be done here for static architectures
 		// otherwise, they can be done in the finalise methods of components.
-		this.doPortDisconnection(
-				this.uriConsumerURI,
-				URIGetterOutboundPortURI) ;
+		this.doPortDisconnection(this.uriConsumerURI,
+								 URIGetterOutboundPortURI);
 
 		super.finalise();
 	}
@@ -199,7 +197,7 @@ extends		AbstractCVM
 	@Override
 	public void				shutdown() throws Exception
 	{
-		assert	this.allFinalised() ;
+		assert	this.allFinalised();
 		// any disconnection not done yet can be performed here
 
 		super.shutdown();
@@ -209,17 +207,17 @@ extends		AbstractCVM
 	{
 		try {
 			// Create an instance of the defined component virtual machine.
-			CVM a = new CVM() ;
+			CVM a = new CVM();
 			// Execute the application.
-			a.startStandardLifeCycle(20000L) ;
+			a.startStandardLifeCycle(20000L);
 			// Give some time to see the traces (convenience).
-			Thread.sleep(5000L) ;
+			Thread.sleep(5000L);
 			// Simplifies the termination (termination has yet to be treated
 			// properly in BCM).
-			System.exit(0) ;
+			System.exit(0);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

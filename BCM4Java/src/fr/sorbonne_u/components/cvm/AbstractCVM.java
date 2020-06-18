@@ -1,40 +1,38 @@
 package fr.sorbonne_u.components.cvm;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
-import java.util.Hashtable;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -91,35 +89,26 @@ implements	ComponentVirtualMachineI
 	// ------------------------------------------------------------------------
 
 	/** URI of the (unique) JVM running BCM for mono-JVM deployments.		*/
-	public static final String				MONO_JVM_JVMURI = "thisJVM" ;
+	public static final String				MONO_JVM_JVMURI = "thisJVM";
 	/** name of the host running BCM for mono-JVM deployments.				*/
-	public static final String				MONO_JVM_HOSTNAME = "localhost" ;
+	public static final String				MONO_JVM_HOSTNAME = "localhost";
 
 	/** The singleton pattern: one instance of CVM per JVM.					*/
-	protected static AbstractCVM			theCVM ;
+	protected static AbstractCVM			theCVM;
 	/** URI of the current JVM in the deployment platform; note that
 	 *  only one object from {@code AbstractCVM} can exist in one JVM.		*/
-	protected final String					thisJVMURI ;
+	protected final String					thisJVMURI;
 	/** name of the host on which the JVM is running; this field must be
 	 *  effectively final after the instance creation.						*/
-	protected String						thisHostname ;
+	protected String						thisHostname;
 	/**	Enables or not debugging messages.									*/
 	public static final Set<CVMDebugModesI>	DEBUG_MODE =
-											new HashSet<CVMDebugModesI>() ;
-	/** suffix for the dynamic component creator component inbound
-	 *  port URI.															*/
-	public static final String				DCC_INBOUNDPORT_URI_SUFFIX =
-												"-dcc" ;
+												new HashSet<CVMDebugModesI>();
+	/** suffix for the dynamic component creator component inbound port URI.*/
+	public static final String				DCC_INBOUNDPORT_URI_SUFFIX = "-dcc";
 	// ------------------------------------------------------------------------
 	// Assertions status checking
 	// ------------------------------------------------------------------------
-
-	// TODO: explore this possibility...
-//	static {
-//		AbstractCVM.class.getClassLoader().setClassAssertionStatus(
-//						"fr.sorbonne_u.components.cvm.AbstractCVM", true) ;
-//		AbstractCVM.class.getClassLoader().setDefaultAssertionStatus(true) ;
-//	}
 
 	/**
 	 * check if the assertions have been enabled on the JVM running this code
@@ -170,7 +159,7 @@ implements	ComponentVirtualMachineI
 	 */
 	public static AbstractCVM	getCVM()
 	{
-		return AbstractCVM.theCVM ;
+		return AbstractCVM.theCVM;
 	}
 
 	/**
@@ -187,7 +176,7 @@ implements	ComponentVirtualMachineI
 	 */
 	public static String	getThisJVMURI()
 	{
-		return AbstractCVM.getCVM().thisJVMURI ;
+		return AbstractCVM.getCVM().thisJVMURI;
 	}
 
 	/**
@@ -204,7 +193,7 @@ implements	ComponentVirtualMachineI
 	 */
 	public static String	getHostname()
 	{
-		return AbstractCVM.getCVM().thisHostname ;
+		return AbstractCVM.getCVM().thisHostname;
 	}
 
 	// ------------------------------------------------------------------------
@@ -212,10 +201,11 @@ implements	ComponentVirtualMachineI
 	// ------------------------------------------------------------------------
 
 	/** initial number of potential entries in the local registry.		*/
-	protected static int					LOCAL_REGISTRY_INIT_SIZE = 1000 ;
+	protected static int					LOCAL_REGISTRY_INIT_SIZE = 1000;
 	/** local registry linking port URI to local port objects.			*/
-	protected static final Hashtable<String,PortI>	LOCAL_REGISTRY =
-						new Hashtable<String,PortI>(LOCAL_REGISTRY_INIT_SIZE) ;
+	protected static final
+		ConcurrentHashMap<String,PortI> LOCAL_REGISTRY =
+				new ConcurrentHashMap<String,PortI>(LOCAL_REGISTRY_INIT_SIZE);
 
 	/**
 	 * return true if the local registry has been initialised.
@@ -231,7 +221,7 @@ implements	ComponentVirtualMachineI
 	 */
 	protected static boolean		localRegistryInitialised()
 	{
-		return AbstractCVM.LOCAL_REGISTRY != null ;
+		return AbstractCVM.LOCAL_REGISTRY != null;
 	}
 
 	/**
@@ -242,6 +232,7 @@ implements	ComponentVirtualMachineI
 	 * 
 	 * <pre>
 	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre	{@ key != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -250,20 +241,18 @@ implements	ComponentVirtualMachineI
 	 */
 	public static boolean	isPublishedInLocalRegistry(String key)
 	{
-		assert	AbstractCVM.localRegistryInitialised() ;
+		assert	AbstractCVM.localRegistryInitialised();
+		assert	key != null;
 
-		boolean ret = false ;
-		synchronized (AbstractCVM.LOCAL_REGISTRY) {
-			ret = AbstractCVM.LOCAL_REGISTRY.containsKey(key) ;
-		}
+		boolean ret = AbstractCVM.LOCAL_REGISTRY.containsKey(key);
 
 		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
 					"called isPublishedInLocalRegistry(" + key + ")" +
-					" returning " + ret) ;
+					" returning " + ret);
 		}
 
-		return ret ;
+		return ret;
 	}
 
 	/**
@@ -273,6 +262,8 @@ implements	ComponentVirtualMachineI
 	 * 
 	 * <pre>
 	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre {@ key != null}
+	 * pre {@ p != null}
 	 * pre	!AbstractCVM.isPublishedInLocalRegistry(key)
 	 * post	AbstractCVM.isPublishedInLocalRegistry(key)
 	 * </pre>
@@ -284,21 +275,21 @@ implements	ComponentVirtualMachineI
 	protected static void		publishInLocalRegistry(String key, PortI p)
 	throws Exception
 	{
-		assert	AbstractCVM.localRegistryInitialised() ;
-		assert	!AbstractCVM.isPublishedInLocalRegistry(key) ;
-		assert	key.equals(p.getPortURI()) ;
+		assert	AbstractCVM.localRegistryInitialised();
+		assert	key != null;
+		assert	p != null;
+		assert	!AbstractCVM.isPublishedInLocalRegistry(key);
+		assert	key.equals(p.getPortURI());
 
-		synchronized (AbstractCVM.LOCAL_REGISTRY) {
-			AbstractCVM.LOCAL_REGISTRY.put(key, p) ;
-		}
+		AbstractCVM.LOCAL_REGISTRY.put(key, p);
 
 		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
 					"called publishInLocalRegistry(" + key + ", "
-					+ p.getPortURI() + ") ...done.") ;
+					+ p.getPortURI() + ") ...done.");
 		}
 
-		assert	AbstractCVM.isPublishedInLocalRegistry(key) ;
+		assert	AbstractCVM.isPublishedInLocalRegistry(key);
 	}
 
 	/**
@@ -308,6 +299,7 @@ implements	ComponentVirtualMachineI
 	 * 
 	 * <pre>
 	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre {@ key != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -317,17 +309,18 @@ implements	ComponentVirtualMachineI
 	 */
 	public static PortI		getFromLocalRegistry(String key) throws Exception
 	{
-		assert	AbstractCVM.localRegistryInitialised() ;
+		assert	AbstractCVM.localRegistryInitialised();
+		assert	key != null;
 
-		PortI p = AbstractCVM.LOCAL_REGISTRY.get(key) ;
+		PortI p = AbstractCVM.LOCAL_REGISTRY.get(key);
 
 		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
 					"called getFromLocalRegistry(" + key + ")"
-					+ " returning "	+ p.getPortURI() + ")") ;
+					+ " returning "	+ (p == null ? p : p.getPortURI()) + ")");
 		}
 
-		return p ;
+		return p;
 	}
 
 	/**
@@ -337,6 +330,7 @@ implements	ComponentVirtualMachineI
 	 * 
 	 * <pre>
 	 * pre	AbstractCVM.localRegistryInitialised()
+	 * pre {@key != null}
 	 * pre	AbstractCVM.isPublishedInLocalRegistry(key)
 	 * post	!AbstractCVM.isPublishedInLocalRegistry(key)
 	 * </pre>
@@ -345,17 +339,16 @@ implements	ComponentVirtualMachineI
 	 */
 	protected static void	unpublishFromLocalRegistry(String key)
 	{
-		assert	AbstractCVM.localRegistryInitialised() ;
-		assert	AbstractCVM.isPublishedInLocalRegistry(key) ;
+		assert	AbstractCVM.localRegistryInitialised();
+		assert	key != null;
+		assert	AbstractCVM.isPublishedInLocalRegistry(key);
 
-		synchronized (AbstractCVM.LOCAL_REGISTRY) {
-			AbstractCVM.LOCAL_REGISTRY.remove(key) ;
-		}		
+		AbstractCVM.LOCAL_REGISTRY.remove(key);	
 
 		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
 					"called unpublishFromLocalRegistry(" + key + ")"
-					+ " ...done. ") ;
+					+ " ...done. ");
 		}
 
 		assert	!AbstractCVM.isPublishedInLocalRegistry(key) ;
@@ -366,14 +359,14 @@ implements	ComponentVirtualMachineI
 	// management.
 	// ------------------------------------------------------------------------
 
-	/** map from URI of reflection inbound ports to deployed components.*/
-	protected final ConcurrentHashMap<String, ComponentI>	uri2component ;
-	/** the state of the component virtual machine.						*/
-	protected CVMState						state ;
-	/** true if the CVM currently running is distributed.				*/
-	public static boolean					isDistributed ;
-	/** the logger used for debugging log entries.						*/
-	protected Logger						debugginLogger ;
+	/** map from URI of reflection inbound ports to deployed components.	*/
+	protected final ConcurrentHashMap<String, ComponentI>	uri2component;
+	/** the state of the component virtual machine.							*/
+	protected CVMState						state;
+	/** true if the CVM currently running is distributed.					*/
+	public static boolean					isDistributed;
+	/** the logger used for debugging log entries.							*/
+	protected Logger						debugginLogger;
 
 	// ------------------------------------------------------------------------
 	// Constructors
@@ -393,7 +386,7 @@ implements	ComponentVirtualMachineI
 	 */
 	public				AbstractCVM() throws Exception
 	{
-		this(false) ;
+		this(false);
 	}
 
 	/**
@@ -412,7 +405,7 @@ implements	ComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @param isDistributed	true if the CVM is distributed, false otherwise.
-	 * @throws Exception	true if the CVM is distributed, false otherwise.
+	 * @throws Exception	<i>to do.</i>
 	 */
 	public				AbstractCVM(
 		boolean isDistributed
@@ -441,19 +434,19 @@ implements	ComponentVirtualMachineI
 		String thisJVMURI
 		) throws Exception
 	{
-		super() ;
+		super();
 
-		AbstractCVM.theCVM = this ;
-		this.thisJVMURI = thisJVMURI ;
-		this.thisHostname = AbstractCVM.MONO_JVM_HOSTNAME ;
-		this.uri2component = new ConcurrentHashMap<>() ;
-		this.state = null ;
-		AbstractCVM.isDistributed = isDistributed ;
+		AbstractCVM.theCVM = this;
+		this.thisJVMURI = thisJVMURI;
+		this.thisHostname = AbstractCVM.MONO_JVM_HOSTNAME;
+		this.uri2component = new ConcurrentHashMap<>();
+		this.state = null;
+		AbstractCVM.isDistributed = isDistributed;
 
-		AbstractCVM.checkAssertionsEnabled() ;
+		AbstractCVM.checkAssertionsEnabled();
 
 		if (!isDistributed) {
-			this.debugginLogger = new Logger("cvm") ;
+			this.debugginLogger = new Logger("cvm");
 
 			// when distributed, the dynamic component creator is created and
 			// initialised in the method initialise of AbstractDistributedCVM
@@ -462,17 +455,17 @@ implements	ComponentVirtualMachineI
 					AbstractComponent.createComponent(
 						DynamicComponentCreator.class.getCanonicalName(),
 						new Object[]{AbstractCVM.getThisJVMURI() +
-											DCC_INBOUNDPORT_URI_SUFFIX}) ;
+											DCC_INBOUNDPORT_URI_SUFFIX});
 				assert	this.isDeployedComponent(dccURI) ;
 			} catch (Exception e) {
 				this.logDebug(null, "WARNING! -- The dynamic component "
 									+ "creator has not been "
 									+ "successfully deployed!") ;
-				throw e ;
+				throw e;
 			}
 		}
 
-		assert	AbstractCVM.localRegistryInitialised() ;
+		assert	AbstractCVM.localRegistryInitialised();
 	}
 
 	// ------------------------------------------------------------------------
@@ -499,21 +492,20 @@ implements	ComponentVirtualMachineI
 	public synchronized static void	localPublishPort(PortI port)
 	throws	Exception
 	{
-		assert	port != null ;
+		assert	port != null;
 		assert	AbstractCVM.localRegistryInitialised() ;
-		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
+		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
 
-		AbstractCVM.publishInLocalRegistry(port.getPortURI(), port) ;
+		AbstractCVM.publishInLocalRegistry(port.getPortURI(), port);
 
 		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
-				"called localPublishPort(" + port.getPortURI()
-														+ ") ...done.") ;
+				"called localPublishPort(" + port.getPortURI() + ") ...done.");
 		}
 
-		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
-		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI()) ;
-		assert	p != null && port == p ;
+		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
+		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI());
+		assert	p != null && port == p;
 	}
 
 	/**
@@ -536,35 +528,25 @@ implements	ComponentVirtualMachineI
 	public synchronized static void	localUnpublishPort(PortI port)
 	throws	Exception
 	{
-		assert	port != null ;
-		assert	AbstractCVM.localRegistryInitialised() ;
-		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
-		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI()) ;
-		assert	p != null && port == p ;
+		assert	port != null;
+		assert	AbstractCVM.localRegistryInitialised();
+		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
+		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI());
+		assert	p != null && port == p;
 
-		AbstractCVM.unpublishFromLocalRegistry(port.getPortURI()) ;
+		AbstractCVM.unpublishFromLocalRegistry(port.getPortURI());
 
 		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
-				"called localUnpublishPort(" + port.getPortURI()
-														+ ") ...done.") ;
+				"called localUnpublishPort(" + port.getPortURI() + ") ...done.");
 		}
 
-		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) ;
+		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
 	}
 
 	// ------------------------------------------------------------------------
 	// Methods
 	// ------------------------------------------------------------------------
-
-	/**
-	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#getHostName()
-	 */
-//	@Override
-//	public String		getHostName()
-//	{
-//		return "localhost" ;
-//	}
 
 	/**
 	 * simply set the <code>deploymentDone</code> flag to true, so it should
@@ -583,14 +565,13 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			deploy() throws Exception
 	{
-		assert	!this.deploymentDone() ;
+		assert	!this.deploymentDone();
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
-			this.logDebug(CVMDebugModes.LIFE_CYCLE,
-						  "called deploy() ...done.");
+			this.logDebug(CVMDebugModes.LIFE_CYCLE, "called deploy() ...done.");
 		}
 
-		this.state = CVMState.DEPLOYMENT_DONE ;
+		this.state = CVMState.DEPLOYMENT_DONE;
 	}
 	
 	/**
@@ -599,17 +580,17 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isDeployedComponent(String componentURI)
 	{
-		assert	componentURI != null ;
+		assert	componentURI != null;
 
-		boolean ret = this.uri2component.containsKey(componentURI) ;
+		boolean ret = this.uri2component.containsKey(componentURI);
 
 		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
 			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
 						  "called isDeployedComponent(" + componentURI
-						  + ") returning " + ret + ".") ;
+						  + ") returning " + ret + ".");
 		}
 
-		return ret ;
+		return ret;
 	}
 
 	/**
@@ -621,15 +602,15 @@ implements	ComponentVirtualMachineI
 		ComponentI component
 		)
 	{
-		assert	componentURI != null && component != null ;
-		assert	!this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null && component != null;
+		assert	!this.isDeployedComponent(componentURI);
 
-		this.uri2component.put(componentURI, component) ;
+		this.uri2component.put(componentURI, component);
 
 		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
 			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
 						  "called addDeployedComponent(" + component
-						  + ") ...done.") ;
+						  + ") ...done.");
 		}
 	}
 
@@ -642,18 +623,18 @@ implements	ComponentVirtualMachineI
 		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
 			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
 						  "called removeDeployedComponent(" + componentURI
-						  + ").") ;
+						  + ").");
 		}
 
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		this.uri2component.remove(componentURI) ;
+		this.uri2component.remove(componentURI);
 
 		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
 			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
 						  "called removeDeployedComponent(" + componentURI
-						  + ") ...done.") ;
+						  + ") ...done.");
 		}
 	}
 
@@ -663,17 +644,17 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			start() throws Exception
 	{
-		assert	this.deploymentDone() ;
+		assert	this.deploymentDone();
 
 		for(ComponentI c : this.uri2component.values()) {
 			if (!c.isStarted()) {
 				c.start() ;	
 			}
 		}
-		this.state = CVMState.START_DONE ;
+		this.state = CVMState.START_DONE;
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
-			this.logDebug(CVMDebugModes.LIFE_CYCLE, "called start() ...done") ;
+			this.logDebug(CVMDebugModes.LIFE_CYCLE, "called start() ...done");
 		}
 	}
 
@@ -684,15 +665,14 @@ implements	ComponentVirtualMachineI
 	public void			startComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		this.uri2component.get(componentURI).start() ;
+		this.uri2component.get(componentURI).start();
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			this.logDebug(CVMDebugModes.LIFE_CYCLE,
-						  "called startComponent(" +
-								  	componentURI + ") ...done") ;
+						 "called startComponent(" + componentURI + ") ...done");
 		}
 	}
 
@@ -702,7 +682,7 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			execute() throws Exception
 	{
-		assert	this.allStarted() ;
+		assert	this.allStarted();
 
 		for(ComponentI c : this.uri2component.values()) {
 			if (c.hasItsOwnThreads()) {
@@ -715,13 +695,12 @@ implements	ComponentVirtualMachineI
 							throw new RuntimeException(e) ;
 						}
 					}
-				}) ;
+				});
 			}
 		}
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
-			this.logDebug(CVMDebugModes.LIFE_CYCLE,
-						  "called execute() ...done") ;
+			this.logDebug(CVMDebugModes.LIFE_CYCLE, "called execute() ...done");
 		}
 	}
 
@@ -732,8 +711,8 @@ implements	ComponentVirtualMachineI
 	public void			executeComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null ;
-		assert	this.isStartedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isStartedComponent(componentURI);
 
 		this.uri2component.get(componentURI).runTask(
 				new AbstractComponent.AbstractTask() {
@@ -749,8 +728,7 @@ implements	ComponentVirtualMachineI
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			this.logDebug(CVMDebugModes.LIFE_CYCLE,
-						  "called executeComponent(" +
-									componentURI + ") ...done") ;
+					"called executeComponent(" + componentURI + ") ...done");
 		}
 	}
 
@@ -760,17 +738,16 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			finalise() throws Exception
 	{
-		assert	this.allStarted() ;
+		assert	this.allStarted();
 
 		for(ComponentI c : this.uri2component.values()) {
-			c.finalise() ;
+			c.finalise();
 		}
 
-		this.state = CVMState.FINALISE_DONE ;
+		this.state = CVMState.FINALISE_DONE;
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
-			this.logDebug(CVMDebugModes.LIFE_CYCLE,
-						  "called finalise() ...done") ;
+			this.logDebug(CVMDebugModes.LIFE_CYCLE, "called finalise() ...done");
 		}
 	}
 
@@ -781,15 +758,14 @@ implements	ComponentVirtualMachineI
 	public void			finaliseComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null ;
-		assert	this.isStartedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isStartedComponent(componentURI);
 
-		this.uri2component.get(componentURI).finalise() ;
+		this.uri2component.get(componentURI).finalise();
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			this.logDebug(CVMDebugModes.LIFE_CYCLE,
-						  "called finaliseComponent(" +
-									componentURI + ") ...done") ;
+					"called finaliseComponent(" + componentURI + ") ...done");
 		}
 	}
 
@@ -799,17 +775,17 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			shutdown() throws Exception
 	{
-		assert	this.allFinalised() ;
+		assert	this.allFinalised();
 
 		for(ComponentI c : this.uri2component.values()) {
-			c.shutdown() ;
+			c.shutdown();
 		}
 
-		this.state = CVMState.SHUTDOWN ;
+		this.state = CVMState.SHUTDOWN;
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.LIFE_CYCLE,
-											"called shutdown() ...done") ;
+											"called shutdown() ...done");
 		}
 	}
 
@@ -820,14 +796,14 @@ implements	ComponentVirtualMachineI
 	public void			shutdownComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null ;
-		assert	this.isFinalisedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isFinalisedComponent(componentURI);
 
-		this.uri2component.get(componentURI).shutdown() ;
+		this.uri2component.get(componentURI).shutdown();
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.LIFE_CYCLE,
-				"called shutdownComponent(" + componentURI + ") ...done") ;
+				"called shutdownComponent(" + componentURI + ") ...done");
 		}
 	}
 
@@ -837,17 +813,17 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			shutdownNow() throws Exception
 	{
-		assert	this.allFinalised() ;
+		assert	this.allFinalised();
 
 		for(ComponentI c : this.uri2component.values()) {
-			c.shutdownNow() ;
+			c.shutdownNow();
 		}
 
-		this.state = CVMState.SHUTDOWN ;
+		this.state = CVMState.SHUTDOWN;
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			this.logDebug(CVMDebugModes.LIFE_CYCLE,
-						  "called shutdownNow() ...done") ;
+						  "called shutdownNow() ...done");
 		}
 	}
 
@@ -858,14 +834,14 @@ implements	ComponentVirtualMachineI
 	public void			shutdownNowComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null ;
-		assert	this.isFinalisedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isFinalisedComponent(componentURI);
 
-		this.uri2component.get(componentURI).shutdown() ;
+		this.uri2component.get(componentURI).shutdown();
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			AbstractCVM.getCVM().logDebug(CVMDebugModes.LIFE_CYCLE,
-				"called shutdownNowComponent(" + componentURI + ") ...done") ;
+				"called shutdownNowComponent(" + componentURI + ") ...done");
 		}
 	}
 
@@ -878,7 +854,7 @@ implements	ComponentVirtualMachineI
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
 				this.state == CVMState.INTERCONNECTED ||
-				this.state == CVMState.DEPLOYMENT_DONE ;
+				this.state == CVMState.DEPLOYMENT_DONE;
 	}
 
 	/**
@@ -890,7 +866,7 @@ implements	ComponentVirtualMachineI
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
 				this.state == CVMState.INTERCONNECTED ||
-				this.state == CVMState.DEPLOYMENT_DONE ;
+				this.state == CVMState.DEPLOYMENT_DONE;
 	}
 
 	/**
@@ -902,7 +878,7 @@ implements	ComponentVirtualMachineI
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
 				this.state == CVMState.INTERCONNECTED ||
-				this.state == CVMState.DEPLOYMENT_DONE ;
+				this.state == CVMState.DEPLOYMENT_DONE;
 	}
 
 	/**
@@ -914,7 +890,7 @@ implements	ComponentVirtualMachineI
 		return	this.state == CVMState.INITIALISED ||
 				this.state == CVMState.INSTANTIATED_AND_PUBLISHED ||
 				this.state == CVMState.INTERCONNECTED ||
-				this.state == CVMState.DEPLOYMENT_DONE ;
+				this.state == CVMState.DEPLOYMENT_DONE;
 	}
 
 	/**
@@ -923,7 +899,7 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		allStarted()
 	{
-		return this.state == CVMState.START_DONE ;
+		return this.state == CVMState.START_DONE;
 	}
 
 	/**
@@ -932,10 +908,10 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isStartedComponent(String componentURI)
 	{
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		return this.uri2component.get(componentURI).isStarted() ;
+		return this.uri2component.get(componentURI).isStarted();
 	}
 
 	/**
@@ -944,7 +920,7 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		allFinalised()
 	{
-		return this.state == CVMState.FINALISE_DONE ;
+		return this.state == CVMState.FINALISE_DONE;
 	}
 
 	/**
@@ -953,10 +929,10 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isFinalisedComponent(String componentURI)
 	{
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		return this.uri2component.get(componentURI).isFinalised() ;
+		return this.uri2component.get(componentURI).isFinalised();
 	}
 
 	/**
@@ -967,9 +943,9 @@ implements	ComponentVirtualMachineI
 	{
 		boolean ret = true ;
 		for(ComponentI c : this.uri2component.values()) {
-			ret = ret && c.isShutdown() ;
+			ret = ret && c.isShutdown();
 		}
-		return ret ;
+		return ret;
 	}
 
 	/**
@@ -978,10 +954,10 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isShutdownComponent(String componentURI)
 	{
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		return this.uri2component.get(componentURI).isShutdown() ;
+		return this.uri2component.get(componentURI).isShutdown();
 	}
 
 	/**
@@ -990,11 +966,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isTerminated()
 	{
-		boolean ret = true ;
+		boolean ret = true;
 		for(ComponentI c : this.uri2component.values()) {
-			ret = ret && c.isTerminated() ;
+			ret = ret && c.isTerminated();
 		}
-		return ret ;
+		return ret;
 	}
 
 	/**
@@ -1003,10 +979,10 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isTerminatedComponent(String componentURI)
 	{
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		return this.uri2component.get(componentURI).isTerminated() ;
+		return this.uri2component.get(componentURI).isTerminated();
 	}
 
 	/**
@@ -1016,21 +992,21 @@ implements	ComponentVirtualMachineI
 	public boolean		startStandardLifeCycle(long duration)
 	{
 		try {
-			assert	duration	> 0 ;
-			this.deploy() ;
-			System.out.println("starting...") ;
-			this.start() ;
-			System.out.println("executing...") ;
-			this.execute() ;
-			Thread.sleep(duration) ;
-			System.out.println("finalising...") ;
-			this.finalise() ;
-			System.out.println("shutting down...") ;
-			this.shutdown() ;
-			System.out.println("ending...") ;
-			return true ;
+			assert	duration > 0;
+			this.deploy();
+			System.out.println("starting...");
+			this.start();
+			System.out.println("executing...");
+			this.execute();
+			Thread.sleep(duration);
+			System.out.println("finalising...");
+			this.finalise();
+			System.out.println("shutting down...");
+			this.shutdown();
+			System.out.println("ending...");
+			return true;
 		} catch (Exception e) {
-			e.printStackTrace() ;
+			e.printStackTrace();
 			return false ;
 		}
 	}
@@ -1063,8 +1039,8 @@ implements	ComponentVirtualMachineI
 		) throws Exception
 	{
 		assert	componentURI != null && outboundPortURI != null &&
-					inboundPortURI != null && connectorClassname != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+					inboundPortURI != null && connectorClassname != null;
+		assert	this.isDeployedComponent(componentURI);
 
 		this.uri2component.get(componentURI).doPortConnection(
 					outboundPortURI, inboundPortURI, connectorClassname);
@@ -1079,11 +1055,11 @@ implements	ComponentVirtualMachineI
 		String outboundPortURI
 		) throws Exception
 	{
-		assert	componentURI != null && outboundPortURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null && outboundPortURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
 		this.uri2component.get(componentURI).
-								doPortDisconnection(outboundPortURI) ;
+								doPortDisconnection(outboundPortURI);
 	}
 
 	// ------------------------------------------------------------------------
@@ -1095,7 +1071,7 @@ implements	ComponentVirtualMachineI
 	 */
 	public String		logPrefix()
 	{
-		return "CVM" ;
+		return "CVM";
 	}
 
 	/**
@@ -1103,9 +1079,9 @@ implements	ComponentVirtualMachineI
 	 */
 	public void			logDebug(CVMDebugModesI dm, String message)
 	{
-		String logEntry = this.logPrefix() + "|" + dm + "|" + message ;
-		System.out.println(logEntry) ;
-		this.debugginLogger.logMessage(logEntry) ;
+		String logEntry = this.logPrefix() + "|" + dm + "|" + message;
+		System.out.println(logEntry);
+		this.debugginLogger.logMessage(logEntry);
 	}
 
 	/**
@@ -1114,10 +1090,10 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			toggleTracing(String componentURI)
 	{
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		this.uri2component.get(componentURI).toggleTracing() ;
+		this.uri2component.get(componentURI).toggleTracing();
 	}
 
 	/**
@@ -1126,10 +1102,10 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			toggleLogging(String componentURI)
 	{
-		assert	componentURI != null ;
-		assert	this.isDeployedComponent(componentURI) ;
+		assert	componentURI != null;
+		assert	this.isDeployedComponent(componentURI);
 
-		this.uri2component.get(componentURI).toggleLogging() ;
+		this.uri2component.get(componentURI).toggleLogging();
 	}
 }
 //-----------------------------------------------------------------------------

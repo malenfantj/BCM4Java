@@ -1,11 +1,10 @@
-package fr.sorbonne_u.components.registry;
+package fr.sorbonne_u.components.registry.protocol;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -33,15 +32,21 @@ package fr.sorbonne_u.components.registry;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import java.io.PrintStream;
+import java.util.concurrent.ConcurrentHashMap;
+
+import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
+import fr.sorbonne_u.components.helpers.Logger;
+
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ConnectionType</code> defines an enumerated type of
- * connection that can be used in the componenbt model.
+ * The class <code>ShutdownRequest</code> represents a global registry shutdown
+ * request.
  *
  * <p><strong>Description</strong></p>
  * 
- * Currently RMI, that is fully implemented, and socket that is still to be
- * completed before becoming operational.
+ * Part of a command design pattern implementation.
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -49,13 +54,77 @@ package fr.sorbonne_u.components.registry;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2012-10-22</p>
+ * <p>Created on : 2020-06-16</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
- * @version	$Name$ -- $Revision$ -- $Date$
  */
-public enum 				ConnectionType {
-	RMI,
-	SOCKET
+public class			ShutdownRequest
+extends		Request
+{
+	/**
+	 * create a new shutdown request object.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 */
+	public				ShutdownRequest()
+	{
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean		equals(Object obj)
+	{
+		if (obj != null && obj instanceof ShutdownRequest) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.registry.protocol.RequestI#execute(java.io.PrintStream, java.util.concurrent.ConcurrentHashMap, fr.sorbonne_u.components.helpers.Logger)
+	 */
+	@Override
+	public void			execute(
+		PrintStream ps,
+		ConcurrentHashMap<String, String> directory,
+		Logger executionLog
+		)
+	{
+		synchronized (ps) {
+			ps.println((new ShutdownResponse()).response2string());
+		}
+		if (executionLog != null &&
+					AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
+			executionLog.logMessage(
+								"Global registry received shutdown request!");
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.registry.protocol.RequestI#request2string()
+	 */
+	@Override
+	public String		request2string()
+	{
+		return Request.SHUTDOWN_REQUEST_NAME;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.registry.protocol.Request#isShutdownRequest()
+	 */
+	@Override
+	public boolean		isShutdownRequest()
+	{
+		return true;
+	}
 }
 // -----------------------------------------------------------------------------

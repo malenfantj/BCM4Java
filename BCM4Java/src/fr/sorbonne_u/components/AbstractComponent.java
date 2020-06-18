@@ -585,12 +585,8 @@ implements	ComponentI
 	/** true if the component can schedule tasks.							*/
 	protected boolean					canScheduleTasks ;
 
-	/** the executor service in charge of handling component requests.	*/
-//	protected ExecutorService			requestHandler ;
 	/** number of threads in the <code>ExecutorService</code>.			*/
 	protected int						nbThreads ;
-	/** the executor service in charge of handling scheduled tasks.		*/
-//	protected ScheduledExecutorService	scheduledTasksHandler ;
 	/** number of threads in the <code>ScheduledExecutorService</code>.	*/
 	protected int						nbSchedulableThreads ;
 

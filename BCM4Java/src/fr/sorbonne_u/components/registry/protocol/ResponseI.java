@@ -1,11 +1,10 @@
-package fr.sorbonne_u.components.registry;
+package fr.sorbonne_u.components.registry.protocol;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -33,15 +32,15 @@ package fr.sorbonne_u.components.registry;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.registry.exceptions.BadConnectionDataException;
+import fr.sorbonne_u.components.registry.exceptions.GlobalRegistryResponseException;
+
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ConnectionType</code> defines an enumerated type of
- * connection that can be used in the componenbt model.
+ * The interface <code>ResponseI</code> declares the methods implemented by
+ * response objects.
  *
  * <p><strong>Description</strong></p>
- * 
- * Currently RMI, that is fully implemented, and socket that is still to be
- * completed before becoming operational.
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -49,13 +48,42 @@ package fr.sorbonne_u.components.registry;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2012-10-22</p>
+ * <p>Created on : 2020-06-17</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
- * @version	$Name$ -- $Revision$ -- $Date$
  */
-public enum 				ConnectionType {
-	RMI,
-	SOCKET
+public interface		ResponseI
+{
+	/**
+	 * convert a response object to its string representation.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the string representing the response object.
+	 */
+	public String		response2string();
+
+	/**
+	 * interpret a response.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return									the result of the request, if any.
+	 * @throws GlobalRegistryResponseException	when the response is an error.
+	 * @throws BadConnectionDataException		when a lookup returns a wrong connection data to a RMI registry.
+	 */
+	public Object		interpret()
+	throws	GlobalRegistryResponseException,
+			BadConnectionDataException;
 }
 // -----------------------------------------------------------------------------

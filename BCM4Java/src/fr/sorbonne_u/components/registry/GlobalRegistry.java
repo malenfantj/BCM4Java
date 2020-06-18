@@ -1,38 +1,37 @@
 package fr.sorbonne_u.components.registry;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,19 +41,23 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
+import fr.sorbonne_u.components.cvm.config.exceptions.InvalidConfigurationFileFormatException;
 import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.registry.protocol.Request;
+import fr.sorbonne_u.components.registry.protocol.RequestI;
+import fr.sorbonne_u.components.registry.protocol.ShutdownRequest;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>GlobalRegistry</code> implements the global registry for the
  * component model that registers connection information to remotely access
@@ -62,241 +65,88 @@ import fr.sorbonne_u.components.helpers.TracerOnConsole;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
  * The Registry implements a global registry for the component model allowing
  * to bind port URI to information required for the connection between
  * components through ports.  The registry must be run on one host which
  * name is given in the static variable <code>REGISTRY_HOSTNAME</code>.  It
  * listens to request on a port which number is given by the static variable
  * <code>REGISTRY_PORT</code>
- * 
+ * </p>
+ * <p>
  * Protocol (spaces are used to split the strings, so they are meaningful):
- * 
+ * </p>
  * <pre>
  * Requests              Responses
  * 
- * lookup key            ok value
- *                       nok
- * put key value         ok
- *                       nok bound!
- * remove key            ok
- *                       nok not_bound!
- * shutdown              ok
- * anything else         nok unkonwn_command!
+ * lookup key            lookup ok value
+ *                       lookup nok key
+ * put key value         put ok
+ *                       put nok key
+ * remove key            remove ok
+ *                       remove nok key
+ * shutdown              shutdown ok
+ * anything else         error request
  * </pre>
- * 
+ * <p>
+ * This protocol is implemented with two command design patterns, one for the
+ * requests, one for the responses.
+ * </p>
+ * <p>
  * When the static variable <code>DEBUG</code> is set to true, the registry
  * provides with a log on STDOUT of the commands it executes.
- *  
+ * </p>
+ * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant		true	// TODO
  * </pre>
  * 
  * <p>Created on : 2012-10-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
- * @version	$Name$ -- $Revision$ -- $Date$
  */
 public class				GlobalRegistry
 {
-	/** Default name of the host running the registry; is configurable.	*/
-	public static String					REGISTRY_HOSTNAME = "localhost" ;
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// --+----------------------------------------------------------------------
+
+	/** true if the global registry is logging its actions.					*/
+	public static boolean				GLOBAL_REGISTRY_IS_LOGGING = true ;
+	/** Default name of the host running the registry; is configurable.		*/
+	public static String				REGISTRY_HOSTNAME = "localhost" ;
 	/** Default port number listen for commands; is configurable.			*/
 	public static int					REGISTRY_PORT = 55252 ;
 
-	/** Directory of registred information.								*/
-	protected Hashtable<String,String>	directory ;
+	/** Directory of registred information.									*/
+	protected ConcurrentHashMap<String,String>	directory ;
 	/** Configuration parameters from the configuration file.				*/
 	protected ConfigurationParameters	configurationParameters ;
-	/** Number of JVM in the distributed component virtual machine.		*/
+	/** Number of JVM in the distributed component virtual machine.			*/
 	protected final int					numberOfJVMsInDCVM ;
 
-	/** The socket used to listen on the port number REGISTRY_PORT.		*/
-	protected ServerSocket	ss ;
+	/** The socket used to listen on the port number REGISTRY_PORT.			*/
+	protected ServerSocket				ss ;
 
-	protected static final int			MAX_NUMBER_OF_THREADS = 100 ; 
-	/** The executor service in charge of handling component requests.	*/
+	protected static final int			WARNING_NUMBER_OF_THREADS = 2000 ; 
+	/** The executor service in charge of handling component requests.		*/
 	protected static ExecutorService	REQUEST_HANDLER ;
 	/**	synchroniser to finish the execution of this global registry.		*/
-	protected CountDownLatch				finished ;
+	protected CountDownLatch			finished ;
 
-	/** Execution log of the global registry.							*/
+	/** Execution log of the global registry.								*/
 	protected final Logger				executionLog ;
 	/** Tracing console for the global registry.							*/
 	protected final TracerOnConsole		tracer ;
 
-	// ------------------------------------------------------------------------
-	// Tasks for the executor framework
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Task for the executor framework
+	// -------------------------------------------------------------------------
 
 	/**
-	 * The class <code>ProcessLookup</code> implements a runnable task used to
-	 * look up the registry for a given key.
-	 *
-	 * <p><strong>Description</strong></p>
-	 * 
-	 * <p><strong>Invariant</strong></p>
-	 * 
-	 * <pre>
-	 * invariant		true
-	 * </pre>
-	 * 
-	 * <p>Created on : 2012-10-22</p>
-	 * 
-	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
-	 */
-	protected static class	ProcessLookup
-	implements	Runnable
-	{
-
-		protected PrintStream				ps ;
-		protected String						key ;
-		protected Hashtable<String,String>	directory ;
-		protected final Logger				executionLog ;
-
-		public				ProcessLookup(
-			PrintStream ps,
-			String key,
-			Hashtable<String,String> directory,
-			Logger logger
-			)
-		{
-			super();
-			this.ps = ps ;
-			this.key = key ;
-			this.directory = directory ;
-			this.executionLog = logger ;
-		}
-
-
-		@Override
-		public void		run()
-		{
-			String result = null ;
-			synchronized(this.directory) {
-				result = this.directory.get(this.key) ;
-			}
-			if (result == null) {
-				this.ps.println("nok") ;
-			} else {
-				if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
-					this.executionLog.logMessage(
-						"GLobal registry looking up " +
-									   this.key + " found " + result) ;
-				}
-				this.ps.println("ok " + result) ;
-			}
-		}
-	}
-
-	/**
-	 * The class <code>ProcessPut</code> implements a runnable task used to
-	 * update the registry with the association of a given key to a given
-	 * value.
-	 *
-	 * <p><strong>Description</strong></p>
-	 * 
-	 * <p><strong>Invariant</strong></p>
-	 * 
-	 * <pre>
-	 * invariant		true
-	 * </pre>
-	 * 
-	 * <p>Created on : 2012-10-22</p>
-	 * 
-	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
-	 */
-	protected static class	ProcessPut implements Runnable
-	{
-		protected PrintStream				ps ;
-		protected String						key ;
-		protected String						value ;
-		protected Hashtable<String,String>	directory ;
-
-		public				ProcessPut(
-			PrintStream ps,
-			String key,
-			String value,
-			Hashtable<String,String> directory
-			)
-		{
-			super();
-			this.ps = ps ;
-			this.key = key;
-			this.value = value;
-			this.directory = directory;
-		}
-
-		@Override
-		public void run() {
-			String result = null ;
-			synchronized (this.directory) {
-				result = this.directory.get(key) ;
-			}
-			if (result != null) {
-				ps.println("nok bound!") ;
-			} else {
-				this.directory.put(this.key, this.value) ;
-				ps.println("ok") ;
-			}
-		}		
-	}
-
-	/**
-	 * The class <code>ProcessRemove</code> implements a runnable task used to
-	 * remove the association of a given key from the registry.
-	 *
-	 * <p><strong>Description</strong></p>
-	 * 
-	 * <p><strong>Invariant</strong></p>
-	 * 
-	 * <pre>
-	 * invariant		true
-	 * </pre>
-	 * 
-	 * <p>Created on : 2012-10-22</p>
-	 * 
-	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
-	 */
-	protected static class	ProcessRemove implements Runnable
-	{
-		protected PrintStream				ps ;
-		protected String					key ;
-		protected Hashtable<String,String>	directory ;
-
-		public				ProcessRemove(
-			PrintStream ps,
-			String key,
-			Hashtable<String, String> directory
-			)
-		{
-			super();
-			this.ps = ps ;
-			this.key = key;
-			this.directory = directory;
-		}
-
-		@Override
-		public void run() {
-			String result = null ;
-			synchronized (this.directory) {
-				result = this.directory.get(key) ;
-			}
-			if (result == null) {
-				ps.println("nok not_bound!") ;
-			} else {
-				this.directory.remove(this.key) ;
-				ps.println("ok") ;
-			}
-		}		
-	}
-
-	/**
-	 * The class <code>ServiceRunnable</code> implements the behaviour of the
+	 * The class <code>ServiceTask</code> implements the behaviour of the
 	 * registry exchanging with one client; its processes the requests from the
 	 * clients until the latter explicitly disconnects with a "shutdown" request
 	 * of implicitly with a null string request.
@@ -312,110 +162,145 @@ public class				GlobalRegistry
 	 * <p>Created on : 2014-01-30</p>
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
-	protected static class	ServiceRunnable
+	protected static class	ServiceTask
 	implements	Runnable
 	{
-		protected Hashtable<String,String>	directory ;
-		protected Socket						s ;
-		protected BufferedReader				br ;
-		protected PrintStream				ps ;
-		protected CountDownLatch				finished ;
-		protected final Logger				executionLog ;
-		protected final TracerOnConsole		tracer ;
+		/** socket on which this task will accept the request coming from
+		 *  one JVM.														*/
+		protected Socket							s ;
+		/** map holding the bindings of the global registry.				*/
+		protected ConcurrentHashMap<String,String>	directory ;
+		/** buffered reader to read from the socket s.						*/
+		protected BufferedReader					br ;
+		/** print stream to write on the socket s.							*/
+		protected PrintStream						ps ;
+		/** synchroniser detecting the end of the application.				*/
+		protected CountDownLatch					finished ;
+		/** global registry logger.											*/
+		protected final Logger						executionLog ;
+		/** global registry tracer.											*/
+		protected final TracerOnConsole				tracer ;
 
-		public			ServiceRunnable(
-			Socket 						s,
-			Hashtable<String,String>		directory,
-			CountDownLatch				finished,
-			Logger						executionLog,
-			TracerOnConsole				tracer
+		/**
+		 * creating the service task.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true			// no precondition.
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @param s				socket on which this task will accept the request coming from one JVM.
+		 * @param directory		map holding the bindings of the global registry.
+		 * @param finished		synchroniser detecting the end of the application.
+		 * @param executionLog	global registry logger.
+		 * @param tracer		global registry tracer.
+		 * @throws Exception	<i>to do.</i>
+		 */
+		public			ServiceTask(
+			Socket 								s,
+			ConcurrentHashMap<String,String>	directory,
+			CountDownLatch						finished,
+			Logger								executionLog,
+			TracerOnConsole						tracer
 			) throws Exception
 		{
-			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
-				executionLog.logMessage(
-								"Registry creating a service runnable") ;
-				tracer.traceMessage(
-								"Registry creating a service runnable") ;
+			if (GLOBAL_REGISTRY_IS_LOGGING) {
+				if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
+					executionLog.logMessage(
+							"Global registry creating a service task");
+					tracer.traceMessage(
+							"Global registry creating a service task\n");
+				}
 			}
-			this.s = s ;
-			this.directory = directory ;
-			this.finished = finished ;
+
+			this.s = s;
+			this.directory = directory;
+			this.finished = finished;
 			this.br = new BufferedReader(
-						new InputStreamReader(this.s.getInputStream())) ;
-			this.ps = new PrintStream(s.getOutputStream(), true) ;
-			this.executionLog = executionLog ;
-			this.tracer = tracer ;
-			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
-				this.executionLog.logMessage("...service runnable created") ;
-				this.tracer.traceMessage("...service runnable created") ;
+							new InputStreamReader(this.s.getInputStream()));
+			this.ps = new PrintStream(s.getOutputStream(), true);
+			this.executionLog = executionLog;
+			this.tracer = tracer;
+
+			if (GLOBAL_REGISTRY_IS_LOGGING) {
+				if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
+					this.executionLog.logMessage("...service runnable created");
+					this.tracer.traceMessage("...service runnable created");
+				}
 			}
 		}
 
 		@Override
 		public void		run()
 		{
-			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
-				this.executionLog.logMessage("Service runnable running...") ;
-				this.tracer.traceMessage("Service runnable running...");
+			if (GLOBAL_REGISTRY_IS_LOGGING &&
+					AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
+				this.executionLog.logMessage("GlobalRegistry task running...");
+				this.tracer.traceMessage("GlobalRegistry task running...");
 			}
-			String message = null ;
+			String request = null ;
 			try {
-				message = br.readLine() ;
-			} catch (IOException e2) {
-				throw new RuntimeException(e2);
+				request = br.readLine() ;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
-			this.executionLog.logMessage(
-						"GlobalRegistry processing " + message) ;
-			this.tracer.traceMessage(
-						System.currentTimeMillis() + "|" +
-						"GlobalRegistry processing " + message + "\n") ;
-			String[] tokens = message.split("\\s") ;
-			while (message != null && !tokens[0].equals("shutdown")) {
-				if (tokens[0].equals("lookup")) {
-					new ProcessLookup(this.ps, tokens[1], this.directory,
-									  this.executionLog).run() ;
-				} else if (tokens[0].equals("put")) {
-					new ProcessPut(this.ps, tokens[1], tokens[2], this.directory).run() ;
-				} else if (tokens[0].equals("remove")) {
-					new ProcessRemove(this.ps, tokens[1], this.directory).run() ;
-				} else {
-					ps.println("nok unkonwn_command!") ;
-				}
+
+			if (GLOBAL_REGISTRY_IS_LOGGING) {
+				this.executionLog.logMessage(
+								"GlobalRegistry processing " + request);
+				this.tracer.traceMessage(
+								System.currentTimeMillis() + "|" +
+								"GlobalRegistry processing " + request + "\n");
+			}
+
+			RequestI req = null;
+			if (request == null) {
+				req = new ShutdownRequest();
+			} else {
+				req = Request.string2request(request);
+			}
+			while(!req.isShutdownRequest()) {
+				// process current request
+				req.execute(this.ps, this.directory, this.executionLog);
+				// read next request
 				try {
-					message = br.readLine() ;
+					request = br.readLine() ;
+					if (request == null) {
+						req = new ShutdownRequest();
+					} else {
+						req = Request.string2request(request);
+					}
 				} catch (IOException e1) {
 					throw new RuntimeException(e1) ;
 				}
-				this.executionLog.logMessage(
-							"GlobalRegistry processing " + message) ;
-				this.tracer.traceMessage(
+				if (GLOBAL_REGISTRY_IS_LOGGING) {
+					this.executionLog.logMessage(
+							"GlobalRegistry processing " + request) ;
+					this.tracer.traceMessage(
 							System.currentTimeMillis() + "|" +
-							"GlobalRegistry processing " + message + "\n") ;
-				if (message != null) {
-					tokens = message.split("\\s") ;
-					if (AbstractCVM.DEBUG_MODE.contains(
-												CVMDebugModes.REGISTRY)) {
-						this.executionLog.logMessage(
-								"GlobalRegistry next command " + tokens[0] +
-								" " + (!tokens[0].equals("shutdown"))) ;
-					}
+							"GlobalRegistry processing " + request + "\n") ;
 				}
 			}
+
+			if (GLOBAL_REGISTRY_IS_LOGGING &&
+					AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
+				this.executionLog.logMessage("GlobalRegistry task exits.") ;
+				this.tracer.traceMessage("GlobalRegistry task exits.\n") ;
+			}
+
 			try {
-				this.ps.print("ok") ;
+				req.execute(this.ps, this.directory, this.executionLog);
 				this.ps.close() ;
 				this.br.close() ;
 				s.close() ;
 			} catch (IOException e) {
 				throw new RuntimeException(e);
+			} finally {
+				this.finished.countDown() ;
 			}
-			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
-				this.executionLog.logMessage("GlobalRegistry exits.") ;
-				this.tracer.traceMessage("GlobalRegistry exits.") ;
-			}
-			this.finished.countDown() ;
 		}
 	}
 
@@ -435,38 +320,53 @@ public class				GlobalRegistry
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param configFileName		name of the configuration file.
-	 * @throws Exception			<i>to do.</i>
+	 * @param configFileName	name of the configuration file.
+	 * @throws Exception		<i>to do.</i>
 	 */
 	public				GlobalRegistry(String configFileName) throws Exception
 	{
 		super() ;
 
 		assert	configFileName != null :
-					new PreconditionException("configFileName != null") ;
+					new PreconditionException("configFileName == null") ;
 
-		File configFile = new File(configFileName) ;
-		ConfigurationFileParser cfp = new ConfigurationFileParser() ;
-		if (!cfp.validateConfigurationFile(configFile)) {
-			throw new Exception("invalid configuration file " +
-													configFileName) ;
+		if (GLOBAL_REGISTRY_IS_LOGGING) {
+			this.executionLog = new Logger("globalRegistry");
+			this.tracer = new TracerOnConsole("GlobalRegistry", 0, 0);
+			this.executionLog.toggleLogging();
+			this.tracer.toggleTracing();
+		} else {
+			this.executionLog = null;
+			this.tracer = null;
 		}
-		this.configurationParameters = cfp.parseConfigurationFile(configFile) ;
+
+		File configFile = new File(configFileName);
+		ConfigurationFileParser cfp = new ConfigurationFileParser();
+		if (!cfp.validateConfigurationFile(configFile)) {
+			throw new InvalidConfigurationFileFormatException(
+							"invalid configuration file " + configFileName);
+		}
+		this.configurationParameters = cfp.parseConfigurationFile(configFile);
 		this.numberOfJVMsInDCVM =
-								this.configurationParameters.getJvmURIs().length ;
+							this.configurationParameters.getJvmURIs().length;
 
 		this.directory =
-					new Hashtable<String,String>(this.numberOfJVMsInDCVM) ;
-		REQUEST_HANDLER =
-					Executors.newFixedThreadPool(this.numberOfJVMsInDCVM) ;
-		this.finished = new CountDownLatch(this.numberOfJVMsInDCVM) ;
-		this.ss = new ServerSocket(REGISTRY_PORT) ;
-
-		this.executionLog = new Logger("globalRegistry") ;
-		this.tracer = new TracerOnConsole("GlobalRegistry", 0, 0) ;
-		this.executionLog.toggleLogging() ;
-		this.tracer.toggleTracing() ;
-
+			new ConcurrentHashMap<String,String>(10*this.numberOfJVMsInDCVM);
+		if (this.numberOfJVMsInDCVM > GlobalRegistry.WARNING_NUMBER_OF_THREADS) {
+			String mes =
+				"WARNING: very high number of threads in global registry (i.e., "
+				+ this.numberOfJVMsInDCVM + "); may fail!";
+			if (GLOBAL_REGISTRY_IS_LOGGING) {
+				this.executionLog.logMessage(mes);
+				this.tracer.traceMessage(
+								System.currentTimeMillis() + "|" + mes + "\n");
+			} else {
+				System.out.println(mes);
+			}
+		}
+		REQUEST_HANDLER = Executors.newFixedThreadPool(this.numberOfJVMsInDCVM);
+		this.finished = new CountDownLatch(this.numberOfJVMsInDCVM);
+		this.ss = new ServerSocket(REGISTRY_PORT);
 	}
 
 	// ------------------------------------------------------------------------
@@ -489,26 +389,30 @@ public class				GlobalRegistry
 	 */
 	public void			run()
 	{
-		Socket s = null ;
-		this.executionLog.logMessage("Registry up and running!") ;
-		this.tracer.traceMessage(System.currentTimeMillis() + "|" +
-								"Registry up and running!\n") ;
+		if (GLOBAL_REGISTRY_IS_LOGGING) {
+			this.executionLog.logMessage("Global registry up and running!");
+			this.tracer.traceMessage(System.currentTimeMillis() + "|" +
+										"Global registry up and running!\n");
+		}
 		int count = 0 ;
 		while (count < this.numberOfJVMsInDCVM) {
 			try {
-				REQUEST_HANDLER.submit(new ServiceRunnable(ss.accept(),
+				// block on this.ss.accept() and then create a new service
+				// thread, one for each of the JVM participating in the
+				// execution.
+				REQUEST_HANDLER.submit(new ServiceTask(this.ss.accept(),
 														   this.directory,
 														   this.finished,
 														   this.executionLog,
 														   this.tracer)) ;
 				count++ ;
-				if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.REGISTRY)) {
+				if (GLOBAL_REGISTRY_IS_LOGGING) {
 					this.executionLog.logMessage(
-							"Global registry accepted a new connection.") ;
+							"Global registry accepted the " + count
+														+ "th connection.") ;
 				}
 			} catch (Exception e) {
 				try {
-					if (s != null) { s.close() ; } ;
 					ss.close() ;
 				} catch (IOException e1) {
 					;
@@ -516,9 +420,12 @@ public class				GlobalRegistry
 				e.printStackTrace();
 			}
 		}
-		this.executionLog.logMessage("All connected!") ;
-		this.tracer.traceMessage(System.currentTimeMillis() + "|" +
-								"All connected!\n") ;
+		if (GLOBAL_REGISTRY_IS_LOGGING) {
+			this.executionLog.logMessage("All (" + count + ") connected!");
+			this.tracer.traceMessage(System.currentTimeMillis() + "|" +
+										"All (" + count + ") connected!\n");
+		}
+
 		try {
 			this.ss.close() ;
 		} catch (IOException e) {
@@ -526,12 +433,27 @@ public class				GlobalRegistry
 		}
 	}
 
+	/**
+	 * terminating the global registry.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @throws FileNotFoundException	when the file to print the log does not exist.
+	 */
 	public void			closing() throws FileNotFoundException
 	{
-		this.executionLog.logMessage("Global registry shuts down!") ;
-		this.tracer.traceMessage(System.currentTimeMillis() + "|" +
-								"Global registry shuts down!\n") ;
+		if (GLOBAL_REGISTRY_IS_LOGGING) {
+			this.executionLog.logMessage("Global registry shuts down!") ;
+			this.tracer.traceMessage(System.currentTimeMillis() + "|" +
+									 "Global registry shuts down!\n") ;
+		}
 		this.executionLog.printExecutionLog() ;
+		REQUEST_HANDLER.shutdownNow() ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -552,17 +474,15 @@ public class				GlobalRegistry
 	 */
 	public static void	main(String[] args)
 	{
-		GlobalRegistry reg;
 		try {
-			reg = new GlobalRegistry(args[0]);
+			GlobalRegistry reg = new GlobalRegistry(args[0]);
 			reg.run() ;
 			reg.finished.await() ;
 			reg.closing() ;
-			REQUEST_HANDLER.shutdownNow() ;
 			System.exit(0) ;
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

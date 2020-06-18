@@ -194,15 +194,15 @@ implements	PortI
 	// ------------------------------------------------------------------------
 
 	private static final long			serialVersionUID = 1L ;
-	/** the unique identifier used to publish this entry point.			*/
+	/** the unique identifier used to publish this entry point.				*/
 	protected final String				uri ;
-	/** the interface implemented by this port.							*/
-	protected final Class<?>				implementedInterface ;
-	/** the component owning this port.									*/
+	/** the interface implemented by this port.								*/
+	protected final Class<?>			implementedInterface ;
+	/** the component owning this port.										*/
 	protected final AbstractComponent	owner ;
 	/** the port has been locally published.								*/
 	protected boolean					isPublished = false ;
-	/** the port has been distributedly published.						*/
+	/** the port has been distributedly published.							*/
 	protected boolean					isDistributedlyPublished = false ;
 
 	/**
@@ -273,9 +273,9 @@ implements	PortI
 	 * @throws Exception  			<i>to do.</i>
 	 */
 	public				AbstractPort(
-		String		uri,
-		Class<?>		implementedInterface,
-		ComponentI	owner
+		String uri,
+		Class<?> implementedInterface,
+		ComponentI owner
 		) throws Exception
 	{
 		super() ;

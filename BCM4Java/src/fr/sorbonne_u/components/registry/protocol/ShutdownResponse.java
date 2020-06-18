@@ -1,11 +1,10 @@
-package fr.sorbonne_u.components.registry;
+package fr.sorbonne_u.components.registry.protocol;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -33,15 +32,15 @@ package fr.sorbonne_u.components.registry;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.registry.exceptions.BadConnectionDataException;
+import fr.sorbonne_u.components.registry.exceptions.GlobalRegistryResponseException;
+
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ConnectionType</code> defines an enumerated type of
- * connection that can be used in the componenbt model.
+ * The class <code>ShutdownResponse</code> represents a response to a shutdown
+ * request from the global registry.
  *
  * <p><strong>Description</strong></p>
- * 
- * Currently RMI, that is fully implemented, and socket that is still to be
- * completed before becoming operational.
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -49,13 +48,58 @@ package fr.sorbonne_u.components.registry;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2012-10-22</p>
+ * <p>Created on : 2020-06-17</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
- * @version	$Name$ -- $Revision$ -- $Date$
  */
-public enum 				ConnectionType {
-	RMI,
-	SOCKET
+public class			ShutdownResponse
+extends		Response
+{
+	/**
+	 * create a shutdown response object.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 */
+	public				ShutdownResponse()
+	{
+		super();
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean		equals(Object obj)
+	{
+		return (obj != null && obj instanceof ShutdownResponse);
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.registry.protocol.ResponseI#response2string()
+	 */
+	@Override
+	public String		response2string()
+	{
+		StringBuffer sb = new StringBuffer(Response.SHUTDOWN_RESPONSE_NAME);
+		sb.append(" ").append(Response.OK);
+		return sb.toString();
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.registry.protocol.ResponseI#interpret()
+	 */
+	@Override
+	public Object		interpret()
+	throws	GlobalRegistryResponseException,
+			BadConnectionDataException
+	{
+		return null;
+	}
 }
 // -----------------------------------------------------------------------------

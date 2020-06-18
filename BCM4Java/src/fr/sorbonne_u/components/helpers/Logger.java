@@ -80,20 +80,20 @@ public class				Logger
 	/** Default Character used to separate the time stamp from the log
 	 *  message, which eases the processing of the file as a csv file
 	 *  by spreadsheets.													*/
-	public final static char		SEPARATION_CHARACTER = '|' ;
-	/** initial size of in-memory buffer for logging messages.			*/
+	public final static char	SEPARATION_CHARACTER = '|' ;
+	/** initial size of in-memory buffer for logging messages.				*/
 	public final static int		INITIAL_SIZE = 100 ;
-	/** canonical name of the directory in which logs are written.		*/
-	protected String				directory ;
-	/** name for the log file.											*/
-	protected String				logFileName ;
+	/** canonical name of the directory in which logs are written.			*/
+	protected String			directory ;
+	/** name for the log file.												*/
+	protected String			logFileName ;
 	/** file extension of logging files.									*/
-	protected String				logFileExtension ;
-	/** character used to separate the time stamp from the log message.	*/
+	protected String			logFileExtension ;
+	/** character used to separate the time stamp from the log message.		*/
 	protected char				separationChar ;
 	/** initial size of the log array in number of messages.				*/
 	protected int				initialSize ;
-	/**	True if the component is doing logging of its actions.			*/
+	/**	True if the component is doing logging of its actions.				*/
 	protected boolean			loggingStatus = false ;
 	/**	The buffer in which logging messages are accumulated until their
 	 *  writing on the logging file.										*/
@@ -392,7 +392,7 @@ public class				Logger
 	 *
 	 * @param message	message provided by the log entry.
 	 */
-	public void			logMessage(String message)
+	public synchronized void	logMessage(String message)
 	{
 		assert	message != null ;
 
