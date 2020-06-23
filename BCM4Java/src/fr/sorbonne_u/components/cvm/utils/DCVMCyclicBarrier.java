@@ -1,38 +1,37 @@
 package fr.sorbonne_u.components.cvm.utils;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -50,6 +49,8 @@ import java.util.concurrent.Executors;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
+import fr.sorbonne_u.components.cvm.config.exceptions.InvalidConfigurationFileFormatException;
+import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerOnConsole;
@@ -107,7 +108,7 @@ import fr.sorbonne_u.components.helpers.TracerOnConsole;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				DCVMCyclicBarrier
+public class			DCVMCyclicBarrier
 {
 	/**
 	 * The class <code>HostPortSocket</code> defines a tuple of three values
@@ -133,41 +134,41 @@ public class				DCVMCyclicBarrier
 			super();
 			this.name = name;
 			this.port = port;
-			this.s = s ;
+			this.s = s;
 		}
-		public String	name ;
-		public int		port ;
-		public Socket	s ;
+		public String	name;
+		public int		port;
+		public Socket	s;
 	}
 
 	// TODO: make this no longer a limit but simply a default.
-	/**	Max number of processes to be synchronised.						*/
-	public static int						MAX_NUMBER_OF_THREADS = 100 ;
+	/**	Max number of processes to be synchronised.							*/
+	public static int						MAX_NUMBER_OF_THREADS = 100;
 
 	/** Configuration parameters from the configuration file.				*/
-	protected ConfigurationParameters		configurationParameters ;
+	protected ConfigurationParameters		configurationParameters;
 	/**	Assemblies waiting for a release signal.							*/
-	protected final Hashtable<String,HostPortSocket>	awaitingSites ;
+	protected final Hashtable<String,HostPortSocket>	awaitingSites;
 	/** Server socket waiting for calls from assemblies.					*/
-	protected ServerSocket					ss ;
-	/** Number of JVM in the current distributed assembly.				*/
-	protected final int						numberOfJVMsInDCVM ;
-	/** The executor service in charge of handling component requests.	*/
-	protected static ExecutorService			REQUEST_HANDLER ;
+	protected ServerSocket					ss;
+	/** Number of JVM in the current distributed assembly.					*/
+	protected final int						numberOfJVMsInDCVM;
+	/** The executor service in charge of handling component requests.		*/
+	protected static ExecutorService		REQUEST_HANDLER;
 	/** local cyclic barrier used to synchronise the assembly processing
 	 *  threads.															*/ 
-	protected CyclicBarrier					localCyclicBarrier ;
+	protected CyclicBarrier					localCyclicBarrier;
 	/**	synchroniser to finish the execution of this cyclic wait barrier.	*/
-	protected CountDownLatch					finished ;
+	protected CountDownLatch				finished;
 
 	/** Execution log of the cyclic barrier.								*/
-	protected final Logger					executionLog ;
-	/** 	Tracer of the cyclic barrier.									 */
-	protected final TracerOnConsole			tracer ;
+	protected final Logger					executionLog;
+	/** 	Tracer of the cyclic barrier.									*/
+	protected final TracerOnConsole			tracer;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructor
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * create a distributed cyclic barrier for a given assembly, as described
@@ -176,41 +177,47 @@ public class				DCVMCyclicBarrier
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	configFileName != null
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param configFileName		name of the configuration file.
+	 * @param configFileName	name of the configuration file.
 	 * @throws Exception		<i>todo.</i>
 	 */
 	public				DCVMCyclicBarrier(String configFileName)
 	throws	Exception
 	{
 		super();
-		File configFile = new File(configFileName) ;
-		ConfigurationFileParser cfp = new ConfigurationFileParser() ;
+		assert	configFileName != null :
+					new PreconditionException(
+										"configuration file name is null!") ;
+
+		File configFile = new File(configFileName);
+		ConfigurationFileParser cfp = new ConfigurationFileParser();
 		if (!cfp.validateConfigurationFile(configFile)) {
-			throw new Exception("invalid configuration file " + configFileName) ;
+			throw new InvalidConfigurationFileFormatException(
+							"invalid configuration file " + configFileName);
 		}
-		this.configurationParameters = cfp.parseConfigurationFile(configFile) ;
+		this.configurationParameters = cfp.parseConfigurationFile(configFile);
 
 		this.numberOfJVMsInDCVM =
-							this.configurationParameters.getJvmURIs().length ;
+							this.configurationParameters.getJvmURIs().length;
 		this.awaitingSites = new Hashtable<String,HostPortSocket>(
-										(int) (1.5*this.numberOfJVMsInDCVM)) ;
+										(int) (1.5*this.numberOfJVMsInDCVM));
 		this.ss = new ServerSocket(
-						this.configurationParameters.getCyclicBarrierPort()) ;
+						this.configurationParameters.getCyclicBarrierPort());
 		REQUEST_HANDLER =
-					Executors.newFixedThreadPool(MAX_NUMBER_OF_THREADS) ;
-		this.finished = new CountDownLatch(this.numberOfJVMsInDCVM) ;
+					Executors.newFixedThreadPool(MAX_NUMBER_OF_THREADS);
+		this.finished = new CountDownLatch(this.numberOfJVMsInDCVM);
 
-		this.executionLog = new Logger("cyclicBarrier") ;
-		this.tracer = new TracerOnConsole("CyclicBarrier", 0, 1) ;
-		this.executionLog.toggleLogging() ;
-		this.tracer.toggleTracing() ;
+		this.executionLog = new Logger("cyclicBarrier");
+		this.tracer = new TracerOnConsole("CyclicBarrier", 0, 1);
+		this.executionLog.toggleLogging();
+		this.tracer.toggleTracing();
 
-		final Logger logger = this.executionLog ;
-		final TracerOnConsole tracer = this.tracer ;
+		final Logger logger = this.executionLog;
+		final TracerOnConsole tracer = this.tracer;
+
 		this.localCyclicBarrier =
 			new CyclicBarrier(
 				this.numberOfJVMsInDCVM,
@@ -221,31 +228,33 @@ public class				DCVMCyclicBarrier
 							logger.logMessage(
 									"DCVM Cyclic Barrier releases "
 									+ awaitingSites.size() +
-									" sites.") ;
+									" sites.");
 							tracer.traceMessage(
 									System.currentTimeMillis() + "|" +
 									"DCVM Cyclic Barrier releases "
-									+ awaitingSites.size() + " sites.\n") ;
+									+ awaitingSites.size() + " sites.\n");
 							for(HostPortSocket p : awaitingSites.values()) {
 								PrintStream ps;
 								try {
-									ps = new PrintStream(
-											p.s.getOutputStream(),
-											true);
-									ps.println("resume") ;
+									ps = new PrintStream(p.s.getOutputStream(),
+														 true);
+									ps.println(
+										(new CyclicBarrierProtocol.
+												ResumeResponse(false)).
+															response2string());
 								} catch (IOException e) {
-									throw new RuntimeException(e) ;
+									throw new RuntimeException(e);
 								}
 							}
-							awaitingSites.clear() ;
+							awaitingSites.clear();
 						}
 					}
 			}) ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Service runnable
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * The class <code>ServiceRunnable</code> implements the barrier as a
@@ -273,15 +282,42 @@ public class				DCVMCyclicBarrier
 	protected static class	ServiceRunnable
 	implements	Runnable
 	{
-		protected Hashtable<String,HostPortSocket>	awaitingSites ;
-		protected int								numberOfJVMsInDCVM ;
-		protected Socket								s ;
-		protected BufferedReader						br ;
-		protected CyclicBarrier						localCyclicBarrier ;
-		protected CountDownLatch						finished ;
-		protected final Logger						executionLog ;
-		protected final TracerOnConsole				tracer ;
+		/** sites to be synchronised.										*/
+		protected Hashtable<String,HostPortSocket>	awaitingSites;
+		/** total number of site to be synchronized.						*/
+		protected int								numberOfJVMsInDCVM;
+		/** socket used to receive requests and send responses.				*/
+		protected Socket							s;
+		/** buffered reader associated to the socket s.						*/
+		protected BufferedReader					br;
+		/** Java cyclic barrier implementing the synchronisation behaviour.	*/
+		protected CyclicBarrier						localCyclicBarrier;
+		/** latch used to detect the termination of the cyclic barrier.		*/
+		protected CountDownLatch					finished;
+		/** logger of the cyclic barrier.									*/
+		protected final Logger						executionLog;
+		/** tracer of the cyclic barrier.									*/
+		protected final TracerOnConsole				tracer;
 
+		/**
+		 * create a runnable task to service the cyclic barrier requests.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true			// no precondition.
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @param awaitingSites			sites to be synchronised.
+		 * @param numberOfJVMsInDCVM	total number of site to be synchronized.
+		 * @param s						socket used to receive requests and send responses.
+		 * @param localCyclicBarrier	Java cyclic barrier implementing the synchronisation behaviour.
+		 * @param finished				latch used to detect the termination of the cyclic barrier.
+		 * @param executionLog			logger of the cyclic barrier.
+		 * @param tracer				tracer of the cyclic barrier.
+		 * @throws Exception			<i>to do.</i>
+		 */
 		public				ServiceRunnable(
 			Hashtable<String, HostPortSocket> awaitingSites,
 			int numberOfJVMsInDCVM,
@@ -295,13 +331,13 @@ public class				DCVMCyclicBarrier
 			super();
 			this.awaitingSites = awaitingSites;
 			this.numberOfJVMsInDCVM = numberOfJVMsInDCVM;
-			this.s = s ;
+			this.s = s;
 			this.br = new BufferedReader(
 						  	  new InputStreamReader(this.s.getInputStream()));
-			this.localCyclicBarrier = localCyclicBarrier ;
-			this.finished = finished ;
-			this.executionLog = executionLog ;
-			this.tracer = tracer ;
+			this.localCyclicBarrier = localCyclicBarrier;
+			this.finished = finished;
+			this.executionLog = executionLog;
+			this.tracer = tracer;
 		}
 
 		/**
@@ -325,36 +361,47 @@ public class				DCVMCyclicBarrier
 		@Override
 		public void			run()
 		{
-			String message = null ;
+			String request = null ;
 			try {
-				message = br.readLine() ;
+				synchronized (this.s) {
+					request = br.readLine();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			while (message != null) {
+			CyclicBarrierProtocol.RequestI req =
+						CyclicBarrierProtocol.Request.string2request(request);
+			while (!req.isShutdownRequest()) {
+				assert	req instanceof CyclicBarrierProtocol.WaitRequest;
+				CyclicBarrierProtocol.WaitRequest wreq =
+										(CyclicBarrierProtocol.WaitRequest)req;
+				assert	!wreq.isErroneous() :
+							new Exception("Cyclic barrier received an "
+											+ "erroneous request: " + request);
+
 				this.executionLog.logMessage(
-						"DCVM Cyclic Barrier accepts: " + message) ;
+						"DCVM Cyclic Barrier accepts: " + request);
 				this.tracer.traceMessage(
 						System.currentTimeMillis() + "|" +
-						"DCVM Cyclic Barrier accepts: " + message + "\n") ;
-				String[] tokens = message.split("\\s") ;
+						"DCVM Cyclic Barrier accepts: " + request + "\n");
+
 				synchronized (this.awaitingSites) {
 					// TODO: verify that the host name is known from the
 					// configuration file...
-					if (!this.awaitingSites.containsKey(tokens[0])) {	
+					if (!this.awaitingSites.containsKey(wreq.getJvmURI())) {	
 						this.awaitingSites.put(
-								tokens[0],
+								wreq.getJvmURI(),
 								new HostPortSocket(
-										tokens[1],
-										Integer.parseInt(tokens[2]),
-										this.s)) ; 
+										wreq.getHostname(),
+										wreq.getSocketLocalPort(),
+										this.s)); 
 					} else {
 						if (AbstractCVM.DEBUG_MODE.contains(
 											CVMDebugModes.CYCLIC_BARRIER)) {
 							this.executionLog.logMessage(
 											"DCVM Cyclic Barrier warning: " +
 											"jvm already registered " +
-											tokens[0]) ;
+											wreq.getJvmURI());
 						}
 					}
 					if (AbstractCVM.DEBUG_MODE.contains(
@@ -362,31 +409,34 @@ public class				DCVMCyclicBarrier
 						this.executionLog.logMessage(
 									"DCVM Cyclic Barrier has received " +
 									this.awaitingSites.size() + " out of " +
-									this.numberOfJVMsInDCVM + " expected.") ;
+									this.numberOfJVMsInDCVM + " expected.");
 					}
 				}
 				try {
-					this.localCyclicBarrier.await() ;
+					this.localCyclicBarrier.await();
 				} catch (Exception e) {
-					throw new RuntimeException(e) ;
+					throw new RuntimeException(e);
 				}
 				try {
-					message = br.readLine() ;
+					synchronized (this.s) {
+						request = br.readLine();
+					}
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
+				req = CyclicBarrierProtocol.Request.string2request(request);
 			}
 			try {
-				s.close() ;
+				s.close();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 			if (AbstractCVM.DEBUG_MODE.contains(
 											CVMDebugModes.CYCLIC_BARRIER)) {
 				this.executionLog.logMessage(
-									"DCVMCyclicBarrier.run() finished.") ;
+									"DCVMCyclicBarrier.run() finished.");
 			}
-			this.finished.countDown() ;
+			this.finished.countDown();
 		}
 	}
 
@@ -412,10 +462,10 @@ public class				DCVMCyclicBarrier
 	 */
 	protected void		run()
 	{
-		this.executionLog.logMessage("DCVM Cyclic Barrier up and running!") ;
+		this.executionLog.logMessage("DCVM Cyclic Barrier up and running!");
 		this.tracer.traceMessage(System.currentTimeMillis() + "|" +
-								"DCVM Cyclic Barrier up and running!\n") ;
-		int connected = 0 ;
+								"DCVM Cyclic Barrier up and running!\n");
+		int connected = 0;
 		while (connected < this.numberOfJVMsInDCVM) {
 			try {
 				REQUEST_HANDLER.submit(
@@ -426,7 +476,7 @@ public class				DCVMCyclicBarrier
 							this.localCyclicBarrier,
 							this.finished,
 							this.executionLog,
-							this.tracer)) ;
+							this.tracer));
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -434,19 +484,28 @@ public class				DCVMCyclicBarrier
 		}
 		this.executionLog.logMessage("All connected!") ;
 		this.tracer.traceMessage(System.currentTimeMillis() + "|" +
-								"All connected!\n") ;
+								"All connected!\n");
+
 		try {
-			this.ss.close() ;
+			this.ss.close();
 		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			this.finished.await();
+			this.closing();
+			REQUEST_HANDLER.shutdownNow();
+		} catch (InterruptedException | FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	public void			closing() throws FileNotFoundException
 	{
-		this.executionLog.logMessage("DCVM Cyclic Barrier shuts down!") ;
+		this.executionLog.logMessage("DCVM Cyclic Barrier shuts down!");
 		this.tracer.traceMessage(System.currentTimeMillis() + "|" +
-								"DCVM Cyclic Barrier shuts down!\n") ;
+								"DCVM Cyclic Barrier shuts down!\n");
 		this.executionLog.printExecutionLog() ;
 	}
 
@@ -471,11 +530,8 @@ public class				DCVMCyclicBarrier
 		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CYCLIC_BARRIER) ;
 		try {
 			DCVMCyclicBarrier as = new DCVMCyclicBarrier(args[0]);
-			as.run() ;
-			as.finished.await() ;
-			as.closing() ;
-			REQUEST_HANDLER.shutdownNow() ;
-			System.exit(0) ;
+			as.run();
+			System.exit(0);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

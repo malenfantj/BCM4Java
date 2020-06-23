@@ -126,7 +126,6 @@ public class				ConfigurationFileParser
 	public boolean		validateConfigurationFile(File configFile)
 	throws	Exception
 	{
-		boolean result = false ;
 		// Specify you want a factory for RELAX NG
 		System.setProperty(
 			SchemaFactory.class.getName() + ":" + XMLConstants.RELAXNG_NS_URI,
@@ -140,13 +139,12 @@ public class				ConfigurationFileParser
 		File schemaLocation = new File(SCHEMA_FILENAME);
 
 		// Compile the schema.
-		Schema schema = null ;
-		schema = factory.newSchema(schemaLocation);
+		Schema schema = factory.newSchema(schemaLocation);
 		// Get a validator from the schema.
 		Validator validator = schema.newValidator();
+		// And finally, validate the file.
 		validator.validate(new StreamSource(configFile));
-		result = true ;
-		return result ;
+		return true ;
 	}
 
 	/**
