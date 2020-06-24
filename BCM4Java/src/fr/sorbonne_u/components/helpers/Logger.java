@@ -1,45 +1,47 @@
 package fr.sorbonne_u.components.helpers;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-//-----------------------------------------------------------------------------
+import fr.sorbonne_u.components.exceptions.PostconditionException;
+import fr.sorbonne_u.components.exceptions.PreconditionException;
+
+// -----------------------------------------------------------------------------
 /**
  * The class <code>Logger</code> implements a simple logging facility to
  * be used in the implementation of BCM.
@@ -71,37 +73,37 @@ import java.util.ArrayList;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				Logger
+public class			Logger
 {
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constants and variables
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/** Default Character used to separate the time stamp from the log
 	 *  message, which eases the processing of the file as a csv file
 	 *  by spreadsheets.													*/
-	public final static char	SEPARATION_CHARACTER = '|' ;
+	public final static char	SEPARATION_CHARACTER = '|';
 	/** initial size of in-memory buffer for logging messages.				*/
-	public final static int		INITIAL_SIZE = 100 ;
+	public final static int		INITIAL_SIZE = 100;
 	/** canonical name of the directory in which logs are written.			*/
-	protected String			directory ;
+	protected String			directory;
 	/** name for the log file.												*/
-	protected String			logFileName ;
+	protected String			logFileName;
 	/** file extension of logging files.									*/
-	protected String			logFileExtension ;
+	protected String			logFileExtension;
 	/** character used to separate the time stamp from the log message.		*/
-	protected char				separationChar ;
+	protected char				separationChar;
 	/** initial size of the log array in number of messages.				*/
-	protected int				initialSize ;
+	protected int				initialSize;
 	/**	True if the component is doing logging of its actions.				*/
-	protected boolean			loggingStatus = false ;
+	protected boolean			loggingStatus = false;
 	/**	The buffer in which logging messages are accumulated until their
 	 *  writing on the logging file.										*/
-	protected ArrayList<String>	executionLog ;
+	protected ArrayList<String>	executionLog;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * create a logger with a given file name.
@@ -117,13 +119,12 @@ public class				Logger
 	 */
 	public				Logger(String fileName)
 	{
-		this(System.getProperty("user.dir"),
-			 fileName,
-			 "log",
-			 SEPARATION_CHARACTER,
-			 100) ;
+		this(System.getProperty("user.dir"), fileName, "log",
+			 SEPARATION_CHARACTER, 100);
 
-		assert	fileName != null ;
+		assert	fileName != null :
+					new PreconditionException(
+							"creating a Logger with a null file name!");
 	}
 
 	/**
@@ -132,21 +133,21 @@ public class				Logger
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	directory != null
-	 * pre	fileName != null
-	 * pre	extension != null
-	 * pre	initialSize &gt; 0
-	 * post	this.getDirectory().equals(directory)
-	 * post	this.getFileName().equals(fileName)
-	 * post	this.getFileExtension().equals(extension)
-	 * post	this.getSeparationCharacter() == separationChar
+	 * pre	{@code directory != null}
+	 * pre	{@code fileName != null}
+	 * pre	{@code extension != null}
+	 * pre	{@code initialSize > 0}
+	 * post	{@code this.getDirectory().equals(directory)}
+	 * post	{@code this.getFileName().equals(fileName)}
+	 * post	{@code this.getFileExtension().equals(extension)}
+	 * post	{@code this.getSeparationCharacter() == separationChar}
 	 * </pre>
 	 *
-	 * @param directory		directory in xhich the log file will be output.
-	 * @param fileName		name of the file to output the log.
-	 * @param extension		file extension of the log file.
+	 * @param directory			directory in which the log file will be output.
+	 * @param fileName			name of the file to output the log.
+	 * @param extension			file extension of the log file.
 	 * @param separationChar	character used to separate the time stamp from the log message.
-	 * @param initialSize	initial size of the log array in number of messages.
+	 * @param initialSize		initial size of the log array in number of messages.
 	 */
 	public				Logger(
 		String directory,
@@ -156,28 +157,49 @@ public class				Logger
 		int initialSize
 		)
 	{
-		super() ;
+		super();
 
-		assert	directory != null ;
-		assert	fileName != null ;
-		assert	extension != null ;
-		assert	initialSize > 0 ;
+		assert	directory != null :
+					new PreconditionException(
+							"creating a Logger with a null directory name!");
+		assert	fileName != null :
+					new PreconditionException(
+							"creating a Logger with a null file name!");
+		assert	extension != null :
+					new PreconditionException(
+							"creating a Logger with a null file extension name!");
+		assert	initialSize > 0 :
+					new PreconditionException(
+							"creating a Logger with a non positive initial size:"
+							+ initialSize + "!");
 
-		this.directory = directory ;
-		this.logFileName = fileName ;
-		this.logFileExtension = extension ;
-		this.separationChar = separationChar ;
-		this.initialSize = initialSize ;
+		this.directory = directory;
+		this.logFileName = fileName;
+		this.logFileExtension = extension;
+		this.separationChar = separationChar;
+		this.initialSize = initialSize;
 
-		assert	this.getDirectory().equals(directory) ;
-		assert	this.getFileName().equals(fileName) ;
-		assert	this.getFileExtension().equals(extension) ;
-		assert	this.getSeparationCharacter() == separationChar ;
+		assert	this.getDirectory().equals(directory) :
+					new PostconditionException(
+							"Logger created but the directory is not correctly"
+							+ " initialised!");
+		assert	this.getFileName().equals(fileName) :
+					new PostconditionException(
+							"Logger created but the file name is not correctly"
+							+ " initialised!");
+		assert	this.getFileExtension().equals(extension) :
+					new PostconditionException(
+							"Logger created but the file extension is not "
+							+ "correctly initialised!");
+		assert	this.getSeparationCharacter() == separationChar :
+					new PostconditionException(
+							"Logger created but the separation character is "
+							+ "not correctly initialised!");
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Methods
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return the name of the directory in which the log file will be written.
@@ -193,7 +215,7 @@ public class				Logger
 	 */
 	public String		getDirectory()
 	{
-		return this.directory ;
+		return this.directory;
 	}
 
 	/**
@@ -210,7 +232,9 @@ public class				Logger
 	 */
 	public void			setDirectory(String directory)
 	{
-		assert	directory != null ;
+		assert	directory != null :
+					new PreconditionException(
+							"Logger#setDirectory called with a null directory!");
 
 		this.directory = directory;
 	}
@@ -229,7 +253,7 @@ public class				Logger
 	 */
 	public String		getFileName()
 	{
-		return this.logFileName ;
+		return this.logFileName;
 	}
 
 	/**
@@ -246,9 +270,11 @@ public class				Logger
 	 */
 	public void			setFileName(String fileName)
 	{
-		assert	fileName != null ;
+		assert	fileName != null :
+					new PreconditionException(
+							"Logger#setFileName called with a null file name!");
 
-		this.logFileName = fileName ;
+		this.logFileName = fileName;
 	}
 
 	/**
@@ -265,7 +291,7 @@ public class				Logger
 	 */
 	public String		getFileExtension()
 	{
-		return this.logFileExtension ;
+		return this.logFileExtension;
 	}
 
 	/**
@@ -282,9 +308,12 @@ public class				Logger
 	 */
 	public void			setFileExtension(String extension)
 	{
-		assert	extension != null ;
+		assert	extension != null :
+					new PreconditionException(
+							"Logger#setFileExtension called with a null file "
+							+ "extension!");
 
-		this.logFileExtension = extension ;
+		this.logFileExtension = extension;
 	}
 
 	/**
@@ -303,7 +332,7 @@ public class				Logger
 	{
 		return	this.executionLog == null ?
 					this.initialSize
-				:	this.executionLog.size() ;
+				:	this.executionLog.size();
 	}
 
 	/**
@@ -321,7 +350,7 @@ public class				Logger
 	 */
 	public char			getSeparationCharacter()
 	{
-		return this.separationChar ;
+		return this.separationChar;
 	}
 
 	/**
@@ -339,7 +368,7 @@ public class				Logger
 	 */
 	public void			setSeparationCharacter(char separationChar)
 	{
-		this.separationChar = separationChar ;
+		this.separationChar = separationChar;
 	}
 
 	/**
@@ -355,11 +384,28 @@ public class				Logger
 	 */
 	public void			toggleLogging()
 	{
-		this.loggingStatus = !this.loggingStatus ;
+		this.loggingStatus = !this.loggingStatus;
 		if (this.isLogging() && this.executionLog == null) {
-			this.executionLog = new ArrayList<String>(this.initialSize) ;
-		} else {
-			this.executionLog = null ;
+			this.executionLog = new ArrayList<String>(this.initialSize);
+		}
+	}
+
+	/**
+	 * clear the accumulated log entries.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 */
+	public void			clearLog()
+	{
+		this.executionLog = null;
+		if (this.isLogging()) {
+			this.executionLog = new ArrayList<String>(this.initialSize);
 		}
 	}
 
@@ -377,11 +423,11 @@ public class				Logger
 	 */
 	public boolean		isLogging()
 	{
-		return this.loggingStatus ;
+		return this.loggingStatus;
 	}
 
 	/**
-	 * add an entry in the log.
+	 * add an entry in the log if the logging status is true.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -394,12 +440,15 @@ public class				Logger
 	 */
 	public synchronized void	logMessage(String message)
 	{
-		assert	message != null ;
+		assert	message != null :
+					new PreconditionException(
+							"Logger#logMessage called with a null message!") ;
 
 		if (this.loggingStatus) {
-			String log = "" + System.currentTimeMillis() +
-									this.separationChar + message ;
-			this.executionLog.add(log) ;
+			StringBuffer entry = new StringBuffer();
+			entry.append(System.currentTimeMillis()).
+					append(this.separationChar).append(message) ;
+			this.executionLog.add(entry.toString()) ;
 		}
 	}
 
@@ -432,30 +481,34 @@ public class				Logger
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param fileName				a file name for output.
+	 * @param fileName					a file name for output.
 	 * @throws FileNotFoundException	<i>todo.</i>
 	 */
 	public void			printExecutionLogOnFile(String fileName)
 	throws	FileNotFoundException
 	{
 		if (this.executionLog != null) {
-			String name = null ;
+			String name = null;
 			if (fileName == null) {
-				name = this.logFileName ;
+				name = this.logFileName;
 			} else {
-				name = fileName ;
+				name = fileName;
 			}
 			if (name == null) {
-				throw new FileNotFoundException("fileName is null.") ;
+				throw new FileNotFoundException(
+						"Logger#printExecutionLogOnFile: fileName is null.");
 			}
-			File f = new File(this.getDirectory() + File.separator +
-									name + '.' + this.logFileExtension) ;
-			PrintStream ps = new PrintStream(f) ;
+			StringBuffer extendedFileName =
+									new StringBuffer(this.getDirectory());
+			extendedFileName.append(File.separator).append(name).append('.').
+												append(this.logFileExtension);
+			File f = new File(extendedFileName.toString());
+			PrintStream ps = new PrintStream(f);
 			for (int i = 0 ; i < this.executionLog.size() ; i++) {
-				ps.println(this.executionLog.get(i)) ;
+				ps.println(this.executionLog.get(i));
 			}
-			ps.close() ;
+			ps.close();
 		}
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

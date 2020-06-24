@@ -53,7 +53,7 @@ import fr.sorbonne_u.components.cvm.config.exceptions.InvalidConfigurationFileFo
 import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.helpers.TracerWindow;
 
 //-----------------------------------------------------------------------------
 /**
@@ -164,7 +164,7 @@ public class			DCVMCyclicBarrier
 	/** Execution log of the cyclic barrier.								*/
 	protected final Logger					executionLog;
 	/** 	Tracer of the cyclic barrier.									*/
-	protected final TracerOnConsole			tracer;
+	protected final TracerWindow			tracer;
 
 	// -------------------------------------------------------------------------
 	// Constructor
@@ -211,12 +211,12 @@ public class			DCVMCyclicBarrier
 		this.finished = new CountDownLatch(this.numberOfJVMsInDCVM);
 
 		this.executionLog = new Logger("cyclicBarrier");
-		this.tracer = new TracerOnConsole("CyclicBarrier", 0, 1);
+		this.tracer = new TracerWindow("CyclicBarrier", 0, 1);
 		this.executionLog.toggleLogging();
 		this.tracer.toggleTracing();
 
 		final Logger logger = this.executionLog;
-		final TracerOnConsole tracer = this.tracer;
+		final TracerWindow tracer = this.tracer;
 
 		this.localCyclicBarrier =
 			new CyclicBarrier(
@@ -297,7 +297,7 @@ public class			DCVMCyclicBarrier
 		/** logger of the cyclic barrier.									*/
 		protected final Logger						executionLog;
 		/** tracer of the cyclic barrier.									*/
-		protected final TracerOnConsole				tracer;
+		protected final TracerWindow				tracer;
 
 		/**
 		 * create a runnable task to service the cyclic barrier requests.
@@ -325,7 +325,7 @@ public class			DCVMCyclicBarrier
 			CyclicBarrier localCyclicBarrier,
 			CountDownLatch finished,
 			Logger executionLog,
-			TracerOnConsole tracer
+			TracerWindow tracer
 			) throws Exception
 		{
 			super();

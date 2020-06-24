@@ -35,7 +35,7 @@ package fr.sorbonne_u.components;
 
 import java.lang.annotation.Annotation;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
@@ -269,10 +269,10 @@ implements	ReflectionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerOnConsole)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
 	 */
 	@Override
-	public void			setTracer(TracerOnConsole tracer) throws Exception
+	public void			setTracer(TracerWindow tracer) throws Exception
 	{
 		this.getOwner().handleRequestSync(
 				new AbstractComponent.AbstractService<Void>() {

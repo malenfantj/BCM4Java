@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.reflection.ports;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
 
@@ -146,10 +146,10 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerOnConsole)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
 	 */
 	@Override
-	public void			setTracer(TracerOnConsole tracer) throws Exception
+	public void			setTracer(TracerWindow tracer) throws Exception
 	{
 		((IntercessionI)this.connector).setTracer(tracer) ;
 	}

@@ -52,7 +52,7 @@ import fr.sorbonne_u.components.cvm.config.exceptions.InvalidConfigurationFileFo
 import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.registry.protocol.Request;
 import fr.sorbonne_u.components.registry.protocol.RequestI;
 import fr.sorbonne_u.components.registry.protocol.ShutdownRequest;
@@ -139,7 +139,7 @@ public class				GlobalRegistry
 	/** Execution log of the global registry.								*/
 	protected final Logger				executionLog ;
 	/** Tracing console for the global registry.							*/
-	protected final TracerOnConsole		tracer ;
+	protected final TracerWindow		tracer ;
 
 	// -------------------------------------------------------------------------
 	// Task for the executor framework
@@ -180,7 +180,7 @@ public class				GlobalRegistry
 		/** global registry logger.											*/
 		protected final Logger						executionLog ;
 		/** global registry tracer.											*/
-		protected final TracerOnConsole				tracer ;
+		protected final TracerWindow				tracer ;
 
 		/**
 		 * creating the service task.
@@ -204,7 +204,7 @@ public class				GlobalRegistry
 			ConcurrentHashMap<String,String>	directory,
 			CountDownLatch						finished,
 			Logger								executionLog,
-			TracerOnConsole						tracer
+			TracerWindow						tracer
 			) throws Exception
 		{
 			if (GLOBAL_REGISTRY_IS_LOGGING) {
@@ -332,7 +332,7 @@ public class				GlobalRegistry
 
 		if (GLOBAL_REGISTRY_IS_LOGGING) {
 			this.executionLog = new Logger("globalRegistry");
-			this.tracer = new TracerOnConsole("GlobalRegistry", 0, 0);
+			this.tracer = new TracerWindow("GlobalRegistry", 0, 0);
 			this.executionLog.toggleLogging();
 			this.tracer.toggleTracing();
 		} else {

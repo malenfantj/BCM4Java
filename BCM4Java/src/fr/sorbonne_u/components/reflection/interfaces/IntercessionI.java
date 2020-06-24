@@ -38,7 +38,7 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.ComponentI.ComponentTask;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.interfaces.OfferedI;
 import fr.sorbonne_u.components.interfaces.RequiredI;
 
@@ -222,7 +222,7 @@ extends		OfferedI,
 	 * @param tracer		the tracer to be added.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public void			setTracer(TracerOnConsole tracer) throws	Exception ;
+	public void			setTracer(TracerWindow tracer) throws	Exception ;
 
 	/**
 	 * toggle the tracing mode.

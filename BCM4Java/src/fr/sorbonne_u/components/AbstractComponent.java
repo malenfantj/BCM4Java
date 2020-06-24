@@ -63,7 +63,7 @@ import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.ComponentExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.ComponentSchedulableExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.interfaces.OfferedI;
 import fr.sorbonne_u.components.interfaces.RequiredI;
 import fr.sorbonne_u.components.ports.InboundPortI;
@@ -1197,7 +1197,7 @@ implements	ComponentI
 	/**	The logger for this component.									*/
 	protected Logger			executionLog ;
 	/** The tracer for this component.									*/
-	protected TracerOnConsole	tracer ;
+	protected TracerWindow	tracer ;
 
 	/**
 	 * @see fr.sorbonne_u.components.ComponentI#setLogger(fr.sorbonne_u.components.helpers.Logger)
@@ -1283,10 +1283,10 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#setTracer(fr.sorbonne_u.components.helpers.TracerOnConsole)
+	 * @see fr.sorbonne_u.components.ComponentI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
 	 */
 	@Override
-	public void			setTracer(TracerOnConsole tracer)
+	public void			setTracer(TracerWindow tracer)
 	{
 		this.tracer = tracer ;
 	}
@@ -1500,7 +1500,7 @@ implements	ComponentI
 		this.interfaces2ports = new Hashtable<Class<?>,Vector<PortI>>() ;
 		this.portURIs2ports = new Hashtable<String, PortI>() ;
 		this.executionLog = new Logger(reflectionInboundPortURI) ;
-		this.tracer = new TracerOnConsole(reflectionInboundPortURI, 0, 0) ;
+		this.tracer = new TracerWindow(reflectionInboundPortURI, 0, 0) ;
 
 		this.state = ComponentState.INITIALISED ;
 

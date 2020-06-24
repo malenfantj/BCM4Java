@@ -4,8 +4,7 @@ package fr.sorbonne_u.components.helpers;
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -35,17 +34,10 @@ package fr.sorbonne_u.components.helpers;
 
 // -----------------------------------------------------------------------------
 /**
- * The interface <code>CVMDebugModesI</code> marks values of debug modes
- * to ease their extension by end users.
+ * The class <code>TracerI</code> delcares the common behaviours of tracers
+ * for BCM.
  *
  * <p><strong>Description</strong></p>
- * 
- * <p>
- * This interface is implemented by the enumeration  <code>CVMDebugModes</code>
- * as well as the type of the values of the set in the variable
- * <code>AbstractCVM.DEBUG_MODES</code>. Hence, this setting allows programmers
- * to extend it with their own debugging modes.
- * </p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -53,12 +45,80 @@ package fr.sorbonne_u.components.helpers;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2018-08-28</p>
+ * <p>Created on : 2020-06-24</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		CVMDebugModesI
+public interface		TracerI
 {
+	/**
+	 * toggle the tracing status.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	this.isTracing() == !this.isTracing()@pre
+	 * post	this.isTracing() == !this.isSuspended()
+	 * </pre>
+	 *
+	 */
+	public void			toggleTracing();
 
+	/**
+	 * toggle the suspend status of the trace.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	this.isTracing()
+	 * post	this.isSuspended() == !this.isSuspended()@pre
+	 * </pre>
+	 *
+	 */
+	public void			toggleSuspend();
+
+	/**
+	 * return the tracing status.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the tracing status.
+	 */
+	public boolean		isTracing();
+
+	/**
+	 * return the trace suspension status.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the trace suspension status.
+	 */
+	public boolean		isSuspended();
+
+	/**
+	 * show the trace message if the tracing status is true and the suspension
+	 * status is false.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param message		trace message to be output.
+	 */
+	public void			traceMessage(String message);
 }
 // -----------------------------------------------------------------------------

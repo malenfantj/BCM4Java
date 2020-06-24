@@ -35,8 +35,9 @@ package fr.sorbonne_u.components.helpers;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import fr.sorbonne_u.components.exceptions.PreconditionException;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>ComponentExecutorServiceManager</code> defines objects
  * used to manage user-defined executor services in components.
@@ -55,22 +56,20 @@ import java.util.concurrent.TimeUnit;
  */
 public class			ComponentExecutorServiceManager
 {
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constants and variables
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/** unique identifier of the executor service within the component. 	*/
-	protected final String			uri ;
+	protected final String			uri;
 	/** number of threads in the executor service.					 		*/
-	protected final int				nbThreads ;
-	/** true if the executor service is schedulable, false otherwise.		*/
-	protected final boolean			schedulable ;
+	protected final int				nbThreads;
 	/** executor service to run requests and tasks.					 		*/
-	protected final ExecutorService	es ;
+	protected final ExecutorService	es;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * create a manager with the given URI and the given number of threads.
@@ -78,52 +77,15 @@ public class			ComponentExecutorServiceManager
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	uri != null
+	 * pre	{@code uri != null
 	 * pre	{@code nbThreads > 0}
-	 * pre	{@code es != null && es instanceof ExecutorService}
+	 * pre	{@code es != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param uri			unique identifier of the executor service within the component.
-	 * @param nbThreads		number of threads in the executor service.
-	 * @param schedulable	true if the executor service is schedulable, false otherwise.
-	 * @param es			executor service to run requests and tasks.
-	 */
-	protected			ComponentExecutorServiceManager(
-		String uri,
-		int nbThreads,
-		boolean schedulable,
-		ExecutorService	es
-		)
-	{
-		super() ;
-
-		assert	uri != null ;
-		assert	nbThreads > 0 ;
-		assert	es != null ;
-		assert	es instanceof ExecutorService ;
-
-		this.uri = uri ;
-		this.nbThreads = nbThreads ;
-		this.schedulable = schedulable ;
-		this.es = es ;
-	}
-
-	/**
-	 * create a manager with the given URI and the given number of threads.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	uri != null
-	 * pre	{@code nbThreads > 0}
-	 * pre	{@code es != null && es instanceof ExecutorService}
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param uri			unique identifier of the executor service within the component.
-	 * @param nbThreads		number of threads in the executor service.
-	 * @param es			executor service to run requests and tasks.
+	 * @param uri		unique identifier of the executor service within the component.
+	 * @param nbThreads	number of threads in the executor service.
+	 * @param es		executor service to run requests and tasks.
 	 */
 	public				ComponentExecutorServiceManager(
 		String uri,
@@ -131,12 +93,34 @@ public class			ComponentExecutorServiceManager
 		ExecutorService	es
 		)
 	{
-		this(uri, nbThreads, false, es) ;
+		super() ;
+
+		assert	uri != null :
+					new PreconditionException(
+							"creating a ComponentExecutorServiceManager with " +
+							"a null URI!");
+		assert	nbThreads > 0 :
+					new PreconditionException(
+							"creating a ComponentExecutorServiceManager with " +
+							"a wrong number of threads: " + nbThreads + "!");
+		assert	es != null :
+					new PreconditionException(
+							"creating a ComponentExecutorServiceManager with " +
+							"a null executor service!");
+		assert	!(this instanceof ComponentExecutorServiceManager)
+											|| es instanceof ExecutorService :
+					new PreconditionException(
+							"creating a ComponentExecutorServiceManager with " +
+							"an executor service that is : " + nbThreads + "!"); 
+
+		this.uri = uri;
+		this.nbThreads = nbThreads;
+		this.es = es;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Methods
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return the URI associated with the executor service in its component.
@@ -170,7 +154,7 @@ public class			ComponentExecutorServiceManager
 	 */
 	public boolean		isSchedulable()
 	{
-		return this.schedulable ;
+		return false;
 	}
 
 	/**
@@ -295,4 +279,4 @@ public class			ComponentExecutorServiceManager
 		return this.es.awaitTermination(timeout, unit) ;
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

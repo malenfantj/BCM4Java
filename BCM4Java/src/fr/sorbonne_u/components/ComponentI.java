@@ -42,7 +42,7 @@ import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerOnConsole;
+import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
@@ -785,7 +785,7 @@ public interface		ComponentI
 	 *
 	 * @param tracer			the tracer to be added.
 	 */
-	public void			setTracer(TracerOnConsole tracer) ;
+	public void			setTracer(TracerWindow tracer) ;
 
 	/**
 	 * toggle the tracing mode.

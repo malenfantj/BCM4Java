@@ -4,8 +4,7 @@ package fr.sorbonne_u.components.helpers;
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -33,15 +32,12 @@ package fr.sorbonne_u.components.helpers;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-
 import fr.sorbonne_u.components.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ComponentSchedulableExecutorServiceManager</code> implements
- * an executor service manager for scheduled pool threads.
+ * The class <code>TracerConsole</code> implements a simple tracer for BCM
+ * printing trace messages on the console associated to the process.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -51,77 +47,99 @@ import fr.sorbonne_u.components.exceptions.PreconditionException;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-01-07</p>
+ * <p>Created on : 2020-06-24</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ComponentSchedulableExecutorServiceManager
-extends		ComponentExecutorServiceManager
+public class			TracerConsole
+implements	TracerI
 {
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+
+	/** True if traces must be output and false otherwise.					*/
+	protected boolean	tracingStatus;
+	/** True if the trace is suspended and false otherwise.					*/
+	protected boolean	suspendStatus;
+
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 
 	/**
-	 * create a scheduled executor service manager with the given URI and
-	 * the given number of threads.
 	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code uri != null}
-	 * pre	{@code nbThreads > 0}
-	 * pre	{@code es != null}
-	 * pre	{@code es instanceof ScheduledExecutorService}
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param uri		unique identifier of the executor service within the component.
-	 * @param nbThreads	number of threads in the executor service.
-	 * @param es		scheduled executor service to run requests and tasks (scheduled or not).
-	 */
-	public				ComponentSchedulableExecutorServiceManager(
-		String uri,
-		int nbThreads,
-		ExecutorService	es
-		)
-	{
-		super(uri, nbThreads, es) ;
-
-		assert	es instanceof ScheduledExecutorService :
-					new PreconditionException(
-						"creating a ComponentSchedulableExecutorServiceManager "
-						+ "with an executor service that is not schedulable!") ;
-	}
-
-	// -------------------------------------------------------------------------
-	// Methods
-	// -------------------------------------------------------------------------
-
-	/**
-	 * @see fr.sorbonne_u.components.helpers.ComponentExecutorServiceManager#isSchedulable()
-	 */
-	@Override
-	public boolean		isSchedulable()
-	{
-		return true;
-	}
-
-	/**
-	 * return the schedulable executor service held by this manager.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * post	{@code !this.isTracing()}
+	 * post	{@code !this.isSuspended()}
 	 * </pre>
 	 *
-	 * @return	the schedulable executor service held by this manager.
 	 */
-	public ScheduledExecutorService	getScheduledExecutorService()
+	public				TracerConsole()
 	{
-		return (ScheduledExecutorService) this.es ;
+		this.tracingStatus = false;
+		this.suspendStatus = false;
+	}
+
+	// -------------------------------------------------------------------------
+	// Tracer methods
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @see fr.sorbonne_u.components.helpers.TracerI#toggleTracing()
+	 */
+	@Override
+	public void			toggleTracing()
+	{
+		this.tracingStatus = !this.tracingStatus;
+		this.suspendStatus = !this.tracingStatus;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.helpers.TracerI#toggleSuspend()
+	 */
+	@Override
+	public void			toggleSuspend()
+	{
+		assert	this.isTracing() :
+					new PreconditionException(
+							"TracerConsole#toggleSuspend called but tracing "
+							+ "is not activated!");
+
+		this.suspendStatus = !this.suspendStatus;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.helpers.TracerI#isTracing()
+	 */
+	@Override
+	public boolean		isTracing()
+	{
+		return this.tracingStatus;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.helpers.TracerI#isSuspended()
+	 */
+	@Override
+	public boolean		isSuspended()
+	{
+		return this.suspendStatus;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.helpers.TracerI#traceMessage(java.lang.String)
+	 */
+	@Override
+	public void			traceMessage(String message)
+	{
+		if (this.tracingStatus && !this.suspendStatus) {
+			System.out.print(message);
+		}
 	}
 }
 // -----------------------------------------------------------------------------
