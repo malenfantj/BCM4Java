@@ -44,6 +44,59 @@ import java.util.Set;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
+ * The parameters come essentially from the XML configuration file which must
+ * conform to the following Relax NG schema:
+ * </p>
+ * <pre>
+ * start = deployment
+ * deployment = element deployment {
+ *   codebase?,             # localisation of the code base of the application
+ *   hosts,                 # description of the hosts
+ *   cyclicBarrier,         # configuration of the cyclic barrier
+ *   globalRegistry,        # configuration of the global registry
+ *   rmiRegistryPort,       # configuration of the RMI registry
+ *   jvms2hostnames         # mapping from JVM to hosts running them
+ * }
+ * codebase = element codebase {
+ *   attribute hostname  { text },  # host on which the code base may be found
+ *   attribute directory { text },  # directory in which the code base may be found
+ *   empty
+ * }
+ * hosts = element hosts { host+ }
+ * host = element host {
+ *   attribute name { text },	# the name of the host
+ *   attribute dir  { text },	# absolute path to the execution directory
+ *   empty
+ * }
+ * cyclicBarrier = element cyclicBarrier {
+ *   attribute hostname  { text },   # host on which the cyclic barrier is running
+ *   attribute port      { xsd:int } # port number listen by the cyclic barrier
+ * }
+ * globalRegistry = element globalRegistry {
+ *   attribute hostname  { text },   # host on which the global registry is running
+ *   attribute port      { xsd:int } # port number listen by the global registry
+ * }
+ * rmiRegistryPort = element rmiRegistryPort {
+ *   attribute no        { xsd:int }  # port number listen by the RMI registry
+ * }
+ * jvms2hostnames = element jvms2hostnames { jvm2hostname+ }
+ * jvm2hostname = element jvm2hostname {
+ *   attribute jvmuri { xsd:anyURI },      # JVM URI
+ *                                         # is this JVM creating the RMI registry
+ *   attribute rmiRegistryCreator { xsd:boolean },
+ *   attribute hostname { text },          # name of the host running that JVM
+ *   attribute mainclass { text },		# canonical class name of the main class
+ *   attribute reflective { xsd:boolean }?
+ * }
+ * </pre>
+ * <p>
+ * Most of this information and derived one are included in instances of
+ * <code>ConfigurationParameters</code>. These instances are linked to Component
+ * Virtual Machines and thus one instance exist in each JVM running a CVM in
+ * a distributed execution.
+ * </p>
+ * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
@@ -56,33 +109,78 @@ import java.util.Set;
  */
 public class				ConfigurationParameters
 {
-	protected String						codebaseHostname ;
-	protected String						codebaseDirectory ;
+	/** hostname of the computer holding the code base.						*/
+	protected String					codebaseHostname ;
+	/** full name of the directory in which the code base is stored.		*/
+	protected String					codebaseDirectory ;
+	/** map from hostnames to	directories storing the code base.			*/
 	protected Hashtable<String,String>	hosts2dirs ;
-	protected String						cyclicBarrierHostname ;
+	/** hostname of the computer that will run the cyclic barrier.			*/
+	protected String					cyclicBarrierHostname ;
+	/** port number used to connect with the cyclic barrier.				*/
 	protected int						cyclicBarrierPort ;
-	protected String						globalRegistryHostname ;
+	/** hostname of the computer running the global registry.				*/
+	protected String					globalRegistryHostname ;
+	/** port number used to connect with the global registry.				*/
 	protected int						globalRegistryPort ;
+	/** port number used to connect with the rmi registry.					*/
 	protected int						rmiregistryPort ;
+	/** array of URI designating all of the JVM participating in the
+	 *  current execution.													*/
 	protected String[]					jvmURIs ;
+	/** set of URI of the JVM that will create the rmi registries (one per
+	 *  host, other JVM simply connect to the rmi registry running on
+	 *  the same host as they do).											*/
 	protected Set<String>				rmiRegistryCreators ;
+	/** set of hostnames of the computers that will run a rmi registry.		*/
 	protected Set<String>				rmiRegistryHosts ;
+	/** map from URI of the JVM to the hostnames of the computer running
+	 *  them.																*/
 	protected Hashtable<String,String>	jvmURIs2hosts ;
+	/** map from URI of the JVM to the fully qualified names of the main
+	 *  classes that must be run by the corresponding JVM.					*/
 	protected Hashtable<String,String>	jvmURIs2mainclasses ;
+	/** set of URI of the JVM that requires support for reflective
+	 *  actions.															*/
 	protected Set<String>				reflectiveJVM_URIs ;
 
+	/**
+	 * create a configuration parameters holder.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition. TODO
+	 * post	true			// no postcondition. TODO
+	 * </pre>
+	 *
+	 * @param codebaseHostname			hostname of the computer holding the code base.
+	 * @param codebaseDirectory			full name of the directory in which the code base is stored.
+	 * @param hosts2dirs				map from hostnames to	directories storing the code base.
+	 * @param cyclicBarrierHostname		hostname of the computer that will run the cyclic barrier.
+	 * @param cyclicBarrierPort			port number used to connect with the cyclic barrier.
+	 * @param globalRegistryHostname	hostname of the computer running the global registry.
+	 * @param globalRegistryPort		port number used to connect with the global registry.
+	 * @param rmiregistryPort			port number used to connect with the rmi registry.
+	 * @param jvmURIs					array of URI designating all of the JVM participating in the current execution.
+	 * @param jvmURIs2hosts				map from URI of the JVM to the hostnames of the computer running them.
+	 * @param jvmURIs2mainclasses		map from URI of the JVM to the fully qualified names of the main classes that must be run by the corresponding JVM.
+	 * @param rmiRegistryCreators		set of URI of the JVM that will create the rmi registries (one per host, other JVM simply connect to the rmi registry running on the same host as they do).
+	 * @param rmiRegistryHosts			set of hostnames of the computers that will run a rmi registry.
+	 * @param reflectiveJVM_URIs		set of URI of the JVM that requires support for reflective actions.
+	 */
 	public				ConfigurationParameters(
 		String						codebaseHostname,
 		String						codebaseDirectory,
-		Hashtable<String,String>		hosts2dirs,
+		Hashtable<String,String>	hosts2dirs,
 		String						cyclicBarrierHostname,
 		int							cyclicBarrierPort,
 		String						globalRegistryHostname,
 		int							globalRegistryPort,
 		int							rmiregistryPort,
-		String[]						jvmURIs,
-		Hashtable<String,String>		jvmURIs2hosts,
-		Hashtable<String,String>		jvmURIs2mainclasses,
+		String[]					jvmURIs,
+		Hashtable<String,String>	jvmURIs2hosts,
+		Hashtable<String,String>	jvmURIs2mainclasses,
 		Set<String>					rmiRegistryCreators,
 		Set<String>					rmiRegistryHosts,
 		Set<String>					reflectiveJVM_URIs
@@ -261,4 +359,4 @@ public class				ConfigurationParameters
 					append("]").toString() ;
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

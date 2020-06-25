@@ -1,11 +1,10 @@
-package fr.sorbonne_u.components.exceptions;
+package fr.sorbonne_u.components.cvm.config.exceptions;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -35,9 +34,9 @@ package fr.sorbonne_u.components.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The exception <code>ConfigurationException</code> is thrown when some
- * something unexpected happen or an unacceptable state is reached during
- * the BCM configuration.
+ * The class <code>ConfigurationException</code> defines the inheritance root
+ * for exceptions thrown when the configuration of a BCM distributed
+ * execution encounters a problem.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -47,19 +46,18 @@ package fr.sorbonne_u.components.exceptions;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2017-10-26</p>
+ * <p>Created on : 2020-06-24</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			ConfigurationException
 extends		Exception
 {
-
 	private static final long serialVersionUID = 1L;
 
-	public 				ConfigurationException()
+	public				ConfigurationException()
 	{
-		super() ;
+		super();
 	}
 
 	public				ConfigurationException(String message)
@@ -86,5 +84,7 @@ extends		Exception
 	{
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
+
 }
+
 // -----------------------------------------------------------------------------

@@ -50,7 +50,7 @@ package fr.sorbonne_u.components.cvm.config.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			InvalidConfigurationFileFormatException
-extends		Exception
+extends		ConfigurationException
 {
 	private static final long serialVersionUID = 1L;
 

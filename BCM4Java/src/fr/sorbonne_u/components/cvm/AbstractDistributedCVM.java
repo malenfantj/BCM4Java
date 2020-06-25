@@ -42,12 +42,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Set;
-
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
+import fr.sorbonne_u.components.cvm.config.exceptions.ConfigurationException;
 import fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrierClient;
-import fr.sorbonne_u.components.exceptions.ConfigurationException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.ports.PortI;
@@ -66,8 +65,10 @@ import fr.sorbonne_u.components.registry.protocol.Response;
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
  * DCVM are deployed on a set of Java virtual machines, themselves running over
  * a set of different hosts.  A deployment uses:
+ * </p>
  * <ul>
  * <li>one RMI registry per host (limitation of the RMI registry provided by
  *   Oracle that entries may be set only on a registry that runs on the same
@@ -81,56 +82,56 @@ import fr.sorbonne_u.components.registry.protocol.Response;
  *   to know which components must be created by the current JVM and which are
  *   created by other virtual machines.</li>
  * </ul>
- * 
+ * <p>
  * The configuration file provides application-wide informations required on
  * each virtual machine to make the system work properly.  This file is giving
  * the necessary information to all of the different JVM, and to the tools like
  * the cyclic barrier used to synchronise the different JVM.  The Relax NG
  * schema of the configuration file is as follows:
- * 
+ * </p>
  * <pre>
  * start = deployment
- * 
  * deployment = element deployment {
  *   codebase?,             # localisation of the code base of the application
+ *   hosts,                 # description of the hosts
  *   cyclicBarrier,         # configuration of the cyclic barrier
  *   globalRegistry,        # configuration of the global registry
  *   rmiRegistryPort,       # configuration of the RMI registry
  *   jvms2hostnames         # mapping from JVM to hosts running them
  * }
- * 
  * codebase = element codebase {
  *   attribute hostname  { text },  # host on which the code base may be found
  *   attribute directory { text },  # directory in which the code base may be found
  *   empty
  * }
- * 
+ * hosts = element hosts { host+ }
+ * host = element host {
+ *   attribute name { text },	# the name of the host
+ *   attribute dir  { text },	# absolute path to the execution directory
+ *   empty
+ * }
  * cyclicBarrier = element cyclicBarrier {
  *   attribute hostname  { text },   # host on which the cyclic barrier is running
  *   attribute port      { xsd:int } # port number listen by the cyclic barrier
  * }
- * 
  * globalRegistry = element globalRegistry {
  *   attribute hostname  { text },   # host on which the global registry is running
  *   attribute port      { xsd:int } # port number listen by the global registry
  * }
- * 
  * rmiRegistryPort = element rmiRegistryPort {
  *   attribute no        { xsd:int }  # port number listen by the RMI registry
  * }
- * 
- * jvms2hostnames = element jvms2hostnames {
- *   jvm2hostname+
- * }
- * 
+ * jvms2hostnames = element jvms2hostnames { jvm2hostname+ }
  * jvm2hostname = element jvm2hostname {
  *   attribute jvmuri { xsd:anyURI },      # JVM URI
  *                                         # is this JVM creating the RMI registry
  *   attribute rmiRegistryCreator { xsd:boolean },
  *   attribute hostname { text }           # name of the host running that JVM
+ *   attribute mainclass { text },		# canonical class name of the main class
+ *   attribute reflective { xsd:boolean }?
  * }
  * </pre>
- * 
+ * <p>
  * The DCVM object created from the user-defined subclass of this abstract class
  * is meant to be executed on every JVM running components used for the
  * deployment.  The configuration file and the code of the user must be written
@@ -139,14 +140,17 @@ import fr.sorbonne_u.components.registry.protocol.Response;
  * connection points of their inbound ports (the ones for the offered interfaces
  * of the components) so that the client components will be able to get the
  * information from the registry to do the connection.
- * 
+ * </p>
+ * <p>
  * In order to ensure the availability of the information and to avoid deadlocks
  * in this initialisation phase, all of the static creations and inbound
  * connection publications must be done before beginning to query the registry
  * to connect local components to distant ones.  The cyclic barrier serves as a
  * mean for synchronisation to this end.
- * 
+ * </p>
+ * <p>
  * Starting a component-based application entails:
+ * </p>
  * <ol>
  * <li>Starting the global registry on the global registry host.</li>
  * <li>On each host, start the different JVM that must run on that host, paying
@@ -395,9 +399,9 @@ implements	DistributedComponentVirtualMachineI
 		return reference;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Cyclic barrier management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**	distributed implementation of a cyclic barrier for assemblies.		*/
 	protected DCVMCyclicBarrierClient	cyclicBarrierClient;
@@ -507,16 +511,6 @@ implements	DistributedComponentVirtualMachineI
 
 		this.debugginLogger =
 			new Logger("dcvm_" + AbstractCVM.getHostname().replace('.', '_'));
-
-		// Redirecting the stdout and stderr to a window frame.
-		// Currently works only when everything runs on the localhost.
-		// TODO: make it work for truly distributed applications.
-//		if (AbstractDistributedCVM.thisHostname.equals("localhost")) {
-//			new WindowOutputStream(
-//					AbstractDistributedCVM.thisHostname + ":" +
-//										AbstractDistributedCVM.thisJVMURI,
-//					0, 0, xLayout, yLayout) ;
-//		}
 
 		GlobalRegistry.REGISTRY_HOSTNAME =
 					this.configurationParameters.getGlobalRegistryHostname();
