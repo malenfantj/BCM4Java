@@ -1,49 +1,52 @@
 package fr.sorbonne_u.components;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
-//Jacques.Malenfant@lip6.fr
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
-import fr.sorbonne_u.components.exceptions.InvariantException;
-import fr.sorbonne_u.components.exceptions.PostconditionException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.interfaces.ComponentServiceI;
 import fr.sorbonne_u.components.ports.PortI;
-import java.rmi.server.UnicastRemoteObject;
+import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
-//-----------------------------------------------------------------------------
+import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+// -----------------------------------------------------------------------------
 /**
  * The class <code>AbstractPort</code> represents the basic properties and
  * behaviours of ports in the component model.
@@ -56,6 +59,7 @@ import java.rmi.server.UnicastRemoteObject;
  * each others using connectors.  Hence, ports are used entry and exit points
  * in components to handle calls or data exchanges among them. 
  * </p>
+ * 
  * <p><i>Connection protocol</i></p>
  * 
  * <p>
@@ -123,8 +127,9 @@ import java.rmi.server.UnicastRemoteObject;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		this.getImplementedInterface().isAssignableFrom(this.getClass())
- * invariant		p.connected() implies (p.isRemotelyConnected() implies p.isDistributedlyPublished())
+ *              // TODO: the next can't be verified yet for inbound port
+ *              // as their connection status ins not correctly tracked.
+ * invariant	{@code !connected() || isPublished()}
  * </pre>
  * 
  * <p>Created on : 2012-01-04</p>
@@ -135,9 +140,9 @@ public abstract class	AbstractPort
 extends		UnicastRemoteObject
 implements	PortI
 {
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Port unique identifier management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * generate a unique identifier for the port which has the interface
@@ -153,17 +158,17 @@ implements	PortI
 	 * @param implementedInterface	interface to be implemented by the port.
 	 * @return						a distributed system-wide unique id.
 	 */
-	public static String		generatePortURI(Class<?> implementedInterface)
+	public static String	generatePortURI(Class<?> implementedInterface)
 	{
 		assert	implementedInterface != null :
-					new PreconditionException("Implemented interface is null!") ;
+					new PreconditionException("Implemented interface is null!");
 
-		String ret = implementedInterface.getName() + "-" + generatePortURI() ;
+		String ret = implementedInterface.getName() + "-" + generatePortURI();
 
 		assert	ret != null :
-					new PostconditionException("Result shouldn't be null!") ;
+					new PostconditionException("Result shouldn't be null!");
 
-		return ret ;
+		return ret;
 	}
 
 	/**
@@ -178,32 +183,81 @@ implements	PortI
 	 *
 	 * @return	a distributed system-wide unique id.
 	 */
-	public static String		generatePortURI()
+	public static String	generatePortURI()
 	{
 		// see http://www.asciiarmor.com/post/33736615/java-util-uuid-mini-faq
-		String ret = java.util.UUID.randomUUID().toString() ;
+		String ret = java.util.UUID.randomUUID().toString();
 
 		assert	ret != null :
-					new PostconditionException("Result shouldn't be null!") ;
+					new PostconditionException("Result shouldn't be null!");
 
-		return ret ;
+		return ret;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Instance variables and constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
-	private static final long			serialVersionUID = 1L ;
+	private static final long			serialVersionUID = 1L;
 	/** the unique identifier used to publish this entry point.				*/
-	protected final String				uri ;
+	protected final String				uri;
 	/** the interface implemented by this port.								*/
-	protected final Class<?>			implementedInterface ;
+	protected final Class<? extends ComponentServiceI>	implementedInterface;
 	/** the component owning this port.										*/
-	protected final AbstractComponent	owner ;
+	protected final AbstractComponent	owner;
 	/** the port has been locally published.								*/
-	protected boolean					isPublished = false ;
+	protected final AtomicBoolean		isPublished = new AtomicBoolean(false);
 	/** the port has been distributedly published.							*/
-	protected boolean					isDistributedlyPublished = false ;
+	protected final AtomicBoolean		isDistributedlyPublished =
+													new AtomicBoolean(false);
+	/** true when the port has been destroyed, false otherwise.				*/
+	protected final AtomicBoolean		isDestroyed = new AtomicBoolean(false);
+
+	/**
+	 * check the implementation invariant of the class.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	p != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param p				instance on which the invariant must be checked.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	protected static void	checkImplementationInvariant(AbstractPort p)
+	throws Exception
+	{
+		assert	p != null;
+
+		synchronized (p) {
+			assert	p.uri != null :
+						new ImplementationInvariantException("uri != null");
+			assert	p.implementedInterface != null :
+						new ImplementationInvariantException(
+								"implementedInterface != null");
+			assert	ComponentServiceI.class.isAssignableFrom(
+													p.implementedInterface) :
+						new ImplementationInvariantException(
+								"ComponentServiceI.class.isAssignableFrom(" + 
+								"implementedInterface)");
+			assert	p.implementedInterface.isAssignableFrom(p.getClass()) :
+						new ImplementationInvariantException(
+								"implementedInterface.isAssignableFrom("
+								+ "getClass()");
+			assert	p.owner != null :
+						new ImplementationInvariantException("owner != null");
+			assert	!p.isDestroyed.get() || p.owner.isPortExisting(p.uri) :
+						new ImplementationInvariantException(
+								"isDestroyed.get() || "
+								+ "owner.isPortExisting(uri)");
+			assert	!p.isDistributedlyPublished.get() || p.isPublished.get() :
+						new ImplementationInvariantException(
+								"!isDistributedlyPublished.get() || "
+								+ "isPublished.get()");
+		}
+	}
 
 	/**
 	 * check the invariant of the class.
@@ -215,42 +269,35 @@ implements	PortI
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param p			object on which the invariant must be checked.
-	 * @throws Exception	<i>todo.</i>
+	 * @param p				instance on which the invariant must be checked.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected static void	checkInvariant(AbstractPort p) throws Exception
 	{
-		assert	p != null ;
+		assert	p != null;
 
-		// From PortI
-		assert	p.getPortURI() != null :
-					new InvariantException("this.getPortURI() != null") ;
-		assert	p.getOwner() != null :
-					new InvariantException("this.getOwner() != null") ;
-		assert	p.getImplementedInterface() != null :
-					new InvariantException(
-							"this.getImplementedInterface() != null") ;
-		assert	ComponentServiceI.class.
-							isAssignableFrom(p.getImplementedInterface()) :
-					new InvariantException(
-						"ComponentServiceI.class.isAssignableFrom("
-								+ "this.getImplementedInterface()) ["
-									+ p.getImplementedInterface() + "]") ;
-		assert	p.getOwner().isInterface(p.getImplementedInterface()) :
-					new InvariantException(
-						"this.getOwner().isInterface("
-							+ "this.getImplementedInterface())"
-								+ " [" + p.getImplementedInterface() + "]") ;
-		assert	!p.isDistributedlyPublished() || p.isPublished() :
-					new InvariantException(
-							"this.isDistributedlyPublished() => "
-											+ "this.isPublished()") ;
-
-		// From AbstractPort
-		assert	p.getImplementedInterface().isAssignableFrom(p.getClass()) :
-					new InvariantException(
-							"p.getImplementedInterface()."
-									+ "isAssignableFrom(p.getClass())") ;
+		synchronized(p) {
+			// From PortI
+			assert	p.isDestroyed() == (p.getOwner() == null) :
+						new InvariantException(
+								"isDestroyed() == (getOwner() == null)");
+			assert	!p.isDestroyed() ||
+								p.getOwner().isPortExisting(p.getPortURI()) : 
+						new InvariantException(
+								"!isDestroyed() || "
+								+ "getOwner().isPortExisting(getPortURI())");
+			// FIXME: as the connected status of inbound port is not correctly
+			// tracked yet, this can only be checked for outbound port.
+			//assert	!p.connected() || p.isPublished() :
+			//				new InvariantException("!connected() || isPublished()");
+			assert	!p.isDistributedlyPublished() || p.isPublished() :
+						new InvariantException(
+								"!isDistributedlyPublished() || isPublished()");
+			assert	p.getOwner().isInterface(p.getImplementedInterface()) :
+						new InvariantException(
+								"getOwner().isInterface("
+										+ "getImplementedInterface())");
+		}
 	}
 
 	/**
@@ -259,12 +306,14 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	uri != null and owner != null and implementedInterface != null
-	 * pre	ComponentImplementedI.class.isAssignableFrom(implementedInterface)
-	 * pre	implementedInterface.isAssignableFrom(this.getClass())
-	 * post	this.getPortURI().equals(uri)
-	 * post	this.getOwner().equals(owner)
-	 * post this.getImplementedInterface().equals(implementedInterface)
+	 * pre	{@code uri != null && owner != null && implementedInterface != null}
+	 * pre	{@code !owner.isPortExisting(uri)}
+	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code getPortURI().equals(uri)}
+	 * pre	{@code owner.isPortExisting(uri)}
 	 * </pre>
 	 *
 	 * @param uri					unique identifier of the port.
@@ -274,31 +323,33 @@ implements	PortI
 	 */
 	public				AbstractPort(
 		String uri,
-		Class<?> implementedInterface,
+		Class<? extends ComponentServiceI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
-		super() ;
-		assert	uri != null : new PreconditionException("uri != null") ;
-		assert	owner != null : new PreconditionException("owner != null") ;
+		super();
+		assert	uri != null : new PreconditionException("uri != null");
+		assert	owner != null : new PreconditionException("owner != null");
 		assert	implementedInterface != null :
-					new PreconditionException("implementedInterface != null") ;
+					new PreconditionException("implementedInterface != null");
+		assert	!owner.isPortExisting(uri) :
+					new PreconditionException("owner.isPortExisting(uri)");
 		assert	implementedInterface.isAssignableFrom(this.getClass()) :
 					new PreconditionException(
 							"implementedInterface.isAssignableFrom("
-													+ "this.getClass())") ;
-		assert	ComponentServiceI.class.
-									isAssignableFrom(implementedInterface) :
-					new PreconditionException(
-							"ComponentServiceI.class."
-								+ "isAssignableFrom(implementedInterface)") ;
+													+ "this.getClass())");
 
-		this.uri = uri ;
-		this.owner = (AbstractComponent) owner ;
-		this.implementedInterface = implementedInterface ;
-		this.addPortToOwner() ;
+		this.uri = uri;
+		this.owner = (AbstractComponent) owner;
+		this.implementedInterface = implementedInterface;
+		this.addPortToOwner();
 
-		AbstractPort.checkInvariant(this) ;
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
+		assert	!this.isDestroyed() :
+					new PostconditionException("!isDestroyed()");
+		assert	owner.isPortExisting(uri) :
+					new PostconditionException("owner.isPortExisting(uri)");
 	}
 
 	/**
@@ -307,11 +358,13 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner != null and implementedInterface != null
-	 * pre	ComponentImplementedI.class.isAssignableFrom(implementedInterface)
-	 * pre	implementedInterface.isAssignableFrom(this.getClass())
-	 * post	this.getOwner().equals(owner)
-	 * post this.getImplementedInterface().equals(implementedInterface)
+	 * pre	{@code owner != null && implementedInterface != null}
+	 * pre	{@code !owner.isPortExisting(uri)}
+	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code owner.isPortExisting(uri)}
 	 * </pre>
 	 *
 	 * @param implementedInterface	interface implemented by this port.
@@ -319,17 +372,17 @@ implements	PortI
 	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractPort(
-		Class<?> implementedInterface,
+		Class<? extends ComponentServiceI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
 		this(AbstractPort.generatePortURI(implementedInterface),
-			 implementedInterface, owner) ;
+			 implementedInterface, owner);
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Self-properties management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * add the port to the owner component.
@@ -337,15 +390,32 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code !getOwner().isPortExisting(getPortURI())}
+	 * post	{@code getOwner().isPortExisting(getPortURI())}
 	 * </pre>
 	 *
 	 * @throws Exception	<i>todo.</i>
 	 */
 	protected void		addPortToOwner() throws Exception
 	{
-		this.owner.addPort(this) ;
+		assert	!this.getOwner().isPortExisting(this.getPortURI()) :
+					new PreconditionException(
+							"!getOwner().isPortExisting(getPortURI())");
+
+		this.owner.addPort(this);
+
+		assert	this.getOwner().isPortExisting(this.getPortURI()) :
+					new PostconditionException(
+							"getOwner().isPortExisting(getPortURI())");
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ports.PortI#isDestroyed()
+	 */
+	@Override
+	public boolean		isDestroyed() throws Exception
+	{
+		return this.isDestroyed.get();
 	}
 
 	/**
@@ -354,15 +424,24 @@ implements	PortI
 	@Override
 	public ComponentI	getOwner() throws Exception
 	{
-		return this.owner ;
+		if (this.isDestroyed()) {
+			return null;
+		} else {
+			return this.owner ;
+		}
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#getImplementedInterface()
 	 */
 	@Override
-	public Class<?>		getImplementedInterface() throws Exception
+	public Class<? extends ComponentServiceI>	getImplementedInterface()
+	throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
 		return this.implementedInterface;
 	}
 
@@ -372,150 +451,158 @@ implements	PortI
 	@Override
 	public String		getPortURI() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
 		return this.uri ;
 	}
 
-	// ------------------------------------------------------------------------
-	// Registry management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Registry publication management
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#isPublished()
 	 */
 	@Override
-	public boolean		isPublished()
+	public boolean		isPublished() throws Exception
 	{
-		return this.isPublished;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		return this.isPublished.get();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#isDistributedlyPublished()
 	 */
 	@Override
-	public boolean		isDistributedlyPublished()
+	public boolean		isDistributedlyPublished() throws Exception
 	{
-		return this.isDistributedlyPublished;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		return this.isDistributedlyPublished.get();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#localPublishPort()
 	 */
 	@Override
-	public void			localPublishPort() throws Exception
+	public synchronized void	localPublishPort() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.getOwner().isPortExisting(this.getPortURI()) :
 					new PreconditionException(
-							"this.getOwner().isPortExisting("
-												+ "this.getPortURI()) ["
-								+ this.getPortURI() + "]") ;
+							"getOwner().isPortExisting(getPortURI()) ["
+									+ this.getPortURI() + "]") ;
 		assert	!this.isPublished() :
-					new PreconditionException("!this.isPublished() ["
-												+ this.getPortURI() + "]") ;
-		assert	!this.isDistributedlyPublished() :
-					new PreconditionException(
-							"!this.isDistributedlyPublished() ["
+					new PreconditionException("!isPublished() ["
 												+ this.getPortURI() + "]") ;
 
 		AbstractCVM.localPublishPort(this) ;
-		this.isPublished = true ;
-		this.isDistributedlyPublished = false ;
-
-		AbstractPort.checkInvariant(this) ;
+		this.isPublished.set(true);
+		this.isDistributedlyPublished.set(false);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#publishPort()
 	 */
 	@Override
-	public void			publishPort() throws Exception
+	public synchronized void	publishPort() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.getOwner().isPortExisting(this.getPortURI()) :
 					new PreconditionException(
-							"this.getOwner().isPortExisting("
-												+ "this.getPortURI()) ["
-								+ this.getPortURI() + "]") ;
+							"getOwner().isPortExisting(getPortURI()) ["
+									+ this.getPortURI() + "]") ;
 		assert	!this.isPublished() :
-					new PreconditionException("!this.isPublished() ["
-												+ this.getPortURI() + "]") ;
-		assert	!this.isDistributedlyPublished() :
-					new PreconditionException(
-							"!this.isDistributedlyPublished() ["
+					new PreconditionException("!isPublished() ["
 												+ this.getPortURI() + "]") ;
 
 		if (AbstractCVM.isDistributed) {
 			AbstractDistributedCVM.publishPort(this) ;
-			this.isPublished = true ;
-			this.isDistributedlyPublished = true ;
+			this.isPublished.set(true);
+			this.isDistributedlyPublished.set(true);
 		} else {
 			this.localPublishPort() ;
 		}
-
-		AbstractPort.checkInvariant(this) ;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#unpublishPort()
 	 */
 	@Override
-	public void			unpublishPort() throws Exception
+	public synchronized void	unpublishPort() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.getOwner().isPortExisting(this.getPortURI()) :
 					new PreconditionException(
-							"this.getOwner().isPortExisting("
-												+ "this.getPortURI()) ["
-								+ this.getPortURI() + "]") ;
+							"getOwner().isPortExisting(getPortURI()) ["
+									+ this.getPortURI() + "]") ;
 		assert	this.isPublished() :
-					new PreconditionException("this.isPublished() ["
+					new PreconditionException("isPublished() ["
 												+ this.getPortURI() + "]") ;
 		// FIXME: connection status for inbound port is not yet correctly
 		// tracked. Must be fixed before testing the next assertion.
 		// assert	!this.connected() ;
 
-		if (this.isDistributedlyPublished) {
+		if (this.isDistributedlyPublished()) {
 			AbstractDistributedCVM.unpublishPort(this) ;
 		} else {
 			AbstractCVM.localUnpublishPort(this) ;
 		}
-		this.isPublished = false ;
-		this.isDistributedlyPublished = false ;
-
-		AbstractPort.checkInvariant(this) ;
+		this.isPublished.set(false);
+		this.isDistributedlyPublished.set(false);
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Life-cycle management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#destroyPort()
 	 */
 	@Override
-	public void			destroyPort() throws Exception
+	public synchronized void	destroyPort() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
 		assert	this.getOwner().isPortExisting(this.getPortURI()) :
 					new PreconditionException(
-							"this.getOwner().isPortExisting("
-												+ "this.getPortURI()) ["
-								+ this.getPortURI() + "]") ;
+							"getOwner().isPortExisting(getPortURI()) ["
+									+ this.getPortURI() + "]");
 		assert	!this.isPublished() :
-					new PreconditionException("!this.isPublished() ["
-											+ this.getPortURI() + "]") ;
+					new PreconditionException("!isPublished() ["
+											+ this.getPortURI() + "]");
 		// FIXME: connection status for inbound port is not yet correctly
 		// tracked. Must be fixed before testing the next assertion.
 		// assert	!this.connected() ;
 
-		this.owner.removePort(this.getPortURI()) ;
+		this.owner.removePort(this.getPortURI());
+		this.isDestroyed.set(true);
 
-		assert	!this.getOwner().isPortExisting(this.getPortURI()) :
+		assert	this.isDestroyed() :
+					new PostconditionException("isDestroyed()");
+		assert	!this.owner.isPortExisting(this.uri) :
 					new PostconditionException(
-							"this.getOwner().isPortExisting(" + 
-												"this.getPortURI()) ["
-								+ this.getPortURI() + "]") ;
+							"getOwner()@pre.isPortExisting(" + 
+							"getPortURI()@pre) with uri = [" +
+							this.uri + "]");
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Connection management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#setClientPortURI(java.lang.String)
@@ -524,7 +611,10 @@ implements	PortI
 	public void			setClientPortURI(String clientPortURI)
 	throws	Exception
 	{
-		assert	clientPortURI != null ;
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
+		assert	clientPortURI != null :
+					new PreconditionException("clientPortURI can't be null!");
 
 		// Do nothing, by default.
 	}
@@ -536,7 +626,10 @@ implements	PortI
 	public void			setServerPortURI(String serverPortURI)
 	throws	Exception
 	{
-		assert	serverPortURI != null ;
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
+		assert	serverPortURI != null :
+					new PreconditionException("serverPortURI can't be null!");
 
 		// Do nothing, by default.
 	}
@@ -547,6 +640,8 @@ implements	PortI
 	@Override
 	public void			unsetClientPortURI() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
 		// Do nothing, by default.
 	}
 
@@ -556,7 +651,34 @@ implements	PortI
 	@Override
 	public void			unsetServerPortURI() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
+
 		// Do nothing, by default.
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ports.PortI#getClientPortURI()
+	 */
+	@Override
+	public String		getClientPortURI() throws Exception
+	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
+
+		return null;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.ports.PortI#getServerPortURI()
+	 */
+	@Override
+	public String		getServerPortURI() throws Exception
+	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
+
+		return null;
 	}
 
 	/**
@@ -565,14 +687,16 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isPublished() and !this.connected()
-	 * pre	otherPortURI != null and connector != null
-	 * post	this.connected()
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code isPublished()}
+	 * pre	{@code !connected()}
+	 * pre	{@code otherPortURI != null && connector != null}
+	 * post	{@code connected()}
 	 * </pre>
 	 *
 	 * @param otherPortURI	URI of the other port to be connected with this one.
 	 * @param connector		connector to be used to connect with the other port.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected abstract void	doMyConnection(
 		String otherPortURI,
@@ -586,12 +710,13 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.connected()
-	 * post	!this.connected()
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code connected()}
+	 * post	{@code !connected()}
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected abstract void	doMyDisconnection() throws Exception ;
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

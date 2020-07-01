@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.exceptions;
+package fr.sorbonne_u.exceptions;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -35,9 +35,8 @@ package fr.sorbonne_u.components.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>PostconditionException</code> defines the exception type
- * which instances are thrown when a postcondition violation occurs in a
- * component.
+ * The class <code>InvariantError</code> defines the exception type which
+ * instances are thrown when an invariant violation occurs in a component.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -51,32 +50,32 @@ package fr.sorbonne_u.components.exceptions;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			PostconditionException
-extends		Exception
+public class			InvariantException
+extends		ContractException
 {
 	private static final long serialVersionUID = 1L;
 
-	public				PostconditionException()
+	public				InvariantException()
 	{
 		super();
 	}
 
-	public				PostconditionException(String message)
+	public				InvariantException(String message)
 	{
 		super(message);
 	}
 
-	public				PostconditionException(Throwable cause)
+	public				InvariantException(Throwable cause)
 	{
 		super(cause);
 	}
 
-	public				PostconditionException(String message, Throwable cause)
+	public				InvariantException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
-	public				PostconditionException(
+	public				InvariantException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,

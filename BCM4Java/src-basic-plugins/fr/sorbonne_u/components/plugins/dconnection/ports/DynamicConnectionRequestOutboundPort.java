@@ -111,7 +111,7 @@ implements	DynamicConnectionRequestI
 	public String		requestDynamicPortURI(Class<?> offeredInterface)
 	throws Exception
 	{
-		return ((DynamicConnectionRequestI)this.connector).
+		return ((DynamicConnectionRequestI)this.getConnector()).
 									requestDynamicPortURI(offeredInterface) ;
 	}
 
@@ -122,7 +122,7 @@ implements	DynamicConnectionRequestI
 	public void			removeDynamicPort(Class<?> offeredInterface, String uri)
 	throws Exception
 	{
-		((DynamicConnectionRequestI)this.connector).
+		((DynamicConnectionRequestI)this.getConnector()).
 									removeDynamicPort(offeredInterface, uri) ;
 	}
 }

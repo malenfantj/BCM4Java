@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.examples.chm.ports;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -39,7 +38,7 @@ import fr.sorbonne_u.components.examples.chm.interfaces.MapReading;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>MapReadingOutboundPort</code> implements the outbound for
  * map services that are not changing the state of the map.
@@ -56,7 +55,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapReadingOutboundPort<K,V>
+public class			MapReadingOutboundPort<K,V>
 extends AbstractOutboundPort
 implements	MapReading<K,V>,
 			MapTesting<K,V>
@@ -71,7 +70,8 @@ implements	MapReading<K,V>,
 		super(uri, MapReading.class, owner);
 	}
 
-	public MapReadingOutboundPort(ComponentI owner) throws Exception
+	public				MapReadingOutboundPort(ComponentI owner)
+	throws Exception
 	{
 		super(MapReading.class, owner);
 	}
@@ -81,9 +81,9 @@ implements	MapReading<K,V>,
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public V				get(K key) throws Exception
+	public V			get(K key) throws Exception
 	{
-		return ((MapReading<K,V>)this.connector).get(key) ;
+		return ((MapReading<K,V>)this.getConnector()).get(key) ;
 	}
 
 	/**
@@ -93,7 +93,7 @@ implements	MapReading<K,V>,
 	@Override
 	public int			size() throws Exception
 	{
-		return ((MapReading<K,V>)this.connector).size() ;
+		return ((MapReading<K,V>)this.getConnector()).size() ;
 	}
 
 	/**
@@ -103,7 +103,7 @@ implements	MapReading<K,V>,
 	@Override
 	public boolean		containsValue(V value) throws Exception
 	{
-		return ((MapTesting<K,V>)this.connector).containsValue(value) ;
+		return ((MapTesting<K,V>)this.getConnector()).containsValue(value) ;
 	}
 
 	/**
@@ -113,7 +113,7 @@ implements	MapReading<K,V>,
 	@Override
 	public boolean		containsKey(K key) throws Exception
 	{
-		return ((MapTesting<K,V>)this.connector).containsKey(key) ;
+		return ((MapTesting<K,V>)this.getConnector()).containsKey(key) ;
 	}
 
 	/**
@@ -123,7 +123,7 @@ implements	MapReading<K,V>,
 	@Override
 	public boolean		isEmpty() throws Exception
 	{
-		return ((MapTesting<K,V>)this.connector).isEmpty() ;
+		return ((MapTesting<K,V>)this.getConnector()).isEmpty() ;
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.exceptions;
+package fr.sorbonne_u.exceptions;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -35,8 +35,8 @@ package fr.sorbonne_u.components.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>PreconditionException</code> defines the exception type
- * which instances are thrown when a precondition violation occurs in a
+ * The class <code>PostconditionException</code> defines the exception type
+ * which instances are thrown when a postcondition violation occurs in a
  * component.
  *
  * <p><strong>Description</strong></p>
@@ -51,32 +51,32 @@ package fr.sorbonne_u.components.exceptions;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			PreconditionException
-extends		Exception
+public class			PostconditionException
+extends		ContractException
 {
 	private static final long serialVersionUID = 1L;
 
-	public				PreconditionException()
+	public				PostconditionException()
 	{
 		super();
 	}
 
-	public				PreconditionException(String message)
+	public				PostconditionException(String message)
 	{
 		super(message);
 	}
 
-	public				PreconditionException(Throwable cause)
+	public				PostconditionException(Throwable cause)
 	{
 		super(cause);
 	}
 
-	public				PreconditionException(String message, Throwable cause)
+	public				PostconditionException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
-	public				PreconditionException(
+	public				PostconditionException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,

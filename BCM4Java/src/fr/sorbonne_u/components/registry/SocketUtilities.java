@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.registry;
 import java.io.IOException;
 import java.io.InputStream;
 
-import fr.sorbonne_u.components.exceptions.PreconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 //-----------------------------------------------------------------------------
 /**

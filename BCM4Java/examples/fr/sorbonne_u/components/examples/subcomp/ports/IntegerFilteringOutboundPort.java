@@ -78,7 +78,7 @@ implements	IntegerFilteringCI
 	@Override
 	public void			filter(int i) throws Exception
 	{
-		((IntegerFilteringCI)this.connector).filter(i) ;
+		((IntegerFilteringCI)this.getConnector()).filter(i) ;
 	}
 }
 // -----------------------------------------------------------------------------

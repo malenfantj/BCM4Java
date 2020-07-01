@@ -57,8 +57,6 @@ import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.exceptions.PostconditionException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.ComponentExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.ComponentSchedulableExecutorServiceManager;
@@ -72,6 +70,8 @@ import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -960,17 +960,20 @@ implements	ComponentI
 	protected void		unConfigurePluginFacilitites() throws Exception
 	{
 		assert	this.isPluginFacilitiesConfigured() :
-					new RuntimeException("Can't unconfigure plug-in "
-								+ "facilities, they are not configured!") ;
+					new PreconditionException(
+							"Can't unconfigure plug-in "
+									+ "facilities, they are not configured!");
 
 		for (Entry<String,PluginI> e : this.installedPlugins.entrySet()) {
-			((PluginI)e.getValue()).uninstall() ;
+			e.getValue().finalise();
+			e.getValue().uninstall();
 		}
 		this.installedPlugins = null ;
 
 		assert	!this.isPluginFacilitiesConfigured() :
-					new RuntimeException("Plug-in facilities "
-							+ "unconfiguration not achieved correctly!") ;
+					new PostconditionException(
+							"Plug-in facilities "
+								+ "unconfiguration not achieved correctly!") ;
 	}
 
 	/**
@@ -1056,8 +1059,8 @@ implements	ComponentI
 									"Finalising plug-in " + pluginURI) ;
 		}
 
-		PluginI temp = this.installedPlugins.get(pluginURI) ;
-		temp.finalise() ;
+		PluginI plugin = this.installedPlugins.get(pluginURI) ;
+		plugin.finalise() ;
 	}
 
 	/**
@@ -1077,27 +1080,26 @@ implements	ComponentI
 	{
 		assert	this.isPluginFacilitiesConfigured()  :
 					new RuntimeException("Can't uninstall plug-in, "
-								+ "plug-in facilities are not configured!") ;
+								+ "plug-in facilities are not configured!");
 		assert	pluginURI != null :
-					new PreconditionException("Plug-in URI is null!") ;
+					new PreconditionException("Plug-in URI is null!");
 		assert	this.isInstalled(pluginURI) :
 					new PreconditionException("Can't uninstall plug-in, "
-								+ pluginURI + " not installed!") ;
+								+ pluginURI + " not installed!");
 
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PLUGIN)) {
 			AbstractCVM.getCVM().logDebug(
 									CVMDebugModes.PLUGIN,
-									"Uninstalling plug-in " + pluginURI) ;
+									"Uninstalling plug-in " + pluginURI);
 		}
 
-		this.finalisePlugin(pluginURI) ;
-		PluginI temp = this.installedPlugins.get(pluginURI) ;
-		temp.uninstall() ;
-		this.installedPlugins.remove(pluginURI) ;
+		PluginI plugin = this.installedPlugins.get(pluginURI);
+		plugin.uninstall();
+		this.installedPlugins.remove(pluginURI);
 
 		assert	!this.isInstalled(pluginURI) :
 					new PostconditionException("Plug-in " + pluginURI
-						+ " still installed after uninstalling!") ;
+						+ " still installed after uninstalling!");
 	}
 
 	/**
@@ -1195,7 +1197,7 @@ implements	ComponentI
 	// ------------------------------------------------------------------------
 
 	/**	The logger for this component.									*/
-	protected Logger			executionLog ;
+	protected Logger		executionLog ;
 	/** The tracer for this component.									*/
 	protected TracerWindow	tracer ;
 
@@ -1385,38 +1387,36 @@ implements	ComponentI
 	{
 		assert	this.isPluginFacilitiesConfigured() :
 					new RuntimeException("Can't install plug-ins, "
-							+ "plug-in facilities are not configured!") ;
+							+ "plug-in facilities are not configured!");
 
 		try {
 			AddPlugins pluginsAnnotation =
-					this.getClass().getAnnotation(AddPlugins.class) ;
+					this.getClass().getAnnotation(AddPlugins.class);
 			if (pluginsAnnotation != null) {
-				AddPlugin[] pluginAnnotations = pluginsAnnotation.pluginList() ;
+				AddPlugin[] pluginAnnotations = pluginsAnnotation.pluginList();
 				if (pluginAnnotations != null) {
 					for (int i = 0 ; i < pluginAnnotations.length ; i++) {
-						String uri = pluginAnnotations[i].pluginURI() ;
+						String uri = pluginAnnotations[i].pluginURI();
 						Class<? extends PluginI> pluginClass =
-								pluginAnnotations[i].pluginClass() ;
+								pluginAnnotations[i].pluginClass();
 						PluginI p = pluginClass.newInstance();
-						p.setPluginURI(uri) ;
-						this.installPlugin(p) ;
-						p.initialise() ;
+						p.setPluginURI(uri);
+						this.installPlugin(p);
 					}
 				}
 			}
 			AddPlugin pluginAnnotation =
-								this.getClass().getAnnotation(AddPlugin.class) ;
+								this.getClass().getAnnotation(AddPlugin.class);
 			if (pluginAnnotation != null) {
-				String uri = pluginAnnotation.pluginURI() ;
+				String uri = pluginAnnotation.pluginURI();
 				Class<? extends PluginI> pluginClass =
-											pluginAnnotation.pluginClass() ;
-				PluginI p = pluginClass.newInstance() ;
-				p.setPluginURI(uri) ;
-				this.installPlugin(p) ;
-				p.initialise() ;
+											pluginAnnotation.pluginClass();
+				PluginI p = pluginClass.newInstance();
+				p.setPluginURI(uri);
+				this.installPlugin(p);
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e) ;
+			throw new RuntimeException(e);
 		}
 	}
 

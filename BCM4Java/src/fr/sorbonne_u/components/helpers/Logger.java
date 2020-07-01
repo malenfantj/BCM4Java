@@ -38,8 +38,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import fr.sorbonne_u.components.exceptions.PostconditionException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**

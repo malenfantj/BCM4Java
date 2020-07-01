@@ -37,7 +37,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.plugins.dconnection.DynamicConnectionServerSidePlugin;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
-import fr.sorbonne_u.components.ports.forplugins.AbstractInboundPortForPlugin;
+import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 // -----------------------------------------------------------------------------
 /**
@@ -58,7 +58,7 @@ import fr.sorbonne_u.components.ports.forplugins.AbstractInboundPortForPlugin;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			DynamicConnectionRequestInboundPort
-extends		AbstractInboundPortForPlugin
+extends		AbstractInboundPort
 implements	DynamicConnectionRequestI
 {
 	private static final long	serialVersionUID = 1L ;
@@ -84,7 +84,7 @@ implements	DynamicConnectionRequestI
 		ComponentI owner
 		) throws Exception
 	{
-		super(DynamicConnectionRequestI.class, pluginURI, owner) ;
+		super(DynamicConnectionRequestI.class, owner, pluginURI, null) ;
 	}
 
 	/**
@@ -111,7 +111,7 @@ implements	DynamicConnectionRequestI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, DynamicConnectionRequestI.class, pluginURI, owner) ;
+		super(uri, DynamicConnectionRequestI.class, owner, pluginURI, null) ;
 	}
 
 	/**
@@ -122,7 +122,7 @@ implements	DynamicConnectionRequestI
 	throws Exception
 	{
 		return this.owner.handleRequestSync(
-			new AbstractComponent.AbstractService<String>(this.pluginURI) {
+			new AbstractComponent.AbstractService<String>(this.getPluginURI()) {
 				@Override
 				public String call() throws Exception {
 					return ((DynamicConnectionServerSidePlugin)
@@ -140,15 +140,15 @@ implements	DynamicConnectionRequestI
 	throws Exception
 	{
 		this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<String>(this.pluginURI) {
-					@Override
-					public String call() throws Exception {
-						((DynamicConnectionServerSidePlugin)
+			new AbstractComponent.AbstractService<String>(this.getPluginURI()) {
+				@Override
+				public String call() throws Exception {
+					((DynamicConnectionServerSidePlugin)
 								this.getServiceProviderReference()).
 									removeDynamicPort(offeredInterface, uri) ;
-						return null ;
-					}
-				}) ;		
+					return null ;
+				}
+			}) ;		
 	}
 }
 // -----------------------------------------------------------------------------

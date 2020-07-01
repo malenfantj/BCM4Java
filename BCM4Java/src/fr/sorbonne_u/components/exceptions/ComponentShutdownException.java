@@ -52,7 +52,7 @@ package fr.sorbonne_u.components.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			ComponentShutdownException
-extends		Exception
+extends		BCMException
 {
 	private static final long serialVersionUID = 1L;
 

@@ -260,7 +260,7 @@ public abstract class	CyclicBarrierProtocol
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	{@ jvmURI != null && hostname != null && socketLocalPort > 0}
+		 * pre	{@code jvmURI != null && hostname != null && socketLocalPort > 0}
 		 * post	true			// no postcondition.
 		 * </pre>
 		 *

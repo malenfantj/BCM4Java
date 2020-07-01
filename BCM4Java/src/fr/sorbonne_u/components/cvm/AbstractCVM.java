@@ -231,8 +231,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	AbstractCVM.localRegistryInitialised()
-	 * pre	{@ key != null}
+	 * pre	{@code AbstractCVM.localRegistryInitialised()}
+	 * pre	{@code key != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -261,11 +261,11 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	AbstractCVM.localRegistryInitialised()
-	 * pre {@ key != null}
-	 * pre {@ p != null}
-	 * pre	!AbstractCVM.isPublishedInLocalRegistry(key)
-	 * post	AbstractCVM.isPublishedInLocalRegistry(key)
+	 * pre	{@code AbstractCVM.localRegistryInitialised()}
+	 * pre	{@code key != null}
+	 * pre	{@code p != null}
+	 * pre	{@code !AbstractCVM.isPublishedInLocalRegistry(key)}
+	 * post	{@code AbstractCVM.isPublishedInLocalRegistry(key)}
 	 * </pre>
 	 *
 	 * @param key		key under which the publication is done.
@@ -298,8 +298,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	AbstractCVM.localRegistryInitialised()
-	 * pre {@ key != null}
+	 * pre	{@code AbstractCVM.localRegistryInitialised()}
+	 * pre	{@code key != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -329,10 +329,10 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	AbstractCVM.localRegistryInitialised()
-	 * pre {@key != null}
-	 * pre	AbstractCVM.isPublishedInLocalRegistry(key)
-	 * post	!AbstractCVM.isPublishedInLocalRegistry(key)
+	 * pre	{@code AbstractCVM.localRegistryInitialised()}
+	 * pre	{@code key != null}
+	 * pre	{@code AbstractCVM.isPublishedInLocalRegistry(key)}
+	 * post	{@code !AbstractCVM.isPublishedInLocalRegistry(key)}
 	 * </pre>
 	 *
 	 * @param key	key under which the publication has been done.
@@ -426,7 +426,6 @@ implements	ComponentVirtualMachineI
 	 *
 	 * @param isDistributed	true if the CVM is distributed, false otherwise.
 	 * @param thisJVMURI	URI of the current JVM in the deployment platform.
-	 * @param thisHostName	name of the host on which the JVM is running.
 	 * @throws Exception	true if the CVM is distributed, false otherwise.
 	 */
 	protected			AbstractCVM(

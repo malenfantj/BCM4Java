@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.examples.chm.ports;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -38,7 +37,7 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>MapWritingOutboundPort</code> implements the outbound for
  * map services that are changing the state of the map.
@@ -55,7 +54,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapWritingOutboundPort<K,V>
+public class			MapWritingOutboundPort<K,V>
 extends		AbstractOutboundPort
 implements	MapWriting<K, V>
 {
@@ -81,9 +80,9 @@ implements	MapWriting<K, V>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public V				put(K key, V value) throws Exception
+	public V			put(K key, V value) throws Exception
 	{
-		return ((MapWriting<K, V>)this.connector).put(key, value) ;
+		return ((MapWriting<K, V>)this.getConnector()).put(key, value) ;
 	}
 
 	/**
@@ -91,9 +90,9 @@ implements	MapWriting<K, V>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public V				remove(K key) throws Exception
+	public V			remove(K key) throws Exception
 	{
-		return ((MapWriting<K, V>)this.connector).remove(key) ;
+		return ((MapWriting<K, V>)this.getConnector()).remove(key) ;
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

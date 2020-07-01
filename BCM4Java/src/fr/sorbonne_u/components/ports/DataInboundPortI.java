@@ -45,13 +45,27 @@ import fr.sorbonne_u.components.interfaces.DataOfferedI;
  *
  * <p><strong>Description</strong></p>
  * 
- * An inbound port is associated with a <code>BasicDataOfferedI</code>
+ * <p>
+ * A data inbound port is associated with a <code>DataOfferedI</code>
  * interface used to implement a basic interface to get data from a provider
  * component.  The primary way to get the data is the pull mode, where the
  * client component calls the provider through the <code>get()</code> method
  * which returns a piece of data.  But the port can also be used in a push
  * mode where the provider delivers the data to the client by calling a
  * <code>send</code> method with a piece of data as parameter.
+ * </p>
+ * 
+ * <p><strong>Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code getImplementedInterface() == getImplementedPullInterface()}
+ * invariant	{@code !connected() || isPublished()}
+ * invariant	{@code !connected() || getPortURI().equals(getClientPortURI())}
+ * invariant	{@code !connected() || (getServerPortURI() != null)}
+ * invariant	{@code !connected() == (getConnector() == null)}
+ * invariant	{@code !isRemotelyConnected() || connected()}
+ * invariant	{@code !isRemotelyConnected() || isDistributedlyPublished()}
+ * </pre>
  * 
  * <p>Created on : 2011-11-07</p>
  * 
@@ -67,19 +81,27 @@ extends		InboundPortI,
 	// ------------------------------------------------------------------------
 
 	/**
+	 * @see fr.sorbonne_u.components.ports.InboundPortI#getImplementedInterface()
+	 */
+	@Override
+	public Class<? extends DataOfferedI.PullI> getImplementedInterface()
+	throws Exception;
+
+	/**
 	 * get the pull interface implemented by this port.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	DataOfferedI.PullI.class.isAssignableFrom(ret)
+	 * pre	{@code !isDestroyed()}
+	 * post	{@code DataOfferedI.PullI.class.isAssignableFrom(ret)}
 	 * </pre>
 	 *
-	 * @return			the implemented pull interface.
-	 * @throws Exception	<i>to do.</i>
+	 * @return				the implemented pull interface.
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?> 		getImplementedPullInterface() throws Exception ;
+	public Class<? extends DataOfferedI.PullI> 	getImplementedPullInterface()
+	throws Exception;
 
 	/**
 	 * get the push interface implemented by this port.
@@ -87,14 +109,15 @@ extends		InboundPortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	DataOfferedI.PushI.class.isAssignableFrom(ret)
+	 * pre	{@code !isDestroyed()}
+	 * post	{@code DataOfferedI.PushI.class.isAssignableFrom(ret)}
 	 * </pre>
 	 *
-	 * @return			the implemented push interface.
-	 * @throws Exception	<i>to do.</i>
+	 * @return				the implemented push interface.
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?> 		getImplementedPushInterface() throws Exception ;
+	public Class<? extends DataOfferedI.PushI> 	getImplementedPushInterface()
+	throws Exception;
 
 	// ------------------------------------------------------------------------
 	// Connection management
@@ -106,12 +129,12 @@ extends		InboundPortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	{@code !isDestroyed()}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			the connector to which this port is attached, and null if none.
-	 * @throws Exception	<i>to do.</i>
+	 * @return				the connector to which this port is attached, and null if none.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public DataConnectorI	getConnector() throws Exception ;
 
@@ -121,12 +144,13 @@ extends		InboundPortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	c != null
-	 * post	this.getConnector() == c
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code c != null}
+	 * post	{@code this.getConnector() == c}
 	 * </pre>
 	 *
-	 * @param c			connector to be set.
-	 * @throws Exception	<i>to do.</i>
+	 * @param c				connector to be set.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			setConnector(DataConnectorI c) throws Exception ;
 
@@ -136,27 +160,12 @@ extends		InboundPortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	this.getConnector() == null
+	 * pre	{@code !isDestroyed()}
+	 * post	{@code this.getConnector() == null}
 	 * </pre>
 	 *
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			unsetConnector() throws Exception ;
-
-	/**
-	 * await for this port to be connected before using it to call the provider
-	 * component.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 * 
-	 * @throws Exception	if the current thread is interrupted.
-	 */
-	public void			awaitConnection() throws Exception ;
 }
 //-----------------------------------------------------------------------------

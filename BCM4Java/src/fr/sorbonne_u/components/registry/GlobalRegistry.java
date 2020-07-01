@@ -49,13 +49,13 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
 import fr.sorbonne_u.components.cvm.config.exceptions.InvalidConfigurationFileFormatException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.registry.protocol.Request;
 import fr.sorbonne_u.components.registry.protocol.RequestI;
 import fr.sorbonne_u.components.registry.protocol.ShutdownRequest;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**

@@ -83,7 +83,7 @@ implements	ExampleI
 	{
 		assert	this.connected() ;
 
-		return ((ExampleI)this.connector).exampleCall(i) ;
+		return ((ExampleI)this.getConnector()).exampleCall(i) ;
 	}
 }
 // -----------------------------------------------------------------------------

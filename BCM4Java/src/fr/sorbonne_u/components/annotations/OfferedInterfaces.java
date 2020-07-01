@@ -68,8 +68,19 @@ import fr.sorbonne_u.components.interfaces.OfferedI;
 @Target(TYPE)
 public @interface		OfferedInterfaces
 {
-	/** array of Java interfaces that are the offered component interfaces
-	 *  to be added to the component holding the annotation. 				*/
+	/**
+	 * array of Java interfaces that are the offered component interfaces
+	 * to be added to the component holding the annotation.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	array of Java interfaces that are the offered component interfaces.
+	 */
 	Class<? extends OfferedI>[]	offered() ;
 }
 // -----------------------------------------------------------------------------

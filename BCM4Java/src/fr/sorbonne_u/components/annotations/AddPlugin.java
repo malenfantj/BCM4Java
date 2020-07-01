@@ -68,10 +68,33 @@ import fr.sorbonne_u.components.PluginI;
 @Target(TYPE)
 public @interface		AddPlugin
 {
-	/** URI associated to the plug-in instance; unique inside the component
-	 *  that installs the plug-in instance.									*/
+	/**
+	 * URI associated to the plug-in instance; unique inside the component
+	 * that installs the plug-in instance.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	URI of the plug-in to be created.
+	 */
 	String						pluginURI() ;
-	/** class from which the instance of plug-in must be created.			*/
+
+	/**
+	 * class from which the instance of plug-in must be created.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	class from which the instance of plug-in must be created.
+	 */
 	Class<? extends PluginI>	pluginClass() ;
 }
 // -----------------------------------------------------------------------------

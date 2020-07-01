@@ -110,9 +110,6 @@ implements	PushControlImplementationI
 		super.installOn(owner) ;
 
 		this.addOfferedInterface(PushControlI.class) ;
-		this.pushControlInboundPort =
-				new PushControlInboundPort(this.getPluginURI(), owner) ;
-		this.pushControlInboundPort.publishPort() ;
 	}
 
 	/**
@@ -121,6 +118,9 @@ implements	PushControlImplementationI
 	@Override
 	public void			initialise() throws Exception
 	{
+		this.pushControlInboundPort =
+				new PushControlInboundPort(this.getPluginURI(), owner) ;
+		this.pushControlInboundPort.publishPort() ;
 		this.futures = new HashMap<String,ScheduledFuture<?>>() ;
 	}
 

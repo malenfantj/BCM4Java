@@ -40,10 +40,10 @@ import fr.sorbonne_u.components.examples.cps.connectors.ValueProvidingConnector;
 import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI;
 import fr.sorbonne_u.components.examples.cps.interfaces.ports.ValueProvidingOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.exceptions.InvariantException;
 import fr.sorbonne_u.components.pre.controlflowhelpers.AbstractLocalComposedContinuation;
 import fr.sorbonne_u.components.pre.controlflowhelpers.AbstractContinuation;
 import fr.sorbonne_u.components.pre.controlflowhelpers.AbstractLocalContinuation;
+import fr.sorbonne_u.exceptions.InvariantException;
 
 /**
  * The class <code>ValueConsumer</code> implements a component that uses

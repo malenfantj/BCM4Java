@@ -64,7 +64,7 @@ import fr.sorbonne_u.components.plugins.dipc.example.ports.PairDataInboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				ServerComponent
+public class			ServerComponent
 extends		AbstractComponent
 {
 	// ------------------------------------------------------------------------
@@ -147,7 +147,7 @@ extends		AbstractComponent
 	 *
 	 * @throws Exception 	<i>to do.</i>
 	 */
-	public					ServerComponent() throws Exception
+	protected			ServerComponent() throws Exception
 	{
 		super(SC_ReflectionInboundPort_URI, 1, 1) ;
 

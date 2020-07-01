@@ -35,11 +35,11 @@ package fr.sorbonne_u.components.registry.protocol;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import fr.sorbonne_u.components.AbstractPort;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.registry.ConnectionData;
 import fr.sorbonne_u.components.registry.ConnectionType;
 import fr.sorbonne_u.components.registry.exceptions.BadConnectionDataException;
 import fr.sorbonne_u.components.registry.exceptions.GlobalRegistryResponseException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**

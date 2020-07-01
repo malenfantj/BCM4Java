@@ -60,8 +60,19 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface		AddPlugins
 {
-	/** array of annotations describing the plug-ins to be installed on
-	 *  the component holding the annotation.								*/
+	/**
+	 * array of annotations describing the plug-ins to be installed on
+	 * the component holding the annotation.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	array of annotations describing the plug-ins to be installed on the component.
+	 */
 	AddPlugin[]			pluginList() ;			
 }
 // -----------------------------------------------------------------------------

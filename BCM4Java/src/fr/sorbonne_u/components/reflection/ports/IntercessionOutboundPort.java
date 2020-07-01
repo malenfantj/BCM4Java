@@ -57,7 +57,7 @@ import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				IntercessionOutboundPort
+public class			IntercessionOutboundPort
 extends		AbstractOutboundPort
 implements	IntercessionI
 {
@@ -93,7 +93,7 @@ implements	IntercessionI
 	@Override
 	public void			installPlugin(PluginI plugin) throws Exception
 	{
-		((IntercessionI)this.connector).installPlugin(plugin) ;
+		((IntercessionI)this.getConnector()).installPlugin(plugin) ;
 	}
 
 	/**
@@ -102,7 +102,7 @@ implements	IntercessionI
 	@Override
 	public void			initialisePlugin(String pluginURI) throws Exception
 	{
-		((IntercessionI)this.connector).initialisePlugin(pluginURI) ;
+		((IntercessionI)this.getConnector()).initialisePlugin(pluginURI) ;
 	}
 
 	/**
@@ -111,7 +111,7 @@ implements	IntercessionI
 	@Override
 	public void			finalisePlugin(String pluginURI) throws Exception
 	{
-		((IntercessionI)this.connector).finalisePlugin(pluginURI) ;
+		((IntercessionI)this.getConnector()).finalisePlugin(pluginURI) ;
 	}
 
 	/**
@@ -120,7 +120,7 @@ implements	IntercessionI
 	@Override
 	public void			uninstallPlugin(String pluginId) throws Exception
 	{
-		((IntercessionI)this.connector).uninstallPlugin(pluginId) ;
+		((IntercessionI)this.getConnector()).uninstallPlugin(pluginId) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -133,7 +133,7 @@ implements	IntercessionI
 	@Override
 	public void			toggleLogging() throws Exception
 	{
-		((IntercessionI)this.connector).toggleLogging() ;
+		((IntercessionI)this.getConnector()).toggleLogging() ;
 	}
 
 	/**
@@ -142,7 +142,7 @@ implements	IntercessionI
 	@Override
 	public void			toggleTracing() throws Exception
 	{
-		((IntercessionI)this.connector).toggleTracing() ;
+		((IntercessionI)this.getConnector()).toggleTracing() ;
 	}
 
 	/**
@@ -151,7 +151,7 @@ implements	IntercessionI
 	@Override
 	public void			setTracer(TracerWindow tracer) throws Exception
 	{
-		((IntercessionI)this.connector).setTracer(tracer) ;
+		((IntercessionI)this.getConnector()).setTracer(tracer) ;
 	}
 
 	/**
@@ -160,7 +160,7 @@ implements	IntercessionI
 	@Override
 	public void			traceMessage(String message) throws Exception
 	{
-		((IntercessionI)this.connector).traceMessage(message) ;
+		((IntercessionI)this.getConnector()).traceMessage(message) ;
 	}
 
 	/**
@@ -169,7 +169,7 @@ implements	IntercessionI
 	@Override
 	public void			setLogger(Logger logger) throws Exception
 	{
-		((IntercessionI)this.connector).setLogger(logger) ;
+		((IntercessionI)this.getConnector()).setLogger(logger) ;
 	}
 
 	/**
@@ -178,7 +178,7 @@ implements	IntercessionI
 	@Override
 	public void			logMessage(String message) throws Exception
 	{
-		((IntercessionI)this.connector).logMessage(message) ;
+		((IntercessionI)this.getConnector()).logMessage(message) ;
 	}
 
 	/**
@@ -187,7 +187,7 @@ implements	IntercessionI
 	@Override
 	public void			printExecutionLog() throws Exception
 	{
-		((IntercessionI)this.connector).printExecutionLog() ;
+		((IntercessionI)this.getConnector()).printExecutionLog() ;
 	}
 
 	/**
@@ -197,7 +197,7 @@ implements	IntercessionI
 	public void			printExecutionLogOnFile(String fileName)
 	throws Exception
 	{
-		((IntercessionI)this.connector).printExecutionLogOnFile(fileName) ;
+		((IntercessionI)this.getConnector()).printExecutionLogOnFile(fileName) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -211,7 +211,7 @@ implements	IntercessionI
 	public void			addRequiredInterface(Class<?> inter)
 	throws Exception
 	{
-		((IntercessionI)this.connector).addRequiredInterface(inter) ;
+		((IntercessionI)this.getConnector()).addRequiredInterface(inter) ;
 	}
 
 	/**
@@ -221,7 +221,7 @@ implements	IntercessionI
 	public void			removeRequiredInterface(Class<?> inter)
 	throws Exception
 	{
-		((IntercessionI)this.connector).removeRequiredInterface(inter) ;
+		((IntercessionI)this.getConnector()).removeRequiredInterface(inter) ;
 	}
 
 	/**
@@ -230,7 +230,7 @@ implements	IntercessionI
 	@Override
 	public void			addOfferedInterface(Class<?> inter) throws Exception
 	{
-		((IntercessionI)this.connector).addOfferedInterface(inter) ;
+		((IntercessionI)this.getConnector()).addOfferedInterface(inter) ;
 	}
 
 	/**
@@ -240,7 +240,7 @@ implements	IntercessionI
 	public void			removeOfferedInterface(Class<?> inter)
 	throws Exception
 	{
-		((IntercessionI)this.connector).removeOfferedInterface(inter) ;
+		((IntercessionI)this.getConnector()).removeOfferedInterface(inter) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -257,7 +257,7 @@ implements	IntercessionI
 		String ccname
 		) throws Exception
 	{
-		((IntercessionI)this.connector).
+		((IntercessionI)this.getConnector()).
 							doPortConnection(portURI, otherPortURI, ccname) ;
 	}
 
@@ -268,7 +268,7 @@ implements	IntercessionI
 	public void			doPortDisconnection(String portURI)
 	throws Exception
 	{
-		((IntercessionI)this.connector).doPortDisconnection(portURI) ;
+		((IntercessionI)this.getConnector()).doPortDisconnection(portURI) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -281,7 +281,7 @@ implements	IntercessionI
 	@Override
 	public ComponentI	newInstance(Object[] parameters) throws Exception
 	{
-		return ((IntercessionI)this.connector).newInstance(parameters) ;
+		return ((IntercessionI)this.getConnector()).newInstance(parameters) ;
 	}
 
 	/**
@@ -291,7 +291,7 @@ implements	IntercessionI
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.connector).invokeService(name, params) ;
+		return ((IntercessionI)this.getConnector()).invokeService(name, params) ;
 	}
 
 	/**
@@ -301,7 +301,7 @@ implements	IntercessionI
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.connector).invokeServiceSync(name, params) ;
+		return ((IntercessionI)this.getConnector()).invokeServiceSync(name, params) ;
 	}
 
 	/**
@@ -311,7 +311,7 @@ implements	IntercessionI
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception
 	{
-		((IntercessionI)this.connector).invokeServiceAsync(name, params) ;
+		((IntercessionI)this.getConnector()).invokeServiceAsync(name, params) ;
 	}
 
 	/**
@@ -320,7 +320,7 @@ implements	IntercessionI
 	@Override
 	public void			execute() throws Exception
 	{
-		((IntercessionI)this.connector).execute() ;
+		((IntercessionI)this.getConnector()).execute() ;
 	}
 
 	/**
@@ -329,7 +329,7 @@ implements	IntercessionI
 	@Override
 	public void			runTask(AbstractRemoteComponentTask t) throws Exception
 	{
-		((IntercessionI)this.connector).runTask(t) ;
+		((IntercessionI)this.getConnector()).runTask(t) ;
 	}
 
 	/**
@@ -341,7 +341,7 @@ implements	IntercessionI
 		AbstractRemoteComponentTask t
 		) throws Exception
 	{
-		((IntercessionI)this.connector).runTask(executorServiceURI, t) ;
+		((IntercessionI)this.getConnector()).runTask(executorServiceURI, t) ;
 	}
 
 	/**
@@ -354,7 +354,7 @@ implements	IntercessionI
 		String code
 		) throws Exception
 	{
-		((IntercessionI)this.connector).
+		((IntercessionI)this.getConnector()).
 			insertBeforeService(
 					methodName, parametersCanonicalClassNames, code) ;
 	}
@@ -369,7 +369,7 @@ implements	IntercessionI
 		String code
 		) throws Exception
 	{
-		((IntercessionI)this.connector).
+		((IntercessionI)this.getConnector()).
 			insertAfterService(
 					methodName, parametersCanonicalClassNames, code) ;
 	}

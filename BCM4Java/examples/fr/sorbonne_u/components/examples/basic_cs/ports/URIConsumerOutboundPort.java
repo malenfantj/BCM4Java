@@ -121,7 +121,7 @@ implements	URIConsumerI
 	@Override
 	public String		getURI() throws Exception
 	{
-		return ((URIConsumerI)this.connector).getURI() ;
+		return ((URIConsumerI)this.getConnector()).getURI() ;
 	}
 
 	/**
@@ -130,7 +130,7 @@ implements	URIConsumerI
 	@Override
 	public String[]		getURIs(int numberOfURIs) throws Exception
 	{
-		return ((URIConsumerI)this.connector).getURIs(numberOfURIs) ;
+		return ((URIConsumerI)this.getConnector()).getURIs(numberOfURIs) ;
 	}
 }
 //-----------------------------------------------------------------------------

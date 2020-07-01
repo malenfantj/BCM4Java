@@ -77,7 +77,7 @@ extends		AbstractDistributedCVM
 	@Override
 	public void			instantiateAndPublish() throws Exception
 	{
-		System.out.println(thisJVMURI + " | " + CLIENT_SIDE_JVM_URI + " | " + SERVER_SIDE_JVM_URI) ;
+		System.out.println(thisJVMURI + " among " + CLIENT_SIDE_JVM_URI + " | " + SERVER_SIDE_JVM_URI) ;
 
 		if (thisJVMURI.equals(CLIENT_SIDE_JVM_URI)) {
 

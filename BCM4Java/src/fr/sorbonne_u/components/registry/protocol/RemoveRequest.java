@@ -35,9 +35,9 @@ package fr.sorbonne_u.components.registry.protocol;
 import java.io.PrintStream;
 import java.util.concurrent.ConcurrentHashMap;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**

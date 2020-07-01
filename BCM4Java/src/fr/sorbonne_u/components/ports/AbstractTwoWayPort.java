@@ -1,40 +1,41 @@
 package fr.sorbonne_u.components.ports;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.reflect.Constructor;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.ComponentI;
@@ -42,31 +43,38 @@ import fr.sorbonne_u.components.connectors.AbstractTwoWayConnector;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
-import fr.sorbonne_u.components.exceptions.InvariantException;
-import fr.sorbonne_u.components.exceptions.PostconditionException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.interfaces.OfferedI;
 import fr.sorbonne_u.components.interfaces.RequiredI;
 import fr.sorbonne_u.components.interfaces.TwoWayI;
+import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>AbstractTwoWayPort</code> partially implements a two-way
  * port for components calling each others in a peer-to-peer fashion.
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
  * As components connected in a two-way peer-to-peer relationship where both
  * can call each others using the same methods, the two-way port is modeled
  * upon the inbound ports that admit multiple clients connected to them.
+ * </p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		this.connected() implies this.getServerPortURI() != null and this.getClientPortURI() != null
- * invariant		this.connected() implies
- *                   (this.getPortURI().equals(this.getClientPortURI()) ||
- *                        this.getPortURI().equals(this.getServerPortURI()))
+ * invariant	{@code TwoWayI.class.isAssignableFrom(getImplementedInterface())}
+ * invariant	{@code !connected() || (getServerPortURI() != null)}
+ * invariant	{@code !connected() || (getClientPortURI() != null)}
+ * invariant	{@code !connected() == (getConnector() == null)}
+ * invariant	{@code !connected() || (getPortURI().equals(getClientPortURI()) || getPortURI().equals(getServerPortURI()))}
+ * invariant	{@code !connected() || (getOut() != null)}
+ * invariant	{@code !isRemotelyConnected() || connected()}
+ * invariant	{@code !isRemotelyConnected() || isDistributedlyPublished()}
  * </pre>
  * 
  * <p>Created on : 2012-01-23</p>
@@ -79,9 +87,9 @@ implements	TwoWayPortI<TWI>
 {
 	private static final long	serialVersionUID = 1L;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Inner classes
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * The class <code>OutProxy</code>  implements an object that forwards
@@ -149,21 +157,65 @@ implements	TwoWayPortI<TWI>
 		}
 	}
 
-	// ------------------------------------------------------------------------
-	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
 
-	/** URI of the client port to which this port is connected.			*/
-	protected String							clientPortURI ;
-	/** URI of the server port to which this port is connected.			*/
-	protected String							serverPortURI ;
+	/** URI of the client port to which this port is connected.				*/
+	protected AtomicReference<String>		clientPortURI ;
+	/** URI of the server port to which this port is connected.				*/
+	protected AtomicReference<String>		serverPortURI ;
 	/** connector used to link with the other component.					*/
-	protected AbstractTwoWayConnector<TWI>	connector ;
-	/** proxy used to forward calls to the other component.				*/
-	protected TWI							out ;
+	protected AtomicReference<AbstractTwoWayConnector<TWI>>	connector ;
+	/** proxy used to forward calls to the other component.					*/
+	protected AtomicReference<TWI>			out ;
 	/** when connected, true if the connection is remote and false
-	 *  otherwise.														*/
-	protected boolean						isRemotelyConnected ;
+	 *  otherwise.															*/
+	protected AtomicBoolean					isRemotelyConnected ;
+
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
+
+	/**
+	 * check the implementation invariant of the class.
+	 *
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	p != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param p			the object on which the invariant must be checked.
+	 * @throws Exception	<i>todo.</i>
+	 */
+	protected static void	checkImplementationInvariant(
+		AbstractTwoWayPort<?> p
+		) throws Exception
+	{
+		assert	p != null;
+
+		synchronized (p) {
+			assert	p.connected() == (p.connector.get() != null) :
+						new ImplementationInvariantException(
+								"connected() == (connector.get() != null)");
+			assert	(p.connector.get() == null) ==
+											(p.clientPortURI.get() == null) :
+						new ImplementationInvariantException(
+								"(connector.get() == null) == "
+										+ "(clientPortURI.get() == null)");
+			assert	(p.connector.get() == null) ==
+										(p.clientPortURI.get() == null) :
+						new ImplementationInvariantException(
+								"(connector.get() == null) == "
+										+ "(clientPortURI.get() == null)");
+			assert	(p.connector.get() == null) || (p.out.get() != null) :
+						new ImplementationInvariantException(
+								"(connector.get() == null) || "
+										+ "(out.get() != null)");
+		}
+	}
 
 	/**
 	 * check the invariant of the class.
@@ -183,19 +235,34 @@ implements	TwoWayPortI<TWI>
 	{
 		assert	p != null ;
 
-		assert	!p.connected() ||
-					(p.getServerPortURI() != null &&
-										p.getClientPortURI() != null) :
-					new InvariantException(
-							"!p.connected() || "
-									+ "p.getServerPortURI() != null && "
-										+ "p.getClientPortURI() != null") ;
-		assert	!p.connected() ||
+		synchronized (p) {
+			assert	!p.connected() || (p.getServerPortURI() != null) :
+						new InvariantException(
+								"!connected() || (getServerPortURI() != null)");
+			assert	!p.connected() || (p.getClientPortURI() != null) :
+						new InvariantException(
+								"!connected() || getClientPortURI() != null");
+			assert	!p.connected() == (p.getConnector() == null) :
+						new InvariantException(
+								"!connected() == (getConnector() == null)");
+			assert	!p.connected() ||
 						(p.getPortURI().equals(p.getClientPortURI()) ||
 							p.getPortURI().equals(p.getServerPortURI())) :
-					new InvariantException("!p.connected() || "
-						+ "(p.getPortURI().equals(p.getClientPortURI()) || "
-						+ "p.getPortURI().equals(p.getServerPortURI()))") ;
+						new InvariantException(
+								"!connected() || "
+								+ "(getPortURI().equals(getClientPortURI()) || "
+								+ "getPortURI().equals(getServerPortURI()))") ;
+			assert	!p.connected() || (p.getOut() != null) :
+						new InvariantException(
+								"!connected() || (getOut() != null)");
+			assert	!p.isRemotelyConnected() || p.connected() :
+						new InvariantException(
+								"!isRemotelyConnected() || connected()");
+			assert	!p.isRemotelyConnected() || p.isDistributedlyPublished() :
+						new InvariantException(
+								"!isRemotelyConnected() || "
+										+ "p.isDistributedlyPublished()");
+		}
 	}
 
 	/**
@@ -204,11 +271,15 @@ implements	TwoWayPortI<TWI>
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner != null and uri != null
-	 * pre	TwoWayI.class.isAssignableFrom(implementedInterface)
-	 * post	this.implementedInterface.equals(implementedInterface)
-	 * post	this.owner.equals(owner)
-	 * post	this.uri.equals(uri)
+	 * pre	{@code owner != null && uri != null}
+	 * pre	{@code implementedInterface != null}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
 	 * </pre>
 	 *
 	 * @param uri					unique identifier of the port.
@@ -217,19 +288,29 @@ implements	TwoWayPortI<TWI>
 	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractTwoWayPort(
-		String		uri,
-		Class<?>		implementedInterface,
-		ComponentI	owner
+		String uri,
+		Class<? extends TwoWayI> implementedInterface,
+		ComponentI owner
 		) throws Exception
 	{
 		super(uri, implementedInterface, owner);
 
-		assert	TwoWayI.class.isAssignableFrom(implementedInterface) :
-					new PreconditionException(
-							"TwoWayI.class."
-								+ "isAssignableFrom(implementedInterface)") ;
+		this.clientPortURI= new AtomicReference<String>(null);
+		this.serverPortURI= new AtomicReference<String>(null);
+		this.connector =
+					new AtomicReference<AbstractTwoWayConnector<TWI>>(null);
+		this.out = new AtomicReference<TWI>(null);
+		this.isRemotelyConnected = new AtomicBoolean(false);
 
+		AbstractTwoWayPort.checkImplementationInvariant(this);
 		AbstractTwoWayPort.checkInvariant(this) ;
+		AbstractInboundPort.checkImplementationInvariant(this);
+		AbstractInboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
+		assert	!this.connected() : new PostconditionException("!connected()");
+		assert	!this.isRemotelyConnected() :
+					new PostconditionException("!isRemotelyConnected()");
 	}
 
 	/**
@@ -238,11 +319,14 @@ implements	TwoWayPortI<TWI>
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner != null ;
-	 * pre	TwoWayI.class.isAssignableFrom(implementedInterface)
-	 * post	this.uri != null
-	 * post	this.implementedInterface.equals(implementedInterface)
-	 * post	this.owner.equals(owner)
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(getPortURI())}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
 	 * </pre>
 	 *
 	 * @param implementedInterface	interface implemented by this port.
@@ -250,17 +334,31 @@ implements	TwoWayPortI<TWI>
 	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractTwoWayPort(
-		Class<?>		implementedInterface,
-		ComponentI	owner
+		Class<? extends TwoWayI> implementedInterface,
+		ComponentI owner
 		) throws Exception
 	{
 		this(AbstractPort.generatePortURI(implementedInterface),
 			 implementedInterface, owner);
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Self-properties management
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @see fr.sorbonne_u.components.ports.AbstractInboundPort#getImplementedInterface()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<? extends TwoWayI>	getImplementedInterface() throws Exception
+	{
+		return (Class<? extends TwoWayI>) super.getImplementedInterface();
+	}
+
+	// -------------------------------------------------------------------------
 	// Registry management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#unpublishPort()
@@ -268,17 +366,14 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public void			unpublishPort() throws Exception
 	{
-		assert	this.isPublished :
-					new PreconditionException("this.isPublished()") ;
-		assert	!this.connected() :
-					new PreconditionException("!this.connected()") ;
+		assert	!this.connected() : new PreconditionException("!connected()");
 
 		super.unpublishPort() ;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Life-cycle management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#destroyPort()
@@ -286,20 +381,14 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public void			destroyPort() throws Exception
 	{
-		assert	!this.connected() :
-					new PreconditionException("!this.connected()") ;
-		assert	!this.isPublished() :
-					new PreconditionException("!this.isPublished()") ;
+		assert	!this.connected() : new PreconditionException("!connected()");
 
 		super.destroyPort() ;
-
-		assert	!this.isPublished() :
-					new PostconditionException("!this.isPublished()") ;
 	}
 
-	// ------------------------------------------------------------------------
-	// Connection management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Self-properties management
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.AbstractInboundPort#setClientPortURI(java.lang.String)
@@ -308,7 +397,13 @@ implements	TwoWayPortI<TWI>
 	public void			setClientPortURI(String clientPortURI)
 	throws	Exception
 	{
-		this.clientPortURI = clientPortURI ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+		assert	clientPortURI != null :
+					new PreconditionException("client port URI can't be null!");
+
+		this.clientPortURI.set(clientPortURI);
 	}
 
 	/**
@@ -318,7 +413,13 @@ implements	TwoWayPortI<TWI>
 	public void			setServerPortURI(String serverPortURI)
 	throws	Exception
 	{
-		this.serverPortURI = serverPortURI ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+		assert	serverPortURI != null :
+					new PreconditionException("server port URI can't be null!");
+
+		this.serverPortURI.set(serverPortURI);
 	}
 
 	/**
@@ -327,7 +428,11 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public void			unsetClientPortURI() throws Exception
 	{
-		this.clientPortURI = null ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		this.clientPortURI.set(null);
 	}
 
 	/**
@@ -336,7 +441,11 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public void			unsetServerPortURI() throws Exception
 	{
-		this.serverPortURI = null ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		this.serverPortURI.set(null);
 	}
 
 	/**
@@ -345,9 +454,11 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public String		getClientPortURI() throws Exception
 	{
-		assert	this.connected() ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 
-		return this.clientPortURI ;
+		return this.clientPortURI.get();
 	}
 
 	/**
@@ -356,10 +467,16 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public String		getServerPortURI() throws Exception
 	{
-		assert	this.connected() ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 
-		return this.serverPortURI ;
+		return this.serverPortURI.get();
 	}
+
+	// -------------------------------------------------------------------------
+	// Connection management
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.OutboundPortI#getConnector()
@@ -367,7 +484,11 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public AbstractTwoWayConnector<TWI>	getConnector() throws Exception
 	{
-		return this.connector ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		return this.connector.get();
 	}
 
 	/**
@@ -375,21 +496,28 @@ implements	TwoWayPortI<TWI>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void 			setConnector(ConnectorI c)
+	public void 		setConnector(ConnectorI c)
 	throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	c != null : new PreconditionException("c != null") ;
 
-		this.connector = (AbstractTwoWayConnector<TWI>) c ;
+		this.connector.set((AbstractTwoWayConnector<TWI>)c);
 
 		assert	this.getConnector() == c :
-					new PostconditionException("this.getConnector() == c") ;
+					new PostconditionException("getConnector() == c") ;
 	}
 
 	@Override
-	public void 			unsetConnector() throws Exception
+	public void 		unsetConnector() throws Exception
 	{
-		this.connector = null ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		this.connector.set(null);
 	}
 
 	/**
@@ -398,7 +526,11 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public boolean		connected() throws Exception
 	{
-		return this.connector != null ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		return this.connector.get() != null ;
 	}
 
 	/**
@@ -407,9 +539,11 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public boolean		isRemotelyConnected() throws Exception
 	{
-		assert	this.connected() ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 
-		return this.isRemotelyConnected ;
+		return this.isRemotelyConnected.get();
 	}
 
 	/**
@@ -419,6 +553,9 @@ implements	TwoWayPortI<TWI>
 	public void			doConnection(String otherPortURI, String ccname)
 	throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.isPublished() && !this.connected() :
 					new PreconditionException("this.isPublished() && "
 													+ "!this.connected()") ;
@@ -440,10 +577,6 @@ implements	TwoWayPortI<TWI>
 		Constructor<?> c = cc.getConstructor(new Class<?>[]{}) ;
 		ConnectorI connector = (ConnectorI) c.newInstance() ;
 		this.doConnection(otherPortURI, connector) ;
-
-		AbstractTwoWayPort.checkInvariant(this) ;
-		assert	this.connected() :
-					new PostconditionException("this.connected()") ;
 	}
 
 	/**
@@ -453,6 +586,9 @@ implements	TwoWayPortI<TWI>
 	public void			doConnection(String otherPortURI, ConnectorI connector)
 	throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.isPublished() && !this.connected() :
 					new PreconditionException("this.isPublished() && "
 													+ "!this.connected()") ;
@@ -473,7 +609,12 @@ implements	TwoWayPortI<TWI>
 		// client.
 		this.getConnector().obeyConnection(this, connector) ;
 
+		AbstractTwoWayPort.checkImplementationInvariant(this);
 		AbstractTwoWayPort.checkInvariant(this) ;
+		AbstractInboundPort.checkImplementationInvariant(this);
+		AbstractInboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
 		assert	this.connected() :
 					new PostconditionException("this.connected()") ;
 	}
@@ -493,13 +634,6 @@ implements	TwoWayPortI<TWI>
 		ConnectorI connector
 		) throws Exception
 	{
-		assert	this.isPublished() && !this.connected() :
-					new PreconditionException("this.isPublished() && "
-													+ "!this.connected()") ;
-		assert	otherPortURI != null && connector != null :
-					new PreconditionException("otherPortURI != null && "
-													+ "connector != null") ;
-
 		// FIXME: should use a proper state machine model to implement the
 		// connection and disconnection protocol
 
@@ -509,20 +643,17 @@ implements	TwoWayPortI<TWI>
 		PortI serverPort =
 				AbstractCVM.getFromLocalRegistry(this.getServerPortURI()) ;
 		if (serverPort == null && AbstractCVM.isDistributed) {
-			this.isRemotelyConnected = true ;
+			this.isRemotelyConnected.set(true);
 			serverPort =
 				(PortI) AbstractDistributedCVM.getCVM().
 								getRemoteReference(this.getServerPortURI()) ;
 		} else {
-			this.isRemotelyConnected = false ;
+			this.isRemotelyConnected.set(false);
 		}
 		assert	serverPort != null :
 					new RuntimeException("Unkown port URI: " +
 												this.getServerPortURI()) ;
 		this.getConnector().connect((OfferedI)serverPort, this) ;
-
-		assert	this.connected() :
-					new PostconditionException("this.connected()") ;
 	}
 
 	/**
@@ -538,6 +669,9 @@ implements	TwoWayPortI<TWI>
 	public void			obeyConnection(String otherPortURI, String ccname)
 	throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.isPublished() && !this.connected() :
 					new PreconditionException("this.isPublished() && "
 													+ "!this.connected()") ;
@@ -552,10 +686,6 @@ implements	TwoWayPortI<TWI>
 		Constructor<?> c = cc.getConstructor(new Class<?>[]{}) ;
 		ConnectorI connector = (ConnectorI) c.newInstance() ;
 		this.obeyConnection(otherPortURI, connector) ;
-
-		AbstractTwoWayPort.checkInvariant(this) ;
-		assert	this.connected() :
-					new PostconditionException("this.connected()") ;
 	}
 
 	/**
@@ -571,6 +701,9 @@ implements	TwoWayPortI<TWI>
 	public void			obeyConnection(String otherPortURI, ConnectorI connector)
 	throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.isPublished() && !this.connected() :
 					new PreconditionException("this.isPublished() && "
 													+ "!this.connected()") ;
@@ -587,16 +720,21 @@ implements	TwoWayPortI<TWI>
 		PortI clientPort =
 				AbstractCVM.getFromLocalRegistry(this.getClientPortURI()) ;
 		if (clientPort == null && AbstractCVM.isDistributed) {
-			this.isRemotelyConnected = true ;
+			this.isRemotelyConnected.set(true);
 			clientPort = (PortI) AbstractDistributedCVM.getCVM().
 								getRemoteReference(this.getClientPortURI()) ;
 			this.getConnector().
 							connect((OfferedI)this, (RequiredI)clientPort) ;
 		} else {
-			this.isRemotelyConnected = false ;
+			this.isRemotelyConnected.set(false);
 		}
 
+		AbstractTwoWayPort.checkImplementationInvariant(this);
 		AbstractTwoWayPort.checkInvariant(this) ;
+		AbstractInboundPort.checkImplementationInvariant(this);
+		AbstractInboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
 		assert	this.connected() :
 					new PostconditionException("this.connected()") ;
 	}
@@ -607,6 +745,9 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public void			doDisconnection() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.connected() :
 					new PreconditionException("this.connected()") ;
 
@@ -616,9 +757,13 @@ implements	TwoWayPortI<TWI>
 		this.getConnector().obeyDisconnection(this) ;
 		this.doMyDisconnection() ;
 
+		AbstractTwoWayPort.checkImplementationInvariant(this);
 		AbstractTwoWayPort.checkInvariant(this) ;
-		assert	!this.connected() :
-					new PostconditionException("!this.connected()") ;
+		AbstractInboundPort.checkImplementationInvariant(this);
+		AbstractInboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
+		assert	!this.connected() : new PostconditionException("!connected()") ;
 	}
 
 	/**
@@ -636,9 +781,6 @@ implements	TwoWayPortI<TWI>
 	 */
 	protected void		doMyDisconnection() throws Exception
 	{
-		assert	this.connected() :
-					new PreconditionException("this.connected()") ;
-
 		// FIXME: should use a proper state machine model to implement the
 		// connection and disconnection protocol
 
@@ -648,10 +790,7 @@ implements	TwoWayPortI<TWI>
 		this.unsetConnector() ;
 		this.unsetClientPortURI() ;
 		this.unsetServerPortURI() ;
-
-		AbstractTwoWayPort.checkInvariant(this) ;
-		assert	!this.connected() :
-					new PostconditionException("!this.connected()") ;
+		this.isRemotelyConnected.set(false);
 	}
 
 	/**
@@ -660,6 +799,9 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public void			obeyDisconnection() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
 		assert	this.connected() :
 					new PreconditionException("this.connected()") ;
 
@@ -670,6 +812,15 @@ implements	TwoWayPortI<TWI>
 		this.unsetConnector() ;
 		this.unsetClientPortURI() ;
 		this.unsetServerPortURI() ;
+		this.isRemotelyConnected.set(false);
+
+		AbstractTwoWayPort.checkImplementationInvariant(this);
+		AbstractTwoWayPort.checkInvariant(this) ;
+		AbstractInboundPort.checkImplementationInvariant(this);
+		AbstractInboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
+		assert	!this.connected() : new PostconditionException("!connected()") ;
 	}
 
 	/**
@@ -678,7 +829,11 @@ implements	TwoWayPortI<TWI>
 	@Override
 	public TWI			getOut() throws Exception
 	{
-		return this.out ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		return this.out.get();
 	}
 
 	/**
@@ -702,13 +857,13 @@ implements	TwoWayPortI<TWI>
 		assert	out != null :
 					new PreconditionException("out != null") ;
 		assert	this.getOut() == null :
-					new PreconditionException("this.getOut() == null") ;
+					new PreconditionException("getOut() == null") ;
 		
-		this.out = (TWI) out ;
+		this.out.set((TWI)out);
 
 		assert	this.getOut() == out :
-					new PostconditionException("this.getOut() == out") ;
+					new PostconditionException("getOut() == out") ;
 
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.plugins.dipc.example;
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
 // Jacques.Malenfant@lip6.fr
@@ -73,11 +75,17 @@ extends		AbstractCVM
 	@Override
 	public void				deploy() throws Exception
 	{
-		ClientComponent cc = new ClientComponent() ;
-		cc.toggleTracing() ;
+		String clientURI =
+				AbstractComponent.createComponent(
+						ClientComponent.class.getCanonicalName(),
+						new Object[]{});
+		this.toggleTracing(clientURI);
 
-		ServerComponent sc = new ServerComponent() ;
-		sc.toggleTracing() ;
+		String serverURI =
+				AbstractComponent.createComponent(
+						ServerComponent.class.getCanonicalName(),
+						new Object[]{});
+		this.toggleTracing(serverURI);
 
 		super.deploy() ;
 	}

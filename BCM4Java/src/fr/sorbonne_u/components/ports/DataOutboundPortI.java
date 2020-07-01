@@ -44,13 +44,22 @@ import fr.sorbonne_u.components.interfaces.DataRequiredI;
  *
  * <p><strong>Description</strong></p>
  * 
- * An outbound port is associated with a <code>BasicDataRequiredI</code>
+ * <p>
+ * A data outbound port is associated with a <code>DataRequiredI</code>
  * interface used to implement a basic interface to get data from a provider
  * component.  The primary way to get the data is the pull mode, where the
  * client component calls the provider through the <code>request()</code>
  * method which returns a piece of data.  But the port can also be used in a
  * push mode where the provider delivers the data to the client by calling a
  * <code>receive</code> method with a piece of data as parameter.
+ * </p>
+ * 
+ * <p><strong>Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code getImplementedInterface() == getImplementedPullInterface()}
+ * invariant	{@code !isRemotelyConnected() || isDistributedlyPublished()}
+ * </pre>
  * 
  * <p>Created on : 2011-11-07</p>
  * 
@@ -58,7 +67,7 @@ import fr.sorbonne_u.components.interfaces.DataRequiredI;
  */
 public interface			DataOutboundPortI
 extends		OutboundPortI,
-			DataRequiredI.PullI,		// to be called from the inside to
+			DataRequiredI.PullI,	// to be called from the inside to
 									// request data
 			DataRequiredI.PushI		// to be called from the outside to
 									// receive data
@@ -68,19 +77,27 @@ extends		OutboundPortI,
 	// ------------------------------------------------------------------------
 
 	/**
+	 * @see fr.sorbonne_u.components.ports.OutboundPortI#getImplementedInterface()
+	 */
+	@Override
+	public Class<? extends DataRequiredI.PullI>	getImplementedInterface()
+	throws Exception;
+
+	/**
 	 * get the pull interface implemented by this port.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	DataRequiredI.PullI.class.isAssignableFrom(return)
+	 * pre	{@code !isDestroyed()}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @return			the implemented pull interface.
+	 * @return				the implemented pull interface.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public Class<?> 		getImplementedPullInterface() throws Exception ;
+	public Class<? extends DataRequiredI.PullI>	getImplementedPullInterface()
+	throws Exception ;
 
 	/**
 	 * get the push interface implemented by this port.
@@ -88,33 +105,14 @@ extends		OutboundPortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	DataRequiredI.PushI.class.isAssignableFrom(return)
+	 * pre	{@code !isDestroyed()}
+	 * post	{@code DataRequiredI.PushI.class.isAssignableFrom(return)}
 	 * </pre>
 	 *
 	 * @return			the implemented push interface.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public Class<?> 		getImplementedPushInterface() throws Exception ;
-
-	/**
-	 * return the reference to the Java object that is implementing the
-	 * services called through the data outbound port and its push interface;
-	 * usually, it is an object implementing the owner component (i.e.,
-	 * implementing the interface <code>ComponentI</code> and inheriting
-	 * from <code>AbstractComponent</code>), but it can also be a plug-in
-	 * instance held by the owner component.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	ret != null
-	 * </pre>
-	 *
-	 * @return			the reference to the Java object that is implementing the services called through the data outbound port.
-	 * @throws Exception	<i>todo.</i>
-	 */
-	public Object		getServiceProviderReference() throws Exception ;
+	public Class<? extends DataRequiredI.PushI> getImplementedPushInterface()
+	throws Exception ;
 }
 //-----------------------------------------------------------------------------

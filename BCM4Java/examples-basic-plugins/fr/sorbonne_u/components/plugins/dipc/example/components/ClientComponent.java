@@ -63,7 +63,7 @@ import fr.sorbonne_u.components.plugins.dipc.example.ports.PairDataOutboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				ClientComponent
+public class			ClientComponent
 extends		AbstractComponent
 {
 	// ------------------------------------------------------------------------
@@ -91,7 +91,7 @@ extends		AbstractComponent
 	 *
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public					ClientComponent() throws Exception
+	protected			ClientComponent() throws Exception
 	{
 		this("ClientComponent-" + AbstractPort.generatePortURI()) ;
 	}
@@ -109,7 +109,7 @@ extends		AbstractComponent
 	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the component.
 	 * @throws Exception				<i>to do.</i>
 	 */
-	public					ClientComponent(String reflectionInboundPortURI)
+	protected			ClientComponent(String reflectionInboundPortURI)
 	throws Exception
 	{
 		super(reflectionInboundPortURI, 2, 0);
@@ -145,7 +145,7 @@ extends		AbstractComponent
 	 * @see fr.sorbonne_u.components.AbstractComponent#start()
 	 */
 	@Override
-	public void				start() throws ComponentStartException
+	public void			start() throws ComponentStartException
 	{
 		super.start() ;
 
@@ -171,7 +171,7 @@ extends		AbstractComponent
 	 * @see fr.sorbonne_u.components.AbstractComponent#execute()
 	 */
 	@Override
-	public void				execute() throws Exception
+	public void			execute() throws Exception
 	{
 		super.execute() ;
 
@@ -205,7 +205,7 @@ extends		AbstractComponent
 	 * @see fr.sorbonne_u.components.AbstractComponent#finalise()
 	 */
 	@Override
-	public void				finalise() throws Exception
+	public void			finalise() throws Exception
 	{
 		this.doPortDisconnection(this.pairDataOBP.getPortURI()) ;
 
@@ -216,7 +216,7 @@ extends		AbstractComponent
 	 * @see fr.sorbonne_u.components.AbstractComponent#shutdown()
 	 */
 	@Override
-	public void				shutdown() throws ComponentShutdownException
+	public void			shutdown() throws ComponentShutdownException
 	{
 		try {
 			this.pairDataOBP.unpublishPort() ;
@@ -244,7 +244,7 @@ extends		AbstractComponent
 	 *
 	 * @param d	the pushed data.
 	 */
-	public void				consumeData(PairDataI.PairI d)
+	public void			consumeData(PairDataI.PairI d)
 	{
 		assert	d != null ;
 

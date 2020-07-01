@@ -1,14 +1,6 @@
 package fr.sorbonne_u.components.plugins.dipc.example.ports;
 
-import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI.DataI;
-import fr.sorbonne_u.components.plugins.dipc.example.components.ClientComponent;
-import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI.PairI;
-import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -41,7 +33,14 @@ import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-//------------------------------------------------------------------------------
+import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataRequiredI.DataI;
+import fr.sorbonne_u.components.plugins.dipc.example.components.ClientComponent;
+import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI.PairI;
+import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
+
+// -----------------------------------------------------------------------------
 /**
  * The class <code>PairDataOutboundPort</code>
  *
@@ -57,12 +56,12 @@ import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				PairDataOutboundPort
+public class			PairDataOutboundPort
 extends		AbstractDataOutboundPort
 {
 	private static final long serialVersionUID = 1L;
 
-	public					PairDataOutboundPort(
+	public				PairDataOutboundPort(
 		String uri, 
 		ComponentI owner
 		) throws Exception
@@ -74,7 +73,7 @@ extends		AbstractDataOutboundPort
 		assert	owner instanceof ClientComponent ;
 	}
 
-	public					PairDataOutboundPort(
+	public				PairDataOutboundPort(
 		ComponentI owner
 		) throws Exception
 	{
@@ -88,7 +87,7 @@ extends		AbstractDataOutboundPort
 	 * @see fr.sorbonne_u.components.interfaces.DataRequiredI.PushI#receive(fr.sorbonne_u.components.interfaces.DataRequiredI.DataI)
 	 */
 	@Override
-	public void				receive(DataI d) throws Exception
+	public void			receive(DataI d) throws Exception
 	{
 		((ClientComponent)this.owner).consumeData((PairI) d) ;
 	}

@@ -41,10 +41,10 @@ import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.ports.URIProviderInboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.exceptions.InvariantException;
-import fr.sorbonne_u.components.exceptions.PostconditionException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.ports.PortI;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 //-----------------------------------------------------------------------------
 /**

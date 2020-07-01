@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.registry.protocol;
 import fr.sorbonne_u.components.registry.ConnectionData;
 import fr.sorbonne_u.components.registry.exceptions.BadConnectionDataException;
 import fr.sorbonne_u.components.registry.exceptions.GlobalRegistryResponseException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**

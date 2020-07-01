@@ -84,7 +84,7 @@ implements	DynamicComponentCreationI
 		Object[] constructorParams
 		) throws Exception
 	{
-		return ((DynamicComponentCreationI)this.connector).
+		return ((DynamicComponentCreationI)this.getConnector()).
 							createComponent(classname, constructorParams) ;
 	}
 
@@ -95,7 +95,7 @@ implements	DynamicComponentCreationI
 	public void			startComponent(String reflectionInboundPortURI)
 	throws Exception
 	{
-		((DynamicComponentCreationI)this.connector).
+		((DynamicComponentCreationI)this.getConnector()).
 								startComponent(reflectionInboundPortURI) ;
 	}
 
@@ -105,7 +105,7 @@ implements	DynamicComponentCreationI
 	@Override
 	public void			executeComponent(String componentURI) throws Exception
 	{
-		((DynamicComponentCreationI)this.connector).
+		((DynamicComponentCreationI)this.getConnector()).
 								executeComponent(componentURI) ;
 	}
 
@@ -115,7 +115,7 @@ implements	DynamicComponentCreationI
 	@Override
 	public void			finaliseComponent(String componentURI) throws Exception
 	{
-		((DynamicComponentCreationI)this.connector).
+		((DynamicComponentCreationI)this.getConnector()).
 								finaliseComponent(componentURI) ;
 	}
 
@@ -125,7 +125,7 @@ implements	DynamicComponentCreationI
 	@Override
 	public void			shutdownComponent(String componentURI) throws Exception
 	{
-		((DynamicComponentCreationI)this.connector).
+		((DynamicComponentCreationI)this.getConnector()).
 								shutdownComponent(componentURI) ;
 	}
 
@@ -136,7 +136,7 @@ implements	DynamicComponentCreationI
 	public void			shutdownNowComponent(String componentURI)
 	throws Exception
 	{
-		((DynamicComponentCreationI)this.connector).
+		((DynamicComponentCreationI)this.getConnector()).
 								shutdownNowComponent(componentURI) ;
 	}
 
@@ -147,7 +147,7 @@ implements	DynamicComponentCreationI
 	public boolean		isDeployedComponent(String reflectionInboundPortURI)
 	throws Exception
 	{
-		return ((DynamicComponentCreationI)this.connector).
+		return ((DynamicComponentCreationI)this.getConnector()).
 								isDeployedComponent(reflectionInboundPortURI) ;
 	}
 
@@ -157,7 +157,7 @@ implements	DynamicComponentCreationI
 	@Override
 	public boolean		isStartedComponent(String componentURI) throws Exception
 	{
-		return ((DynamicComponentCreationI)this.connector).
+		return ((DynamicComponentCreationI)this.getConnector()).
 								isStartedComponent(componentURI) ;
 	}
 
@@ -168,7 +168,7 @@ implements	DynamicComponentCreationI
 	public boolean		isFinalisedComponent(String componentURI)
 	throws Exception
 	{
-		return ((DynamicComponentCreationI)this.connector).
+		return ((DynamicComponentCreationI)this.getConnector()).
 								isFinalisedComponent(componentURI) ;
 	}
 
@@ -178,7 +178,7 @@ implements	DynamicComponentCreationI
 	@Override
 	public boolean		isShutdownComponent(String componentURI) throws Exception
 	{
-		return ((DynamicComponentCreationI)this.connector).
+		return ((DynamicComponentCreationI)this.getConnector()).
 								isShutdownComponent(componentURI) ;
 	}
 
@@ -189,7 +189,7 @@ implements	DynamicComponentCreationI
 	public boolean		isTerminatedComponent(String componentURI)
 	throws Exception
 	{
-		return ((DynamicComponentCreationI)this.connector).
+		return ((DynamicComponentCreationI)this.getConnector()).
 								isTerminatedComponent(componentURI) ;
 	}
 }

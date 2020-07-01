@@ -36,10 +36,10 @@ package fr.sorbonne_u.components.examples.cps.components;
 
 import java.util.Vector;
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
 import fr.sorbonne_u.components.pre.controlflowhelpers.AbstractLocalComposedContinuation;
 import fr.sorbonne_u.components.pre.controlflowhelpers.AbstractContinuation;
 import fr.sorbonne_u.components.pre.controlflowhelpers.AbstractLocalContinuation;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 //-----------------------------------------------------------------------------
 /**

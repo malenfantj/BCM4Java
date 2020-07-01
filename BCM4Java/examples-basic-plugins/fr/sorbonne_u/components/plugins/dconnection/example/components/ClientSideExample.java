@@ -76,7 +76,7 @@ extends		AbstractComponent
 // -----------------------------------------------------------------------------
 {
 	public final static String	DYNAMIC_CONNECTION_PLUGIN_URI =
-														"clientSidePLuginURI" ;
+														"clientSidePluginURI" ;
 
 	// -------------------------------------------------------------------------
 	// Constants and variables

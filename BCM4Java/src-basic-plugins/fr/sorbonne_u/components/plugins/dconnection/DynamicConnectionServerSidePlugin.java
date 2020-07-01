@@ -130,12 +130,6 @@ extends		AbstractPlugin
 		// At installation time on a component, the plug-in adds the plug-in
 		// offered interfaces to the ones of the component.
 		this.addOfferedInterface(DynamicConnectionRequestI.class) ;
-		// Then, ports for the above interfaces are created, added to the
-		// component and published.
-		this.dcrip =
-			new DynamicConnectionRequestInboundPort(
-										this.getPluginURI(), this.owner) ;
-		this.dcrip.publishPort() ;
 	}
 
 	/**
@@ -144,6 +138,12 @@ extends		AbstractPlugin
 	@Override
 	public void			initialise() throws Exception
 	{
+		// The port offering DynamicConnectionRequestI is created and published.
+		this.dcrip =
+			new DynamicConnectionRequestInboundPort(
+										this.getPluginURI(), this.owner) ;
+		this.dcrip.publishPort() ;
+
 		this.dynamicInboundPorts = new HashMap<>() ;
 	}
 
@@ -153,13 +153,6 @@ extends		AbstractPlugin
 	@Override
 	public void			finalise() throws Exception
 	{
-		for(InboundPortI p : this.dynamicInboundPorts.values()) {
-			if (!p.connected()) {
-				p.unpublishPort() ;
-				p.destroyPort() ;
-			}
-		}
-		this.dynamicInboundPorts.clear() ;
 	}
 
 	/**
@@ -168,6 +161,11 @@ extends		AbstractPlugin
 	@Override
 	public void			uninstall() throws Exception
 	{
+		for(InboundPortI p : this.dynamicInboundPorts.values()) {
+			p.unpublishPort() ;
+			p.destroyPort() ;
+		}
+		this.dynamicInboundPorts.clear() ;
 		// When uninstalling the plug-in, the ports and the interfaces added
 		// to the component at installation time are removed.
 		this.dcrip.unpublishPort() ;

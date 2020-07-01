@@ -1,56 +1,55 @@
 package fr.sorbonne_u.components.ports;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.reflect.Constructor;
-
+import java.util.concurrent.atomic.AtomicInteger;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.connectors.AbstractDataConnector;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
-import fr.sorbonne_u.components.exceptions.InvariantException;
-import fr.sorbonne_u.components.exceptions.PostconditionException;
-import fr.sorbonne_u.components.exceptions.PreconditionException;
-import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.interfaces.DataRequiredI;
 import fr.sorbonne_u.components.interfaces.OfferedI;
 import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>AbstractDataOutboundPort</code> partially implements an
  * outbound port for data exchanging components.
@@ -68,7 +67,6 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * by the connector, while the port implements the required push interface
  * through which data can be received in push mode from the provider.
  * </p>
- * 
  * <p>
  * A concrete outbound connector must therefore implement the method
  * <code>receive</code> which will receive a piece of data as parameter
@@ -78,8 +76,7 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		DataRequiredI.PullI.class.isAssignableFrom(this.implementedInterface)
- * invariant		DataRequiredI.PushI.class.isAssignableFrom(this.implementedPushInterface)
+ * invariant	true
  * </pre>
  * 
  * <p>Created on : 2011-11-07</p>
@@ -87,18 +84,31 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public abstract class	AbstractDataOutboundPort
-// extends		AbstractInboundPort	// for the push interface
 extends		AbstractOutboundPort
 implements	DataOutboundPortI
 {
-	// ------------------------------------------------------------------------
-	// Port instance variables and constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
 
 	private static final long serialVersionUID = 1L;
+	/** push interface implemented by this port, to receive data from the
+	 *  provider.									 						*/
+	protected final Class<? extends DataRequiredI.PushI>
+												implementedPushInterface;
+	/** URI of the plug-in to be called in the owner or null if none.		*/
+	protected final String		pluginURI;
+	/** URI of the executor service to be used to execute the service on the
+	 *  owner or null if none.												*/
+	protected final String		executorServiceURI;
+	/** index of the executor service in the owner (beware that this can
+	 *  change over the execution of the owner if executor services are shut
+	 *  down dynamically).													*/
+	protected AtomicInteger		executorServiceIndex = new AtomicInteger(-1);
 
-	/** push interface implemented by this port, to receive data from the provider. */
-	protected final Class<?>		implementedPushInterface ;
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
 
 	/**
 	 * check the invariant of the class.
@@ -106,45 +116,246 @@ implements	DataOutboundPortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	p != null
+	 * pre	{@code p != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param p	the object on which the invariant must be checked.
-	 * @throws Exception		<i>todo.</i>
+	 * @param p				the object on which the invariant must be checked.
+	 * @throws Exception	<i>todo.</i>
+	 */
+	protected static void	checkImplementationInvariant(
+		AbstractDataOutboundPort p
+		) throws Exception
+	{
+		assert	p != null;
+
+		synchronized (p) {
+			assert	(p.executorServiceURI == null) ==
+										(p.executorServiceIndex.get() < 0) :
+						new ImplementationInvariantException(
+								"(executorServiceURI == null) == " + 
+								"(executorServiceIndex == -1)");
+			assert	p.executorServiceURI == null ||
+							p.executorServiceIndex.get() ==
+									p.owner.getExecutorServiceIndex(
+													p.executorServiceURI) :
+						new ImplementationInvariantException(
+								"executorServiceURI == null || " +
+								"executorServiceIndex == " +
+								"owner.getExecutorServiceIndex(" +
+								"executorServiceURI)");
+			try {
+				assert	!p.hasPlugin() ||
+								p.getOwner().isInstalled(p.getPluginURI()) :
+							new ImplementationInvariantException(
+									"owner component does not have an " +
+									"installed plug-in with URI: " +
+									p.getPluginURI());
+				assert	!p.hasExecutorService() ||
+									p.getOwner().validExecutorServiceURI(
+													p.getExecutorServiceURI()) :
+							new ImplementationInvariantException(
+									"owner component does not have an executor "
+									+ "service with URI: "
+									+ p.getExecutorServiceURI());
+				assert	!p.hasExecutorService() ||
+								p.getExecutorServiceIndex() ==
+									p.getOwner().getExecutorServiceIndex(
+													p.getExecutorServiceURI()) :
+							new ImplementationInvariantException(
+									"executor service with URI " +
+									p.getExecutorServiceURI() +
+									" no longer have index " +
+									p.getExecutorServiceIndex() +
+									" in owner!");
+			} catch (Exception e) {
+				throw new RuntimeException(e) ;
+			}
+		}
+	}
+
+	/**
+	 * check the invariant of the class.
+	 *
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code p != null}
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param p				the object on which the invariant must be checked.
+	 * @throws Exception	<i>todo.</i>
 	 */
 	protected static void	checkInvariant(AbstractDataOutboundPort p)
 	throws Exception
 	{
 		assert	p != null ;
 
-		assert	p.getImplementedInterface().equals(
-										p.getImplementedPullInterface()) :
-					new InvariantException(
-							"!p.connected() || " + 
-									"p.getImplementedInterface().equals(" + 
-										"p.getImplementedPullInterface())") ;
+		synchronized (p) {
+			// From DataOutboundPortI
+			assert	p.getImplementedInterface().equals(
+											p.getImplementedPullInterface()) :
+						new InvariantException(
+								"!connected() || " + 
+								"getImplementedInterface().equals(" + 
+								"getImplementedPullInterface())");
+			assert	!p.isRemotelyConnected() || p.isDistributedlyPublished() :
+						new InvariantException(
+								"!isRemotelyConnected() || "
+											+ "isDistributedlyPublished()");
+		}
 	}
 
+	/*
+	 * Disallowed! (use another constructor)
+	 */
 	public				AbstractDataOutboundPort(
-		Class<?>		implementedInterface,
-		ComponentI	owner
+		Class<? extends RequiredI> implementedInterface,
+		ComponentI owner
 		) throws Exception
 	{
 		super(implementedInterface, owner);
 		throw new RuntimeException("AbstractDataOutboundPort: must use the " +
-				"three or four parameters version of the constructor.") ;
+				"three or four parameters version of the constructor.");
 	}
 
+	/*
+	 * Disallowed! (use another constructor)
+	 */
 	public				AbstractDataOutboundPort(
-		String		uri,
-		Class<?>		implementedInterface,
+		String uri,
+		Class<? extends RequiredI> implementedInterface,
 		ComponentI	owner
 		) throws Exception
 	{
 		super(uri, implementedInterface, owner);
 		throw new RuntimeException("AbstractDataOutboundPort: must use the " +
-				"three or four parameters version of the constructor.") ;
+				"three or four parameters version of the constructor.");
+	}
+
+	/**
+	 * create and initialize a data outbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code uri != null and owner != null}
+	 * pre	{@code implementedPullInterface != null}
+	 * pre	{@code implementedPushInterface != null}
+	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
+	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * post	{@code getImplementedInterface().equals(implementedPullInterface)}
+	 * post	{@code getImplementedPushInterface().equals(implementedPushInterface)}
+	 * </pre>
+	 *
+	 * @param uri						unique identifier of the port.
+	 * @param implementedPullInterface	pull interface implemented by this port.
+	 * @param implementedPushInterface	push interface implemented by this port.
+	 * @param owner						component that owns this port.
+	 * @param pluginURI					URI of the plug-in to be called in the owner or null if none.
+	 * @param executorServiceURI		URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws Exception  				<i>todo.</i>
+	 */
+	public				AbstractDataOutboundPort(
+		String uri,
+		Class<?  extends DataRequiredI.PullI> implementedPullInterface,
+		Class<? extends DataRequiredI.PushI> implementedPushInterface,
+		ComponentI owner,
+		String pluginURI,
+		String executorServiceURI
+		) throws Exception
+	{
+		super(uri, implementedPullInterface, owner) ;
+
+		assert	implementedPushInterface != null :
+					new PreconditionException(
+							"implementedPushInterface != null");
+		assert	DataRequiredI.PullI.class.
+								isAssignableFrom(implementedPullInterface);
+					new PreconditionException(
+							"DataRequiredI.PullI.class." + 
+							"isAssignableFrom(implementedPullInterface)");
+		assert	DataRequiredI.PushI.class.
+								isAssignableFrom(implementedPushInterface);
+					new PreconditionException(
+							"DataRequiredI.PushI.class." + 
+							"isAssignableFrom(implementedPushInterface)");
+		assert	pluginURI == null || owner.isInstalled(pluginURI) :
+					new PreconditionException(
+							"owner component does not have an installed "
+							+ "plug-in with URI: " + pluginURI);
+		assert	executorServiceURI == null ||
+						owner.validExecutorServiceURI(executorServiceURI) :
+					new PreconditionException(
+							"owner component does not have an executor "
+							+ "service with URI: " + executorServiceURI);
+
+		this.implementedPushInterface = implementedPushInterface;
+		this.pluginURI = pluginURI;
+		this.executorServiceURI = executorServiceURI;
+		if (executorServiceURI != null) {
+			this.executorServiceIndex.set(
+						this.owner.getExecutorServiceIndex(executorServiceURI));
+		}
+
+		AbstractDataOutboundPort.checkImplementationInvariant(this);
+		AbstractDataOutboundPort.checkInvariant(this);
+		AbstractOutboundPort.checkImplementationInvariant(this);
+		AbstractOutboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
+		assert	this.getImplementedPullInterface().
+											equals(implementedPullInterface) :
+					new PostconditionException(
+							"this.getImplementedPullInterface()." + 
+									"equals(implementedPullInterface)");
+	}
+
+	/**
+	 * create and initialize a data outbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedPullInterface != null}
+	 * pre	{@code implementedPushInterface != null}
+	 * pre	{@code DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)}
+	 * pre	{@code DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)}
+	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
+	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(getPortURI())}
+	 * post	{@code getImplementedInterface().equals(implementedPullInterface)}
+	 * post	{@code getImplementedPushInterface().equals(implementedPushInterface)}
+	 * </pre>
+	 *
+	 * @param implementedPullInterface	pull interface implemented by this port.
+	 * @param implementedPushInterface	push interface implemented by this port.
+	 * @param owner						component that owns this port.
+	 * @param pluginURI					URI of the plug-in to be called in the owner or null if none.
+	 * @param executorServiceURI		URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws Exception  				<i>todo.</i>
+	 */
+	public				AbstractDataOutboundPort(
+		Class<? extends DataRequiredI.PullI> implementedPullInterface,
+		Class<? extends DataRequiredI.PushI> implementedPushInterface,
+		ComponentI owner,
+		String pluginURI,
+		String executorServiceURI
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(implementedPullInterface),
+			 implementedPullInterface, implementedPushInterface, owner,
+			 pluginURI, executorServiceURI);
 	}
 
 	/**
@@ -153,13 +364,18 @@ implements	DataOutboundPortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	uri != null and owner != null
-	 * pre	DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)
-	 * pre	DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)
-	 * post	this.getPortURI().equals(uri)
-	 * post	this.getOwner().equals(owner)
-	 * post	this.getImplementedInterface().equals(implementedPullInterface)
-	 * post	this.getImplementedPushInterface().equals(implementedPushInterface)
+	 * pre	{@code uri != null and owner != null}
+	 * pre	{@code implementedPullInterface != null}
+	 * pre	{@code implementedPushInterface != null}
+	 * pre	{@code DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)}
+	 * pre	{@code DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * post	{@code getImplementedInterface().equals(implementedPullInterface)}
+	 * post	{@code getImplementedPushInterface().equals(implementedPushInterface)}
 	 * </pre>
 	 *
 	 * @param uri						unique identifier of the port.
@@ -169,28 +385,14 @@ implements	DataOutboundPortI
 	 * @throws Exception  				<i>todo.</i>
 	 */
 	public				AbstractDataOutboundPort(
-		String		uri,
-		Class<?>		implementedPullInterface,
-		Class<?>		implementedPushInterface,
-		ComponentI	owner
+		String uri,
+		Class<? extends DataRequiredI.PullI> implementedPullInterface,
+		Class<? extends DataRequiredI.PushI> implementedPushInterface,
+		ComponentI owner
 		) throws Exception
 	{
-		super(uri, implementedPullInterface, owner) ;
-		// the implemented interfaces are coming from a data required interface
-		assert DataRequiredI.PullI.class.
-								isAssignableFrom(implementedPullInterface) ;
-		assert DataRequiredI.PushI.class.
-								isAssignableFrom(implementedPushInterface) ;
-
-		this.implementedPushInterface = implementedPushInterface ;
-//		this.lock = new Object() ;
-
-		AbstractDataOutboundPort.checkInvariant(this) ;
-		assert	this.getImplementedPullInterface().
-											equals(implementedPullInterface) :
-					new PostconditionException(
-							"this.getImplementedPullInterface()." + 
-									"equals(implementedPullInterface)") ;
+		this(uri, implementedPullInterface, implementedPushInterface, owner,
+			 null, null);
 	}
 
 	/**
@@ -199,12 +401,17 @@ implements	DataOutboundPortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner != null
-	 * pre	DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)
-	 * pre	DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)
-	 * post	this.getOwner().equals(owner)
-	 * post	this.getImplementedInterface().equals(implementedPullInterface)
-	 * post	this.getImplementedPushInterface().equals(implementedPushInterface)
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedPullInterface != null}
+	 * pre	{@code implementedPushInterface != null}
+	 * pre	{@code DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)}
+	 * pre	{@code DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * post	{@code getImplementedInterface().equals(implementedPullInterface)}
+	 * post	{@code getImplementedPushInterface().equals(implementedPushInterface)}
 	 * </pre>
 	 *
 	 * @param implementedPullInterface	pull interface implemented by this port.
@@ -213,155 +420,93 @@ implements	DataOutboundPortI
 	 * @throws Exception  				<i>todo.</i>
 	 */
 	public				AbstractDataOutboundPort(
-		Class<?>	implementedPullInterface,
-		Class<?>	implementedPushInterface,
+		Class<? extends DataRequiredI.PullI> implementedPullInterface,
+		Class<? extends DataRequiredI.PushI> implementedPushInterface,
 		ComponentI	owner
 		) throws Exception
 	{
 		this(AbstractPort.generatePortURI(implementedPullInterface),
-			 implementedPullInterface, implementedPushInterface, owner) ;
+			 implementedPullInterface, implementedPushInterface, owner);
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Self-properties management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.AbstractPort#getImplementedInterface()
 	 */
 	@Override
-	public Class<?> 		getImplementedInterface() throws Exception
+	public Class<? extends DataRequiredI.PullI>	getImplementedInterface()
+	throws Exception
 	{
 		// make sure this method is always used to get the pull interface
-		return this.getImplementedPullInterface() ;
+		return this.getImplementedPullInterface();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.DataOutboundPortI#getImplementedPullInterface()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Class<?>		getImplementedPullInterface() throws Exception
+	public Class<? extends DataRequiredI.PullI>	getImplementedPullInterface()
+	throws Exception
 	{
-		// the pull interface is stored as the original implemented interface.
-		return super.getImplementedInterface() ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		return (Class<? extends DataRequiredI.PullI>)
+										super.getImplementedInterface();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.DataOutboundPortI#getImplementedPushInterface()
 	 */
 	@Override
-	public Class<?> 		getImplementedPushInterface() throws Exception
+	public Class<? extends DataRequiredI.PushI> getImplementedPushInterface()
+	throws Exception
 	{
-		return this.implementedPushInterface ;
+		assert	!this.isDestroyed() :
+					new PreconditionException(
+							"Port with URI " + this.uri + " is destroyed!");
+
+		return this.implementedPushInterface;
 	}
 
-	// ------------------------------------------------------------------------
-	// Registry management
-	// ------------------------------------------------------------------------
-
-	/**
-	 * @see fr.sorbonne_u.components.ports.PortI#unpublishPort()
-	 */
-	@Override
-	public void			unpublishPort() throws Exception
-	{
-		assert	this.isPublished ;
-		assert	!this.connected() ;
-
-		super.unpublishPort() ;
-	}
-
-	// ------------------------------------------------------------------------
-	// Life-cycle management
-	// ------------------------------------------------------------------------
-
-	/**
-	 * @see fr.sorbonne_u.components.ports.PortI#destroyPort()
-	 */
-	@Override
-	public void			destroyPort() throws Exception
-	{
-		assert	!this.connected() ;
-		assert	!this.isPublished() ;
-
-		super.destroyPort() ;
-
-		assert	!this.isPublished() ;
-	}
-
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Connection management
-	// ------------------------------------------------------------------------
-
-	/**
-	 * @see fr.sorbonne_u.components.ports.OutboundPortI#setConnector(fr.sorbonne_u.components.connectors.ConnectorI)
-	 */
-	@Override
-	public void			setConnector(ConnectorI c)
-	throws	Exception
-	{
-		assert	c != null : new PreconditionException("c != null") ;
-
-		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CONNECTING)) {
-			AbstractCVM.getCVM().logDebug(
-				CVMDebugModes.CONNECTING,
-				"AbstractDataOutboundPort setting connector " + c.toString()) ;
-		}
-
-		this.connector = (RequiredI)c ;
-
-		assert	this.getConnector() == c :
-					new PostconditionException("this.getConnector() == c") ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ports.OutboundPortI#unsetConnector()
-	 */
-	@Override
-	public void			unsetConnector() throws Exception
-	{
-		this.connector = null ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractInboundPort#doConnection(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void			doConnection(String otherPortURI, String ccname)
-	throws	Exception
-	{
-		assert	this.isPublished() && !this.connected() :
-					new PreconditionException("this.isPublished() && "
-													+ "!this.connected()") ;
-		assert	otherPortURI != null && ccname != null :
-					new PreconditionException("otherPortURI != null && "
-													+ "ccname != null") ;
-
-		super.doConnection(otherPortURI, ccname) ;
-
-		AbstractDataOutboundPort.checkInvariant(this) ;
-	}
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.AbstractInboundPort#doConnection(java.lang.String, fr.sorbonne_u.components.connectors.ConnectorI)
 	 */
 	@Override
-	public void			doConnection(String otherPortURI, ConnectorI connector)
-	throws	Exception
+	public synchronized void	doConnection(
+		String otherPortURI,
+		ConnectorI connector
+		) throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
 		assert	this.isPublished() && !this.connected() :
-					new PreconditionException("this.isPublished() && "
-													+ "!this.connected()") ;
+					new PreconditionException("isPublished() && "
+													+ "!connected()");
 		assert	otherPortURI != null && connector != null :
 					new PreconditionException("otherPortURI != null && "
-													+ "connector != null") ;
+													+ "connector != null");
 
-		this.doMyConnection(otherPortURI, connector) ;
-		this.getConnector().obeyConnection(this, connector) ;
+		this.doMyConnection(otherPortURI, connector);
+		this.getConnector().obeyConnection(this, connector);
 
+		AbstractDataOutboundPort.checkImplementationInvariant(this);
 		AbstractDataOutboundPort.checkInvariant(this) ;
+		AbstractOutboundPort.checkImplementationInvariant(this);
+		AbstractOutboundPort.checkInvariant(this) ;
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this) ;
 		assert	this.connected() :
-					new PostconditionException("this.connected()") ;
+					new PostconditionException("this.connected()");
 	}
 
 	/**
@@ -371,24 +516,22 @@ implements	DataOutboundPortI
 	public void			obeyConnection(String otherPortURI, String ccname)
 	throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
 		assert	this.isPublished() && !this.connected() :
-					new PreconditionException("this.isPublished() && "
-													+ "!this.connected()") ;
+					new PreconditionException("isPublished() && "
+													+ "!connected()");
 		assert	otherPortURI != null && ccname != null :
 					new PreconditionException("otherPortURI != null && "
-													+ "ccname != null") ;
+													+ "ccname != null");
 
 		// FIXME: should use a proper state machine model to implement the
 		// connection and disconnection protocol
 
-		Class<?> cc = Class.forName(ccname) ;
-		Constructor<?> c = cc.getConstructor(new Class<?>[]{}) ;
-		ConnectorI connector = (ConnectorI) c.newInstance() ;
-		this.obeyConnection(otherPortURI, connector) ;
-
-		AbstractDataOutboundPort.checkInvariant(this) ;
-		assert	this.connected() :
-					new PostconditionException("this.connected()") ;
+		Class<?> cc = Class.forName(ccname);
+		Constructor<?> c = cc.getConstructor(new Class<?>[]{});
+		ConnectorI connector = (ConnectorI) c.newInstance();
+		this.obeyConnection(otherPortURI, connector);
 	}
 
 	/**
@@ -400,33 +543,40 @@ implements	DataOutboundPortI
 		ConnectorI connector
 		) throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
 		assert	this.isPublished() && !this.connected() :
-					new PreconditionException("this.isPublished() && "
-													+ "!this.connected()") ;
+					new PreconditionException("isPublished() && "
+													+ "!connected()");
 		assert	otherPortURI != null && connector != null :
 					new PreconditionException("otherPortURI != null && "
-													+ "connector != null") ;
+													+ "connector != null");
 
 		// FIXME: should use a proper state machine model to implement the
 		// connection and disconnection protocol
 
-		this.setConnector(connector) ;
-		this.setServerPortURI(otherPortURI) ;
+		this.setConnector(connector);
+		this.setServerPortURI(otherPortURI);
 		PortI serverPort =
-			AbstractCVM.getFromLocalRegistry(this.getServerPortURI()) ;
+			AbstractCVM.getFromLocalRegistry(this.getServerPortURI());
 		if (serverPort == null && AbstractCVM.isDistributed) {
-			this.isRemotelyConnected = true ;
+			this.isRemotelyConnected.set(true);
 			serverPort =
 				(PortI) AbstractDistributedCVM.getCVM().
-							getRemoteReference(this.getServerPortURI()) ;
-			this.getConnector().connect((OfferedI) serverPort, this) ;
+							getRemoteReference(this.getServerPortURI());
+			this.getConnector().connect((OfferedI) serverPort, this);
 		} else {
-			this.isRemotelyConnected = false ;
+			this.isRemotelyConnected.set(false);
 		}
 
-		AbstractDataOutboundPort.checkInvariant(this) ;
+		AbstractDataOutboundPort.checkImplementationInvariant(this);
+		AbstractDataOutboundPort.checkInvariant(this);
+		AbstractOutboundPort.checkImplementationInvariant(this);
+		AbstractOutboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
 		assert	this.connected() :
-					new PostconditionException("this.connected()") ;
+					new PostconditionException("connected()");
 	}
 
 	/**
@@ -435,17 +585,25 @@ implements	DataOutboundPortI
 	@Override
 	public void			doDisconnection() throws Exception
 	{
-		assert	this.connected() && ((ConnectorI)this.connector).connected() :
-			new PreconditionException(
-					"this.connected() && "
-					+ "((ConnectorI)this.connector).connected()") ;
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
+		assert	this.connected() &&
+							((ConnectorI)this.getConnector()).connected() :
+					new PreconditionException(
+							"connected() && "
+							+ "((ConnectorI)getConnector()).connected()");
 
-		((AbstractDataConnector)this.connector).obeyDisconnection(this) ;
-		this.doMyDisconnection() ;
+		((AbstractDataConnector)this.getConnector()).obeyDisconnection(this);
+		this.doMyDisconnection();
 
-		AbstractDataOutboundPort.checkInvariant(this) ;
+		AbstractDataOutboundPort.checkImplementationInvariant(this);
+		AbstractDataOutboundPort.checkInvariant(this);
+		AbstractOutboundPort.checkImplementationInvariant(this);
+		AbstractOutboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
 		assert	!this.connected() :
-					new PostconditionException("!this.connected()") ;
+					new PostconditionException("!connected()");
 	}
 
 	/**
@@ -454,16 +612,14 @@ implements	DataOutboundPortI
 	@Override
 	protected void		doMyDisconnection() throws Exception
 	{
-		assert	this.connected() ;
+		assert	this.connected() : new PreconditionException("connected()");
 
 		// FIXME: should use a proper state machine model to implement the
 		// connection and disconnection protocol
 
-		this.unsetServerPortURI() ;
-		this.connector = null ;
-
-		assert	!this.connected() :
-					new PostconditionException("!this.connected()");
+		this.unsetServerPortURI();
+		this.unsetConnector();
+		this.isRemotelyConnected.set(false);
 	}
 
 	/**
@@ -472,35 +628,180 @@ implements	DataOutboundPortI
 	@Override
 	public void			obeyDisconnection() throws Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
 		assert	this.connected() :
-					new PreconditionException("this.connected()") ;
+					new PreconditionException("connected()");
 
 		// FIXME: should use a proper state machine model to implement the
 		// connection and disconnection protocol
 
-		this.getConnector().disconnect() ;
-		this.unsetServerPortURI() ;
-		this.connector = null ;
+		this.getConnector().disconnect();
+		this.unsetServerPortURI();
+		this.unsetConnector();
+		this.isRemotelyConnected.set(false);
 	}
 
-	// ------------------------------------------------------------------------
-	// Data outbound port service provider for pushes.
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Plug-in and executor service management
+	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.DataOutboundPortI#getServiceProviderReference()
+	 * return true if this inbound port has an associated plug-in in its owner.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isDestroyed()}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if this inbound port has an associated plug-in in its owner.
 	 */
-	@Override
-	public Object		getServiceProviderReference() throws Exception
+	protected boolean	hasPlugin()
 	{
-		// Standard implementation: the owner provides the services (when
-		// plug-ins are used, a plug-in can do so in place of the owner).
-		return this.getOwner() ;
+		assert	!this.isDestroyed.get() :
+					new PreconditionException("!isDestroyed()");
+
+		return this.pluginURI != null;
 	}
 
-	// ------------------------------------------------------------------------
+	/**
+	 * return true if this inbound port has an associated executor service in
+	 * its owner.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isDestroyed()}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if this inbound port has an associated executor service in its owner.
+	 */
+	protected boolean	hasExecutorService()
+	{
+		assert	!this.isDestroyed.get() :
+					new PreconditionException("!isDestroyed()");
+
+		return this.executorServiceURI != null;
+	}
+
+	/**
+	 * return the URI of the plug-in that this inbound port must call in its
+	 * owner.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code hasPlugin()}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the URI of the plug-in that this inbound port must call in its owner.
+	 */
+	protected String	getPluginURI()
+	{
+		assert	!this.isDestroyed.get() :
+					new PreconditionException("!isDestroyed()");
+		assert	this.hasPlugin() :
+					new PreconditionException(
+							"Inbound port " + this.uri + " has no plug-in!");
+
+		return this.pluginURI;
+	}
+
+	/**
+	 * return the URI of the executor service that this inbound port must use
+	 * in its owner.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code hasExecutorService()}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the URI of the executor service that this inbound port must use in its owner.
+	 */
+	protected String	getExecutorServiceURI()
+	{
+		assert	!this.isDestroyed.get() :
+					new PreconditionException("!isDestroyed()");
+		assert	this.hasExecutorService() :
+					new PreconditionException(
+							"Inbound port " + this.uri +
+												" has no executor service!");
+
+		return this.executorServiceURI;
+	}
+
+	/**
+	 * return the index of the executor service that this inbound port must
+	 * use in its owner.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code hasExecutorService()}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the index of the executor service that this inbound port must use in its owner.
+	 */
+	protected int		getExecutorServiceIndex()
+	{
+		assert	!this.isDestroyed.get() :
+					new PreconditionException("!isDestroyed()");
+		assert	this.hasExecutorService() :
+					new PreconditionException(
+							"Inbound port " + this.uri +
+												" has no executor service!");
+
+		return this.executorServiceIndex.get();
+	}
+
+	/**
+	 * update the index of the executor service that this inbound port must
+	 * use in its owner after a change in the latter.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code hasExecutorService()}
+	 * post	{@code getExecutorServiceIndex() == owner.getExecutorServiceIndex(getExecutorServiceURI())}
+	 * </pre>
+	 *
+	 */
+	public void			updateExecutorServiceIndex()
+	{
+		assert	!this.isDestroyed.get() :
+					new PreconditionException("!isDestroyed()");
+		assert	this.hasExecutorService() :
+					new PreconditionException(
+							"Data outbound port " + this.uri +
+												" has no executor service!");
+
+		this.executorServiceIndex.set(
+				this.owner.getExecutorServiceIndex(this.executorServiceURI));
+
+		assert	this.getExecutorServiceIndex() ==
+							this.owner.getExecutorServiceIndex(
+												this.getExecutorServiceURI()) :
+					new PostconditionException(
+							"executor service with URI " +
+							this.getExecutorServiceURI() +
+							" does not have index "
+							+ this.getExecutorServiceIndex() + " in owner!");
+	}
+
+	// -------------------------------------------------------------------------
 	// Request handling
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * called by the requiring component in pull mode to trigger the obtaining
@@ -511,7 +812,8 @@ implements	DataOutboundPortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.connected() ;
+	 * pre	!isDestroyed()
+	 * pre	connected() ;
 	 * post	true			// no precondition.
 	 * </pre>
 	 * 
@@ -523,10 +825,12 @@ implements	DataOutboundPortI
 	public DataRequiredI.DataI	request()
 	throws	Exception
 	{
+		assert	!this.isDestroyed() :
+					new PreconditionException("!isDestroyed()");
 		assert	this.connected() :
-					new PreconditionException("this.connected()") ;
+					new PreconditionException("connected()");
 
-		return ((DataRequiredI.PullI) this.connector).request() ;
+		return ((DataRequiredI.PullI)this.getConnector()).request();
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

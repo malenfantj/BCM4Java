@@ -73,7 +73,7 @@ extends		AbstractComponent
 // -----------------------------------------------------------------------------
 {
 	public final static String	DYNAMIC_CONNECTION_PLUGIN_URI =
-													"serverSidePLuginURI" ;
+													"serverSidePluginURI" ;
 
 	// -------------------------------------------------------------------------
 	// Inner classes

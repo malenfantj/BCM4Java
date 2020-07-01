@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.helpers;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
-import fr.sorbonne_u.components.exceptions.PreconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**

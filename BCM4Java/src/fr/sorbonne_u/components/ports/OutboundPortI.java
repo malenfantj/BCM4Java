@@ -39,26 +39,29 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
 
 //-----------------------------------------------------------------------------
 /**
- * The interface <code>OutBoundPortI</code> represents the category of
+ * The interface <code>OutboundPortI</code> represents the category of
  * <code>PortI</code> that cater for outgoing calls from a component
  * towards its service providers.
  *
  * <p><strong>Description</strong></p>
  * 
+ * <p>
  * An outbound port is a component port through which a client component
  * calls a service provider.  It is therefore associated with a required
  * interface that represents the services that are needed by the clients
  * but that it also implements so that its owner component can call its
  * client through the outbound port.
+ * </p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		RequiredI.class.isAssignableFrom(this.gatImplementedInterface())
- * invariant		this.getOwner().isRequiredInterface(this.getImplementedInterface())
- * invariant		this.connected() implies
- * 						this.getPortURI().equals(this.getClientPortURI())
- * invariant		this.connected() implies this.getConnector() != null
+ * invariant	{@code getOwner().isRequiredInterface(getImplementedInterface())}
+ * invariant	{@code !connected() || isPublished()}
+ * invariant	{@code !connected() || getPortURI().equals(getClientPortURI())}
+ * invariant	{@code !connected() || (getServerPortURI() != null)}
+ * invariant	{@code !connected() == (getConnector() == null)}
+ * invariant	{@code !isRemotelyConnected() || connected()}
  * </pre>
  * 
  * <p>Created on : 2011-11-07</p>
@@ -69,6 +72,17 @@ public interface			OutboundPortI
 extends		PortI,
 			RequiredI	// to be called internally by the owner to get services.
 {
+	// -------------------------------------------------------------------------
+	// Self-properties management
+	// -------------------------------------------------------------------------
+
+	/**
+	 * @see fr.sorbonne_u.components.ports.PortI#getImplementedInterface()
+	 */
+	@Override
+	public Class<? extends RequiredI>	getImplementedInterface()
+	throws Exception;
+
 	// ------------------------------------------------------------------------
 	// Connection management
 	// ------------------------------------------------------------------------
@@ -80,12 +94,13 @@ extends		PortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	c != null
-	 * post	this.getConnector() == c
+	 * pre	{@code !isDestroyed()}
+	 * pre	{@code c != null}
+	 * post	{@code this.getConnector() == c}
 	 * </pre>
 	 *
-	 * @param c			connector to be set.
-	 * @throws Exception	<i>todo.</i>
+	 * @param c				connector to be set.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			setConnector(ConnectorI c) throws Exception ;
 
@@ -96,11 +111,11 @@ extends		PortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	this.getConnector() == null
+	 * pre	{@code !isDestroyed()}
+	 * post	{@code this.getConnector() == null}
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			unsetConnector() throws Exception ;
 
@@ -110,12 +125,12 @@ extends		PortI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	{@code !isDestroyed()}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			the connector to which this port is attached, and null if none.
-	 * @throws Exception	<i>todo.</i>
+	 * @return				the connector to which this port is attached, and null if none.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public ConnectorI	getConnector() throws Exception ;
 }

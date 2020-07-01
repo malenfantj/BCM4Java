@@ -1,11 +1,6 @@
 package fr.sorbonne_u.components.examples.subcomp.ports;
 
-import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.subcomp.interfaces.IntegerProcessingCI;
-import fr.sorbonne_u.components.ports.AbstractOutboundPort;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -36,6 +31,10 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 //
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
+
+import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.examples.subcomp.interfaces.IntegerProcessingCI;
+import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 // -----------------------------------------------------------------------------
 /**
@@ -79,7 +78,7 @@ implements	IntegerProcessingCI
 	@Override
 	public void			process(int i) throws Exception
 	{
-		((IntegerProcessingCI)this.connector).process(i) ;
+		((IntegerProcessingCI)this.getConnector()).process(i) ;
 	}
 }
 // -----------------------------------------------------------------------------
