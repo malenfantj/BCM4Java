@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.ports;
 import java.rmi.Remote;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.connectors.ConnectorI;
-import fr.sorbonne_u.components.interfaces.ComponentServiceI;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
 
 // -----------------------------------------------------------------------------
 /**
@@ -118,7 +118,7 @@ extends		Remote
 	 * @return				the Class object representing the port component interface.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<? extends ComponentServiceI>	getImplementedInterface()
+	public Class<? extends ComponentInterface>	getImplementedInterface()
 	throws Exception;
 	
 	/**

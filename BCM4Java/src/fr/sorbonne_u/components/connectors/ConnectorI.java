@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.PortI;
 
 //-----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ import fr.sorbonne_u.components.ports.PortI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface 		ConnectorI
-extends		RequiredI	// to be called from the client side
+extends		RequiredCI	// to be called from the client side
 {
 	/**
 	 * test if this connector is already connected.
@@ -141,7 +141,7 @@ extends		RequiredI	// to be called from the client side
 	 * @param requiring	out port of the component requiring the required interface.
 	 * @throws Exception <i>todo.</i>
 	 */
-	public void			connect(OfferedI offering, RequiredI requiring)
+	public void			connect(OfferedCI offering, RequiredCI requiring)
 	throws Exception ;
 
 	/**

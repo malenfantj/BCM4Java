@@ -40,7 +40,7 @@ import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.connectors.DataConnector;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 import fr.sorbonne_u.components.plugins.dipc.DataInterfacePushControlClientSidePlugin;
 import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI;
 import fr.sorbonne_u.components.plugins.dipc.example.ports.PairDataOutboundPort;
@@ -119,8 +119,8 @@ extends		AbstractComponent
 
 		// Add the standard component interfaces for data exchanging
 		// components.
-		this.addOfferedInterface(DataRequiredI.PushI.class) ;
-		this.addRequiredInterface(DataRequiredI.PullI.class) ;
+		this.addOfferedInterface(DataRequiredCI.PushCI.class) ;
+		this.addRequiredInterface(DataRequiredCI.PullCI.class) ;
 
 		// create and publish the data outbound port.
 		this.pairDataOBP = new PairDataOutboundPort(this) ;

@@ -35,8 +35,8 @@ package fr.sorbonne_u.components.plugins.dipc.example.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataOfferedI.DataI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI.DataI;
 import fr.sorbonne_u.components.ports.AbstractDataInboundPort;
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ extends		AbstractDataInboundPort
 		ComponentI owner
 		) throws Exception
 	{
-		super(DataOfferedI.PullI.class, DataOfferedI.PushI.class, owner) ;
+		super(DataOfferedCI.PullCI.class, DataOfferedCI.PushCI.class, owner) ;
 	}
 
 	public					PairDataInboundPort(
@@ -72,11 +72,11 @@ extends		AbstractDataInboundPort
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, DataOfferedI.PullI.class, DataOfferedI.PushI.class, owner) ;
+		super(uri, DataOfferedCI.PullCI.class, DataOfferedCI.PushCI.class, owner) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.interfaces.DataOfferedI.PullI#get()
+	 * @see fr.sorbonne_u.components.interfaces.DataOfferedCI.PullCI#get()
 	 */
 	@Override
 	public DataI			get() throws Exception

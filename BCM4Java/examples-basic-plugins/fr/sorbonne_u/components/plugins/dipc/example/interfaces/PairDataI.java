@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.plugins.dipc.example.interfaces;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -57,12 +57,12 @@ import fr.sorbonne_u.components.interfaces.DataRequiredI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface			PairDataI
-extends		DataOfferedI,
-			DataRequiredI
+extends		DataOfferedCI,
+			DataRequiredCI
 {
 	public interface		PairI
-	extends	DataOfferedI.DataI,
-			DataRequiredI.DataI
+	extends	DataOfferedCI.DataI,
+			DataRequiredCI.DataI
 	{
 		public Object	getFirst() ;
 		public Object	getSecond() ;

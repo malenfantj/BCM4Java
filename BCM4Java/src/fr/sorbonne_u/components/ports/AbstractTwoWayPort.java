@@ -43,9 +43,9 @@ import fr.sorbonne_u.components.connectors.AbstractTwoWayConnector;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
-import fr.sorbonne_u.components.interfaces.TwoWayI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
+import fr.sorbonne_u.components.interfaces.TwoWayCI;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
@@ -81,7 +81,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class	AbstractTwoWayPort<TWI extends TwoWayI>
+public abstract class	AbstractTwoWayPort<TWI extends TwoWayCI>
 extends		AbstractInboundPort
 implements	TwoWayPortI<TWI>
 {
@@ -111,8 +111,8 @@ implements	TwoWayPortI<TWI>
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
-	protected static abstract class	OutProxy<T extends TwoWayI>
-	implements TwoWayI
+	protected static abstract class	OutProxy<T extends TwoWayCI>
+	implements TwoWayCI
 	{
 		protected final	AbstractTwoWayPort<T>	owner ;
 
@@ -289,7 +289,7 @@ implements	TwoWayPortI<TWI>
 	 */
 	public				AbstractTwoWayPort(
 		String uri,
-		Class<? extends TwoWayI> implementedInterface,
+		Class<? extends TwoWayCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -334,7 +334,7 @@ implements	TwoWayPortI<TWI>
 	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractTwoWayPort(
-		Class<? extends TwoWayI> implementedInterface,
+		Class<? extends TwoWayCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -351,9 +351,9 @@ implements	TwoWayPortI<TWI>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<? extends TwoWayI>	getImplementedInterface() throws Exception
+	public Class<? extends TwoWayCI>	getImplementedInterface() throws Exception
 	{
-		return (Class<? extends TwoWayI>) super.getImplementedInterface();
+		return (Class<? extends TwoWayCI>) super.getImplementedInterface();
 	}
 
 	// -------------------------------------------------------------------------
@@ -653,7 +653,7 @@ implements	TwoWayPortI<TWI>
 		assert	serverPort != null :
 					new RuntimeException("Unkown port URI: " +
 												this.getServerPortURI()) ;
-		this.getConnector().connect((OfferedI)serverPort, this) ;
+		this.getConnector().connect((OfferedCI)serverPort, this) ;
 	}
 
 	/**
@@ -724,7 +724,7 @@ implements	TwoWayPortI<TWI>
 			clientPort = (PortI) AbstractDistributedCVM.getCVM().
 								getRemoteReference(this.getClientPortURI()) ;
 			this.getConnector().
-							connect((OfferedI)this, (RequiredI)clientPort) ;
+							connect((OfferedCI)this, (RequiredCI)clientPort) ;
 		} else {
 			this.isRemotelyConnected.set(false);
 		}
@@ -852,7 +852,7 @@ implements	TwoWayPortI<TWI>
 	 * @throws Exception <i>todo.</i>
 	 */
 	@SuppressWarnings("unchecked")
-	protected void		setOut(TwoWayI out) throws Exception
+	protected void		setOut(TwoWayCI out) throws Exception
 	{
 		assert	out != null :
 					new PreconditionException("out != null") ;

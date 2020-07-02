@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -93,15 +93,15 @@ extends		AbstractDataConnector
 	 * </pre>
 	 * 
 	 * @throws Exception  <i>todo.</i>
-	 * @see fr.sorbonne_u.components.interfaces.DataRequiredI.PullI#request()
+	 * @see fr.sorbonne_u.components.interfaces.DataRequiredCI.PullCI#request()
 	 */
 	@Override
-	public DataRequiredI.DataI		request()
+	public DataRequiredCI.DataI		request()
 	throws	Exception
 	{
 		assert	this.connected() ;
 
-		return this.offered2required(((DataOfferedI.PullI)
+		return this.offered2required(((DataOfferedCI.PullCI)
 												this.offering).get()) ;
 	}
 
@@ -117,15 +117,15 @@ extends		AbstractDataConnector
 	 * 
 	 * @throws Exception  <i>todo.</i>
 	 * 
-	 * @see fr.sorbonne_u.components.interfaces.DataOfferedI.PushI#send(fr.sorbonne_u.components.interfaces.DataOfferedI.DataI)
+	 * @see fr.sorbonne_u.components.interfaces.DataOfferedCI.PushCI#send(fr.sorbonne_u.components.interfaces.DataOfferedCI.DataI)
 	 */
 	@Override
-	public void			send(DataOfferedI.DataI d)
+	public void			send(DataOfferedCI.DataI d)
 	throws	Exception
 	{
 		assert	this.connected() ;
 
-		((DataRequiredI.PushI) this.requiring).receive(
+		((DataRequiredCI.PushCI) this.requiring).receive(
 													this.offered2required(d)) ;
 	}
 }

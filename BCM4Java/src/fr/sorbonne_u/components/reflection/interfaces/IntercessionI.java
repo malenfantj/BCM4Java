@@ -39,8 +39,8 @@ import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.ComponentI.ComponentTask;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -61,8 +61,8 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface		IntercessionI
-extends		OfferedI,
-			RequiredI
+extends		OfferedCI,
+			RequiredCI
 {
 	// ------------------------------------------------------------------------
 	// Plug-ins facilities

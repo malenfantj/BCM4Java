@@ -38,7 +38,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.pingpong.components.Ball;
 import fr.sorbonne_u.components.examples.pingpong.components.PingPongPlayer;
-import fr.sorbonne_u.components.interfaces.DataTwoWayI;
+import fr.sorbonne_u.components.interfaces.DataTwoWayCI;
 import fr.sorbonne_u.components.ports.AbstractDataTwoWayPort;
 
 //-----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ extends		AbstractDataTwoWayPort
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, DataTwoWayI.class, owner) ;
+		super(uri, DataTwoWayCI.class, owner) ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -86,10 +86,10 @@ extends		AbstractDataTwoWayPort
 	// ------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.ports.AbstractDataTwoWayPort#send(fr.sorbonne_u.components.interfaces.DataTwoWayI.DataI)
+	 * @see fr.sorbonne_u.components.ports.AbstractDataTwoWayPort#send(fr.sorbonne_u.components.interfaces.DataTwoWayCI.DataI)
 	 */
 	@Override
-	public void			send(DataTwoWayI.DataI d) throws Exception
+	public void			send(DataTwoWayCI.DataI d) throws Exception
 	{
 		this.owner.runTask(
 				new AbstractComponent.AbstractTask() {
@@ -108,7 +108,7 @@ extends		AbstractDataTwoWayPort
 	 * @see fr.sorbonne_u.components.ports.AbstractDataTwoWayPort#request()
 	 */
 	@Override
-	public DataTwoWayI.DataI		request() throws Exception
+	public DataTwoWayCI.DataI		request() throws Exception
 	{
 		throw new Exception("Not implemented yet!") ;		
 	}

@@ -36,8 +36,8 @@ package fr.sorbonne_u.components.reflection.interfaces;
 
 import fr.sorbonne_u.components.ComponentStateI;
 import fr.sorbonne_u.components.PluginI;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 import java.lang.annotation.Annotation;
@@ -61,8 +61,8 @@ import java.lang.annotation.Annotation;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface		IntrospectionI
-extends		OfferedI,
-			RequiredI
+extends		OfferedCI,
+			RequiredCI
 {
 	// ------------------------------------------------------------------------
 	// Plug-ins facilities

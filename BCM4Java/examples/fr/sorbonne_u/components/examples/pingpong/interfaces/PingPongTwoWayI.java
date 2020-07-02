@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.examples.pingpong.interfaces;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.TwoWayI;
+import fr.sorbonne_u.components.interfaces.TwoWayCI;
 
 //----------------------------------------------------------------------------
 /**
@@ -59,7 +59,7 @@ import fr.sorbonne_u.components.interfaces.TwoWayI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface			PingPongTwoWayI
-extends		TwoWayI
+extends		TwoWayCI
 {
 	/**
 	 * service called by each player to send the control to the other

@@ -50,9 +50,9 @@ import fr.sorbonne_u.components.examples.pingpong.ports.PingPongOutboundPort;
 import fr.sorbonne_u.components.examples.pingpong.ports.PingPongTwoWayPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
-import fr.sorbonne_u.components.interfaces.DataTwoWayI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
+import fr.sorbonne_u.components.interfaces.DataTwoWayCI;
 
 import java.util.concurrent.TimeUnit;
 
@@ -265,10 +265,10 @@ extends		AbstractComponent
 
 		// The data interfaces and ports.
 
-		this.addOfferedInterface(DataOfferedI.PullI.class) ;
-		this.addOfferedInterface(DataRequiredI.PushI.class) ;
-		this.addRequiredInterface(DataOfferedI.PushI.class) ;
-		this.addRequiredInterface(DataRequiredI.PullI.class) ;
+		this.addOfferedInterface(DataOfferedCI.PullCI.class) ;
+		this.addOfferedInterface(DataRequiredCI.PushCI.class) ;
+		this.addRequiredInterface(DataOfferedCI.PushCI.class) ;
+		this.addRequiredInterface(DataRequiredCI.PullCI.class) ;
 
 		if (hasService) {
 			this.pingPongDataOutboundPort =
@@ -298,8 +298,8 @@ extends		AbstractComponent
 
 		// The data two way interface and port.
 
-		this.addRequiredInterface(DataTwoWayI.class) ;
-		this.addOfferedInterface(DataTwoWayI.class) ;
+		this.addRequiredInterface(DataTwoWayCI.class) ;
+		this.addOfferedInterface(DataTwoWayCI.class) ;
 		// To simplify things, the URI is the same as the one of the
 		// two way port, but with the suffix -dt
 		this.pingpongDataTwoWayPort =

@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.plugins.dconnection.interfaces;
+package fr.sorbonne_u.components.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -33,65 +33,31 @@ package fr.sorbonne_u.components.plugins.dconnection.interfaces;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
+import java.rmi.Remote;
 
 // -----------------------------------------------------------------------------
 /**
- * The interface <code>DynamicConnectionRequestI</code> is offered by
- * components that propose a dynamic connection through some other
- * dynamically connected interface.
+ * The component interface <code>OfferedCI</code> represents the most general
+ * offered interface for a component in this component model.
  *
  * <p><strong>Description</strong></p>
  * 
- * See the <code>fr.sorbonne_u.components.patterns.dconnection</code>
- * package documentation.
+ * <p>
+ * Components have required and offered component interfaces.  Required
+ * component interfaces are the ones through which the component calls its
+ * companion components to obtain services and data from them.  Offered
+ * component interfaces are the ones through which a component is called to
+ * deliver services and data.
+ * </p>
  * 
- * <p>Created on : 2013-01-23</p>
+ * <p>Created on : 2011-10-31</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		DynamicConnectionRequestI
-extends		OfferedCI,
-			RequiredCI
+public interface		OfferedCI
+extends		ComponentInterface,
+			Remote
 {
-	/**
-	 * provides the URI of a new port implementing some interface that is
-	 * offered through a dynamic connection, so the receiver creates a port
-	 * and sends its URI back.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	offeredInterface != null
-	 * post	result != null
-	 * </pre>
-	 *
-	 * @param offeredInterface	interface of the connection to be established.
-	 * @return					the URI of an inbound port implementing <code>offeredInterface</code>.
-	 * @throws Exception		<i>to do</i>.
-	 */
-	public String		requestDynamicPortURI(Class<?> offeredInterface)
-	throws Exception ;
 
-	/**
-	 * remove the inbound port with the given URI that implements the given
-	 * offered interface, if it exists.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	offeredInterface != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param offeredInterface	server-side offered interface.
-	 * @param uri				URI of a previously created port.
-	 * @throws Exception 		<i>to do</i>.
-	 */
-	public void			removeDynamicPort(
-		Class<?> offeredInterface,
-		String uri
-		) throws Exception ;
 }
 // -----------------------------------------------------------------------------

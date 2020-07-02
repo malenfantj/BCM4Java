@@ -36,7 +36,7 @@ package fr.sorbonne_u.components;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
-import fr.sorbonne_u.components.interfaces.ComponentServiceI;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
@@ -202,7 +202,7 @@ implements	PortI
 	/** the unique identifier used to publish this entry point.				*/
 	protected final String				uri;
 	/** the interface implemented by this port.								*/
-	protected final Class<? extends ComponentServiceI>	implementedInterface;
+	protected final Class<? extends ComponentInterface>	implementedInterface;
 	/** the component owning this port.										*/
 	protected final AbstractComponent	owner;
 	/** the port has been locally published.								*/
@@ -237,7 +237,7 @@ implements	PortI
 			assert	p.implementedInterface != null :
 						new ImplementationInvariantException(
 								"implementedInterface != null");
-			assert	ComponentServiceI.class.isAssignableFrom(
+			assert	ComponentInterface.class.isAssignableFrom(
 													p.implementedInterface) :
 						new ImplementationInvariantException(
 								"ComponentServiceI.class.isAssignableFrom(" + 
@@ -323,7 +323,7 @@ implements	PortI
 	 */
 	public				AbstractPort(
 		String uri,
-		Class<? extends ComponentServiceI> implementedInterface,
+		Class<? extends ComponentInterface> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -372,7 +372,7 @@ implements	PortI
 	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractPort(
-		Class<? extends ComponentServiceI> implementedInterface,
+		Class<? extends ComponentInterface> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -435,7 +435,7 @@ implements	PortI
 	 * @see fr.sorbonne_u.components.ports.PortI#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends ComponentServiceI>	getImplementedInterface()
+	public Class<? extends ComponentInterface>	getImplementedInterface()
 	throws Exception
 	{
 		assert	!this.isDestroyed() :

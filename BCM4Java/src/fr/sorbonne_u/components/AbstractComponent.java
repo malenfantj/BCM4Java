@@ -62,8 +62,8 @@ import fr.sorbonne_u.components.helpers.ComponentExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.ComponentSchedulableExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.InboundPortI;
 import fr.sorbonne_u.components.ports.OutboundPortI;
 import fr.sorbonne_u.components.ports.PortI;
@@ -1352,7 +1352,7 @@ implements	ComponentI
 		RequiredInterfaces requiredAnnotation =
 					this.getClass().getAnnotation(RequiredInterfaces.class) ;
 		if (requiredAnnotation != null) {
-			Class<? extends RequiredI>[] required =
+			Class<? extends RequiredCI>[] required =
 											requiredAnnotation.required() ;
 			if (required != null) {
 				for (int i = 0 ; i < required.length ; i++) {
@@ -1363,7 +1363,7 @@ implements	ComponentI
 		OfferedInterfaces offeredAnnotation =
 					this.getClass().getAnnotation(OfferedInterfaces.class) ;
 		if (offeredAnnotation != null) {
-			Class<? extends OfferedI>[] offered = offeredAnnotation.offered() ;
+			Class<? extends OfferedCI>[] offered = offeredAnnotation.offered() ;
 			if (offered != null) {
 				for (int i = 0 ; i < offered.length ; i++) {
 					this.addOfferedInterface(offered[i]) ;
@@ -2024,7 +2024,7 @@ implements	ComponentI
 							}) :
 					new PreconditionException("Component must not be"
 												+ " in Terminated state!") ;
-		assert	RequiredI.class.isAssignableFrom(inter) :
+		assert	RequiredCI.class.isAssignableFrom(inter) :
 					new PreconditionException(inter +
 								" is not defined as a required interface!") ;
 		assert	!this.isRequiredInterface(inter) :
@@ -2061,7 +2061,7 @@ implements	ComponentI
 							}) :
 					new PreconditionException("Component must not be"
 												+ " in Terminated state!") ;
-		assert	RequiredI.class.isAssignableFrom(inter) :
+		assert	RequiredCI.class.isAssignableFrom(inter) :
 					new PreconditionException(inter +
 								" is not defined as a required interface!") ;
 		assert	this.isRequiredInterface(inter) :
@@ -2098,7 +2098,7 @@ implements	ComponentI
 							}) :
 					new PreconditionException("Component must not be"
 												+ " in Terminated state!") ;
-		assert	OfferedI.class.isAssignableFrom(inter) :
+		assert	OfferedCI.class.isAssignableFrom(inter) :
 					new PreconditionException(inter +
 								" is not defined as an offered interface!") ;
 		assert	!this.isOfferedInterface(inter) :
@@ -2135,7 +2135,7 @@ implements	ComponentI
 							}) :
 					new PreconditionException("Component must not be"
 												+ " in Terminated state!") ;
-		assert	OfferedI.class.isAssignableFrom(inter) :
+		assert	OfferedCI.class.isAssignableFrom(inter) :
 					new PreconditionException(inter +
 								" is not defined as an offered interface!") ;
 		assert	this.isOfferedInterface(inter) :

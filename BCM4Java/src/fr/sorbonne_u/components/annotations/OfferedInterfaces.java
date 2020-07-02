@@ -38,7 +38,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import fr.sorbonne_u.components.interfaces.OfferedI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -81,6 +81,6 @@ public @interface		OfferedInterfaces
 	 *
 	 * @return	array of Java interfaces that are the offered component interfaces.
 	 */
-	Class<? extends OfferedI>[]	offered() ;
+	Class<? extends OfferedCI>[]	offered() ;
 }
 // -----------------------------------------------------------------------------

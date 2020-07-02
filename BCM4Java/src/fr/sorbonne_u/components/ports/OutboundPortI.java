@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.ports;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.ConnectorI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -70,7 +70,7 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  */
 public interface			OutboundPortI
 extends		PortI,
-			RequiredI	// to be called internally by the owner to get services.
+			RequiredCI	// to be called internally by the owner to get services.
 {
 	// -------------------------------------------------------------------------
 	// Self-properties management
@@ -80,7 +80,7 @@ extends		PortI,
 	 * @see fr.sorbonne_u.components.ports.PortI#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends RequiredI>	getImplementedInterface()
+	public Class<? extends RequiredCI>	getImplementedInterface()
 	throws Exception;
 
 	// ------------------------------------------------------------------------

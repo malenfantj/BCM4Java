@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.plugins.dipc.example.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI.DataI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI.DataI;
 import fr.sorbonne_u.components.plugins.dipc.example.components.ClientComponent;
 import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI.PairI;
 import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
@@ -67,8 +67,8 @@ extends		AbstractDataOutboundPort
 		) throws Exception
 	{
 		super(uri,
-			  DataRequiredI.PullI.class,
-			  DataRequiredI.PushI.class,
+			  DataRequiredCI.PullCI.class,
+			  DataRequiredCI.PushCI.class,
 			  owner) ;
 		assert	owner instanceof ClientComponent ;
 	}
@@ -77,14 +77,14 @@ extends		AbstractDataOutboundPort
 		ComponentI owner
 		) throws Exception
 	{
-		super(DataRequiredI.PullI.class,
-			  DataRequiredI.PushI.class,
+		super(DataRequiredCI.PullCI.class,
+			  DataRequiredCI.PushCI.class,
 			  owner) ;
 		assert	owner instanceof ClientComponent ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.interfaces.DataRequiredI.PushI#receive(fr.sorbonne_u.components.interfaces.DataRequiredI.DataI)
+	 * @see fr.sorbonne_u.components.interfaces.DataRequiredCI.PushCI#receive(fr.sorbonne_u.components.interfaces.DataRequiredCI.DataI)
 	 */
 	@Override
 	public void			receive(DataI d) throws Exception

@@ -34,9 +34,9 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
-import fr.sorbonne_u.components.interfaces.TwoWayI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
+import fr.sorbonne_u.components.interfaces.TwoWayCI;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -102,7 +102,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class	AbstractTwoWayConnector<TWI extends TwoWayI>
+public abstract class	AbstractTwoWayConnector<TWI extends TwoWayCI>
 extends		AbstractConnector
 {
 	// ------------------------------------------------------------------------
@@ -127,8 +127,8 @@ extends		AbstractConnector
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
-	protected static abstract class	ProxyToOtherComponent<TWI extends TwoWayI>
-	implements	TwoWayI
+	protected static abstract class	ProxyToOtherComponent<TWI extends TwoWayCI>
+	implements	TwoWayCI
 	{
 		/** the two way connector owning this proxy.						*/
 		protected final	AbstractTwoWayConnector<TWI>		owner ;
@@ -183,19 +183,19 @@ extends		AbstractConnector
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.connectors.AbstractConnector#connect(fr.sorbonne_u.components.interfaces.OfferedI, fr.sorbonne_u.components.interfaces.RequiredI)
+	 * @see fr.sorbonne_u.components.connectors.AbstractConnector#connect(fr.sorbonne_u.components.interfaces.OfferedCI, fr.sorbonne_u.components.interfaces.RequiredCI)
 	 */
 	@Override
-	public void			connect(OfferedI peer1, RequiredI peer2)
+	public void			connect(OfferedCI peer1, RequiredCI peer2)
 	throws	Exception
 	{
 		assert	!this.connected() :
 					new PreconditionException("!this.connected()") ;
 		assert	peer1 != null && peer2 != null :
 					new PreconditionException("peer1 != null && peer2 != null") ;
-		assert	peer1 instanceof TwoWayI :
+		assert	peer1 instanceof TwoWayCI :
 					new PreconditionException("peer1 instanceof TwoWayI") ;
-		assert	peer2 instanceof TwoWayI :
+		assert	peer2 instanceof TwoWayCI :
 					new PreconditionException("peer2 instanceof TwoWayI") ;
 
 		super.connect(peer1, peer2) ;

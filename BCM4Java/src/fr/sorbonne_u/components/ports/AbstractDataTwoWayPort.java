@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.ports;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.connectors.AbstractDataTwoWayConnector;
-import fr.sorbonne_u.components.interfaces.DataTwoWayI;
+import fr.sorbonne_u.components.interfaces.DataTwoWayCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -69,8 +69,8 @@ import fr.sorbonne_u.components.interfaces.DataTwoWayI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public abstract class	AbstractDataTwoWayPort
-extends		AbstractTwoWayPort<DataTwoWayI>
-implements	DataTwoWayI
+extends		AbstractTwoWayPort<DataTwoWayCI>
+implements	DataTwoWayCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -95,16 +95,16 @@ implements	DataTwoWayI
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 */
 	protected static class	OutProxy
-	extends		AbstractTwoWayPort.OutProxy<DataTwoWayI>
-	implements	DataTwoWayI
+	extends		AbstractTwoWayPort.OutProxy<DataTwoWayCI>
+	implements	DataTwoWayCI
 	{
-		public 				OutProxy(AbstractTwoWayPort<DataTwoWayI> owner)
+		public 				OutProxy(AbstractTwoWayPort<DataTwoWayCI> owner)
 		{
 			super(owner);
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayI#send(fr.sorbonne_u.components.interfaces.DataTwoWayI.DataI)
+		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayCI#send(fr.sorbonne_u.components.interfaces.DataTwoWayCI.DataI)
 		 */
 		@Override
 		public void			send(DataI d) throws Exception
@@ -113,10 +113,10 @@ implements	DataTwoWayI
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayI#request()
+		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayCI#request()
 		 */
 		@Override
-		public DataTwoWayI.DataI	request() throws Exception
+		public DataTwoWayCI.DataI	request() throws Exception
 		{
 			return this.getProxyTowardsOtherComponent().request() ;
 		}
@@ -149,7 +149,7 @@ implements	DataTwoWayI
 	 */
 	public 				AbstractDataTwoWayPort(
 		String uri,
-		Class<? extends DataTwoWayI> implementedInterface,
+		Class<? extends DataTwoWayCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -179,7 +179,7 @@ implements	DataTwoWayI
 	 * @throws Exception 				<i>to do.</i>
 	 */
 	public				AbstractDataTwoWayPort(
-		Class<? extends DataTwoWayI> implementedInterface,
+		Class<? extends DataTwoWayCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -213,10 +213,10 @@ implements	DataTwoWayI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<? extends DataTwoWayI>	getImplementedInterface()
+	public Class<? extends DataTwoWayCI>	getImplementedInterface()
 	throws Exception
 	{
-		return (Class<? extends DataTwoWayI>) super.getImplementedInterface();
+		return (Class<? extends DataTwoWayCI>) super.getImplementedInterface();
 	}
 
 	/**
@@ -250,7 +250,7 @@ implements	DataTwoWayI
 	 * @see fr.sorbonne_u.components.ports.AbstractTwoWayPort#getOut()
 	 */
 	@Override
-	public DataTwoWayI 	getOut() throws Exception
+	public DataTwoWayCI 	getOut() throws Exception
 	{
 		return super.getOut() ;
 	}

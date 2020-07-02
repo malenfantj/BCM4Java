@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -73,8 +73,8 @@ import fr.sorbonne_u.components.interfaces.DataRequiredI;
  */
 public interface			DataConnectorI
 extends		ConnectorI,
-			DataRequiredI.PullI,		// to be called from the client side.
-			DataOfferedI.PushI		// to be called from the provider side.
+			DataRequiredCI.PullCI,		// to be called from the client side.
+			DataOfferedCI.PushCI		// to be called from the provider side.
 {
 	/**
 	 * translate data as defined by the required interface into data as
@@ -90,7 +90,7 @@ extends		ConnectorI,
 	 * @param d	data to be translated
 	 * @return	data resulting from the translation
 	 */
-	public DataOfferedI.DataI		required2offered(DataRequiredI.DataI d) ;
+	public DataOfferedCI.DataI		required2offered(DataRequiredCI.DataI d) ;
 
 	/**
 	 * translate data as defined by the offered interface into data as
@@ -106,6 +106,6 @@ extends		ConnectorI,
 	 * @param d	data to be translated
 	 * @return	data resulting from the translation
 	 */
-	public DataRequiredI.DataI		offered2required(DataOfferedI.DataI d) ;
+	public DataRequiredCI.DataI		offered2required(DataOfferedCI.DataI d) ;
 }
 //-----------------------------------------------------------------------------

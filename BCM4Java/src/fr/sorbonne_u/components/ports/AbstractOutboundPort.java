@@ -43,8 +43,8 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
@@ -86,7 +86,7 @@ implements	OutboundPortI
 	/** URI of the server port to which this port is connected.				*/
 	protected final AtomicReference<String>		serverPortURI ;
 	/** connector used to link with the provider component.					*/
-	protected final AtomicReference<RequiredI>	connector ;
+	protected final AtomicReference<RequiredCI>	connector ;
 	/** when connected, true if the connection is remote and false
 	 *  otherwise.															*/
 	protected final AtomicBoolean				isRemotelyConnected ;
@@ -198,14 +198,14 @@ implements	OutboundPortI
 	 */
 	public				AbstractOutboundPort(
 		String uri,
-		Class<? extends RequiredI> implementedInterface,
+		Class<? extends RequiredCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
 		super(uri, implementedInterface, owner) ;
 
 		this.serverPortURI = new AtomicReference<String>(null);
-		this.connector = new AtomicReference<RequiredI>(null);
+		this.connector = new AtomicReference<RequiredCI>(null);
 		this.isRemotelyConnected = new AtomicBoolean(false);
 
 		AbstractOutboundPort.checkImplementationInvariant(this);
@@ -238,7 +238,7 @@ implements	OutboundPortI
 	 * @throws Exception			<i>todo.</i>
 	 */
 	public				AbstractOutboundPort(
-		Class<? extends RequiredI> implementedInterface,
+		Class<? extends RequiredCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -256,10 +256,10 @@ implements	OutboundPortI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<? extends RequiredI>	getImplementedInterface()
+	public Class<? extends RequiredCI>	getImplementedInterface()
 	throws Exception
 	{
-		return (Class<? extends RequiredI>) super.getImplementedInterface();
+		return (Class<? extends RequiredCI>) super.getImplementedInterface();
 	}
 	// -------------------------------------------------------------------------
 	// Registry management
@@ -407,7 +407,7 @@ implements	OutboundPortI
 		assert	c != null :
 					new PreconditionException("c != null");
 
-		this.connector.set((RequiredI)c);
+		this.connector.set((RequiredCI)c);
 
 		assert	this.getConnector() == c :
 					new PostconditionException("getConnector() == c");
@@ -550,7 +550,7 @@ implements	OutboundPortI
 					new ConnectionException("Unknown server port URI: " +
 													this.getServerPortURI());
 
-		this.getConnector().connect((OfferedI)serverPort, this);
+		this.getConnector().connect((OfferedCI)serverPort, this);
 	}
 
 	/**

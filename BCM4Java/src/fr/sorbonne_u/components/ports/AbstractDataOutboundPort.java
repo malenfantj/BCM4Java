@@ -41,9 +41,9 @@ import fr.sorbonne_u.components.connectors.AbstractDataConnector;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
@@ -94,7 +94,7 @@ implements	DataOutboundPortI
 	private static final long serialVersionUID = 1L;
 	/** push interface implemented by this port, to receive data from the
 	 *  provider.									 						*/
-	protected final Class<? extends DataRequiredI.PushI>
+	protected final Class<? extends DataRequiredCI.PushCI>
 												implementedPushInterface;
 	/** URI of the plug-in to be called in the owner or null if none.		*/
 	protected final String		pluginURI;
@@ -211,7 +211,7 @@ implements	DataOutboundPortI
 	 * Disallowed! (use another constructor)
 	 */
 	public				AbstractDataOutboundPort(
-		Class<? extends RequiredI> implementedInterface,
+		Class<? extends RequiredCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -225,7 +225,7 @@ implements	DataOutboundPortI
 	 */
 	public				AbstractDataOutboundPort(
 		String uri,
-		Class<? extends RequiredI> implementedInterface,
+		Class<? extends RequiredCI> implementedInterface,
 		ComponentI	owner
 		) throws Exception
 	{
@@ -264,8 +264,8 @@ implements	DataOutboundPortI
 	 */
 	public				AbstractDataOutboundPort(
 		String uri,
-		Class<?  extends DataRequiredI.PullI> implementedPullInterface,
-		Class<? extends DataRequiredI.PushI> implementedPushInterface,
+		Class<?  extends DataRequiredCI.PullCI> implementedPullInterface,
+		Class<? extends DataRequiredCI.PushCI> implementedPushInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI
@@ -276,12 +276,12 @@ implements	DataOutboundPortI
 		assert	implementedPushInterface != null :
 					new PreconditionException(
 							"implementedPushInterface != null");
-		assert	DataRequiredI.PullI.class.
+		assert	DataRequiredCI.PullCI.class.
 								isAssignableFrom(implementedPullInterface);
 					new PreconditionException(
 							"DataRequiredI.PullI.class." + 
 							"isAssignableFrom(implementedPullInterface)");
-		assert	DataRequiredI.PushI.class.
+		assert	DataRequiredCI.PushCI.class.
 								isAssignableFrom(implementedPushInterface);
 					new PreconditionException(
 							"DataRequiredI.PushI.class." + 
@@ -346,8 +346,8 @@ implements	DataOutboundPortI
 	 * @throws Exception  				<i>todo.</i>
 	 */
 	public				AbstractDataOutboundPort(
-		Class<? extends DataRequiredI.PullI> implementedPullInterface,
-		Class<? extends DataRequiredI.PushI> implementedPushInterface,
+		Class<? extends DataRequiredCI.PullCI> implementedPullInterface,
+		Class<? extends DataRequiredCI.PushCI> implementedPushInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI
@@ -386,8 +386,8 @@ implements	DataOutboundPortI
 	 */
 	public				AbstractDataOutboundPort(
 		String uri,
-		Class<? extends DataRequiredI.PullI> implementedPullInterface,
-		Class<? extends DataRequiredI.PushI> implementedPushInterface,
+		Class<? extends DataRequiredCI.PullCI> implementedPullInterface,
+		Class<? extends DataRequiredCI.PushCI> implementedPushInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -420,8 +420,8 @@ implements	DataOutboundPortI
 	 * @throws Exception  				<i>todo.</i>
 	 */
 	public				AbstractDataOutboundPort(
-		Class<? extends DataRequiredI.PullI> implementedPullInterface,
-		Class<? extends DataRequiredI.PushI> implementedPushInterface,
+		Class<? extends DataRequiredCI.PullCI> implementedPullInterface,
+		Class<? extends DataRequiredCI.PushCI> implementedPushInterface,
 		ComponentI	owner
 		) throws Exception
 	{
@@ -437,7 +437,7 @@ implements	DataOutboundPortI
 	 * @see fr.sorbonne_u.components.AbstractPort#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends DataRequiredI.PullI>	getImplementedInterface()
+	public Class<? extends DataRequiredCI.PullCI>	getImplementedInterface()
 	throws Exception
 	{
 		// make sure this method is always used to get the pull interface
@@ -449,14 +449,14 @@ implements	DataOutboundPortI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<? extends DataRequiredI.PullI>	getImplementedPullInterface()
+	public Class<? extends DataRequiredCI.PullCI>	getImplementedPullInterface()
 	throws Exception
 	{
 		assert	!this.isDestroyed() :
 					new PreconditionException(
 							"Port with URI " + this.uri + " is destroyed!");
 
-		return (Class<? extends DataRequiredI.PullI>)
+		return (Class<? extends DataRequiredCI.PullCI>)
 										super.getImplementedInterface();
 	}
 
@@ -464,7 +464,7 @@ implements	DataOutboundPortI
 	 * @see fr.sorbonne_u.components.ports.DataOutboundPortI#getImplementedPushInterface()
 	 */
 	@Override
-	public Class<? extends DataRequiredI.PushI> getImplementedPushInterface()
+	public Class<? extends DataRequiredCI.PushCI> getImplementedPushInterface()
 	throws Exception
 	{
 		assert	!this.isDestroyed() :
@@ -564,7 +564,7 @@ implements	DataOutboundPortI
 			serverPort =
 				(PortI) AbstractDistributedCVM.getCVM().
 							getRemoteReference(this.getServerPortURI());
-			this.getConnector().connect((OfferedI) serverPort, this);
+			this.getConnector().connect((OfferedCI) serverPort, this);
 		} else {
 			this.isRemotelyConnected.set(false);
 		}
@@ -819,10 +819,10 @@ implements	DataOutboundPortI
 	 * 
 	 * @throws Exception  <i>todo.</i>
 	 * 
-	 * @see fr.sorbonne_u.components.interfaces.DataRequiredI.PullI#request()
+	 * @see fr.sorbonne_u.components.interfaces.DataRequiredCI.PullCI#request()
 	 */
 	@Override
-	public DataRequiredI.DataI	request()
+	public DataRequiredCI.DataI	request()
 	throws	Exception
 	{
 		assert	!this.isDestroyed() :
@@ -830,7 +830,7 @@ implements	DataOutboundPortI
 		assert	this.connected() :
 					new PreconditionException("connected()");
 
-		return ((DataRequiredI.PullI)this.getConnector()).request();
+		return ((DataRequiredCI.PullCI)this.getConnector()).request();
 	}
 }
 // -----------------------------------------------------------------------------

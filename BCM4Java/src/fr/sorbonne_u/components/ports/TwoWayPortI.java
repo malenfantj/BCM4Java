@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractTwoWayConnector;
-import fr.sorbonne_u.components.interfaces.TwoWayI;
+import fr.sorbonne_u.components.interfaces.TwoWayCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -55,16 +55,16 @@ import fr.sorbonne_u.components.interfaces.TwoWayI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		TwoWayPortI<TWI extends TwoWayI>
+public interface		TwoWayPortI<TWI extends TwoWayCI>
 extends		InboundPortI,
 			OutboundPortI,
-			TwoWayI		// to be called both from the inside and outside
+			TwoWayCI		// to be called both from the inside and outside
 {
 	/**
 	 * @see fr.sorbonne_u.components.ports.InboundPortI#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends TwoWayI>	getImplementedInterface() throws Exception;
+	public Class<? extends TwoWayCI>	getImplementedInterface() throws Exception;
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.OutboundPortI#getConnector()
@@ -86,6 +86,6 @@ extends		InboundPortI,
 	 * @return				proxy used when calling components connected to this port.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public TwoWayI		getOut() throws Exception ;
+	public TwoWayCI		getOut() throws Exception ;
 }
 //-----------------------------------------------------------------------------

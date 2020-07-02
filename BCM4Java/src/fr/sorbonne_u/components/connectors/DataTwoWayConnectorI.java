@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataTwoWayI;
+import fr.sorbonne_u.components.interfaces.DataTwoWayCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -56,7 +56,7 @@ import fr.sorbonne_u.components.interfaces.DataTwoWayI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface			DataTwoWayConnectorI
-extends		DataTwoWayI
+extends		DataTwoWayCI
 {
 	/**
 	 * translates data as defined by the second two way interface into data as
@@ -72,7 +72,7 @@ extends		DataTwoWayI
 	 * @param d	data to be translated
 	 * @return	data resulting from the translation
 	 */
-	public DataTwoWayI.DataI 	second2first(DataTwoWayI.DataI d) ;
+	public DataTwoWayCI.DataI 	second2first(DataTwoWayCI.DataI d) ;
 
 	/**
 	 * translates data as defined by the first two way interface into data as
@@ -88,6 +88,6 @@ extends		DataTwoWayI
 	 * @param d	data to be translated
 	 * @return	data resulting from the translation
 	 */
-	public DataTwoWayI.DataI	first2second(DataTwoWayI.DataI d) ;
+	public DataTwoWayCI.DataI	first2second(DataTwoWayCI.DataI d) ;
 }
 //-----------------------------------------------------------------------------

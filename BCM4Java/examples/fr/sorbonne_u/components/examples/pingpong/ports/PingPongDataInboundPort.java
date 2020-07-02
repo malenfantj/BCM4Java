@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.pingpong.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.pingpong.components.PingPongPlayer;
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
 import fr.sorbonne_u.components.ports.AbstractDataInboundPort;
 
 //----------------------------------------------------------------------------
@@ -66,8 +66,8 @@ extends		AbstractDataInboundPort
 		ComponentI owner
 		) throws Exception{
 		super(uri,
-			  DataOfferedI.PullI.class,
-			  DataOfferedI.PushI.class,
+			  DataOfferedCI.PullCI.class,
+			  DataOfferedCI.PushCI.class,
 			  owner);
 	}
 
@@ -75,21 +75,21 @@ extends		AbstractDataInboundPort
 		ComponentI owner
 		) throws Exception
 	{
-		super(DataOfferedI.PullI.class,
-			  DataOfferedI.PushI.class,
+		super(DataOfferedCI.PullCI.class,
+			  DataOfferedCI.PushCI.class,
 			  owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.interfaces.DataOfferedI.PullI#get()
+	 * @see fr.sorbonne_u.components.interfaces.DataOfferedCI.PullCI#get()
 	 */
 	@Override
-	public DataOfferedI.DataI	get() throws Exception
+	public DataOfferedCI.DataI	get() throws Exception
 	{
 		return this.owner.handleRequestSync(
-				new AbstractComponent.AbstractService<DataOfferedI.DataI>() {
+				new AbstractComponent.AbstractService<DataOfferedCI.DataI>() {
 					@Override
-					public DataOfferedI.DataI call() throws Exception {
+					public DataOfferedCI.DataI call() throws Exception {
 						return ((PingPongPlayer)this.getServiceOwner()).getBall() ;
 					}
 				}) ;

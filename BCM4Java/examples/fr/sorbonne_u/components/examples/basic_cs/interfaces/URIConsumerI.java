@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.examples.basic_cs.interfaces;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -53,7 +53,7 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public interface		URIConsumerI
-extends		RequiredI
+extends		RequiredCI
 {
 	/**
 	 * get a new URI.

@@ -45,9 +45,9 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
@@ -97,12 +97,12 @@ implements	DataInboundPortI
 
 	private static final long serialVersionUID = 1L;
 	/** push interface implemented by this port, to send data to the client.*/
-	protected final Class<? extends DataOfferedI.PushI>
+	protected final Class<? extends DataOfferedCI.PushCI>
 												implementedPushInterface;
 	/** URI of the client port to which this port is connected.				*/
 	protected final AtomicReference<String>		clientPortURI;
 	/** connectors of this port towards the client components.				*/
-	protected final AtomicReference<DataOfferedI.PushI>	connector;
+	protected final AtomicReference<DataOfferedCI.PushCI>	connector;
 	/** when connected, true if the connection is remote and false
 	 *  otherwise.															*/
 	protected final AtomicBoolean				isRemotelyConnected;
@@ -188,7 +188,7 @@ implements	DataInboundPortI
 	}
 
 	public				AbstractDataInboundPort(
-		Class<? extends OfferedI> implementedInterface,
+		Class<? extends OfferedCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -200,7 +200,7 @@ implements	DataInboundPortI
 
 	public				AbstractDataInboundPort(
 		String uri,
-		Class<? extends OfferedI> implementedInterface,
+		Class<? extends OfferedCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -241,8 +241,8 @@ implements	DataInboundPortI
 	 */
 	public				AbstractDataInboundPort(
 		String uri,
-		Class<? extends DataOfferedI.PullI> implementedPullInterface,
-		Class<? extends DataOfferedI.PushI> implementedPushInterface,
+		Class<? extends DataOfferedCI.PullCI> implementedPullInterface,
+		Class<? extends DataOfferedCI.PushCI> implementedPushInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI
@@ -260,7 +260,7 @@ implements	DataInboundPortI
 
 		this.implementedPushInterface = implementedPushInterface;
 		this.clientPortURI = new AtomicReference<String>(null);
-		this.connector = new AtomicReference<DataOfferedI.PushI>(null);
+		this.connector = new AtomicReference<DataOfferedCI.PushCI>(null);
 		this.isRemotelyConnected = new AtomicBoolean(false);
 
 		AbstractDataInboundPort.checkImplementationInvariant(this);
@@ -308,8 +308,8 @@ implements	DataInboundPortI
 	 * @throws Exception 				<i>to do.</i>
 	 */
 	public				AbstractDataInboundPort(
-		Class<? extends DataOfferedI.PullI> implementedPullInterface,
-		Class<? extends DataOfferedI.PushI> implementedPushInterface,
+		Class<? extends DataOfferedCI.PullCI> implementedPullInterface,
+		Class<? extends DataOfferedCI.PushCI> implementedPushInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI
@@ -347,8 +347,8 @@ implements	DataInboundPortI
 	 */
 	public				AbstractDataInboundPort(
 		String uri,
-		Class<? extends DataOfferedI.PullI> implementedPullInterface,
-		Class<? extends DataOfferedI.PushI> implementedPushInterface,
+		Class<? extends DataOfferedCI.PullCI> implementedPullInterface,
+		Class<? extends DataOfferedCI.PushCI> implementedPushInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -380,8 +380,8 @@ implements	DataInboundPortI
 	 * @throws Exception 				<i>to do.</i>
 	 */
 	public				AbstractDataInboundPort(
-		Class<? extends DataOfferedI.PullI> implementedPullInterface,
-		Class<? extends DataOfferedI.PushI> implementedPushInterface,
+		Class<? extends DataOfferedCI.PullCI> implementedPullInterface,
+		Class<? extends DataOfferedCI.PushCI> implementedPushInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -397,7 +397,7 @@ implements	DataInboundPortI
 	 * @see fr.sorbonne_u.components.AbstractPort#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends DataOfferedI.PullI>	getImplementedInterface()
+	public Class<? extends DataOfferedCI.PullCI>	getImplementedInterface()
 	throws Exception
 	{
 		// make sure this method is always used to get the pull interface
@@ -409,14 +409,14 @@ implements	DataInboundPortI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<? extends DataOfferedI.PullI>	getImplementedPullInterface()
+	public Class<? extends DataOfferedCI.PullCI>	getImplementedPullInterface()
 	throws Exception
 	{
 		assert	!this.isDestroyed() :
 					new PreconditionException(
 							"Port with URI " + this.uri + " is destroyed!");
 
-		return (Class<? extends DataOfferedI.PullI>)
+		return (Class<? extends DataOfferedCI.PullCI>)
 											super.getImplementedInterface();
 	}
 
@@ -424,7 +424,7 @@ implements	DataInboundPortI
 	 * @see fr.sorbonne_u.components.ports.DataInboundPortI#getImplementedPushInterface()
 	 */
 	@Override
-	public Class<? extends DataOfferedI.PushI>	getImplementedPushInterface()
+	public Class<? extends DataOfferedCI.PushCI>	getImplementedPushInterface()
 	throws Exception
 	{
 		assert	!this.isDestroyed() :
@@ -558,7 +558,7 @@ implements	DataInboundPortI
 							"Port with URI " + this.uri + " is destroyed!");
 		assert	c != null : new PreconditionException("c != null");
 
-		this.connector.set((DataOfferedI.PushI)c);
+		this.connector.set((DataOfferedCI.PushCI)c);
 
 		assert	this.getConnector() == c :
 					new PostconditionException("getConnector() == c");
@@ -704,7 +704,7 @@ implements	DataInboundPortI
 					new ConnectionException("Unknown port URI: " +
 													this.getClientPortURI());
 
-		this.getConnector().connect((OfferedI)this, (RequiredI)clientPort);
+		this.getConnector().connect((OfferedCI)this, (RequiredCI)clientPort);
 	}
 
 	/**
@@ -764,7 +764,7 @@ implements	DataInboundPortI
 			clientPort = (PortI) AbstractDistributedCVM.getCVM().
 								getRemoteReference(this.getClientPortURI());
 			((DataConnectorI)this.getConnector()).
-							connect((OfferedI)this, (RequiredI)clientPort);
+							connect((OfferedCI)this, (RequiredCI)clientPort);
 		} else {
 			this.isRemotelyConnected.set(false);
 		}
@@ -856,10 +856,10 @@ implements	DataInboundPortI
 	 * 
 	 * @throws Exception <i>todo.</i>
 	 * 
-	 * @see fr.sorbonne_u.components.interfaces.DataOfferedI.PushI#send(fr.sorbonne_u.components.interfaces.DataOfferedI.DataI)
+	 * @see fr.sorbonne_u.components.interfaces.DataOfferedCI.PushCI#send(fr.sorbonne_u.components.interfaces.DataOfferedCI.DataI)
 	 */
 	@Override
-	public void			send(DataOfferedI.DataI d)
+	public void			send(DataOfferedCI.DataI d)
 	throws	Exception
 	{
 		assert	!this.isDestroyed() :

@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.ports;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -67,9 +67,9 @@ import fr.sorbonne_u.components.interfaces.DataRequiredI;
  */
 public interface			DataOutboundPortI
 extends		OutboundPortI,
-			DataRequiredI.PullI,	// to be called from the inside to
+			DataRequiredCI.PullCI,	// to be called from the inside to
 									// request data
-			DataRequiredI.PushI		// to be called from the outside to
+			DataRequiredCI.PushCI		// to be called from the outside to
 									// receive data
 {
 	// ------------------------------------------------------------------------
@@ -80,7 +80,7 @@ extends		OutboundPortI,
 	 * @see fr.sorbonne_u.components.ports.OutboundPortI#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends DataRequiredI.PullI>	getImplementedInterface()
+	public Class<? extends DataRequiredCI.PullCI>	getImplementedInterface()
 	throws Exception;
 
 	/**
@@ -96,7 +96,7 @@ extends		OutboundPortI,
 	 * @return				the implemented pull interface.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public Class<? extends DataRequiredI.PullI>	getImplementedPullInterface()
+	public Class<? extends DataRequiredCI.PullCI>	getImplementedPullInterface()
 	throws Exception ;
 
 	/**
@@ -112,7 +112,7 @@ extends		OutboundPortI,
 	 * @return			the implemented push interface.
 	 * @throws Exception	<i>to do.</i>
 	 */
-	public Class<? extends DataRequiredI.PushI> getImplementedPushInterface()
+	public Class<? extends DataRequiredCI.PushCI> getImplementedPushInterface()
 	throws Exception ;
 }
 //-----------------------------------------------------------------------------

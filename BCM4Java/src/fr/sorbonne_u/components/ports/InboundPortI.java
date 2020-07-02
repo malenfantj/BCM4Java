@@ -33,7 +33,7 @@ package fr.sorbonne_u.components.ports;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -63,14 +63,14 @@ import fr.sorbonne_u.components.interfaces.OfferedI;
  */
 public interface			InboundPortI
 extends		PortI,
-			OfferedI		// to be called by the client side to get the service
+			OfferedCI		// to be called by the client side to get the service
 {
 
 	/**
 	 * @see fr.sorbonne_u.components.ports.PortI#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends OfferedI> getImplementedInterface()
+	public Class<? extends OfferedCI> getImplementedInterface()
 	throws Exception;
 }
 //-----------------------------------------------------------------------------

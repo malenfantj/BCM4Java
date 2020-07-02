@@ -39,7 +39,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -82,6 +82,6 @@ public @interface		RequiredInterfaces
 	 *
 	 * @return	array of Java interfaces that are the required component interfaces.
 	 */
-	Class<? extends RequiredI>[]	required() ;
+	Class<? extends RequiredCI>[]	required() ;
 }
 // -----------------------------------------------------------------------------

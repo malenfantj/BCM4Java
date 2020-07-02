@@ -36,8 +36,8 @@ package fr.sorbonne_u.components.ports;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
-import fr.sorbonne_u.components.interfaces.ComponentServiceI;
-import fr.sorbonne_u.components.interfaces.OfferedI;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
@@ -212,7 +212,7 @@ implements	InboundPortI
 	 */
 	public				AbstractInboundPort(
 		String uri,
-		Class<? extends ComponentServiceI> implementedInterface,
+		Class<? extends ComponentInterface> implementedInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI
@@ -268,7 +268,7 @@ implements	InboundPortI
 	 * @throws Exception 			<i>todo.</i>
 	 */
 	public				AbstractInboundPort(
-		Class<? extends ComponentServiceI> implementedInterface,
+		Class<? extends ComponentInterface> implementedInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI
@@ -301,7 +301,7 @@ implements	InboundPortI
 	 */
 	public				AbstractInboundPort(
 		String uri,
-		Class<? extends OfferedI> implementedInterface,
+		Class<? extends OfferedCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -327,7 +327,7 @@ implements	InboundPortI
 	 * @throws Exception 			<i>todo.</i>
 	 */
 	public				AbstractInboundPort(
-		Class<? extends OfferedI> implementedInterface,
+		Class<? extends OfferedCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
@@ -344,10 +344,10 @@ implements	InboundPortI
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class<? extends OfferedI>	getImplementedInterface()
+	public Class<? extends OfferedCI>	getImplementedInterface()
 	throws Exception
 	{
-		return (Class<? extends OfferedI>) super.getImplementedInterface();
+		return (Class<? extends OfferedCI>) super.getImplementedInterface();
 	}
 	// -------------------------------------------------------------------------
 	// Connection management

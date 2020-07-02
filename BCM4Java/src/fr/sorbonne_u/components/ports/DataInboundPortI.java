@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.ports;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.DataConnectorI;
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -73,8 +73,8 @@ import fr.sorbonne_u.components.interfaces.DataOfferedI;
  */
 public interface			DataInboundPortI
 extends		InboundPortI,
-			DataOfferedI.PullI,	// to be called from the outside to get data
-			DataOfferedI.PushI	// to be called from the inside to send data
+			DataOfferedCI.PullCI,	// to be called from the outside to get data
+			DataOfferedCI.PushCI	// to be called from the inside to send data
 {
 	// ------------------------------------------------------------------------
 	// Self-properties management
@@ -84,7 +84,7 @@ extends		InboundPortI,
 	 * @see fr.sorbonne_u.components.ports.InboundPortI#getImplementedInterface()
 	 */
 	@Override
-	public Class<? extends DataOfferedI.PullI> getImplementedInterface()
+	public Class<? extends DataOfferedCI.PullCI> getImplementedInterface()
 	throws Exception;
 
 	/**
@@ -100,7 +100,7 @@ extends		InboundPortI,
 	 * @return				the implemented pull interface.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<? extends DataOfferedI.PullI> 	getImplementedPullInterface()
+	public Class<? extends DataOfferedCI.PullCI> 	getImplementedPullInterface()
 	throws Exception;
 
 	/**
@@ -116,7 +116,7 @@ extends		InboundPortI,
 	 * @return				the implemented push interface.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<? extends DataOfferedI.PushI> 	getImplementedPushInterface()
+	public Class<? extends DataOfferedCI.PushCI> 	getImplementedPushInterface()
 	throws Exception;
 
 	// ------------------------------------------------------------------------

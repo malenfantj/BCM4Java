@@ -37,8 +37,8 @@ package fr.sorbonne_u.components.connectors;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -100,7 +100,7 @@ extends		AbstractDataConnector
 	protected static boolean		DEFAULT_ACTIVE_PULL_BEHAVIOR = true ;
 	protected static int			DEFAULT_PULL_INTERVAL = 100 ;
 
-	protected BlockingQueue<DataOfferedI.DataI>	bq ;
+	protected BlockingQueue<DataOfferedCI.DataI>	bq ;
 	protected boolean			isActivePuller ;
 	protected Thread				dataPuller ;
 	protected int				pullInterval ;
@@ -162,7 +162,7 @@ extends		AbstractDataConnector
 		)
 	{
 		super() ;
-		this.bq = new ArrayBlockingQueue<DataOfferedI.DataI>(
+		this.bq = new ArrayBlockingQueue<DataOfferedCI.DataI>(
 														bufferingCapacity) ;
 		this.isActivePuller = isActivePuller ;
 		this.isActivePusher = isActivePusher ;
@@ -280,11 +280,11 @@ extends		AbstractDataConnector
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.interfaces.DataRequiredI.PullI#request()
+	 * @see fr.sorbonne_u.components.interfaces.DataRequiredCI.PullCI#request()
 	 */
 	@Override
-	public DataRequiredI.DataI request() {
-		DataRequiredI.DataI ret = null ;
+	public DataRequiredCI.DataI request() {
+		DataRequiredCI.DataI ret = null ;
 		try {
 			ret = this.offered2required(this.bq.take());
 		} catch (InterruptedException e) {
@@ -304,10 +304,10 @@ extends		AbstractDataConnector
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.interfaces.DataOfferedI.PushI#send(fr.sorbonne_u.components.interfaces.DataOfferedI.DataI)
+	 * @see fr.sorbonne_u.components.interfaces.DataOfferedCI.PushCI#send(fr.sorbonne_u.components.interfaces.DataOfferedCI.DataI)
 	 */
 	@Override
-	public void send(DataOfferedI.DataI d) {
+	public void send(DataOfferedCI.DataI d) {
 		try {
 			this.bq.put(d) ;
 		} catch (InterruptedException e) {

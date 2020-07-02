@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.plugins.dipc.interfaces;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -65,8 +65,8 @@ import fr.sorbonne_u.components.interfaces.RequiredI;
  */
 public interface			PushControlI
 extends		PushControlImplementationI,
-			OfferedI,
-			RequiredI
+			OfferedCI,
+			RequiredCI
 {
 	/**
 	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#isPortExisting(java.lang.String)

@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataTwoWayI;
+import fr.sorbonne_u.components.interfaces.DataTwoWayCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -85,8 +85,8 @@ extends		AbstractDataTwoWayConnector
 	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
 	protected static class	ProxyToOtherComponent
-	extends		AbstractTwoWayConnector.ProxyToOtherComponent<DataTwoWayI>
-	implements	DataTwoWayI
+	extends		AbstractTwoWayConnector.ProxyToOtherComponent<DataTwoWayCI>
+	implements	DataTwoWayCI
 	{
 		/**
 		 * create a proxy that can forward a call to the other port when the
@@ -103,7 +103,7 @@ extends		AbstractDataTwoWayConnector
 		 * @param senderPortURI	URI of the sender port.
 		 */
 		public				ProxyToOtherComponent(
-			AbstractTwoWayConnector<DataTwoWayI> owner,
+			AbstractTwoWayConnector<DataTwoWayCI> owner,
 			String senderPortURI
 			)
 		{
@@ -112,38 +112,38 @@ extends		AbstractDataTwoWayConnector
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayI#send(fr.sorbonne_u.components.interfaces.DataTwoWayI.DataI)
+		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayCI#send(fr.sorbonne_u.components.interfaces.DataTwoWayCI.DataI)
 		 */
 		@Override
-		public void			send(DataTwoWayI.DataI d)
+		public void			send(DataTwoWayCI.DataI d)
 		throws	Exception
 		{
 			assert	this.owner.connected() ;
 
 			if (this.senderPortURI.equals(this.getOfferingPortURI())) {
-				((DataTwoWayI) this.getRequiring()).send(
+				((DataTwoWayCI) this.getRequiring()).send(
 					((DataTwoWayConnectorI)this.owner).first2second(d)) ;
 			} else {
-				((DataTwoWayI) this.getOffering()).send(
+				((DataTwoWayCI) this.getOffering()).send(
 					((DataTwoWayConnectorI)this.owner).second2first(d)) ;
 			}
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayI#request()
+		 * @see fr.sorbonne_u.components.interfaces.DataTwoWayCI#request()
 		 */
 		@Override
-		public DataTwoWayI.DataI		request()
+		public DataTwoWayCI.DataI		request()
 		throws	Exception
 		{
 			assert	this.owner.connected() ;
 
 			if (this.senderPortURI.equals(this.getOfferingPortURI())) {
 				return ((DataTwoWayConnectorI)this.owner).second2first(
-							((DataTwoWayI)this.getRequiring()).request()) ;
+							((DataTwoWayCI)this.getRequiring()).request()) ;
 			} else {
 				return ((DataTwoWayConnectorI)this.owner).first2second(
-							((DataTwoWayI)this.getOffering()).request()) ;
+							((DataTwoWayCI)this.getOffering()).request()) ;
 			}
 		}
 	}
@@ -156,11 +156,11 @@ extends		AbstractDataTwoWayConnector
 	 * @see fr.sorbonne_u.components.connectors.AbstractTwoWayConnector#getProxyTowardsOtherComponent(java.lang.String)
 	 */
 	@Override
-	public DataTwoWayI		getProxyTowardsOtherComponent(
+	public DataTwoWayCI		getProxyTowardsOtherComponent(
 		String senderPortURI
 		) throws Exception
 	{
-		return (DataTwoWayI) new ProxyToOtherComponent(this, senderPortURI) ;
+		return (DataTwoWayCI) new ProxyToOtherComponent(this, senderPortURI) ;
 	}
 
 	// ------------------------------------------------------------------------
@@ -168,10 +168,10 @@ extends		AbstractDataTwoWayConnector
 	// ------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.interfaces.DataTwoWayI#send(fr.sorbonne_u.components.interfaces.DataTwoWayI.DataI)
+	 * @see fr.sorbonne_u.components.interfaces.DataTwoWayCI#send(fr.sorbonne_u.components.interfaces.DataTwoWayCI.DataI)
 	 */
 	@Override
-	public void			send(DataTwoWayI.DataI d)
+	public void			send(DataTwoWayCI.DataI d)
 	throws	Exception
 	{
 		throw new Exception("DataTwoWayConnector>>send() must be "
@@ -179,10 +179,10 @@ extends		AbstractDataTwoWayConnector
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.interfaces.DataTwoWayI#request()
+	 * @see fr.sorbonne_u.components.interfaces.DataTwoWayCI#request()
 	 */
 	@Override
-	public DataTwoWayI.DataI	request()
+	public DataTwoWayCI.DataI	request()
 	throws	Exception
 	{
 		throw new Exception("DataTwoWayConnector>>request() must be "

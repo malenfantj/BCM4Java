@@ -34,9 +34,9 @@ package fr.sorbonne_u.components.examples.pingpong.components;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
-import fr.sorbonne_u.components.interfaces.DataTwoWayI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
+import fr.sorbonne_u.components.interfaces.DataTwoWayCI;
 
 
 //-----------------------------------------------------------------------------
@@ -57,9 +57,9 @@ import fr.sorbonne_u.components.interfaces.DataTwoWayI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class				Ball
-implements	DataOfferedI.DataI,
-			DataRequiredI.DataI,
-			DataTwoWayI.DataI
+implements	DataOfferedCI.DataI,
+			DataRequiredCI.DataI,
+			DataTwoWayCI.DataI
 {
 	private static final long serialVersionUID = 1L;
 	protected int		numberOfHits ;

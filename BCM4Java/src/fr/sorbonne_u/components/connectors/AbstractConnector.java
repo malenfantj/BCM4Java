@@ -35,8 +35,8 @@ package fr.sorbonne_u.components.connectors;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
@@ -67,13 +67,13 @@ public abstract class	AbstractConnector
 implements	ConnectorI
 {
 	/** port of the component providing the service.						*/
-	protected OfferedI	offering ;
+	protected OfferedCI	offering ;
 	/** URI of the offering port.										*/
 	protected String		offeringPortURI ;
 	/** true if the offering port runs on a remote JVM.					*/
 	protected boolean	isOfferingRemote ;
 	/** port of the component requiring the service.						*/
-	protected RequiredI	requiring ;
+	protected RequiredCI	requiring ;
 	/** URI of the requiring port.										*/
 	protected String		requiringPortURI ;
 	/** true if the requiring port runs on a remote JVM.					*/
@@ -182,10 +182,10 @@ implements	ConnectorI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.connectors.ConnectorI#connect(fr.sorbonne_u.components.interfaces.OfferedI, fr.sorbonne_u.components.interfaces.RequiredI)
+	 * @see fr.sorbonne_u.components.connectors.ConnectorI#connect(fr.sorbonne_u.components.interfaces.OfferedCI, fr.sorbonne_u.components.interfaces.RequiredCI)
 	 */
 	@Override
-	public void			connect(OfferedI offering, RequiredI requiring)
+	public void			connect(OfferedCI offering, RequiredCI requiring)
 	throws	Exception
 	{
 		assert	!this.connected() :

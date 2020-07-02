@@ -38,7 +38,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.pingpong.components.Ball;
 import fr.sorbonne_u.components.examples.pingpong.components.PingPongPlayer;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
 
 //----------------------------------------------------------------------------
@@ -66,8 +66,8 @@ extends		AbstractDataOutboundPort
 		String uri,
 		ComponentI owner) throws Exception {
 		super(uri,
-			  DataRequiredI.PullI.class,
-			  DataRequiredI.PushI.class,
+			  DataRequiredCI.PullCI.class,
+			  DataRequiredCI.PushCI.class,
 			  owner);
 	}
 
@@ -75,16 +75,16 @@ extends		AbstractDataOutboundPort
 		ComponentI owner
 		) throws Exception
 	{
-		super(DataRequiredI.PullI.class,
-			  DataRequiredI.PushI.class,
+		super(DataRequiredCI.PullCI.class,
+			  DataRequiredCI.PushCI.class,
 			  owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.interfaces.DataRequiredI.PushI#receive(fr.sorbonne_u.components.interfaces.DataRequiredI.DataI)
+	 * @see fr.sorbonne_u.components.interfaces.DataRequiredCI.PushCI#receive(fr.sorbonne_u.components.interfaces.DataRequiredCI.DataI)
 	 */
 	@Override
-	public void			receive(DataRequiredI.DataI d) throws Exception
+	public void			receive(DataRequiredCI.DataI d) throws Exception
 	{
 		this.owner.runTask(
 				new AbstractComponent.AbstractTask() {

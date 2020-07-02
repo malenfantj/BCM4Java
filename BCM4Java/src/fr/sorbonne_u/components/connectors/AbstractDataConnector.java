@@ -34,10 +34,10 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataOfferedI;
-import fr.sorbonne_u.components.interfaces.DataRequiredI;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -75,25 +75,25 @@ extends		AbstractConnector
 implements	DataConnectorI
 {	
 	/**
-	 * @see fr.sorbonne_u.components.connectors.DataConnectorI#required2offered(fr.sorbonne_u.components.interfaces.DataRequiredI.DataI)
+	 * @see fr.sorbonne_u.components.connectors.DataConnectorI#required2offered(fr.sorbonne_u.components.interfaces.DataRequiredCI.DataI)
 	 */
 	@Override
-	public DataOfferedI.DataI required2offered(DataRequiredI.DataI d)
+	public DataOfferedCI.DataI required2offered(DataRequiredCI.DataI d)
 	{
 		// the data class must implement both the RequiredActuatorI
 		// and the OfferedActuatorI ActuatorDataI interfaces.
-		return (DataOfferedI.DataI) d ;
+		return (DataOfferedCI.DataI) d ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.connectors.DataConnectorI#offered2required(fr.sorbonne_u.components.interfaces.DataOfferedI.DataI)
+	 * @see fr.sorbonne_u.components.connectors.DataConnectorI#offered2required(fr.sorbonne_u.components.interfaces.DataOfferedCI.DataI)
 	 */
 	@Override
-	public DataRequiredI.DataI offered2required(DataOfferedI.DataI d)
+	public DataRequiredCI.DataI offered2required(DataOfferedCI.DataI d)
 	{
 		// the data class must implement both the RequiredActuatorI
 		// and the OfferedActuatorI ActuatorDataI interfaces.
-		return (DataRequiredI.DataI) d ;
+		return (DataRequiredCI.DataI) d ;
 	}
 
 	/**
@@ -107,10 +107,10 @@ implements	DataConnectorI
 	 * post	true				// no postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.connectors.AbstractConnector#connect(fr.sorbonne_u.components.interfaces.OfferedI, fr.sorbonne_u.components.interfaces.RequiredI)
+	 * @see fr.sorbonne_u.components.connectors.AbstractConnector#connect(fr.sorbonne_u.components.interfaces.OfferedCI, fr.sorbonne_u.components.interfaces.RequiredCI)
 	 */
 	@Override
-	public void			connect(OfferedI offering, RequiredI requiring)
+	public void			connect(OfferedCI offering, RequiredCI requiring)
 	throws Exception
 	{
 		assert	!this.connected() :
@@ -119,10 +119,10 @@ implements	DataConnectorI
 					new PreconditionException("requiringPortURI != null "
 											+ "&& offeringPortURI != null") ;
 		// the only reason to redefine this method is to test these
-		assert	offering instanceof DataOfferedI.PullI :
+		assert	offering instanceof DataOfferedCI.PullCI :
 					new PreconditionException("offering instanceof "
 											+ "DataOfferedI.PullI") ;
-		assert	requiring instanceof DataRequiredI.PullI :
+		assert	requiring instanceof DataRequiredCI.PullCI :
 					new PreconditionException("requiring instanceof "
 											+ "DataRequiredI.PullI") ;
 

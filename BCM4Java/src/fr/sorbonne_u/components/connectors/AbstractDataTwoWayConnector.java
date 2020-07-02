@@ -34,9 +34,9 @@ package fr.sorbonne_u.components.connectors;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.DataTwoWayI;
-import fr.sorbonne_u.components.interfaces.OfferedI;
-import fr.sorbonne_u.components.interfaces.RequiredI;
+import fr.sorbonne_u.components.interfaces.DataTwoWayCI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -63,7 +63,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public abstract class	AbstractDataTwoWayConnector
-extends		AbstractTwoWayConnector<DataTwoWayI>
+extends		AbstractTwoWayConnector<DataTwoWayCI>
 implements	DataTwoWayConnectorI
 {
 	/**
@@ -80,10 +80,10 @@ implements	DataTwoWayConnectorI
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.connectors.DataTwoWayConnectorI#second2first(fr.sorbonne_u.components.interfaces.DataTwoWayI.DataI)
+	 * @see fr.sorbonne_u.components.connectors.DataTwoWayConnectorI#second2first(fr.sorbonne_u.components.interfaces.DataTwoWayCI.DataI)
 	 */
 	@Override
-	public DataTwoWayI.DataI		second2first(DataTwoWayI.DataI d)
+	public DataTwoWayCI.DataI		second2first(DataTwoWayCI.DataI d)
 	{
 		// the data class implements at least the DataTwoWayI.DataI interface
 		return d ;
@@ -103,10 +103,10 @@ implements	DataTwoWayConnectorI
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.connectors.DataTwoWayConnectorI#first2second(fr.sorbonne_u.components.interfaces.DataTwoWayI.DataI)
+	 * @see fr.sorbonne_u.components.connectors.DataTwoWayConnectorI#first2second(fr.sorbonne_u.components.interfaces.DataTwoWayCI.DataI)
 	 */
 	@Override
-	public DataTwoWayI.DataI		first2second(DataTwoWayI.DataI d)
+	public DataTwoWayCI.DataI		first2second(DataTwoWayCI.DataI d)
 	{
 		// the data class implements at least the DataTwoWayI.DataI interface
 		return d;
@@ -125,10 +125,10 @@ implements	DataTwoWayConnectorI
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.connectors.AbstractTwoWayConnector#connect(fr.sorbonne_u.components.interfaces.OfferedI, fr.sorbonne_u.components.interfaces.RequiredI)
+	 * @see fr.sorbonne_u.components.connectors.AbstractTwoWayConnector#connect(fr.sorbonne_u.components.interfaces.OfferedCI, fr.sorbonne_u.components.interfaces.RequiredCI)
 	 */
 	@Override
-	public synchronized void		connect(OfferedI peer1, RequiredI peer2)
+	public synchronized void		connect(OfferedCI peer1, RequiredCI peer2)
 	throws	Exception
 	{
 		assert	!this.connected() :
@@ -136,9 +136,9 @@ implements	DataTwoWayConnectorI
 		assert	peer1 != null && peer2 != null :
 					new PreconditionException("peer1 != null && peer2 != null") ;
 		// the only reason to redefine this method is to test these
-		assert	peer1 instanceof DataTwoWayI :
+		assert	peer1 instanceof DataTwoWayCI :
 					new PreconditionException("peer1 instanceof DataTwoWayI") ;
-		assert	peer2 instanceof DataTwoWayI :
+		assert	peer2 instanceof DataTwoWayCI :
 					new PreconditionException("peer2 instanceof DataTwoWayI") ;
 
 		super.connect(peer1, peer2);
