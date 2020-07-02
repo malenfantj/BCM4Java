@@ -40,7 +40,7 @@ import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 //-----------------------------------------------------------------------------
 /**
  * The interface <code>PairDataI</code> extends the corresponding data
- * interfaces in the <code>DataOfferedI</code> and <code>DataRequiredI</code>
+ * interfaces in the <code>DataOfferedCI</code> and <code>DataRequiredCI</code>
  * interfaces to define the data objects that will be exchanged in the
  * data interfaces push control basic example.
  *

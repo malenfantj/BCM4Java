@@ -165,7 +165,6 @@ implements	DataTwoWayCI
 	 * 
 	 * <pre>
 	 * pre	{@code owner != null}
-	 * pre	{@code DataTwoWayI.class.isAssignableFrom(implementedInterface)}
 	 * post	{@code !isDestroyed()}
 	 * post	{@code getOwner().equals(owner)}
 	 * post	{@code !connected()}

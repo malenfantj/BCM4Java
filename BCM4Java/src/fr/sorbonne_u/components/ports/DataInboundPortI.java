@@ -46,7 +46,7 @@ import fr.sorbonne_u.components.interfaces.DataOfferedCI;
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * A data inbound port is associated with a <code>DataOfferedI</code>
+ * A data inbound port is associated with a <code>DataOfferedCI</code>
  * interface used to implement a basic interface to get data from a provider
  * component.  The primary way to get the data is the pull mode, where the
  * client component calls the provider through the <code>get()</code> method
@@ -94,13 +94,13 @@ extends		InboundPortI,
 	 * 
 	 * <pre>
 	 * pre	{@code !isDestroyed()}
-	 * post	{@code DataOfferedI.PullI.class.isAssignableFrom(ret)}
+	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the implemented pull interface.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<? extends DataOfferedCI.PullCI> 	getImplementedPullInterface()
+	public Class<? extends DataOfferedCI.PullCI> getImplementedPullInterface()
 	throws Exception;
 
 	/**
@@ -110,13 +110,13 @@ extends		InboundPortI,
 	 * 
 	 * <pre>
 	 * pre	{@code !isDestroyed()}
-	 * post	{@code DataOfferedI.PushI.class.isAssignableFrom(ret)}
+	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the implemented push interface.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<? extends DataOfferedCI.PushCI> 	getImplementedPushInterface()
+	public Class<? extends DataOfferedCI.PushCI> getImplementedPushInterface()
 	throws Exception;
 
 	// ------------------------------------------------------------------------

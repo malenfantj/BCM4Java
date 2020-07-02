@@ -62,10 +62,10 @@ connected to another component using a <i>connector</i>.  Two major
 kinds of interface are then introduced:
 </p>
 <ol>
-<li><code>OfferedI</code> is an interface implemented by a component acting as
-  a service provider. An offered interface therefor declares the signature
+<li><code>OfferedCI</code> is an interface implemented by a component acting as
+  a service provider. An offered interface therefore declares the signature
   of services (methods) provided by the component.</li>
-<li><code>RequiredI</code> is an interface that is required by a component,
+<li><code>RequiredCI</code> is an interface that is required by a component,
   expressing the services that the component will require during its
   execution.</li>
 </ol>
@@ -73,8 +73,8 @@ kinds of interface are then introduced:
 When connecting components, a required interface of one component will be
 matched with the offered interface of another component in order to connect
 them, either as subcomponents of a composite components or inside an assembly
-of components.  Offered interfazces can lead to several connections to several
-client compoents, but required interfaces are connected 
+of components.  Offered interfaces can lead to several connections to several
+client components, but required interfaces are connected 
 </p>
 
 <p><b>Data exchange interfaces</b></p>
@@ -84,17 +84,17 @@ Many components just exchange data, and not services <i>per se</i>.  To cater
 for asynchronous exchange of data, two variant interfaces are defined:
 </p>
 <ol>
-<li><code>DataOfferedI</code> is an interface implemented by a component that
+<li><code>DataOfferedCI</code> is an interface implemented by a component that
   will produce data.</li>
-<li><code>DataRequiredI</code> is an interface implemented by a component that
+<li><code>DataRequiredCI</code> is an interface implemented by a component that
   will consume data.</li>
 </ol>
 <p>
-Both <code>DataOfferedI</code> and <code>DataRequiredI</code> declares a
+Both <code>DataOfferedCI</code> and <code>DataRequiredCI</code> declares a
 <code>DataI</code> internal interface that serves as a supertype for objects
 implementing the data that is exchanged between a producer and a consumer.
 The classes defining data objects need not be implementing both the
-<code>DataOfferedI.DataI</code> and <code>DataRequiredI.DataI</code>.
+<code>DataOfferedCI.DataI</code> and <code>DataRequiredCI.DataI</code>.
 Indeed, though it is the most simple way to make the object directly
 interpretable on both sides, data connectors propose an alternative way
 to mediate between producer and consumer of data by requiring the implementation
@@ -107,29 +107,29 @@ Data exchange interfaces can be used in two modes: pull and push.  In pull
 mode, the consumer components calls the producer whenever it needs another
 piece of data.  In push mode, the producer calls to consumer each time it
 has a new piece of data that can be consumed.  These two modes are taken
-into account by two internal interfaces <code>PullI</code> and
-<code>PushI</code> defined in both <code>DataOfferedI</code> and
-<code>DataRequiredI</code> interfaces.  The pull mode is implemented
-by the pair of methods defined in the <code>PullI</code> interfaces:
+into account by two internal interfaces <code>PullCI</code> and
+<code>PushCI</code> defined in both <code>DataOfferedCI</code> and
+<code>DataRequiredCI</code> interfaces.  The pull mode is implemented
+by the pair of methods defined in the <code>PullCI</code> interfaces:
 </p>
 <ul>
-<li>the <code>get()</code> method in the <code>DataOfferedI.PullI</code>
+<li>the <code>get()</code> method in the <code>DataOfferedCI.PullCI</code>
   interface, that is called upon the producer to get the next piece of
   data.</li>
-<li>the <code>request()</code> method in the <code>DataRequiredI.PullI</code>
+<li>the <code>request()</code> method in the <code>DataRequiredCI.PullCI</code>
   interface, that is called upon the producer to request the next piece of
   data.</li>
 </ul>
 <p>
 Similarly, the push mode is implemented by the pair of methods defined in the
-<code>PushI</code> interfaces:
+<code>PushCI</code> interfaces:
 </p>
 <ul>
-<li>the <code>send(DataI)</code> method in the <code>DataOfferedI.PushI</code>
+<li>the <code>send(DataI)</code> method in the <code>DataOfferedCI.PushCI</code>
   interface, that is called by the producer to send the next piece of
   data.</li>
 <li>the <code>receive(DataI)</code> method in the
-  <code>DataRequiredI.PushI</code> interface, that is called upon the consumer 
+  <code>DataRequiredCI.PushCI</code> interface, that is called upon the consumer 
   to pass it the next piece of data.</li>
 </ul>
 
@@ -137,14 +137,14 @@ Similarly, the push mode is implemented by the pair of methods defined in the
 <p><b>Two way interfaces</b></p>
 
 <p>
-A third kind of interface is added: <code>TwoWayI</code> that is used when
+A third kind of interface is added: <code>TwoWayCI</code> that is used when
 two components play symmetrically the role of requirer and offerer of services
 to each other, for example in peer-to-peer algorithms.  Indeed, it is much
 simpler in this case to consider that the two components as implementing a
 unique interface rather that trying to connect them through two pairs of
 required and offered interfaces.  It also simplifies the connector that will
 bind the two.  As in offered and required interfaces, a data exchange variant
-of the two interfaces is defined: <code>DataTwoWayI</code>.  In two-way data
+of the two interfaces is defined: <code>DataTwoWayCI</code>.  In two-way data
 exchange, there is no need to distinguish a push and a pull mode, as both
 components may take the initiative os sending a piece of data to the other
 component.  Exchanges are thus using only one pair of methods:

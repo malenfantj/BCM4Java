@@ -264,7 +264,6 @@ extends		OfferedCI,
 	 * 
 	 * <pre>
 	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	RequiredI.class.isAssignableFrom(inter)
 	 * pre	!this.isRequiredInterface(inter)
 	 * post	this.isRequiredInterface(inter)
 	 * </pre>
@@ -272,7 +271,8 @@ extends		OfferedCI,
 	 * @param inter			required interface to be added.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public void			addRequiredInterface(Class<?> inter) throws Exception ;
+	public void			addRequiredInterface(Class<? extends RequiredCI> inter)
+	throws Exception ;
 
 	/**
 	 * remove a required interface from the required interfaces of this component.
@@ -289,8 +289,9 @@ extends		OfferedCI,
 	 * @param inter 		required interface to be removed.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public void			removeRequiredInterface(Class<?> inter)
-	throws Exception ;
+	public void			removeRequiredInterface(
+		Class<? extends RequiredCI> inter
+		) throws Exception ;
 
 	/**
 	 * add an offered interface to the offered interfaces of this component.
@@ -299,7 +300,6 @@ extends		OfferedCI,
 	 * 
 	 * <pre>
 	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	OfferedI.class.isAssignableFrom(inter)
 	 * pre	!this.isOfferedInterface(inter)
 	 * post	this.isOfferedInterface(inter)
 	 * </pre>
@@ -307,7 +307,8 @@ extends		OfferedCI,
 	 * @param inter 		offered interface to be added.
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public void			addOfferedInterface(Class<?> inter) throws Exception ;
+	public void			addOfferedInterface(Class<? extends OfferedCI> inter)
+	throws Exception;
 
 	/**
 	 * remove an offered interface from the offered interfaces of this component.
@@ -324,7 +325,7 @@ extends		OfferedCI,
 	 * @param inter			offered interface ot be removed
 	 * @throws Exception	<i>todo.</i>
 	 */
-	public void			removeOfferedInterface(Class<?> inter)
+	public void			removeOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception ;
 
 	// ------------------------------------------------------------------------

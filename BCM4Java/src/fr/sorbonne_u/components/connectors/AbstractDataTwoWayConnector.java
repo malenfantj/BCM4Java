@@ -85,7 +85,7 @@ implements	DataTwoWayConnectorI
 	@Override
 	public DataTwoWayCI.DataI		second2first(DataTwoWayCI.DataI d)
 	{
-		// the data class implements at least the DataTwoWayI.DataI interface
+		// the data class implements at least the DataTwoWayCI.DataI interface
 		return d ;
 	}
 
@@ -108,7 +108,7 @@ implements	DataTwoWayConnectorI
 	@Override
 	public DataTwoWayCI.DataI		first2second(DataTwoWayCI.DataI d)
 	{
-		// the data class implements at least the DataTwoWayI.DataI interface
+		// the data class implements at least the DataTwoWayCI.DataI interface
 		return d;
 	}
 
@@ -118,10 +118,10 @@ implements	DataTwoWayConnectorI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	peer1 instanceof DataTwoWayI.PullI
-	 * pre	peer1 instanceof DataTwoWayI.PushI
-	 * pre	peer2 instanceof DataTwoWayI.PullI
-	 * pre	peer2 instanceof DataTwoWayI.PushI
+	 * pre	peer1 instanceof DataTwoWayCI.PullCI
+	 * pre	peer1 instanceof DataTwoWayCI.PushCI
+	 * pre	peer2 instanceof DataTwoWayCI.PullCI
+	 * pre	peer2 instanceof DataTwoWayCI.PushCI
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
@@ -137,9 +137,9 @@ implements	DataTwoWayConnectorI
 					new PreconditionException("peer1 != null && peer2 != null") ;
 		// the only reason to redefine this method is to test these
 		assert	peer1 instanceof DataTwoWayCI :
-					new PreconditionException("peer1 instanceof DataTwoWayI") ;
+					new PreconditionException("peer1 instanceof DataTwoWayCI") ;
 		assert	peer2 instanceof DataTwoWayCI :
-					new PreconditionException("peer2 instanceof DataTwoWayI") ;
+					new PreconditionException("peer2 instanceof DataTwoWayCI") ;
 
 		super.connect(peer1, peer2);
 

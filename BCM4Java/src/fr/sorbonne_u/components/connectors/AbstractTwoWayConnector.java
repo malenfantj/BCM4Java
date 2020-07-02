@@ -178,8 +178,8 @@ extends		AbstractConnector
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	peer1 instanceof TwoWayI
-	 * pre	peer2 instanceof TwoWayI
+	 * pre	peer1 instanceof TwoWayCI
+	 * pre	peer2 instanceof TwoWayCI
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
@@ -194,9 +194,9 @@ extends		AbstractConnector
 		assert	peer1 != null && peer2 != null :
 					new PreconditionException("peer1 != null && peer2 != null") ;
 		assert	peer1 instanceof TwoWayCI :
-					new PreconditionException("peer1 instanceof TwoWayI") ;
+					new PreconditionException("peer1 instanceof TwoWayCI") ;
 		assert	peer2 instanceof TwoWayCI :
-					new PreconditionException("peer2 instanceof TwoWayI") ;
+					new PreconditionException("peer2 instanceof TwoWayCI") ;
 
 		super.connect(peer1, peer2) ;
 
@@ -210,8 +210,8 @@ extends		AbstractConnector
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	peer1 instanceof TwoWayI
-	 * pre	peer2 instanceof TwoWayI
+	 * pre	peer1 instanceof TwoWayCI
+	 * pre	peer2 instanceof TwoWayCI
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 

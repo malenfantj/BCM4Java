@@ -37,6 +37,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.AddPlugin;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.plugins.dconnection.DynamicConnectionServerSidePlugin;
 import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleI;
 import fr.sorbonne_u.components.plugins.dconnection.example.ports.ExampleInboundPort;
@@ -106,7 +107,7 @@ extends		AbstractComponent
 		 */
 		@Override
 		protected InboundPortI createAndPublishServerSideDynamicPort(
-			Class<?> offeredInterface
+			Class<? extends OfferedCI> offeredInterface
 			) throws Exception
 		{
 			assert	ExampleI.class.isAssignableFrom(offeredInterface) &&

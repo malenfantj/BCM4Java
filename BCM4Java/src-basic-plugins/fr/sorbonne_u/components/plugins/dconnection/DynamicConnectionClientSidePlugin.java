@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.plugins.dconnection.connectors.DynamicConnectionRequestConnector;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionDescriptorI;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
@@ -113,13 +115,13 @@ extends		AbstractPlugin
 
 	private static class	ConnectionDescriptor
 	{
-		public final OutboundPortI	outPort ;
-		public final Class<?>		offeredInterface ;
-		public final String			inboundPortURI ;
+		public final OutboundPortI				outPort ;
+		public final Class<? extends OfferedCI>	offeredInterface ;
+		public final String						inboundPortURI ;
 
 		public				ConnectionDescriptor(
 			OutboundPortI outPort,
-			Class<?> offeredInterface,
+			Class<? extends OfferedCI> offeredInterface,
 			String inboundPortURI
 			)
 		{
@@ -140,7 +142,8 @@ extends		AbstractPlugin
 	/** Port through which dynamic connection requests are issued.			*/
 	protected DynamicConnectionRequestOutboundPort	dcrop ;
 	/** The ports used in the dynamic connections.							*/
-	protected Map<Class<?>,ConnectionDescriptor>	dynamicOutboundPorts ;
+	protected Map<Class<? extends RequiredCI>,ConnectionDescriptor>
+													dynamicOutboundPorts ;
 
 	// -------------------------------------------------------------------------
 	// Plug-in generic methods
@@ -325,8 +328,8 @@ extends		AbstractPlugin
 	 * @throws Exception				<i>to do.</i>
 	 */
 	public OutboundPortI		doDynamicConnection(
-		Class<?> requiredInterface,
-		Class<?> offeredInterface,
+		Class<? extends RequiredCI> requiredInterface,
+		Class<? extends OfferedCI> offeredInterface,
 		DynamicConnectionDescriptorI connectionDescriptor
 		) throws Exception
 	{
@@ -375,7 +378,7 @@ extends		AbstractPlugin
 	 * @throws Exception			<i>to do.</i>
 	 */
 	public void			doDynamicDisconnection(
-		Class<?> requiredInterface
+		Class<? extends RequiredCI> requiredInterface
 		) throws Exception
 	{
 		assert	requiredInterface != null &&

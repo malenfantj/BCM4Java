@@ -502,7 +502,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre	this.owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	RequiredI.class.isAssignableFrom(inter)
+	 * pre	RequiredCI.class.isAssignableFrom(inter)
 	 * pre	!this.owner.isRequiredInterface(inter)
 	 * post	this.isRequiredInterface(inter)
 	 * </pre>
@@ -522,7 +522,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre	this.Owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	OfferedI.class.isAssignableFrom(inter)
+	 * pre	OfferedCI.class.isAssignableFrom(inter)
 	 * pre	!this.owner.isOfferedInterface(inter)
 	 * post	this.owner.isOfferedInterface(inter)
 	 * </pre>
@@ -542,7 +542,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre	this.owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	this.ownzer.isRequiredInterface(inter)
+	 * pre	this.owner.isRequiredInterface(inter)
 	 * pre	this.owner.findPortsFromInterface(inter) == null || this.owner.findPortsFromInterface(inter).isEmpty()
 	 * post	!this.owner.isRequiredInterface(inter)
 	 * </pre>

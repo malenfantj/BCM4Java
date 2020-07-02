@@ -36,7 +36,6 @@ package fr.sorbonne_u.components.ports;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
-import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
@@ -192,7 +191,6 @@ implements	InboundPortI
 	 * <pre>
 	 * pre	{@code uri != null && owner != null && implementedInterface != null}
 	 * pre	{@code !owner.isPortExisting(uri)}
-	 * pre	{@code OfferedI.class.isAssignableFrom(implementedInterface)}
 	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
 	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
 	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
@@ -212,7 +210,7 @@ implements	InboundPortI
 	 */
 	public				AbstractInboundPort(
 		String uri,
-		Class<? extends ComponentInterface> implementedInterface,
+		Class<? extends OfferedCI> implementedInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI
@@ -251,7 +249,6 @@ implements	InboundPortI
 	 * 
 	 * <pre>
 	 * pre	{@code owner != null && implementedInterface != null}
-	 * pre	{@code OfferedI.class.isAssignableFrom(implementedInterface)}
 	 * pre	{@code implementedInterface.isAssignableFrom(this.getClass())}
 	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
 	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
@@ -268,7 +265,7 @@ implements	InboundPortI
 	 * @throws Exception 			<i>todo.</i>
 	 */
 	public				AbstractInboundPort(
-		Class<? extends ComponentInterface> implementedInterface,
+		Class<? extends OfferedCI> implementedInterface,
 		ComponentI owner,
 		String pluginURI,
 		String executorServiceURI

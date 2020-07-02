@@ -2010,7 +2010,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	RequiredI.class.isAssignableFrom(inter)
+	 * pre	RequiredCI.class.isAssignableFrom(inter)
 	 * pre	!this.isRequiredInterface(inter)
 	 * post	this.isRequiredInterface(inter)
 	 * </pre>
@@ -2084,7 +2084,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	OfferedI.class.isAssignableFrom(inter)
+	 * pre	OfferedCI.class.isAssignableFrom(inter)
 	 * pre	!this.isOfferedInterface(inter)
 	 * post	this.isOfferedInterface(inter)
 	 * </pre>

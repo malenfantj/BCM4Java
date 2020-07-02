@@ -55,10 +55,10 @@ import fr.sorbonne_u.components.interfaces.DataRequiredCI;
  * 
  * As there are two possible mode for transmitting data, push and pull, the
  * connector establishes a two way connection between the two components,
- * implementing the offering <code>PushI</code> interface with methods calling
- * the requiring <code>PushI</code> and implementing the requiring
- * <code>PullI</code> interface with methods calling the offering
- * <code>PullI</code> one.
+ * implementing the offering <code>PushCI</code> interface with methods calling
+ * the requiring <code>PushCI</code> and implementing the requiring
+ * <code>PullCI</code> interface with methods calling the offering
+ * <code>PullCI</code> one.
  * 
  * A fully active connector has two threads: one to actively push data to
  * the requiring component by calling its <code>receive</code> method, and
@@ -198,7 +198,7 @@ extends		AbstractDataConnector
 		return new Thread() {
 			public void run() {
 //				while (self.stillActive) {
-//					DataRequiredI.DataI d = self.request() ;
+//					DataRequiredCI.DataI d = self.request() ;
 //					self.requiring.receive(d) ;
 //					try {
 //						Thread.sleep(pushInterval) ;

@@ -64,8 +64,8 @@ import java.util.concurrent.TimeUnit;
  * <p><strong>Description</strong></p>
  * 
  * This component illustrates the use of two way interfaces (inheriting
- * from <code>TwoWayI</code>) and data two way interfaces (inheriting
- * from <code>DataTwoWayI</code>.
+ * from <code>TwoWayCI</code>) and data two way interfaces (inheriting
+ * from <code>DataTwoWayCI</code>.
  * 
  * The component offers/requires the <code>PingPongI</code> two way
  * interface defining a method <code>pingPong</code> used by the two
@@ -83,7 +83,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * When the method <code>pingPong</code> reaches the expected number of
  * hits in the first exchange,it starts a second exchange that will use
- * the standard data two way interface <code>DataTwoWayI.PushI</code>
+ * the standard data two way interface <code>DataTwoWayCI.PushCI</code>
  * implemented by the data two way port <code>PingPongDataTwoWayPort</code>
  * to send back and forth a ball (see the class <code>Ball</code>)  in
  * push mode. To perform this, the method <code>hit</code> is similar to

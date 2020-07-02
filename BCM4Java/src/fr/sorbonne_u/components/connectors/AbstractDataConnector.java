@@ -102,8 +102,8 @@ implements	DataConnectorI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	offering instanceof DataOfferedI.PullI
-	 * pre	requiring instanceof DataRequiredI.PullI
+	 * pre	offering instanceof DataOfferedCI.PullCI
+	 * pre	requiring instanceof DataRequiredCI.PullCI
 	 * post	true				// no postconditions.
 	 * </pre>
 	 * 
@@ -121,10 +121,10 @@ implements	DataConnectorI
 		// the only reason to redefine this method is to test these
 		assert	offering instanceof DataOfferedCI.PullCI :
 					new PreconditionException("offering instanceof "
-											+ "DataOfferedI.PullI") ;
+											+ "DataOfferedCI.PullCI") ;
 		assert	requiring instanceof DataRequiredCI.PullCI :
 					new PreconditionException("requiring instanceof "
-											+ "DataRequiredI.PullI") ;
+											+ "DataRequiredCI.PullCI") ;
 
 		super.connect(offering, requiring) ;
 

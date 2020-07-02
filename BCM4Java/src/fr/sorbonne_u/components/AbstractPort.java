@@ -237,11 +237,6 @@ implements	PortI
 			assert	p.implementedInterface != null :
 						new ImplementationInvariantException(
 								"implementedInterface != null");
-			assert	ComponentInterface.class.isAssignableFrom(
-													p.implementedInterface) :
-						new ImplementationInvariantException(
-								"ComponentServiceI.class.isAssignableFrom(" + 
-								"implementedInterface)");
 			assert	p.implementedInterface.isAssignableFrom(p.getClass()) :
 						new ImplementationInvariantException(
 								"implementedInterface.isAssignableFrom("

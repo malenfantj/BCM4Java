@@ -38,7 +38,7 @@ package fr.sorbonne_u.components.plugins.dipc.interfaces;
 /**
  * The interface <code>PushControlImplementationI</code> declares basic
  * component services to control the regular exchanges of data via a
- * <code>DataOfferedI</code> interface in push mode.
+ * <code>DataOfferedCI</code> interface in push mode.
  *
  * <p><strong>Description</strong></p>
  * 

@@ -45,7 +45,7 @@ import fr.sorbonne_u.components.interfaces.DataRequiredCI;
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * A data outbound port is associated with a <code>DataRequiredI</code>
+ * A data outbound port is associated with a <code>DataRequiredCI</code>
  * interface used to implement a basic interface to get data from a provider
  * component.  The primary way to get the data is the pull mode, where the
  * client component calls the provider through the <code>request()</code>
@@ -106,10 +106,10 @@ extends		OutboundPortI,
 	 * 
 	 * <pre>
 	 * pre	{@code !isDestroyed()}
-	 * post	{@code DataRequiredI.PushI.class.isAssignableFrom(return)}
+	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @return			the implemented push interface.
+	 * @return				the implemented push interface.
 	 * @throws Exception	<i>to do.</i>
 	 */
 	public Class<? extends DataRequiredCI.PushCI> getImplementedPushInterface()

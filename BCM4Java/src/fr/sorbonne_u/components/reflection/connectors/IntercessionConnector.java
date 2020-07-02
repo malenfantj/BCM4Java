@@ -38,6 +38,8 @@ import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
 
 // -----------------------------------------------------------------------------
@@ -195,7 +197,7 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public void			addRequiredInterface(Class<?> inter)
+	public void			addRequiredInterface(Class<? extends RequiredCI> inter)
 	throws Exception
 	{
 		((IntercessionI)this.offering).addRequiredInterface(inter) ;
@@ -205,8 +207,9 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public void			removeRequiredInterface(Class<?> inter)
-	throws Exception
+	public void			removeRequiredInterface(
+		Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		((IntercessionI)this.offering).removeRequiredInterface(inter) ;
 	}
@@ -215,7 +218,7 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public void			addOfferedInterface(Class<?> inter) throws Exception
+	public void			addOfferedInterface(Class<? extends OfferedCI> inter) throws Exception
 	{
 		((IntercessionI)this.offering).addOfferedInterface(inter) ;
 	}
@@ -224,7 +227,7 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public void			removeOfferedInterface(Class<?> inter)
+	public void			removeOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
 		((IntercessionI)this.offering).removeOfferedInterface(inter) ;

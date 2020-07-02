@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
 import fr.sorbonne_u.components.plugins.dconnection.ports.DynamicConnectionRequestInboundPort;
 import fr.sorbonne_u.components.ports.InboundPortI;
@@ -193,8 +194,9 @@ extends		AbstractPlugin
 	 * @return					the URI of the newly created port.
 	 * @throws Exception			<i>to do.</i>
 	 */
-	public String		requestDynamicPortURI(Class<?> offeredInterface)
-	throws Exception
+	public String		requestDynamicPortURI(
+		Class<? extends OfferedCI> offeredInterface
+		) throws Exception
 	{
 		assert	offeredInterface != null ;
 		assert	this.owner.isOfferedInterface(offeredInterface) ;
@@ -261,7 +263,7 @@ extends		AbstractPlugin
 	 * @throws Exception 		<i>to do.</i>
 	 */
 	protected abstract InboundPortI	createAndPublishServerSideDynamicPort(
-		Class<?> offeredInterface
+		Class<? extends OfferedCI> offeredInterface
 		) throws Exception ;
 }
 // -----------------------------------------------------------------------------

@@ -1,5 +1,8 @@
 package fr.sorbonne_u.components.plugins.dipc;
 
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
 // Jacques.Malenfant@lip6.fr
@@ -139,7 +142,7 @@ implements	PushControlImplementationI
 	 * @see fr.sorbonne_u.components.plugins.helpers.AbstractClientSidePlugin#getRequiredInterface()
 	 */
 	@Override
-	protected Class<?>		getRequiredInterface()
+	protected Class<? extends RequiredCI>	getRequiredInterface()
 	{
 		return PushControlI.class ;
 	}
@@ -148,7 +151,7 @@ implements	PushControlImplementationI
 	 * @see fr.sorbonne_u.components.plugins.helpers.AbstractClientSidePlugin#getOfferedInterface()
 	 */
 	@Override
-	protected Class<?>		getOfferedInterface()
+	protected Class<? extends OfferedCI>	getOfferedInterface()
 	{
 		return PushControlI.class ;
 	}

@@ -35,6 +35,8 @@ package fr.sorbonne_u.components;
 
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
 
@@ -288,8 +290,9 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public void			addRequiredInterface(final Class<?> inter)
-	throws Exception
+	public void			addRequiredInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Void>() {
@@ -306,8 +309,9 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public void			removeRequiredInterface(final Class<?> inter)
-	throws Exception
+	public void			removeRequiredInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Void>() {
@@ -324,7 +328,9 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public void			addOfferedInterface(final Class<?> inter) throws Exception
+	public void			addOfferedInterface(
+		final Class<? extends OfferedCI> inter
+		) throws Exception
 	{
 		this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Void>() {
@@ -340,8 +346,9 @@ implements	IntercessionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public void			removeOfferedInterface(final Class<?> inter)
-	throws Exception
+	public void			removeOfferedInterface(
+		final Class<? extends OfferedCI> inter
+		) throws Exception
 	{
 		this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Void>() {

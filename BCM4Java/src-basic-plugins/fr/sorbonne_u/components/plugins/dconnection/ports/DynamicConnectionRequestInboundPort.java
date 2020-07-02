@@ -35,6 +35,7 @@ package fr.sorbonne_u.components.plugins.dconnection.ports;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.plugins.dconnection.DynamicConnectionServerSidePlugin;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
@@ -118,7 +119,7 @@ implements	DynamicConnectionRequestI
 	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#requestDynamicPortURI(java.lang.Class)
 	 */
 	@Override
-	public String		requestDynamicPortURI(Class<?> offeredInterface)
+	public String		requestDynamicPortURI(Class<? extends OfferedCI> offeredInterface)
 	throws Exception
 	{
 		return this.owner.handleRequestSync(
@@ -136,8 +137,10 @@ implements	DynamicConnectionRequestI
 	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#removeDynamicPort(java.lang.Class, java.lang.String)
 	 */
 	@Override
-	public void			removeDynamicPort(Class<?> offeredInterface, String uri)
-	throws Exception
+	public void			removeDynamicPort(
+		Class<? extends OfferedCI> offeredInterface,
+		String uri
+		) throws Exception
 	{
 		this.owner.handleRequestSync(
 			new AbstractComponent.AbstractService<String>(this.getPluginURI()) {

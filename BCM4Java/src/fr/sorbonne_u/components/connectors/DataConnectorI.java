@@ -46,13 +46,13 @@ import fr.sorbonne_u.components.interfaces.DataRequiredCI;
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * The interfaces <code>DataRequiredI.PullI</code> and
- * <code>DataOfferedI.PushI</code> contains methods that have different
+ * The interfaces <code>DataRequiredCI.PullCI</code> and
+ * <code>DataOfferedCI.PushCI</code> contains methods that have different
  * signatures, so that the connector know which way the calls are going.
  * If extensions want to have part of their methods with the same
  * signature, techniques similar to the ones used in data two
  * way interfaces will be required to implement the connector.
- * If teh two interfaces need to be the same then data two way
+ * If the two interfaces need to be the same then data two way
  * interfaces and connectors should be used instead.
  * </p>
  * 

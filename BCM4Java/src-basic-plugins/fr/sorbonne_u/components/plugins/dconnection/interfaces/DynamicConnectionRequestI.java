@@ -71,8 +71,9 @@ extends		OfferedCI,
 	 * @return					the URI of an inbound port implementing <code>offeredInterface</code>.
 	 * @throws Exception		<i>to do</i>.
 	 */
-	public String		requestDynamicPortURI(Class<?> offeredInterface)
-	throws Exception ;
+	public String		requestDynamicPortURI(
+		Class<? extends OfferedCI> offeredInterface
+		) throws Exception ;
 
 	/**
 	 * remove the inbound port with the given URI that implements the given
@@ -90,7 +91,7 @@ extends		OfferedCI,
 	 * @throws Exception 		<i>to do</i>.
 	 */
 	public void			removeDynamicPort(
-		Class<?> offeredInterface,
+		Class<? extends OfferedCI> offeredInterface,
 		String uri
 		) throws Exception ;
 }

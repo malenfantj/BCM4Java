@@ -36,6 +36,8 @@ package fr.sorbonne_u.components.plugins.helpers;
 
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.components.ports.OutboundPortI;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
@@ -183,12 +185,12 @@ implements	ClientSidePluginI
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	ret != null and RequiredI.class.isAssignableFrom(ret)
+	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the interface required by the client side.
 	 */
-	protected abstract Class<?>	getRequiredInterface() ;
+	protected abstract Class<? extends RequiredCI>	getRequiredInterface() ;
 
 	/**
 	 * return the interface required by the client-side.
@@ -197,12 +199,12 @@ implements	ClientSidePluginI
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	ret != null and OfferedI.class.isAssignableFrom(ret)
+	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the interface required by the client-side.
 	 */
-	protected abstract Class<?>	getOfferedInterface() ;
+	protected abstract Class<? extends OfferedCI>	getOfferedInterface() ;
 
 	/**
 	 * return the outbound port instance that must be used to connect with

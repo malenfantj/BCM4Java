@@ -64,11 +64,6 @@ extends		AbstractCVM
 		super();
 	}
 
-	// single-JVM execution
-	protected static String		ASSEMBLER_JVM_URI = AbstractCVM.getThisJVMURI() ;
-	protected static String		PROVIDER_JVM_URI = AbstractCVM.getThisJVMURI() ;
-	protected static String		CONSUMER_JVM_URI = AbstractCVM.getThisJVMURI() ;
-
 	/**
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
 	 */
@@ -79,7 +74,8 @@ extends		AbstractCVM
 		String daURI =
 			AbstractComponent.createComponent(
 					DynamicAssembler.class.getCanonicalName(),
-					new Object[]{CONSUMER_JVM_URI, PROVIDER_JVM_URI}) ;
+					new Object[]{AbstractCVM.getThisJVMURI(),
+								 AbstractCVM.getThisJVMURI()}) ;
 
 		// deployment done
 		super.deploy() ;

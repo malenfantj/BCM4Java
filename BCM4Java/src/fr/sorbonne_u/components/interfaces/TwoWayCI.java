@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.interfaces;
 
 // -----------------------------------------------------------------------------
 /**
- * The component interface <code>TwoWayI</code> is meant to represent symmetric
+ * The component interface <code>TwoWayCI</code> is meant to represent symmetric
  * component interfaces connecting two components that can play both the role
  * of clients and server towards each others.
  *

@@ -34,6 +34,7 @@ package fr.sorbonne_u.components.plugins.dconnection.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
@@ -108,8 +109,9 @@ implements	DynamicConnectionRequestI
 	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#requestDynamicPortURI(java.lang.Class)
 	 */
 	@Override
-	public String		requestDynamicPortURI(Class<?> offeredInterface)
-	throws Exception
+	public String		requestDynamicPortURI(
+		Class<? extends OfferedCI> offeredInterface
+		) throws Exception
 	{
 		return ((DynamicConnectionRequestI)this.getConnector()).
 									requestDynamicPortURI(offeredInterface) ;
@@ -119,8 +121,10 @@ implements	DynamicConnectionRequestI
 	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#removeDynamicPort(java.lang.Class, java.lang.String)
 	 */
 	@Override
-	public void			removeDynamicPort(Class<?> offeredInterface, String uri)
-	throws Exception
+	public void			removeDynamicPort(
+		Class<? extends OfferedCI> offeredInterface,
+		String uri
+		) throws Exception
 	{
 		((DynamicConnectionRequestI)this.getConnector()).
 									removeDynamicPort(offeredInterface, uri) ;

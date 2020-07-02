@@ -67,7 +67,6 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant	{@code TwoWayI.class.isAssignableFrom(getImplementedInterface())}
  * invariant	{@code !connected() || (getServerPortURI() != null)}
  * invariant	{@code !connected() || (getClientPortURI() != null)}
  * invariant	{@code !connected() == (getConnector() == null)}

@@ -44,9 +44,9 @@ import fr.sorbonne_u.components.ports.AbstractDataTwoWayPort;
 //-----------------------------------------------------------------------------
 /**
  * The class <code>PingPongDataTwoWayPort</code> implements the methods
- * <code>send</code> of the <code>DataTwoWayI.PushI</code> interface, but
+ * <code>send</code> of the <code>DataTwoWayCI.PushCI</code> interface, but
  * throws an exception for the method <code>request</code> of the
- * <code>DataTwoWayI.PullI</code> interface.
+ * <code>DataTwoWayCI.PullCI</code> interface.
  *
  * <p><strong>Description</strong></p>
  * 

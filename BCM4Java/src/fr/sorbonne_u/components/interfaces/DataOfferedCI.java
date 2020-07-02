@@ -59,10 +59,10 @@ import java.io.Serializable;
  * <ol>
  * <Li>A data interface <code>DataI</code> which provides for a generic type
  *   of data expected by the offering component.</li>
- * <li>A push component interface <code>PushI</code> which contains the signatures
- *   of the methods that are called by the offering component to send data
- *   to the requiring component.</li>
- * <li>A pull interface <code>PullI</code> which contains the signatures
+ * <li>A push component interface <code>PushCI</code> which contains the
+ *   signatures of the methods that are called by the offering component to
+ *   send data to the requiring component.</li>
+ * <li>A pull interface <code>PullCI</code> which contains the signatures
  *   of the methods that can be called by the requiring components to get
  *   data from the offering component.</li>
  * </ol>

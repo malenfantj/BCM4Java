@@ -279,12 +279,12 @@ implements	DataOutboundPortI
 		assert	DataRequiredCI.PullCI.class.
 								isAssignableFrom(implementedPullInterface);
 					new PreconditionException(
-							"DataRequiredI.PullI.class." + 
+							"DataRequiredCI.PullCI.class." + 
 							"isAssignableFrom(implementedPullInterface)");
 		assert	DataRequiredCI.PushCI.class.
 								isAssignableFrom(implementedPushInterface);
 					new PreconditionException(
-							"DataRequiredI.PushI.class." + 
+							"DataRequiredCI.PushCI.class." + 
 							"isAssignableFrom(implementedPushInterface)");
 		assert	pluginURI == null || owner.isInstalled(pluginURI) :
 					new PreconditionException(
@@ -326,8 +326,6 @@ implements	DataOutboundPortI
 	 * pre	{@code owner != null}
 	 * pre	{@code implementedPullInterface != null}
 	 * pre	{@code implementedPushInterface != null}
-	 * pre	{@code DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)}
-	 * pre	{@code DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)}
 	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
 	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
 	 * post	{@code getOwner().equals(owner)}
@@ -367,8 +365,6 @@ implements	DataOutboundPortI
 	 * pre	{@code uri != null and owner != null}
 	 * pre	{@code implementedPullInterface != null}
 	 * pre	{@code implementedPushInterface != null}
-	 * pre	{@code DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)}
-	 * pre	{@code DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)}
 	 * post	{@code getPortURI().equals(uri)}
 	 * post	{@code getOwner().equals(owner)}
 	 * post	{@code !connected()}
@@ -404,8 +400,6 @@ implements	DataOutboundPortI
 	 * pre	{@code owner != null}
 	 * pre	{@code implementedPullInterface != null}
 	 * pre	{@code implementedPushInterface != null}
-	 * pre	{@code DataRequiredI.PullI.class.isAssignableFrom(implementedPullInterface)}
-	 * pre	{@code DataRequiredI.PushI.class.isAssignableFrom(implementedPushInterface)}
 	 * post	{@code getOwner().equals(owner)}
 	 * post	{@code !connected()}
 	 * post {@code !isRemotelyConnected()}

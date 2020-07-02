@@ -47,10 +47,10 @@ import fr.sorbonne_u.components.interfaces.DataRequiredCI;
  * 
  * As there are two possible mode for transmitting data, push and pull, the
  * connector establishes a two way connection between the two components,
- * implementing the offering <code>PushI</code> interface with methods calling
- * the requiring <code>PushI</code> and implementing the requiring
- * <code>PullI</code> interface with methods calling the offering
- * <code>PullI</code> one.
+ * implementing the offering <code>PushCI</code> interface with methods calling
+ * the requiring <code>PushCI</code> and implementing the requiring
+ * <code>PullCI</code> interface with methods calling the offering
+ * <code>PullCI</code> one.
  * 
  * The basic sequential data connector simply implements the offered push
  * interface <code>send</code> signature by a method calling the corresponding
