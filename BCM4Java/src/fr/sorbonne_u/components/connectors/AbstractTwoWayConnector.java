@@ -1,46 +1,44 @@
 package fr.sorbonne_u.components.connectors;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.interfaces.TwoWayCI;
-import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>AbstractTwoWayConnector</code> partially implements a
  * basic connector between components calling each others services in a peer
@@ -105,9 +103,9 @@ import fr.sorbonne_u.exceptions.PreconditionException;
 public abstract class	AbstractTwoWayConnector<TWI extends TwoWayCI>
 extends		AbstractConnector
 {
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Inner classes
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * The abstract class <code>ProxyToOtherComponent</code> defines the
@@ -125,52 +123,135 @@ extends		AbstractConnector
 	 * <p>Created on : 2018-03-23</p>
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
 	protected static abstract class	ProxyToOtherComponent<TWI extends TwoWayCI>
 	implements	TwoWayCI
 	{
 		/** the two way connector owning this proxy.						*/
-		protected final	AbstractTwoWayConnector<TWI>		owner ;
-		/** 	the sender port URI for the next call.						*/
-		protected final String				senderPortURI ;
+		protected final	AbstractTwoWayConnector<TWI>	owner;
+		/** the sender port URI for the next call.							*/
+		protected final String							senderPortURI;
 
-		public				ProxyToOtherComponent(
+		/**
+		 * create a proxy to other component.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	{@code owner != null && senderPortURI != null}
+		 * post	true	// no postcondition.
+		 * </pre>
+		 *
+		 * @param owner			the two way connector owning this proxy.
+		 * @param senderPortURI	the sender port URI for the next call.
+		 */
+		public			ProxyToOtherComponent(
 			AbstractTwoWayConnector<TWI> owner,
 			String senderPortURI
 			)
 		{
 			super();
-			this.owner = owner ;
-			this.senderPortURI = senderPortURI ;
+
+			assert	owner != null && senderPortURI != null :
+						new PreconditionException(
+								"owner != null && senderPortURI != null");
+
+			this.owner = owner;
+			this.senderPortURI = senderPortURI;
 		}
 
-		protected String		getRequiringPortURI()
+		/**
+		 * return true if the owner connector is connected.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true			// no precondition.
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @return				true if the owner connector is connected.
+		 * @throws Exception	<i>to do</i>.
+		 */
+		public boolean		connected() throws Exception
 		{
-			return this.owner.getRequiringPortURI() ;
+			return this.owner.connected();
 		}
 
-		protected String		getOfferingPortURI()
+		/**
+		 * return the URI of the requiring port linked to this connector.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true	// no precondition.
+		 * post	true	// no postcondition.
+		 * </pre>
+		 *
+		 * @return	the URI of the requiring port linked to the owner connector.
+		 */
+		protected String	getRequiringPortURI()
 		{
-			return this.owner.getOfferingPortURI() ;
+			return this.owner.getRequiringPortURI();
 		}
 
+		/**
+		 * return the URI of the offering port linked to the owner connector.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true	// no precondition.
+		 * post	true	// no postcondition.
+		 * </pre>
+		 *
+		 * @return	the URI of the offering port linked to the owner connector.
+		 */
+		protected String	getOfferingPortURI()
+		{
+			return this.owner.getOfferingPortURI();
+		}
+
+		/**
+		 * return the requiring port linked to the owner connector.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true			// no precondition.
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @return	the requiring port linked to the owner connector.
+		 */
 		@SuppressWarnings("unchecked")
 		protected TWI	getRequiring()
 		{
-			return (TWI) this.owner.requiring ;
+			return (TWI) this.owner.requiring;
 		}
 
+		/**
+		 * return the offering port linked to the owner connector.
+		 * 
+		 * <p><strong>Contract</strong></p>
+		 * 
+		 * <pre>
+		 * pre	true			// no precondition.
+		 * post	true			// no postcondition.
+		 * </pre>
+		 *
+		 * @return	the offering port linked to the owner connector.
+		 */
 		@SuppressWarnings("unchecked")
 		protected TWI	getOffering()
 		{
-			return (TWI) this.owner.offering ;
+			return (TWI) this.owner.offering;
 		}
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Services
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * connect two way ports.
@@ -178,9 +259,10 @@ extends		AbstractConnector
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	peer1 instanceof TwoWayCI
-	 * pre	peer2 instanceof TwoWayCI
-	 * post	true				// no more postconditions.
+	 * pre	{@code peer1 != null && peer2 != null}
+	 * pre	{@code peer1 instanceof TwoWayCI}
+	 * pre	{@code peer2 instanceof TwoWayCI}
+	 * post	true		// no more postconditions.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.connectors.AbstractConnector#connect(fr.sorbonne_u.components.interfaces.OfferedCI, fr.sorbonne_u.components.interfaces.RequiredCI)
@@ -189,46 +271,14 @@ extends		AbstractConnector
 	public void			connect(OfferedCI peer1, RequiredCI peer2)
 	throws	Exception
 	{
-		assert	!this.connected() :
-					new PreconditionException("!this.connected()") ;
 		assert	peer1 != null && peer2 != null :
-					new PreconditionException("peer1 != null && peer2 != null") ;
+					new PreconditionException("peer1 != null && peer2 != null");
 		assert	peer1 instanceof TwoWayCI :
-					new PreconditionException("peer1 instanceof TwoWayCI") ;
+					new PreconditionException("peer1 instanceof TwoWayCI");
 		assert	peer2 instanceof TwoWayCI :
-					new PreconditionException("peer2 instanceof TwoWayCI") ;
+					new PreconditionException("peer2 instanceof TwoWayCI");
 
-		super.connect(peer1, peer2) ;
-
-		assert	this.connected() :
-					new PostconditionException("this.connected()") ;
-	}
-
-	/**
-	 * disconnect two way ports.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	peer1 instanceof TwoWayCI
-	 * pre	peer2 instanceof TwoWayCI
-	 * post	true				// no more postconditions.
-	 * </pre>
-	 * 
-	 * @see fr.sorbonne_u.components.connectors.AbstractConnector#disconnect()
-	 */
-	@Override
-	public void			disconnect() throws Exception
-	{
-		assert	this.connected() :
-					new PreconditionException("this.connected()") ;
-
-		super.disconnect() ;
-		this.requiringPortURI = null ;
-		this.offeringPortURI = null ;
-
-		assert	!this.connected() :
-					new PostconditionException("!this.connected()") ;
+		super.connect(peer1, peer2);
 	}
 
 	/**
@@ -239,15 +289,15 @@ extends		AbstractConnector
 	 * 
 	 * <pre>
 	 * pre	senderPortURI != null
-	 * post	true			// no postcondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param senderPortURI	URI of the port that wants to call the other component.
 	 * @return				a proxy connector that will forward the call to the other component.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public abstract TWI	getProxyTowardsOtherComponent(
 		String senderPortURI
-		) throws Exception ;
+		) throws Exception;
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
