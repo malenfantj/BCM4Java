@@ -114,8 +114,8 @@ extends		AbstractComponent
 	{
 		super(reflectionInboundPortURI, 2, 0);
 
-		this.tracer.setTitle("ClientComponent") ;
-		this.tracer.setRelativePosition(1,  1) ;
+		this.getTracer().setTitle("ClientComponent") ;
+		this.getTracer().setRelativePosition(1,  1) ;
 
 		// Add the standard component interfaces for data exchanging
 		// components.

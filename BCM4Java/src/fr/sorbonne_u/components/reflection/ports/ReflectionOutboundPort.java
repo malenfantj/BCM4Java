@@ -39,6 +39,7 @@ import fr.sorbonne_u.components.ComponentStateI;
 import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
@@ -80,14 +81,14 @@ implements	ReflectionI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, ReflectionI.class, owner) ;
+		super(uri, ReflectionI.class, owner);
 	}
 
 	public				ReflectionOutboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(ReflectionI.class, owner) ;
+		super(ReflectionI.class, owner);
 	}
 
 	// -------------------------------------------------------------------------
@@ -100,7 +101,7 @@ implements	ReflectionI
 	@Override
 	public void			installPlugin(PluginI plugin) throws Exception
 	{
-		((ReflectionI)this.getConnector()).installPlugin(plugin) ;
+		((ReflectionI)this.getConnector()).installPlugin(plugin);
 	}
 
 	/**
@@ -109,7 +110,7 @@ implements	ReflectionI
 	@Override
 	public boolean		hasInstalledPlugins() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).hasInstalledPlugins() ;
+		return ((ReflectionI)this.getConnector()).hasInstalledPlugins();
 	}
 
 	/**
@@ -118,7 +119,7 @@ implements	ReflectionI
 	@Override
 	public void			finalisePlugin(String pluginURI) throws Exception
 	{
-		((ReflectionI)this.getConnector()).finalisePlugin(pluginURI) ;
+		((ReflectionI)this.getConnector()).finalisePlugin(pluginURI);
 	}
 
 	/**
@@ -127,7 +128,7 @@ implements	ReflectionI
 	@Override
 	public void			uninstallPlugin(String pluginId) throws Exception
 	{
-		((ReflectionI)this.getConnector()).uninstallPlugin(pluginId) ;
+		((ReflectionI)this.getConnector()).uninstallPlugin(pluginId);
 	}
 
 	/**
@@ -136,7 +137,7 @@ implements	ReflectionI
 	@Override
 	public boolean		isInstalled(String pluginId) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInstalled(pluginId) ;
+		return ((ReflectionI)this.getConnector()).isInstalled(pluginId);
 	}
 
 	/**
@@ -145,7 +146,7 @@ implements	ReflectionI
 	@Override
 	public PluginI		getPlugin(String pluginURI) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getPlugin(pluginURI) ;
+		return ((ReflectionI)this.getConnector()).getPlugin(pluginURI);
 	}
 
 	/**
@@ -154,7 +155,7 @@ implements	ReflectionI
 	@Override
 	public void			initialisePlugin(String pluginURI) throws Exception
 	{
-		((ReflectionI)this.getConnector()).initialisePlugin(pluginURI) ;
+		((ReflectionI)this.getConnector()).initialisePlugin(pluginURI);
 	}
 
 	/**
@@ -163,7 +164,7 @@ implements	ReflectionI
 	@Override
 	public boolean		isInitialised(String pluginURI) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInitialised(pluginURI) ;
+		return ((ReflectionI)this.getConnector()).isInitialised(pluginURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -176,7 +177,7 @@ implements	ReflectionI
 	@Override
 	public void			toggleLogging() throws Exception
 	{
-		((ReflectionI)this.getConnector()).toggleLogging() ;
+		((ReflectionI)this.getConnector()).toggleLogging();
 	}
 
 	/**
@@ -185,7 +186,7 @@ implements	ReflectionI
 	@Override
 	public void			setLogger(Logger logger) throws Exception
 	{
-		((IntercessionI)this.getConnector()).setLogger(logger) ;
+		((IntercessionI)this.getConnector()).setLogger(logger);
 	}
 
 	/**
@@ -194,7 +195,7 @@ implements	ReflectionI
 	@Override
 	public void			toggleTracing() throws Exception
 	{
-		((ReflectionI)this.getConnector()).toggleTracing() ;
+		((ReflectionI)this.getConnector()).toggleTracing();
 	}
 
 	/**
@@ -203,7 +204,7 @@ implements	ReflectionI
 	@Override
 	public void			setTracer(TracerWindow tracer) throws Exception
 	{
-		((IntercessionI)this.getConnector()).setTracer(tracer) ;
+		((IntercessionI)this.getConnector()).setTracer(tracer);
 	}
 
 	/**
@@ -212,7 +213,7 @@ implements	ReflectionI
 	@Override
 	public void			traceMessage(String message) throws Exception
 	{
-		((IntercessionI)this.getConnector()).traceMessage(message) ;
+		((IntercessionI)this.getConnector()).traceMessage(message);
 	}
 
 	/**
@@ -221,7 +222,7 @@ implements	ReflectionI
 	@Override
 	public void			logMessage(String message) throws Exception
 	{
-		((ReflectionI)this.getConnector()).logMessage(message) ;
+		((ReflectionI)this.getConnector()).logMessage(message);
 	}
 
 	/**
@@ -230,7 +231,7 @@ implements	ReflectionI
 	@Override
 	public boolean		isLogging() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isLogging() ;
+		return ((ReflectionI)this.getConnector()).isLogging();
 	}
 
 	/**
@@ -239,7 +240,7 @@ implements	ReflectionI
 	@Override
 	public boolean		isTracing() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isTracing() ;
+		return ((ReflectionI)this.getConnector()).isTracing();
 	}
 
 	/**
@@ -248,7 +249,7 @@ implements	ReflectionI
 	@Override
 	public void			printExecutionLog() throws Exception
 	{
-		((ReflectionI)this.getConnector()).printExecutionLog() ;
+		((ReflectionI)this.getConnector()).printExecutionLog();
 	}
 
 	/**
@@ -258,7 +259,7 @@ implements	ReflectionI
 	public void			printExecutionLogOnFile(String fileName)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).printExecutionLogOnFile(fileName) ;
+		((ReflectionI)this.getConnector()).printExecutionLogOnFile(fileName);
 	}
 
 	// -------------------------------------------------------------------------
@@ -272,7 +273,7 @@ implements	ReflectionI
 	public boolean		isInStateAmong(ComponentStateI[] states)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInStateAmong(states) ;
+		return ((ReflectionI)this.getConnector()).isInStateAmong(states);
 	}
 
 	/**
@@ -282,7 +283,7 @@ implements	ReflectionI
 	public boolean		notInStateAmong(ComponentStateI[] states)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).notInStateAmong(states) ;
+		return ((ReflectionI)this.getConnector()).notInStateAmong(states);
 	}
 
 	/**
@@ -291,7 +292,7 @@ implements	ReflectionI
 	@Override
 	public boolean		hasItsOwnThreads() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).hasItsOwnThreads() ;
+		return ((ReflectionI)this.getConnector()).hasItsOwnThreads();
 	}
 
 	/**
@@ -300,7 +301,7 @@ implements	ReflectionI
 	@Override
 	public boolean		hasSerialisedExecution() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).hasSerialisedExecution() ;
+		return ((ReflectionI)this.getConnector()).hasSerialisedExecution();
 	}
 
 	/**
@@ -309,7 +310,7 @@ implements	ReflectionI
 	@Override
 	public boolean		canScheduleTasks() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).canScheduleTasks() ;
+		return ((ReflectionI)this.getConnector()).canScheduleTasks();
 	}
 
 	/**
@@ -318,7 +319,7 @@ implements	ReflectionI
 	@Override
 	public int			getTotalNumberOfThreads() throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).getTotalNumberOfThreads() ;
+		return ((IntrospectionI)this.getConnector()).getTotalNumberOfThreads();
 	}
 
 	// -------------------------------------------------------------------------
@@ -329,54 +330,63 @@ implements	ReflectionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getInterfaces() throws Exception
+	public Class<? extends ComponentInterface>[]	getInterfaces()
+	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getInterfaces() ;
+		return ((ReflectionI)this.getConnector()).getInterfaces();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getInterface(Class<?> inter) throws Exception
+	public Class<? extends ComponentInterface>	getInterface(
+		Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).getInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getRequiredInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getRequiredInterfaces() throws Exception
+	public Class<? extends RequiredCI>[]	getRequiredInterfaces()
+	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getRequiredInterfaces() ;
+		return ((ReflectionI)this.getConnector()).getRequiredInterfaces();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getRequiredInterface(Class<?> inter) throws Exception
+	public Class<? extends RequiredCI>	getRequiredInterface(
+		Class<? extends RequiredCI> inter
+		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getRequiredInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).getRequiredInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getOfferedInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getOfferedInterfaces() throws Exception
+	public Class<? extends OfferedCI>[]	getOfferedInterfaces()
+	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getOfferedInterfaces() ;
+		return ((ReflectionI)this.getConnector()).getOfferedInterfaces();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getOfferedInterface(Class<?> inter) throws Exception
+	public Class<? extends OfferedCI>	getOfferedInterface(
+		Class<? extends OfferedCI> inter
+		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getOfferedInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).getOfferedInterface(inter);
 	}
 
 	/**
@@ -386,7 +396,7 @@ implements	ReflectionI
 	public void			addRequiredInterface(Class<? extends RequiredCI> inter)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).addRequiredInterface(inter) ;
+		((ReflectionI)this.getConnector()).addRequiredInterface(inter);
 	}
 
 	/**
@@ -397,7 +407,7 @@ implements	ReflectionI
 		Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		((ReflectionI)this.getConnector()).removeRequiredInterface(inter) ;
+		((ReflectionI)this.getConnector()).removeRequiredInterface(inter);
 	}
 
 	/**
@@ -407,7 +417,7 @@ implements	ReflectionI
 	public void			addOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).addOfferedInterface(inter) ;
+		((ReflectionI)this.getConnector()).addOfferedInterface(inter);
 	}
 
 	/**
@@ -417,35 +427,37 @@ implements	ReflectionI
 	public void			removeOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).removeOfferedInterface(inter) ;
+		((ReflectionI)this.getConnector()).removeOfferedInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isInterface(Class<?> inter) throws Exception
+	public boolean		isInterface(Class<? extends ComponentInterface> inter)
+	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).isInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isRequiredInterface(Class<?> inter)
+	public boolean		isRequiredInterface(Class<? extends RequiredCI> inter)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isRequiredInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).isRequiredInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isOfferedInterface(Class<?> inter) throws Exception
+	public boolean		isOfferedInterface(Class<? extends OfferedCI> inter)
+	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isOfferedInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).isOfferedInterface(inter);
 	}
 
 	// -------------------------------------------------------------------------
@@ -456,38 +468,45 @@ implements	ReflectionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#findPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findPortURIsFromInterface(Class<?> inter)
-	throws Exception
+	public String[]		findPortURIsFromInterface(
+		Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).findPortURIsFromInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).
+										findPortURIsFromInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#findInboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findInboundPortURIsFromInterface(Class<?> inter)
-	throws Exception
+	public String[]		findInboundPortURIsFromInterface(
+		Class<? extends OfferedCI> inter
+		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).findInboundPortURIsFromInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).findInboundPortURIsFromInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#findOutboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findOutboundPortURIsFromInterface(Class<?> inter)
-	throws Exception
+	public String[]		findOutboundPortURIsFromInterface(
+		Class<? extends RequiredCI> inter
+		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).findOutboundPortURIsFromInterface(inter) ;
+		return ((ReflectionI)this.getConnector()).
+									findOutboundPortURIsFromInterface(inter);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getPortImplementedInterface(java.lang.String)
 	 */
 	@Override
-	public Class<?>		getPortImplementedInterface(String portURI)
-	throws Exception {
+	public Class<? extends ComponentInterface>	getPortImplementedInterface(
+		String portURI
+		) throws Exception
+	{
 		return ((ReflectionI)this.getConnector()).
 										getPortImplementedInterface(portURI);
 	}
@@ -498,7 +517,7 @@ implements	ReflectionI
 	@Override
 	public boolean		isPortExisting(String portURI) throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).isPortExisting(portURI) ;
+		return ((IntrospectionI)this.getConnector()).isPortExisting(portURI);
 	}
 
 	/**
@@ -508,7 +527,7 @@ implements	ReflectionI
 	public boolean		isPortConnected(String portURI)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isPortConnected(portURI) ;
+		return ((ReflectionI)this.getConnector()).isPortConnected(portURI);
 	}
 
 	/**
@@ -522,7 +541,7 @@ implements	ReflectionI
 		) throws Exception
 	{
 		((ReflectionI)this.getConnector()).
-							doPortConnection(portURI, otherPortURI, ccname) ;
+							doPortConnection(portURI, otherPortURI, ccname);
 	}
 
 	/**
@@ -532,7 +551,7 @@ implements	ReflectionI
 	public void			doPortDisconnection(String portURI)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).doPortDisconnection(portURI) ;
+		((ReflectionI)this.getConnector()).doPortDisconnection(portURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -546,7 +565,7 @@ implements	ReflectionI
 	public String		getComponentDefinitionClassName() throws Exception
 	{
 		return ((IntrospectionI)this.getConnector()).
-									getComponentDefinitionClassName() ;
+									getComponentDefinitionClassName();
 	}
 
 	/**
@@ -555,7 +574,7 @@ implements	ReflectionI
 	@Override
 	public Annotation[]	getComponentAnnotations() throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).getComponentAnnotations() ;
+		return ((IntrospectionI)this.getConnector()).getComponentAnnotations();
 	}
 
 	/**
@@ -564,7 +583,7 @@ implements	ReflectionI
 	@Override
 	public ClassLoader	getComponentLoader() throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).getComponentLoader() ;
+		return ((IntrospectionI)this.getConnector()).getComponentLoader();
 	}
 
 	/**
@@ -575,7 +594,7 @@ implements	ReflectionI
 	throws Exception
 	{
 		return ((IntrospectionI)this.getConnector()).
-										getComponentServiceSignatures() ;
+										getComponentServiceSignatures();
 	}
 
 	/**
@@ -586,16 +605,7 @@ implements	ReflectionI
 	throws Exception
 	{
 		return ((IntrospectionI)this.getConnector()).
-										getComponentConstructorSignatures() ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#newInstance(java.lang.Object[])
-	 */
-	@Override
-	public ComponentI	newInstance(Object[] parameters) throws Exception
-	{
-		return ((IntercessionI)this.getConnector()).newInstance(parameters) ;
+										getComponentConstructorSignatures();
 	}
 
 	/**
@@ -605,7 +615,7 @@ implements	ReflectionI
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.getConnector()).invokeService(name, params) ;
+		return ((IntercessionI)this.getConnector()).invokeService(name, params);
 	}
 
 	/**
@@ -615,7 +625,8 @@ implements	ReflectionI
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.getConnector()).invokeServiceSync(name, params) ;
+		return ((IntercessionI)this.getConnector()).
+											invokeServiceSync(name, params);
 	}
 
 	/**
@@ -625,7 +636,7 @@ implements	ReflectionI
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception
 	{
-		((IntercessionI)this.getConnector()).invokeServiceAsync(name, params) ;
+		((IntercessionI)this.getConnector()).invokeServiceAsync(name, params);
 	}
 
 	/**
@@ -634,7 +645,7 @@ implements	ReflectionI
 	@Override
 	public void			execute() throws Exception
 	{
-		((IntercessionI)this.getConnector()).execute() ;
+		((IntercessionI)this.getConnector()).execute();
 	}
 
 	/**
@@ -643,7 +654,7 @@ implements	ReflectionI
 	@Override
 	public void			runTask(AbstractRemoteComponentTask t) throws Exception
 	{
-		((IntercessionI)this.getConnector()).runTask(t) ;
+		((IntercessionI)this.getConnector()).runTask(t);
 	}
 
 	/**
@@ -655,7 +666,7 @@ implements	ReflectionI
 		AbstractRemoteComponentTask t
 		) throws Exception
 	{
-		((IntercessionI)this.getConnector()).runTask(executorServiceURI, t) ;
+		((IntercessionI)this.getConnector()).runTask(executorServiceURI, t);
 	}
 
 	/**
@@ -670,7 +681,7 @@ implements	ReflectionI
 	{
 		((ReflectionI)this.getConnector()).
 			insertBeforeService(
-					methodName, parametersCanonicalClassNames, code) ;
+					methodName, parametersCanonicalClassNames, code);
 	}
 
 	/**
@@ -685,7 +696,7 @@ implements	ReflectionI
 	{
 		((ReflectionI)this.getConnector()).
 			insertAfterService(
-					methodName, parametersCanonicalClassNames, code) ;
+					methodName, parametersCanonicalClassNames, code);
 	}
 }
 // -----------------------------------------------------------------------------

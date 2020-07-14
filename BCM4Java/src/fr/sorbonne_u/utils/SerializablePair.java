@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.subcomp.deploynents;
+package fr.sorbonne_u.utils;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -32,17 +32,11 @@ package fr.sorbonne_u.components.examples.subcomp.deploynents;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.AbstractPort;
-import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.subcomp.components.IntegerPipeline;
-import fr.sorbonne_u.components.examples.subcomp.components.PipelineClient;
+import java.io.Serializable;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>CVM</code>
+ * The class <code>SerializablePair</code>
  *
  * <p><strong>Description</strong></p>
  * 
@@ -52,46 +46,20 @@ import fr.sorbonne_u.components.examples.subcomp.components.PipelineClient;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2020-01-28</p>
+ * <p>Created on : 2020-07-10</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			CVM
-extends		AbstractCVM
+public class			SerializablePair<A extends Serializable,
+										 B extends Serializable>
+extends		Pair<A,B>
+implements	Serializable
 {
-	public CVM() throws Exception {}
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
-	 */
-	@Override
-	public void			deploy() throws Exception
+	public				SerializablePair(A first, B second)
 	{
-		String ipIBP_URI = AbstractPort.generatePortURI() ;
-		String pcIBP_URI = AbstractPort.generatePortURI() ;
-		Predicate<Integer> predicate = (i -> i % 2 == 0) ;
-		Function<Integer,Integer> function = (i -> i * 100) ;
-
-		AbstractComponent.createComponent(
-				IntegerPipeline.class.getCanonicalName(),
-				new Object[]{predicate, function, ipIBP_URI, pcIBP_URI}) ;
-		AbstractComponent.createComponent(
-				PipelineClient.class.getCanonicalName(),
-				new Object[]{pcIBP_URI, ipIBP_URI}) ;
-
-		super.deploy();
-	}
-
-	public static void main(String[] args)
-	{
-		try {
-			CVM c = new CVM() ;
-			c.startStandardLifeCycle(10000L) ;
-			Thread.sleep(10000L) ;
-			System.exit(0) ;
-		} catch (Exception e) {
-			throw new RuntimeException(e) ;
-		}
+		super(first, second);
 	}
 }
 // -----------------------------------------------------------------------------

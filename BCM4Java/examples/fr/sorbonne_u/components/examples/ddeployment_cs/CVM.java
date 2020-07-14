@@ -38,6 +38,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicAssembler;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 
 //-----------------------------------------------------------------------------
 /**
@@ -70,6 +71,23 @@ extends		AbstractCVM
 	@Override
 	public void			deploy() throws Exception
 	{
+		// ---------------------------------------------------------------------
+		// Configuration phase
+		// ---------------------------------------------------------------------
+
+		// debugging mode configuration; comment and uncomment the line to see
+		// the difference
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.LIFE_CYCLE);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.INTERFACES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PORTS);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
+
+		// ---------------------------------------------------------------------
+		// Creation phase
+		// ---------------------------------------------------------------------
+
 		@SuppressWarnings("unused")
 		String daURI =
 			AbstractComponent.createComponent(

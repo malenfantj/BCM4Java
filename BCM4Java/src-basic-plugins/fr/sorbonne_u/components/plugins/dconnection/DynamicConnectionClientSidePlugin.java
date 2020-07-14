@@ -97,7 +97,7 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true		// TODO
+ * invariant	true		// TODO
  * </pre>
  * 
  * <p>Created on : 2017-02-15</p>
@@ -115,9 +115,9 @@ extends		AbstractPlugin
 
 	private static class	ConnectionDescriptor
 	{
-		public final OutboundPortI				outPort ;
-		public final Class<? extends OfferedCI>	offeredInterface ;
-		public final String						inboundPortURI ;
+		public final OutboundPortI				outPort;
+		public final Class<? extends OfferedCI>	offeredInterface;
+		public final String						inboundPortURI;
 
 		public				ConnectionDescriptor(
 			OutboundPortI outPort,
@@ -137,13 +137,13 @@ extends		AbstractPlugin
 	// -------------------------------------------------------------------------
 
 	/** URI of the plug-in used in the plug-in call protocol.				*/
-	public static final String PLUGIN_URI = "DCONNECTION_CLIENT_SIDE_PLUGIN" ;
+	public static final String PLUGIN_URI = "DCONNECTION_CLIENT_SIDE_PLUGIN";
 
 	/** Port through which dynamic connection requests are issued.			*/
-	protected DynamicConnectionRequestOutboundPort	dcrop ;
+	protected DynamicConnectionRequestOutboundPort	dcrop;
 	/** The ports used in the dynamic connections.							*/
 	protected Map<Class<? extends RequiredCI>,ConnectionDescriptor>
-													dynamicOutboundPorts ;
+													dynamicOutboundPorts;
 
 	// -------------------------------------------------------------------------
 	// Plug-in generic methods
@@ -156,16 +156,16 @@ extends		AbstractPlugin
 	public void			installOn(ComponentI owner) throws Exception
 	{
 		// A plug-in is installed on an existing component.
-		assert	owner != null ;
+		assert	owner != null;
 		// Only one plug-in instance of a given URI can be installed on
 		// a component.
-		assert	!owner.isInstalled(this.getPluginURI()) ;
+		assert	!owner.isInstalled(this.getPluginURI());
 
-		super.installOn(owner) ;
+		super.installOn(owner);
 
 		// At installation time on a component, the plug-in adds the plug-in
 		// required interfaces to the ones of the component.
-		this.addRequiredInterface(DynamicConnectionRequestI.class) ;
+		this.addRequiredInterface(DynamicConnectionRequestI.class);
 	}
 
 	/**
@@ -174,7 +174,7 @@ extends		AbstractPlugin
 	@Override
 	public void			initialise() throws Exception
 	{
-		this.dynamicOutboundPorts = new HashMap<>() ;
+		this.dynamicOutboundPorts = new HashMap<>();
 	}
 
 	/**
@@ -184,13 +184,13 @@ extends		AbstractPlugin
 	public void			finalise() throws Exception
 	{
 		for (ConnectionDescriptor d : this.dynamicOutboundPorts.values()) {
-			this.owner.doPortDisconnection(d.outPort.getPortURI()) ;
-			d.outPort.unpublishPort() ;
-			d.outPort.destroyPort() ;
+			this.getOwner().doPortDisconnection(d.outPort.getPortURI());
+			d.outPort.unpublishPort();
+			d.outPort.destroyPort();
 		}
-		this.dynamicOutboundPorts.clear() ;
+		this.dynamicOutboundPorts.clear();
 		if (this.isConnectedToServerSide()) {
-			this.disconnectFromServerSide() ;
+			this.disconnectFromServerSide();
 		}
 	}
 
@@ -202,7 +202,7 @@ extends		AbstractPlugin
 	{
 		// When uninstalling the plug-in, the ports and the interfaces added
 		// to the component at installation time are removed.
-		this.removeRequiredInterface(DynamicConnectionRequestI.class) ;
+		this.removeRequiredInterface(DynamicConnectionRequestI.class);
 	}
 
 	// -------------------------------------------------------------------------
@@ -215,8 +215,8 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the plug-in is connected to a server side plug-in.
@@ -234,8 +234,8 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	requiredInterface != null
-	 * post	true			// no postcondition.
+	 * pre	{@code requiredInterface != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param requiredInterface	client-side interface through which the connection is made.
@@ -245,8 +245,8 @@ extends		AbstractPlugin
 		Class<?> requiredInterface
 		)
 	{
-		assert	requiredInterface != null ;
-		return this.dynamicOutboundPorts.containsKey(requiredInterface) ;
+		assert	requiredInterface != null;
+		return this.dynamicOutboundPorts.containsKey(requiredInterface);
 	}
 
 	/**
@@ -255,55 +255,56 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	!this.isConnectedToServerSide()
-	 * pre	serverReflectionInboundPortURI != null
-	 * post	this.isConnectedToServerSide()
+	 * pre	{@code !isConnectedToServerSide()}
+	 * pre	{@code serverReflectionInboundPortURI != null}
+	 * post	{@code isConnectedToServerSide()}
 	 * </pre>
 	 *
-	 *@param	 serverReflectionInboundPortURI	URI of the reflection inbound port of the server-side component.
-	 * @throws	Exception					<i>to do.</i>
+	 * @param serverReflectionInboundPortURI	URI of the reflection inbound port of the server-side component.
+	 * @throws	Exception						<i>to do</i>.
 	 */
 	public void			connectWithServerSide(
 		String serverReflectionInboundPortURI
 		) throws Exception
 	{
-		assert	!this.isConnectedToServerSide() ;
+		assert	!this.isConnectedToServerSide();
 
-		boolean wasRequiringReflectionI = true ;
-		if (!this.owner.isRequiredInterface(ReflectionI.class)) {
-			this.addRequiredInterface(ReflectionI.class) ;
-			wasRequiringReflectionI = false ;
+		boolean wasRequiringReflectionI = true;
+		if (!this.getOwner().isRequiredInterface(ReflectionI.class)) {
+			this.addRequiredInterface(ReflectionI.class);
+			wasRequiringReflectionI = false;
 		}
 
-		ReflectionOutboundPort rop = new ReflectionOutboundPort(this.owner) ;
-		rop.publishPort() ;
-		this.owner.doPortConnection(
+		ReflectionOutboundPort rop =
+							new ReflectionOutboundPort(this.getOwner());
+		rop.publishPort();
+		this.getOwner().doPortConnection(
 				rop.getPortURI(),
 				serverReflectionInboundPortURI,
-				ReflectionConnector.class.getCanonicalName()) ;
+				ReflectionConnector.class.getCanonicalName());
 
 		// Connect to the other component using its dynamic connection request
 		// inbound port.
-		this.dcrop = new DynamicConnectionRequestOutboundPort(this.owner) ;
-		this.dcrop.publishPort() ;
+		this.dcrop = new DynamicConnectionRequestOutboundPort(this.getOwner());
+		this.dcrop.publishPort();
 
 		String[] otherInboundPortURI =
 				rop.findInboundPortURIsFromInterface(
-									DynamicConnectionRequestI.class) ;
+									DynamicConnectionRequestI.class);
 
-		this.owner.doPortConnection(
+		this.getOwner().doPortConnection(
 				this.dcrop.getPortURI(),
 				otherInboundPortURI[0],
-				DynamicConnectionRequestConnector.class.getCanonicalName()) ;
+				DynamicConnectionRequestConnector.class.getCanonicalName());
 
-		this.owner.doPortDisconnection(rop.getPortURI()) ;
-		rop.unpublishPort() ;
-		rop.destroyPort() ;
+		this.getOwner().doPortDisconnection(rop.getPortURI());
+		rop.unpublishPort();
+		rop.destroyPort();
 		if (!wasRequiringReflectionI) {
-			this.removeRequiredInterface(ReflectionI.class) ;
+			this.removeRequiredInterface(ReflectionI.class);
 		}
 
-		assert	this.isConnectedToServerSide() ;
+		assert	this.isConnectedToServerSide();
 	}
 
 	/**
@@ -313,19 +314,18 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	requiredInterface != null and
-	 *		    !this.isDynamicallyConnectedThrough(requiredInterface)
-	 * pre	offeredInterface != null
-	 * pre	connectionDescriptor != null
-	 * pre	this.isConnectedToServerSide()
-	 * post	this.isDynamicallyConnectedThrough(requiredInterface)
+	 * pre	{@code requiredInterface != null && !isDynamicallyConnectedThrough(requiredInterface)}
+	 * pre	{@code offeredInterface != null}
+	 * pre	{@code connectionDescriptor != null}
+	 * pre	{@code isConnectedToServerSide()}
+	 * post	{@code isDynamicallyConnectedThrough(requiredInterface)}
 	 * </pre>
 	 *
 	 * @param requiredInterface		client-side interface through which the connection is made.
 	 * @param offeredInterface		server-side interface through which the connection is made.
 	 * @param connectionDescriptor	describes how to create the outbound port and the connector.
 	 * @return						the URI of the outbound port of the connection.
-	 * @throws Exception				<i>to do.</i>
+	 * @throws Exception			<i>to do</i>.
 	 */
 	public OutboundPortI		doDynamicConnection(
 		Class<? extends RequiredCI> requiredInterface,
@@ -334,32 +334,32 @@ extends		AbstractPlugin
 		) throws Exception
 	{
 		assert	requiredInterface != null &&
-					!this.isDynamicallyConnectedThrough(requiredInterface) ;
-		assert	offeredInterface != null && connectionDescriptor != null ;
-		assert	this.isConnectedToServerSide() ;
+					!this.isDynamicallyConnectedThrough(requiredInterface);
+		assert	offeredInterface != null && connectionDescriptor != null;
+		assert	this.isConnectedToServerSide();
 
 		String otherDynamicPortURI =
-					this.dcrop.requestDynamicPortURI(offeredInterface) ;
+					this.dcrop.requestDynamicPortURI(offeredInterface);
 		OutboundPortI dynamicOutboundPort =
 			connectionDescriptor.createClientSideDynamicPort(
 													requiredInterface,
-													this.owner) ;
-		dynamicOutboundPort.publishPort() ;
+													this.getOwner());
+		dynamicOutboundPort.publishPort();
 		this.dynamicOutboundPorts.put(
 				requiredInterface,
 				new ConnectionDescriptor(dynamicOutboundPort,
 										 offeredInterface,
-										 otherDynamicPortURI)) ;
-		this.owner.doPortConnection(
+										 otherDynamicPortURI));
+		this.getOwner().doPortConnection(
 				dynamicOutboundPort.getPortURI(),
 				otherDynamicPortURI,
 				connectionDescriptor.dynamicConnectorClassName(
-													requiredInterface)) ;
+													requiredInterface));
 
-		assert	this.isConnectedToServerSide() ;
-		assert	this.isDynamicallyConnectedThrough(requiredInterface) ;
+		assert	this.isConnectedToServerSide();
+		assert	this.isDynamicallyConnectedThrough(requiredInterface);
 
-		return dynamicOutboundPort ;
+		return dynamicOutboundPort;
 	}
 
 	/**
@@ -369,29 +369,28 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	requiredInterface != null and
-	 * 		    this.isDynamicallyConnectedThrough(requiredInterface)
-	 * post	!this.isDynamicallyConnectedThrough(requiredInterface)
+	 * pre	{@code requiredInterface != null && isDynamicallyConnectedThrough(requiredInterface)}
+	 * post	{@code !isDynamicallyConnectedThrough(requiredInterface)}
 	 * </pre>
 	 *
 	 * @param requiredInterface	client-side interface through which the connection is made.
-	 * @throws Exception			<i>to do.</i>
+	 * @throws Exception		<i>to do</i>.
 	 */
 	public void			doDynamicDisconnection(
 		Class<? extends RequiredCI> requiredInterface
 		) throws Exception
 	{
 		assert	requiredInterface != null &&
-					this.isDynamicallyConnectedThrough(requiredInterface) ;
+					this.isDynamicallyConnectedThrough(requiredInterface);
 
 		ConnectionDescriptor d =
-						this.dynamicOutboundPorts.get(requiredInterface) ;
+						this.dynamicOutboundPorts.get(requiredInterface);
 		if (d != null) {
-			this.owner.doPortDisconnection(d.outPort.getPortURI()) ;
-			this.dynamicOutboundPorts.remove(requiredInterface) ;
-			d.outPort.unpublishPort() ;
-			d.outPort.destroyPort() ;
-			this.dcrop.removeDynamicPort(d.offeredInterface, d.inboundPortURI) ;
+			this.getOwner().doPortDisconnection(d.outPort.getPortURI());
+			this.dynamicOutboundPorts.remove(requiredInterface);
+			d.outPort.unpublishPort();
+			d.outPort.destroyPort();
+			this.dcrop.removeDynamicPort(d.offeredInterface, d.inboundPortURI);
 		}
 
 		assert	!this.isDynamicallyConnectedThrough(requiredInterface) ;
@@ -403,21 +402,21 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isConnectedToServerSide()
-	 * post	!this.isConnectedToServerSide()
+	 * pre	{@code isConnectedToServerSide()}
+	 * post	{@code !isConnectedToServerSide()}
 	 * </pre>
 	 *
-	 * @throws Exception			<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void		disconnectFromServerSide() throws Exception
+	public void			disconnectFromServerSide() throws Exception
 	{
-		assert	this.isConnectedToServerSide() ;
+		assert	this.isConnectedToServerSide();
 
-		this.owner.doPortDisconnection(this.dcrop.getPortURI()) ;
-		this.dcrop.unpublishPort() ;
-		this.dcrop.destroyPort() ;
+		this.getOwner().doPortDisconnection(this.dcrop.getPortURI());
+		this.dcrop.unpublishPort();
+		this.dcrop.destroyPort();
 
-		assert	!this.isConnectedToServerSide() ;
+		assert	!this.isConnectedToServerSide();
 	}
 }
 // -----------------------------------------------------------------------------

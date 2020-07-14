@@ -35,9 +35,11 @@ package fr.sorbonne_u.components.examples.internal_cs;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
 import fr.sorbonne_u.components.examples.internal_cs.components.URIConsumer;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 
 //-----------------------------------------------------------------------------
 /**
@@ -104,11 +106,18 @@ extends		AbstractDistributedCVM
 	@Override
 	public void			initialise() throws Exception
 	{
+		// ---------------------------------------------------------------------
+		// Configuration phase
+		// ---------------------------------------------------------------------
+
 		// debugging mode configuration; comment and uncomment the line to see
 		// the difference
-//		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PUBLIHSING) ;
-//		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING) ;
-//		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.COMPONENT_DEPLOYMENT) ;
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.LIFE_CYCLE);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.INTERFACES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PORTS);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
 
 		super.initialise() ;
 		// any other application-specific initialisation must be put here

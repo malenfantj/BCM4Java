@@ -1,11 +1,11 @@
-package fr.sorbonne_u.components;
+package fr.sorbonne_u.utils;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
+//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -35,29 +35,78 @@ package fr.sorbonne_u.components;
 
 // -----------------------------------------------------------------------------
 /**
- * The enumeration <code>ComponentState</code> describes the different
- * states in which a component can be during its life-cycle.
+ * The interface <code>PairI</code> declares the methods for pair objects.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	true
  * </pre>
  * 
- * <p>Created on : 2014-05-12</p>
+ * <p>Created on : 2020-07-10</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public enum				ComponentState
-implements	ComponentStateI
+public interface		PairI<A,B>
 {
-	INITIALISED,	// created, awaiting start
-	STARTED,		// may run tasks and services
-	FINALISED,		// resources freed before shutting down.
-	SHUTTINGDOWN,	// engaging shutdown, do not accept further tasks or requests
-	SHUTDOWN,		// all tasks finished
-	TERMINATED		// closed, may not be used anymore
+	/**
+	 * get the first element in the pair.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the first element in the pair.
+	 */
+	public A			getFirst();
+
+	/**
+	 * set the new value of the first element in the pair.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param value	the new value of the first element in the pair.
+	 * @return		the previous value of the first element in the pair.
+	 */
+	public A			setFirst(A value);
+
+	/**
+	 * get the second element in the pair.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the second element in the pair.
+	 */
+	public B			getSecond();
+
+	/**
+	 * set the new value of the second element in the pair.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param value	the new value of the second element in the pair.
+	 * @return		the previous value of the second element in the pair.
+	 */
+	public B			setSecond(B value);
 }
 // -----------------------------------------------------------------------------

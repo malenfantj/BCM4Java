@@ -74,8 +74,8 @@ extends		AbstractComponent
 	{
 		super(1, 0) ;
 
-		this.tracer.setTitle("ContinuationExamples") ;
-		this.tracer.setRelativePosition(1, 0) ;
+		this.getTracer().setTitle("ContinuationExamples") ;
+		this.getTracer().setRelativePosition(1, 0) ;
 	}
 
 	// ------------------------------------------------------------------------

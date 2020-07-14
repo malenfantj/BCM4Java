@@ -41,8 +41,9 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 import java.lang.annotation.Annotation;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The interface <code>IntrospectionI</code> defines the introspection
  * services offered by the Basic Component Model.
@@ -64,9 +65,9 @@ public interface		IntrospectionI
 extends		OfferedCI,
 			RequiredCI
 {
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-ins facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return true if the component has some installed plug-ins.
@@ -74,14 +75,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the component has some installed plug-ins.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		hasInstalledPlugins() throws Exception ;
+	public boolean		hasInstalledPlugins() throws Exception;
 
 	/**
 	 * test if a plug-in is installed into this component.
@@ -89,15 +90,15 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null
-	 * post	true			// no postcondition.
+	 * pre	{@code pluginURI != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginURI		unique plug-in identifier.
 	 * @return 				true if the named plug-in is installed into this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isInstalled(String pluginURI) throws Exception ;
+	public boolean		isInstalled(String pluginURI) throws Exception;
 
 	/**
 	 * access a named plug-in into this component.
@@ -105,16 +106,15 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null
-	 * pre	
-	 * post	true			// no postcondition.
+	 * pre	{@code pluginURI != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginURI		unique plug-in identifier.
 	 * @return				the corresponding installed plug-in or null if none.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public PluginI		getPlugin(String pluginURI) throws Exception ;
+	public PluginI		getPlugin(String pluginURI) throws Exception;
 
 	/**
 	 * return true if the plug-in with the passed URI is initialised.
@@ -122,19 +122,19 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null
-	 * post	true			// no postcondition.
+	 * pre	{@code pluginURI != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginURI		URI of the plug-in to be tested.
 	 * @return				true if the plug-in is installed and initialised.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isInitialised(String pluginURI) throws Exception ;
+	public boolean		isInitialised(String pluginURI) throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Logging facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return true if the logging is currently active, false otherwise.
@@ -142,14 +142,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the logging is currently active, false otherwise.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isLogging() throws Exception ;
+	public boolean		isLogging() throws Exception;
 
 	/**
 	 * return true if the tracing is currently active, false otherwise.
@@ -157,18 +157,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the tracing is currently active, false otherwise.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isTracing() throws Exception ;
+	public boolean		isTracing() throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Internal behaviour requests
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return true if the component is in one of the mentioned component states.
@@ -176,16 +176,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	states != null
-	 * post	true			// no postcondition.
+	 * pre	{@code states != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param states		states in which the components is tested to be.
 	 * @return				true if the component is in one of the given states.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public boolean		isInStateAmong(ComponentStateI[] states)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * return true if the component is in none of the mentioned component states.
@@ -193,16 +193,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	states != null
-	 * post	true			// no postcondition.
+	 * pre	{@code states != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param states		states in which the components is tested not to be.
 	 * @return				true if the component is in none of the given states.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public boolean		notInStateAmong(ComponentStateI[] states)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * true if the component executes concurrently with its own thread pool.
@@ -210,14 +210,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the component executes concurrently with its own threads.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		hasItsOwnThreads() throws Exception ;
+	public boolean		hasItsOwnThreads() throws Exception;
 
 	/**
 	 * return the number of threads, schedulable or not, in the component.
@@ -225,14 +225,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the number of threads, schedulable or not, in the component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public int			getTotalNumberOfThreads() throws Exception ;
+	public int			getTotalNumberOfThreads() throws Exception;
 
 	/**
 	 * return true if the component guarantees a serialised execution of its services.
@@ -248,14 +248,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the component guarantees a serialised execution of its services.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		hasSerialisedExecution() throws Exception ;
+	public boolean		hasSerialisedExecution() throws Exception;
 
 	/**
 	 * true if the component executes concurrently with its own thread pool and
@@ -264,18 +264,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the component can schedule tasks running after a specific delay or periodically.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		canScheduleTasks() throws Exception ;
+	public boolean		canScheduleTasks() throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Implemented interfaces management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return all interfaces required or offered by this component.
@@ -283,14 +283,15 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				interfaces required and offered by the component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?>[]	getInterfaces() throws Exception ;
+	public Class<? extends ComponentInterface>[]	getInterfaces()
+	throws Exception;
 
 	/**
 	 * return the interface, required or offered by this component, which
@@ -300,16 +301,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			the interface to be checked for.
 	 * @return				the corresponding component interface or null if any.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?>		getInterface(Class<?> inter) throws Exception ;
+	public Class<? extends ComponentInterface>		getInterface(
+		Class<? extends ComponentInterface> inter
+		) throws Exception;
 
 	/**
 	 * return all the required interfaces of this component.
@@ -317,14 +320,15 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				required interfaces of this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?>[]	getRequiredInterfaces() throws Exception ;
+	public Class<? extends RequiredCI>[]	getRequiredInterfaces()
+	throws Exception;
 
 	/**
 	 * return the interface required by this component, which corresponds to
@@ -334,16 +338,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			the interface to be checked for.
 	 * @return				the corresponding component interface or null if any.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?>		getRequiredInterface(Class<?> inter) throws Exception ;
+	public Class<? extends RequiredCI>	getRequiredInterface(
+		Class<? extends RequiredCI> inter
+		) throws Exception;
 
 	/**
 	 * return all the offered interfaces of this component.
@@ -351,14 +357,15 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				offered interfaces of this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?>[]	getOfferedInterfaces() throws Exception ;
+	public Class<? extends OfferedCI>[]	getOfferedInterfaces()
+	throws Exception;
 
 	/**
 	 * return the interface offered by this component, which corresponds to
@@ -368,16 +375,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			the interface to be checked for.
 	 * @return				the corresponding component interface or null if any.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Class<?>		getOfferedInterface(Class<?> inter) throws Exception ;
+	public Class<? extends OfferedCI>	getOfferedInterface(
+		Class<? extends OfferedCI> inter
+		) throws Exception;
 
 	/**
 	 * check if an interface is one of this component or a super-interface of
@@ -386,15 +395,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface to be checked for.
 	 * @return				true if inter is an interface of this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isInterface(Class<?> inter) throws Exception ;
+	public boolean		isInterface(Class<? extends ComponentInterface> inter)
+	throws Exception;
 
 	/**
 	 * check if an interface is a required one of this component or a
@@ -403,15 +413,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface to be checked for.
 	 * @return				true if inter is a required interface of this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isRequiredInterface(Class<?> inter) throws Exception ;
+	public boolean		isRequiredInterface(Class<? extends RequiredCI> inter)
+	throws Exception;
 
 	/**
 	 * check if an interface is an offered one of this component or a
@@ -420,19 +431,20 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface to be checked for.
 	 * @return				true if inter is an offered interface of this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isOfferedInterface(Class<?> inter) throws Exception ;
+	public boolean		isOfferedInterface(Class<? extends OfferedCI> inter)
+	throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Port management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * find the port URIs of this component that expose the interface inter.
@@ -440,17 +452,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface for which ports are sought.
 	 * @return				array of port URIs exposing <code>inter</code>.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String[]		findPortURIsFromInterface(Class<?> inter)
-	throws Exception ;
+	public String[]		findPortURIsFromInterface(
+		Class<? extends ComponentInterface> inter
+		) throws Exception;
 
 	/**
 	 * find the inbound port URIs of this component that expose the interface
@@ -459,17 +472,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface for which ports are sought.
 	 * @return				array of inbound port URIs exposing inter.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String[]		findInboundPortURIsFromInterface(Class<?> inter)
-	throws Exception ;
+	public String[]		findInboundPortURIsFromInterface(
+		Class<? extends OfferedCI> inter
+		) throws Exception;
 
 	/**
 	 * find the outbound port URIs of this component that expose the interface inter.
@@ -477,17 +491,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface for which ports are sought.
 	 * @return				array of outbound port URIs exposing inter.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String[]		findOutboundPortURIsFromInterface(Class<?> inter)
-	throws Exception ;
+	public String[]		findOutboundPortURIsFromInterface(
+		Class<? extends RequiredCI> inter
+		) throws Exception;
 
 	/**
 	 * true if the port with the given URI exists in this component, false
@@ -496,16 +511,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI		port URI to be tested.
 	 * @return				true if the port with the given URI exists.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isPortExisting(String portURI) throws Exception ;
+	public boolean		isPortExisting(String portURI) throws Exception;
 
 	/**
 	 * return the interface implemented by the port.
@@ -513,17 +528,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and this.isPortExisting(portURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && isPortExisting(portURI)}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port.
 	 * @return				the interface implemented by the port.
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
-	public Class<?>		getPortImplementedInterface(String portURI)
-	throws Exception ;
+	public Class<? extends ComponentInterface>	getPortImplementedInterface(
+		String portURI
+		) throws Exception;
 
 	/**
 	 * true if the port with the given URI is connected, false otherwise.
@@ -531,9 +547,9 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and this.isPortExisting(portURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && isPortExisting(portURI)}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port.
@@ -541,11 +557,11 @@ extends		OfferedCI,
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
 	public boolean		isPortConnected(String portURI)
-	throws Exception ;
+	throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Reflection facility
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return the canonical name of the Java class implementing this component.
@@ -553,14 +569,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the canonical name of the Java class implementing this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String		getComponentDefinitionClassName() throws Exception ;
+	public String		getComponentDefinitionClassName() throws Exception;
 
 	/**
 	 * return the annotations put on the Java class implementing the component.
@@ -568,14 +584,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the annotations put on the Java class implementing the component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Annotation[]	getComponentAnnotations() throws Exception ;
+	public Annotation[]	getComponentAnnotations() throws Exception;
 
 	/**
 	 * return the loader of the Java class implementing the component;
@@ -584,14 +600,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the loader of the Java class implementing the component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public ClassLoader	getComponentLoader() throws Exception ;
+	public ClassLoader	getComponentLoader() throws Exception;
 
 	/**
 	 * return the signatures of the component services.
@@ -599,15 +615,15 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the signatures of the component services.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public ServiceSignature[]		getComponentServiceSignatures()
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * return the signatures of the component constructors.
@@ -615,14 +631,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the signatures of the component constructors.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public ConstructorSignature[]	getComponentConstructorSignatures()
-	throws Exception ;
+	throws Exception;
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

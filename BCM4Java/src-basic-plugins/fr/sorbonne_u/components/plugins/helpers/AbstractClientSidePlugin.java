@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.plugins.helpers;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -44,7 +43,7 @@ import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>AbstractClientSidePlugin</code> provides the functionalities
  * required to connect a client component to a server component for given
@@ -57,25 +56,25 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	true
  * </pre>
  * 
  * <p>Created on : 2019-03-06</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class		AbstractClientSidePlugin
+public abstract class	AbstractClientSidePlugin
 extends		AbstractPlugin
 implements	ClientSidePluginI
 {
 	private static final long serialVersionUID = 1L;
 
-	protected Class<?>				requiredInterface ;
-	protected AbstractOutboundPort	pluginOutboundPort ;
+	protected Class<? extends RequiredCI>	requiredInterface;
+	protected AbstractOutboundPort			pluginOutboundPort;
 	
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in generic methods
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * add the interface returned by @see{getRequiredInterface()} to the
@@ -84,26 +83,26 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner != null
-	 * pre	!owner.isInstalled(this.getPluginURI())
-	 * post	true				// no more postconditions.
+	 * pre	{@code owner != null}
+	 * pre	{@code !owner.isInstalled(getPluginURI())}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractPlugin#installOn(fr.sorbonne_u.components.ComponentI)
 	 */
 	@Override
-	public void				installOn(ComponentI owner) throws Exception
+	public void			installOn(ComponentI owner) throws Exception
 	{
 		// A plug-in is installed on an existing component.
-		assert	owner != null ;
+		assert	owner != null;
 		// Only one plug-in instance of a given URI can be installed on
 		// a component.
-		assert	!owner.isInstalled(this.getPluginURI()) ;
+		assert	!owner.isInstalled(this.getPluginURI());
 
-		super.installOn(owner) ;
+		super.installOn(owner);
 
-		this.requiredInterface = this.getRequiredInterface() ;
-		this.addRequiredInterface(this.requiredInterface) ;
+		this.requiredInterface = this.getRequiredInterface();
+		this.addRequiredInterface(this.requiredInterface);
 	}
 
 	/**
@@ -113,18 +112,18 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true				// no more preconditions.
-	 * post	true				// no more postconditions.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractPlugin#initialise()
 	 */
 	@Override
-	public void				initialise() throws Exception
+	public void			initialise() throws Exception
 	{
 		this.pluginOutboundPort =
-					(AbstractOutboundPort) this.createOutboundPort() ;
-		this.pluginOutboundPort.publishPort() ;
+					(AbstractOutboundPort) this.createOutboundPort();
+		this.pluginOutboundPort.publishPort();
 	}
 
 	/**
@@ -134,23 +133,23 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true				// no more preconditions.
-	 * post	true				// no more postconditions.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractPlugin#finalise()
 	 */
 	@Override
-	public void				finalise() throws Exception
+	public void			finalise() throws Exception
 	{
 		if (this.pluginOutboundPort != null) {
 			if (this.pluginOutboundPort.connected()) {
-				this.owner.doPortDisconnection(
-						this.pluginOutboundPort.getPortURI()) ;
+				this.getOwner().doPortDisconnection(
+						this.pluginOutboundPort.getPortURI());
 			}
-			this.pluginOutboundPort.unpublishPort() ;
-			this.pluginOutboundPort.destroyPort() ;
-			this.pluginOutboundPort = null ;
+			this.pluginOutboundPort.unpublishPort();
+			this.pluginOutboundPort.destroyPort();
+			this.pluginOutboundPort = null;
 		}
 	}
 
@@ -161,22 +160,22 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true				// no more preconditions.
-	 * post	true				// no more postconditions.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractPlugin#uninstall()
 	 */
 	@Override
-	public void				uninstall() throws Exception
+	public void			uninstall() throws Exception
 	{
-		this.removeRequiredInterface(this.requiredInterface) ;
-		this.requiredInterface = null ;
+		this.removeRequiredInterface(this.requiredInterface);
+		this.requiredInterface = null;
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in specific methods
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * return the interface required by the client side.
@@ -184,13 +183,13 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the interface required by the client side.
 	 */
-	protected abstract Class<? extends RequiredCI>	getRequiredInterface() ;
+	protected abstract Class<? extends RequiredCI>	getRequiredInterface();
 
 	/**
 	 * return the interface required by the client-side.
@@ -198,13 +197,13 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the interface required by the client-side.
 	 */
-	protected abstract Class<? extends OfferedCI>	getOfferedInterface() ;
+	protected abstract Class<? extends OfferedCI>	getOfferedInterface();
 
 	/**
 	 * return the outbound port instance that must be used to connect with
@@ -213,14 +212,14 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	ret != null
+	 * pre	true		// no precondition.
+	 * post	{@code ret != null}
 	 * </pre>
 	 *
 	 * @return				the outbound port instance that must be used to connect with the server side.
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	protected abstract OutboundPortI	createOutboundPort() throws Exception ;
+	protected abstract OutboundPortI	createOutboundPort() throws Exception;
 
 	/**
 	 * return the name of the connector class to be used to connect with the
@@ -229,83 +228,85 @@ implements	ClientSidePluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	ret != null
+	 * pre	true		// no precondition.
+	 * post	{@code ret != null}
 	 * </pre>
 	 *
 	 * @return	the name of the connector class to be used to connect with the server side.
 	 */
-	protected abstract String	getConnectorClassName() ;
+	protected abstract String	getConnectorClassName();
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.helpers.ClientSidePluginI#isConnectedToServerSide()
 	 */
 	@Override
-	public boolean			isConnectedToServerSide() throws Exception
+	public boolean		isConnectedToServerSide() throws Exception
 	{
 		return this.pluginOutboundPort != null &&
-									this.pluginOutboundPort.connected() ;
+									this.pluginOutboundPort.connected();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.helpers.ClientSidePluginI#connectWithServerSide(java.lang.String)
 	 */
 	@Override
-	public boolean			connectWithServerSide(
+	public boolean		connectWithServerSide(
 		String serverReflectionInboundPortURI
 		) throws Exception
 	{
-		assert	serverReflectionInboundPortURI != null ;
+		assert	serverReflectionInboundPortURI != null;
 
-		boolean ret = true ;
+		boolean ret = true;
 
-		boolean wasRequiringReflectionI = true ;
-		if (!this.owner.isRequiredInterface(ReflectionI.class)) {
-			this.addRequiredInterface(ReflectionI.class) ;
-			wasRequiringReflectionI = false ;
+		boolean wasRequiringReflectionI = true;
+		if (!this.getOwner().isRequiredInterface(ReflectionI.class)) {
+			this.addRequiredInterface(ReflectionI.class);
+			wasRequiringReflectionI = false;
 		}
 
-		ReflectionOutboundPort rop = new ReflectionOutboundPort(this.owner) ;
-		rop.publishPort() ;
+		ReflectionOutboundPort rop =
+						new ReflectionOutboundPort(this.getOwner());
+		rop.publishPort();
 
-		this.owner.doPortConnection(
+		this.getOwner().doPortConnection(
 				rop.getPortURI(),
 				serverReflectionInboundPortURI,
-				ReflectionConnector.class.getCanonicalName()) ;
+				ReflectionConnector.class.getCanonicalName());
 
 		String[] otherInboundPortURI =
 				rop.findInboundPortURIsFromInterface(
-											this.getOfferedInterface()) ;
+											this.getOfferedInterface());
 
 		if (otherInboundPortURI == null || otherInboundPortURI.length == 0) {
-			ret = false ;
+			ret = false;
 		} else {
-			this.owner.doPortConnection(
+			this.getOwner().doPortConnection(
 					this.pluginOutboundPort.getPortURI(),
 					otherInboundPortURI[0],
-					this.getConnectorClassName()) ;
+					this.getConnectorClassName());
 		}
 
-		this.owner.doPortDisconnection(rop.getPortURI()) ;
-		rop.unpublishPort() ;
-		rop.destroyPort() ;
+		this.getOwner().doPortDisconnection(rop.getPortURI());
+		rop.unpublishPort();
+		rop.destroyPort();
 
 		if (!wasRequiringReflectionI) {
-			this.removeRequiredInterface(ReflectionI.class) ;
+			this.removeRequiredInterface(ReflectionI.class);
 		}
 
-		return ret ;
+		return ret;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.helpers.ClientSidePluginI#disconnectFromServerSide()
 	 */
 	@Override
-	public void				disconnectFromServerSide() throws Exception
+	public void			disconnectFromServerSide() throws Exception
 	{
-		assert	this.isConnectedToServerSide() ;
+		assert	this.isConnectedToServerSide();
 
-		this.owner.doPortDisconnection(this.pluginOutboundPort.getPortURI()) ;
+		this.getOwner().doPortDisconnection(
+										this.pluginOutboundPort.getPortURI());
 	}
 
 	/**
@@ -314,7 +315,7 @@ implements	ClientSidePluginI
 	@Override
 	public AbstractOutboundPort	getOutboundPort()
 	{
-		return this.pluginOutboundPort ;
+		return this.pluginOutboundPort;
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

@@ -249,9 +249,9 @@ implements	DistributedComponentVirtualMachineI
 		//	!LOCAL_REGISTRY.containsKey(port.getPortURI())
 
 		String portURI = port.getPortURI();
-		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING) &&
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS) &&
 												AbstractCVM.isDistributed) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 					"called publishPort(" + portURI +
 					") on the host " + AbstractCVM.getHostname());
 		}
@@ -260,18 +260,18 @@ implements	DistributedComponentVirtualMachineI
 		if (AbstractCVM.isDistributed) {
 			assert	AbstractDistributedCVM.theRMIRegistry != null;
 
-			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-				AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+				AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 						"publishPort calls RMIRegistry on " +
 								((PortI)port).getPortURI() + " ...");
 			}
 
 			AbstractDistributedCVM.theRMIRegistry.bind(portURI, (Remote) port);
 
-			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-				AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+				AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 											 "... done");
-				AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+				AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 						"publishPort calls GlobalRegistry on " +
 													portURI + " ...");
 			}
@@ -283,8 +283,8 @@ implements	DistributedComponentVirtualMachineI
 						AbstractCVM.getHostname(),
 						AbstractDistributedCVM.rmiRegistryPort)).toString());
 
-			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-				AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+				AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 															"... done");
 			}
 		}
@@ -322,9 +322,9 @@ implements	DistributedComponentVirtualMachineI
 
 		String portURI = port.getPortURI();
 
-		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING) &&
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS) &&
 												AbstractCVM.isDistributed) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 					"called unpublishPort( " + portURI +
 					") on the host " + AbstractCVM.getHostname());
 		}
@@ -388,9 +388,9 @@ implements	DistributedComponentVirtualMachineI
 			throw new Exception("not a RMI port!");
 		}
 
-		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING) &&
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS) &&
 												AbstractCVM.isDistributed) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 					"called getRemoteReference(" + remoteURI +
 					") on the host " + AbstractCVM.getHostname()
 					+ " returning " + reference + ".");

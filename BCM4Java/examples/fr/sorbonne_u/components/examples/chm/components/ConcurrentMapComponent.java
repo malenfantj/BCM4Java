@@ -94,8 +94,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 //-----------------------------------------------------------------------------
 @OfferedInterfaces(offered = {MapReading.class,
-							 MapTesting.class,
-							 MapWriting.class})
+							  MapTesting.class,
+							  MapWriting.class})
 public class			ConcurrentMapComponent<K,V>
 extends		AbstractComponent
 //-----------------------------------------------------------------------------
@@ -157,8 +157,8 @@ extends		AbstractComponent
 		assert	reflectionInboundPortURI != null ;
 		assert	nbReadingThreads > 0 ;
 
-		this.tracer.setTitle("ConcurrentMapComponent") ;
-		this.tracer.setRelativePosition(0, 0) ;
+		this.getTracer().setTitle("ConcurrentMapComponent") ;
+		this.getTracer().setRelativePosition(0, 0) ;
 
 		this.hm = new HashMap<K,V>() ;
 		this.hashMapLock = new ReentrantReadWriteLock() ;
@@ -179,6 +179,9 @@ extends		AbstractComponent
 					this.getExecutorServiceIndex(WRITE_ACCESS_HANDLER_URI),
 					this) ;
 		this.writingInboundPort.publishPort() ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	// ------------------------------------------------------------------------

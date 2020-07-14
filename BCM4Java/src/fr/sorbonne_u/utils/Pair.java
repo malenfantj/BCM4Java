@@ -1,11 +1,11 @@
-package fr.sorbonne_u.components;
+package fr.sorbonne_u.utils;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
+//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -35,8 +35,8 @@ package fr.sorbonne_u.components;
 
 // -----------------------------------------------------------------------------
 /**
- * The enumeration <code>ComponentState</code> describes the different
- * states in which a component can be during its life-cycle.
+ * The class <code>Pair</code> implements a simple pair object containing two
+ * values.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -46,18 +46,74 @@ package fr.sorbonne_u.components;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2014-05-12</p>
+ * <p>Created on : 2020-07-10</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public enum				ComponentState
-implements	ComponentStateI
+public class			Pair<A,B>
+implements	PairI<A,B>
 {
-	INITIALISED,	// created, awaiting start
-	STARTED,		// may run tasks and services
-	FINALISED,		// resources freed before shutting down.
-	SHUTTINGDOWN,	// engaging shutdown, do not accept further tasks or requests
-	SHUTDOWN,		// all tasks finished
-	TERMINATED		// closed, may not be used anymore
+	private A			first;
+	private B			second;
+
+	/**
+	 * create a pair object with the two given values.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true		// no precondition.
+	 * post	{@code getFirst() == first && getSecond() == second}
+	 * </pre>
+	 *
+	 * @param first		value to be put as first element in the pair.
+	 * @param second	value to be put as second element in the pair.
+	 */
+	public				Pair(A first, B second)
+	{
+		super();
+		this.first = first;
+		this.second = second;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.utils.PairI#getFirst()
+	 */
+	@Override
+	public A			getFirst()
+	{
+		return this.first;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.utils.PairI#setFirst(java.lang.Object)
+	 */
+	@Override
+	public A			setFirst(A value)
+	{
+		A old = this.first;
+		this.first = value;
+		return old;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.utils.PairI#getSecond()
+	 */
+	@Override
+	public B			getSecond()
+	{
+		return this.second;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.utils.PairI#setSecond(java.lang.Object)
+	 */
+	@Override
+	public B			setSecond(B value)
+	{
+		B old = this.second;
+		this.second = value;
+		return old;
+	}
 }
 // -----------------------------------------------------------------------------

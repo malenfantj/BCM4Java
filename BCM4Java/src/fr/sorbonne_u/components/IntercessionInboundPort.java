@@ -408,23 +408,6 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#newInstance(java.lang.Object[])
-	 */
-	@Override
-	public ComponentI		newInstance(Object[] parameters)
-	throws Exception
-	{
-		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<ComponentI>() {
-						@Override
-						public ComponentI call() throws Exception {
-							return this.getServiceOwner().
-													newInstance(parameters) ;
-						}
-					}) ;
-	}
-
-	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeService(java.lang.String, java.lang.Object[])
 	 */
 	@Override

@@ -42,7 +42,7 @@ import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The interface <code>IntercessionI</code> defines the intercession
  * services offered by the Basic Component Model.
@@ -64,9 +64,9 @@ public interface		IntercessionI
 extends		OfferedCI,
 			RequiredCI
 {
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-ins facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * install a plug-in into this component.
@@ -74,14 +74,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	!this.isInstalled(plugin.getPluginURI())
-	 * post	this.isIntalled(plugin.getPluginURI())
+	 * pre	{@code !isInstalled(plugin.getPluginURI())}
+	 * post	{@code isIntalled(plugin.getPluginURI())}
 	 * </pre>
 	 *
 	 * @param plugin		plug-in implementation object.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			installPlugin(PluginI plugin) throws Exception ;
+	public void			installPlugin(PluginI plugin) throws Exception;
 
 	/**
 	 * finalise the plug-in, at least when finalising the owner component.
@@ -89,14 +89,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null and this.isIntalled(pluginURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code pluginURI != null && isIntalled(pluginURI)}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginURI		unique plug-in identifier.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			finalisePlugin(String pluginURI) throws Exception ;
+	public void			finalisePlugin(String pluginURI) throws Exception;
 
 	/**
 	 * uninstall a plug-in from this component.
@@ -104,14 +104,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null and this.isIntalled(pluginURI)
-	 * post	!this.isIntalled(pluginURI)
+	 * pre	{@code pluginURI != null && isIntalled(pluginURI)}
+	 * post	{@code !isIntalled(pluginURI)}
 	 * </pre>
 	 *
 	 * @param pluginURI		unique plug-in identifier.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			uninstallPlugin(String pluginURI) throws Exception ;
+	public void			uninstallPlugin(String pluginURI) throws Exception;
 
 	/**
 	 * initialise the identified plug-in by adding to the owner component every
@@ -120,18 +120,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null and !this.isInitialised(pluginURI)
-	 * post	this.isInitialised(pluginURI)
+	 * pre	{@code pluginURI != null && !isInitialised(pluginURI)}
+	 * post	{@code isInitialised(pluginURI)}
 	 * </pre>
 	 *
 	 * @param pluginURI		unique plug-in identifier.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			initialisePlugin(String pluginURI) throws Exception ;
+	public void			initialisePlugin(String pluginURI) throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Logging facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * set a logger for this component.
@@ -139,14 +139,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	logger != null
-	 * post	true			// no postcondition.
+	 * pre	{@code logger != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param logger		the logger to be set.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			setLogger(Logger logger) throws Exception ;
+	public void			setLogger(Logger logger) throws Exception;
 
 	/**
 	 * toggle the logging mode.
@@ -154,13 +154,13 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			toggleLogging() throws Exception ;
+	public void			toggleLogging() throws Exception;
 
 	/**
 	 * add a log message to the log buffer, tagging it with the current time
@@ -170,14 +170,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param message		string to be written on the log.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			logMessage(String message) throws Exception ;
+	public void			logMessage(String message) throws Exception;
 
 	/**
 	 * print the execution log on the predefined file.
@@ -185,13 +185,13 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			printExecutionLog() throws Exception ;
+	public void			printExecutionLog() throws Exception;
 
 	/**
 	 * print the execution log on the given file.
@@ -199,15 +199,15 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	fileName != null
-	 * post	true			// no postcondition.
+	 * pre	{@code fileName != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param fileName		the file to output the log.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			printExecutionLogOnFile(String fileName)
-	throws	Exception ;
+	throws	Exception;
 
 	/**
 	 * set a tracer for this component.
@@ -215,14 +215,14 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param tracer		the tracer to be added.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			setTracer(TracerWindow tracer) throws	Exception ;
+	public void			setTracer(TracerWindow tracer) throws	Exception;
 
 	/**
 	 * toggle the tracing mode.
@@ -230,13 +230,13 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			toggleTracing() throws Exception ;
+	public void			toggleTracing() throws Exception;
 
 	/**
 	 * add a trace message to the tracing console.
@@ -244,18 +244,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param message		trace message to be output.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			traceMessage(String message) throws	Exception ;
+	public void			traceMessage(String message) throws	Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Implemented interfaces management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * add a required interface to the required interfaces of this component.
@@ -263,16 +263,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	!this.isRequiredInterface(inter)
-	 * post	this.isRequiredInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code !isRequiredInterface(inter)}
+	 * post	{@code isRequiredInterface(inter)}
 	 * </pre>
 	 *
 	 * @param inter			required interface to be added.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			addRequiredInterface(Class<? extends RequiredCI> inter)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * remove a required interface from the required interfaces of this component.
@@ -280,18 +280,18 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	this.isRequiredInterface(inter)
-	 * pre	this.findPortsFromInterface(inter) == null || this.findPortsFromInterface(inter).isEmpty()
-	 * post	!this.isRequiredInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code isRequiredInterface(inter)}
+	 * pre	{@code findPortsFromInterface(inter) == null || findPortsFromInterface(inter).isEmpty()}
+	 * post	{@code !isRequiredInterface(inter)}
 	 * </pre>
 	 *
 	 * @param inter 		required interface to be removed.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			removeRequiredInterface(
 		Class<? extends RequiredCI> inter
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * add an offered interface to the offered interfaces of this component.
@@ -299,13 +299,13 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	!this.isOfferedInterface(inter)
-	 * post	this.isOfferedInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code !isOfferedInterface(inter)}
+	 * post	{@code isOfferedInterface(inter)}
 	 * </pre>
 	 *
 	 * @param inter 		offered interface to be added.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			addOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception;
@@ -316,21 +316,21 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	this.isOfferedInterface(inter)
-	 * pre	this.findPortsFromInterface(inter) == null || this.findPortsFromInterface(inter).isEmpty()
-	 * post	!this.isOfferedInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code isOfferedInterface(inter)}
+	 * pre	{@code findPortsFromInterface(inter) == null || findPortsFromInterface(inter).isEmpty()}
+	 * post	{@code !isOfferedInterface(inter)}
 	 * </pre>
 	 *
-	 * @param inter			offered interface ot be removed
-	 * @throws Exception	<i>todo.</i>
+	 * @param inter			offered interface to be removed
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			removeOfferedInterface(Class<? extends OfferedCI> inter)
-	throws Exception ;
+	throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Port management
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * connect the component port to another component's port using the
@@ -339,23 +339,23 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and otherPortURI != null and connector != null
-	 * pre	this.isPortExisting(portURI)
-	 * pre	!this.isPortConnected(portURI)
-	 * post	this.isPortConnected(portURI)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && otherPortURI != null && connector != null}
+	 * pre	{@code isPortExisting(portURI)}
+	 * pre	{@code !isPortConnected(portURI)}
+	 * post	{@code isPortConnected(portURI)}
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port to be connected.
 	 * @param otherPortURI	URI of the other port to be connected with.
 	 * @param ccname		connector class name to be used in the connection.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			doPortConnection(
 		String portURI,
 		String otherPortURI,
 		String ccname
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * connect the component port to another component's port using the
@@ -364,39 +364,23 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and otherPortURI != null and ccname != null
-	 * pre	this.isPortExisting(portURI)
-	 * pre	!this.isPortConnected(portURI)
-	 * post	this.isPortConnected(portURI)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && otherPortURI != null && ccname != null}
+	 * pre	{@code isPortExisting(portURI)}
+	 * pre	{@code !isPortConnected(portURI)}
+	 * post	{@code isPortConnected(portURI)}
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port to be connected.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			doPortDisconnection(
 		String portURI
-		) throws Exception ;
+		) throws Exception;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Reflection facility
-	// ------------------------------------------------------------------------
-
-	/**
-	 * create a new instance of the component.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param parameters	parameters to be passed to the component constructor.
-	 * @return				a Java reference to the object implementing the component.
-	 * @throws Exception	<i>todo.</i>
-	 */
-	public ComponentI	newInstance(Object[] parameters) throws Exception ;
+	// -------------------------------------------------------------------------
 
 	/**
 	 * invoke a component service.
@@ -404,17 +388,17 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	name != null
-	 * post	true			// no postcondition.
+	 * pre	{@code name != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
 	 * @return				the result of the service invocation.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public Object		invokeService(String name, Object[] params)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * invoke a component service synchronously.
@@ -422,17 +406,17 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	name != null
-	 * post	true			// no postcondition.
+	 * pre	{@code name != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
 	 * @return				the result of the service invocation.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public Object		invokeServiceSync(String name, Object[] params)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * invoke a component service asynchronously.
@@ -440,16 +424,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	name != null
-	 * post	true			// no postcondition.
+	 * pre	{@code name != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			invokeServiceAsync(String name, Object[] params)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * execute a task on the component after all components have been started;
@@ -464,13 +448,13 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			execute() throws Exception ;
+	public void			execute() throws Exception;
 
 	/**
 	 * The class <code>AbstractRemoteComponentTask</code> allows to create
@@ -482,7 +466,7 @@ extends		OfferedCI,
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant		true
+	 * invariant	true
 	 * </pre>
 	 * 
 	 * <p>Created on : 2020-02-13</p>
@@ -493,7 +477,7 @@ extends		OfferedCI,
 	implements		Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		transient protected ComponentTask	task ;
+		transient protected ComponentTask	task;
 
 		/**
 		 * set the reference to the component task when ready to execute on
@@ -502,8 +486,8 @@ extends		OfferedCI,
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	t != null
-		 * post	true			// no postcondition.
+		 * pre	{@code t != null}
+		 * post	true		// no postcondition.
 		 * </pre>
 		 *
 		 * @param t				the component task that will be submitted to the remote component.
@@ -511,8 +495,8 @@ extends		OfferedCI,
 		 */
 		public void			setComponentTask(ComponentTask t) throws Exception
 		{
-			assert	t != null ;
-			this.task = t ;
+			assert	t != null;
+			this.task = t;
 		}
 		/**
 		 * return the reference to the component owner of the executor service
@@ -521,8 +505,8 @@ extends		OfferedCI,
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true		// no precondition.
+		 * post	true		// no postcondition.
 		 * </pre>
 		 *
 		 * @return	the reference to the component owner of the executor service that will execute this task.
@@ -530,7 +514,7 @@ extends		OfferedCI,
 		 */
 		public ComponentI	getTaskOwner() throws Exception
 		{
-			return this.task.getTaskOwner() ;
+			return this.task.getTaskOwner();
 		}
 
 		/**
@@ -540,8 +524,8 @@ extends		OfferedCI,
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true		// no precondition.
+		 * post	true		// no postcondition.
 		 * </pre>
 		 *
 		 * @return	 the reference to the component owner or its plug-in that will execute this task.
@@ -549,7 +533,7 @@ extends		OfferedCI,
 		 */
 		public Object		getTaskProviderReference() throws Exception
 		{
-			return this.task.getTaskProviderReference() ;
+			return this.task.getTaskProviderReference();
 		}
 
 		/**
@@ -559,13 +543,13 @@ extends		OfferedCI,
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true		// no precondition.
+		 * post	true		// no postcondition.
 		 * </pre>
 		 *
 		 * @throws Exception	<i>to do</i>.
 		 */
-		public abstract void run() throws Exception ;
+		public abstract void run() throws Exception;
 	}
 
 	/**
@@ -574,16 +558,16 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t				component task to be executed as main task.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			runTask(AbstractRemoteComponentTask t)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * run the <code>ComponentTask</code> on the given executor service.
@@ -591,19 +575,19 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI	URI of the executor service that will run the task.
 	 * @param t						component task to be executed as main task.
-	 * @throws Exception			<i>todo.</i>
+	 * @throws Exception			<i>to do</i>.
 	 */
 	public void			runTask(
 		String executorServiceURI,
 		AbstractRemoteComponentTask t
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * insert a piece of code at the beginning of the specified component
@@ -612,22 +596,22 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	serviceName != null
-	 * pre	parametersCanonicalClassNames != null
-	 * pre	code != null
-	 * post	true			// no postcondition.
+	 * pre	{@code serviceName != null}
+	 * pre	{@code parametersCanonicalClassNames != null}
+	 * pre	{@code code != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param methodName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception					<i>todo.</i>
+	 * @throws Exception					<i>to do</i>.
 	 */
 	public void			insertBeforeService(
 		String methodName,
 		String[] parametersCanonicalClassNames,
 		String code
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * insert a piece of code at the end of the specified component
@@ -636,21 +620,21 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	serviceName != null
-	 * pre	parametersCanonicalClassNames != null
-	 * pre	code != null
+	 * pre	{@code serviceName != null}
+	 * pre	{@code parametersCanonicalClassNames != null}
+	 * pre	{@code code != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @param methodName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception					<i>todo.</i>
+	 * @throws Exception					<i>to do</i>.
 	 */
 	public void			insertAfterService(
 		String methodName,
 		String[] parametersCanonicalClassNames,
 		String code
-		) throws Exception ;
+		) throws Exception;
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

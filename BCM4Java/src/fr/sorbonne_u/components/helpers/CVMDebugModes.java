@@ -75,22 +75,25 @@ implements	CVMDebugModesI
 {
 	/** trace the actions done by registries.								*/
 	REGISTRY,
-	/** trace the actions done for plug-in management.						*/
-	PLUGIN,
 	/** trace the actions done by the distributed CVM cyclic barrier.		*/
 	CYCLIC_BARRIER,
 	/** trace the actions made to manage the life cycle of the component
 	 *  virtual machine.													*/
 	LIFE_CYCLE,
-	/** trace the actions made to manage the deployment of components on
-	 *  the current component virtual machine.								*/
-	COMPONENT_DEPLOYMENT,
-	/** trace the actions made for the publication of ports.				*/
-	PUBLIHSING,
+	/** trace the actions made for the management of component interfaces.	*/
+	INTERFACES,
+	/** trace the actions made for the management of ports.					*/
+	PORTS,
 	/** trace the actions pertaining to the connections of ports.			*/
 	CONNECTING,
 	/** trace the actions made when calling component services through
-	 *  ports and connectors.												*/
-	CALLING
+	 *  ports, connectors and executor services.							*/
+	CALLING,
+	/** trace the actions when managing executor services.					*/
+	EXECUTOR_SERVICES,
+	/** trace the actions done for plug-in management.						*/
+	PLUGIN,
+	/** trace the actions when managing subcomponents.						*/
+	INNER_COMPONENTS
 }
 // -----------------------------------------------------------------------------

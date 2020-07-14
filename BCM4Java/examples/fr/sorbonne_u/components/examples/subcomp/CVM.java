@@ -1,12 +1,10 @@
-package fr.sorbonne_u.components.examples.chm;
+package fr.sorbonne_u.components.examples.subcomp;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -34,25 +32,20 @@ package fr.sorbonne_u.components.examples.chm;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import java.util.function.Function;
+import java.util.function.Predicate;
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.cvm.AbstractCVM ;
-import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
-import fr.sorbonne_u.components.examples.chm.components.TesterComponent;
+import fr.sorbonne_u.components.AbstractPort;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.examples.subcomp.components.IntegerPipeline;
+import fr.sorbonne_u.components.examples.subcomp.components.PipelineClient;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
- * The class <code>CVM</code> deploys and launch a simple tests for the
- * <code>ConcurrentMapComponent</code>.
+ * The class <code>CVM</code>
  *
  * <p><strong>Description</strong></p>
- * 
- * <p>
- * The class creates two components, an instance of
- * <code>ConcurrentMapComponent</code> and an instance of
- * <code>TesterComponent</code>. Their inter-connection and the test
- * scenario is implemented in the two components.
- * </p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -60,21 +53,14 @@ import fr.sorbonne_u.components.helpers.CVMDebugModes;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-02-11</p>
+ * <p>Created on : 2020-01-28</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			CVM
 extends		AbstractCVM
 {
-	/** URI of the reflection inbound port of the concurrent map
-	 *  component.														*/
-	protected static final String	CONCURRENT_MAP_RIP_URI = "cmrip" ;
-
-	public				CVM() throws Exception
-	{
-		super(false) ;
-	}
+	public CVM() throws Exception {}
 
 	/**
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
@@ -94,42 +80,37 @@ extends		AbstractCVM
 		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING);
 		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING);
 		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.INNER_COMPONENTS);
 
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 		// Creation phase
-		// --------------------------------------------------------------------
+		// ---------------------------------------------------------------------
 
-		String cmcURI =
-			AbstractComponent.createComponent(
-				ConcurrentMapComponent.class.getCanonicalName(),
-				new Object[]{CONCURRENT_MAP_RIP_URI, 5}) ;
-		this.toggleTracing(cmcURI) ;
+		String ipIBP_URI = AbstractPort.generatePortURI() ;
+		String pcIBP_URI = AbstractPort.generatePortURI() ;
+		Predicate<Integer> predicate = (i -> i % 2 == 0) ;
+		Function<Integer,Integer> function = (i -> i * 100) ;
 
-		String tcURI =
-			AbstractComponent.createComponent(
-				TesterComponent.class.getCanonicalName(),
-				new Object[]{CONCURRENT_MAP_RIP_URI}) ;
-		this.toggleTracing(tcURI) ;
+		AbstractComponent.createComponent(
+				IntegerPipeline.class.getCanonicalName(),
+				new Object[]{predicate, function, ipIBP_URI, pcIBP_URI}) ;
+		AbstractComponent.createComponent(
+				PipelineClient.class.getCanonicalName(),
+				new Object[]{pcIBP_URI, ipIBP_URI}) ;
 
 		super.deploy();
 	}
 
-	public static void	main(String[] args)
+	public static void main(String[] args)
 	{
 		try {
-			// Create an instance of the defined component virtual machine.
-			CVM a = new CVM() ;
-			CVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
-			// Execute the application.
-			a.startStandardLifeCycle(5000L) ;
-			// Give some time to see the traces (convenience).
+			CVM c = new CVM() ;
+			c.startStandardLifeCycle(10000L) ;
 			Thread.sleep(10000L) ;
-			// Simplifies the termination (termination has yet to be treated
-			// properly in BCM).
 			System.exit(0) ;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException(e) ;
 		}
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

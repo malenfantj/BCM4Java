@@ -57,7 +57,7 @@ import fr.sorbonne_u.components.ports.PortI;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	true
  * </pre>
  * 
  * <p>Created on : 2017-02-17</p>
@@ -74,7 +74,7 @@ extends		AbstractComponent
 // -----------------------------------------------------------------------------
 {
 	public final static String	DYNAMIC_CONNECTION_PLUGIN_URI =
-													"serverSidePluginURI" ;
+													"serverSidePluginURI";
 
 	// -------------------------------------------------------------------------
 	// Inner classes
@@ -90,7 +90,7 @@ extends		AbstractComponent
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant		true
+	 * invariant	true
 	 * </pre>
 	 * 
 	 * <p>Created on : 2017-02-17</p>
@@ -111,11 +111,11 @@ extends		AbstractComponent
 			) throws Exception
 		{
 			assert	ExampleI.class.isAssignableFrom(offeredInterface) &&
-						offeredInterface.isAssignableFrom(ExampleI.class) ;
+						offeredInterface.isAssignableFrom(ExampleI.class);
 
-			InboundPortI ret = new ExampleInboundPort(this.owner) ;
-			ret.publishPort() ;
-			return ret ;
+			InboundPortI ret = new ExampleInboundPort(this.getOwner());
+			ret.publishPort();
+			return ret;
 		}
 	}
 
@@ -129,21 +129,21 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	reflectionInboundPortURI != null
-	 * post	isInstalled(DynamicConnectionServerSidePlugin.PLUGIN_URI)
+	 * pre	{@code reflectionInboundPortURI != null}
+	 * post	{@code isInstalled(DynamicConnectionServerSidePlugin.PLUGIN_URI)}
 	 * </pre>
 	 *
 	 * @param reflectionInboundPortURI	URI of the reflection inbound port for this component.
-	 * @throws Exception 				<i>to do.</i>
+	 * @throws Exception 				<i>to do</i>.
 	 */
 	protected			ServerSideExample(
 		String reflectionInboundPortURI
 		) throws Exception
 	{
-		super(reflectionInboundPortURI, 1, 0) ;
+		super(reflectionInboundPortURI, 1, 0);
 
-		assert	reflectionInboundPortURI != null ;
-		this.toggleTracing() ;
+		assert	reflectionInboundPortURI != null;
+		this.toggleTracing();
 	}
 
 	// -------------------------------------------------------------------------
@@ -158,13 +158,13 @@ extends		AbstractComponent
 	{
 		try {
 			String[] uris =
-				this.findInboundPortURIsFromInterface(ExampleI.class) ;
-			PortI p = this.findPortFromURI(uris[0]) ;
-			p.unpublishPort() ;
+					this.findInboundPortURIsFromInterface(ExampleI.class);
+			PortI p = this.findPortFromURI(uris[0]);
+			p.unpublishPort();
 		} catch (Exception e) {
-			throw new ComponentShutdownException(e) ;
+			throw new ComponentShutdownException(e);
 		}
-		super.shutdown() ;
+		super.shutdown();
 	}
 
 	// -------------------------------------------------------------------------
@@ -178,8 +178,8 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param i	integer that must be incremented by 1.
@@ -188,7 +188,7 @@ extends		AbstractComponent
 	public int			add1(int i)
 	{
 		this.logMessage("server side called with " + i);
-		return i + 1 ;
+		return i + 1;
 	}
 }
 // -----------------------------------------------------------------------------

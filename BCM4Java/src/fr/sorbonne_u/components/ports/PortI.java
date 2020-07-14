@@ -347,7 +347,7 @@ extends		Remote
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code !isDestroyed()}
+	 * pre	true		// no precondition.
 	 * post	true		// no postcondition.
 	 * </pre>
 	 *

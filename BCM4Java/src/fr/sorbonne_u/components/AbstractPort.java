@@ -219,8 +219,8 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	p != null
-	 * post	true			// no postcondition.
+	 * pre	{@code p != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param p				instance on which the invariant must be checked.
@@ -260,8 +260,8 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	p != null
-	 * post	true			// no postcondition.
+	 * pre	{@code p != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param p				instance on which the invariant must be checked.
@@ -389,7 +389,7 @@ implements	PortI
 	 * post	{@code getOwner().isPortExisting(getPortURI())}
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected void		addPortToOwner() throws Exception
 	{
@@ -402,6 +402,24 @@ implements	PortI
 		assert	this.getOwner().isPortExisting(this.getPortURI()) :
 					new PostconditionException(
 							"getOwner().isPortExisting(getPortURI())");
+	}
+
+	/**
+	 * get the index of the executor service with the given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code getOwner().validExecutorServiceURI(uri)}
+	 * post	{@code getOwner().validExecutorServiceIndex(ret)}
+	 * </pre>
+	 *
+	 * @param uri	URI of the sought executor service.
+	 * @return		the index of the executor service with the given URI.
+	 */
+	protected int		getExecutorServiceIndex(String uri)
+	{
+		return this.owner.getExecutorServiceIndex(uri);
 	}
 
 	/**

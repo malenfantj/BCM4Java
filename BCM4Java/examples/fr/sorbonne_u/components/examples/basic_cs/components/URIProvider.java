@@ -133,14 +133,16 @@ extends		AbstractComponent
 		p.publishPort();
 
 		if (AbstractCVM.isDistributed) {
-			this.executionLog.setDirectory(System.getProperty("user.dir"));
+			this.getLogger().setDirectory(System.getProperty("user.dir"));
 		} else {
-			this.executionLog.setDirectory(System.getProperty("user.home"));
+			this.getLogger().setDirectory(System.getProperty("user.home"));
 		}
-		this.tracer.setTitle("provider");
-		this.tracer.setRelativePosition(1, 0);
+		this.getTracer().setTitle("provider");
+		this.getTracer().setRelativePosition(1, 0);
 
 		URIProvider.checkInvariant(this) ;
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 		assert	this.uriPrefix.equals(uriPrefix) :
 					new PostconditionException("The URI prefix has not "
 												+ "been initialised!");

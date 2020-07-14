@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.plugins.dipc;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -47,7 +46,7 @@ import fr.sorbonne_u.components.plugins.dipc.ports.PushControlInboundPort;
 import fr.sorbonne_u.components.ports.AbstractDataInboundPort;
 import fr.sorbonne_u.components.ports.PortI;
 
-//----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>DataInterfacesPushControlServerSidePlugin</code>
  * implements the server-side of a push control service that allows to
@@ -72,19 +71,19 @@ implements	PushControlImplementationI
 {
 	private static final long serialVersionUID = 1L;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in internal constants and variables
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
-	/** inbound port through which the push control calls are received.	*/
-	protected PushControlInboundPort				pushControlInboundPort ;
+	/** inbound port through which the push control calls are received.		*/
+	protected PushControlInboundPort				pushControlInboundPort;
 	/** future variables associated with the scheduled push tasks to
-	 *  be able to cancel them when required.							*/
-	protected HashMap<String,ScheduledFuture<?>>	futures ;
+	 *  be able to cancel them when required.								*/
+	protected HashMap<String,ScheduledFuture<?>>	futures;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in generic methods
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * verify that the owner can schedule tasks, as this facility is
@@ -95,8 +94,8 @@ implements	PushControlImplementationI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner != null and owner.canScheduleTasks()
-	 * post	true				// no more postconditions.
+	 * pre	{@code owner != null && owner.canScheduleTasks()}
+	 * post	true		// no more postconditions.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractPlugin#installOn(fr.sorbonne_u.components.ComponentI)
@@ -105,11 +104,11 @@ implements	PushControlImplementationI
 	public void			installOn(ComponentI owner)
 	throws Exception
 	{
-		assert	owner != null && owner.canScheduleTasks() ;
+		assert	owner != null && owner.canScheduleTasks();
 
-		super.installOn(owner) ;
+		super.installOn(owner);
 
-		this.addOfferedInterface(PushControlI.class) ;
+		this.addOfferedInterface(PushControlI.class);
 	}
 
 	/**
@@ -119,18 +118,18 @@ implements	PushControlImplementationI
 	public void			initialise() throws Exception
 	{
 		this.pushControlInboundPort =
-				new PushControlInboundPort(this.getPluginURI(), owner) ;
-		this.pushControlInboundPort.publishPort() ;
-		this.futures = new HashMap<String,ScheduledFuture<?>>() ;
+			new PushControlInboundPort(this.getPluginURI(), this.getOwner());
+		this.pushControlInboundPort.publishPort();
+		this.futures = new HashMap<String,ScheduledFuture<?>>();
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.AbstractPlugin#isInitialised()
 	 */
 	@Override
-	public boolean		isInitialised() throws Exception
+	public boolean		isInitialised()
 	{
-		return super.isInitialised() && this.futures != null ;
+		return super.isInitialised() && this.futures != null;
 	}
 
 	/**
@@ -144,9 +143,9 @@ implements	PushControlImplementationI
 	public void			finalise() throws Exception
 	{
 		for (Entry<String,ScheduledFuture<?>> e : this.futures.entrySet()) {
-			e.getValue().cancel(false) ;
+			e.getValue().cancel(false);
 		}
-		this.futures.clear() ;
+		this.futures.clear();
 	}
 
 	/**
@@ -155,14 +154,14 @@ implements	PushControlImplementationI
 	@Override
 	public void			uninstall() throws Exception
 	{
-		this.pushControlInboundPort.unpublishPort() ;
-		this.pushControlInboundPort.destroyPort() ;
-		this.removeOfferedInterface(PushControlI.class) ;
+		this.pushControlInboundPort.unpublishPort();
+		this.pushControlInboundPort.destroyPort();
+		this.removeOfferedInterface(PushControlI.class);
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in specific methods
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#isPortExisting(java.lang.String)
@@ -171,12 +170,12 @@ implements	PushControlImplementationI
 	public boolean		isPortExisting(String portURI)
 	throws Exception
 	{
-		assert	this.isInitialised() ;
-		assert	portURI != null ;
+		assert	this.isInitialised();
+		assert	portURI != null;
 
-		PortI p = this.findPortFromURI(portURI) ;
-		return this.owner.isPortExisting(portURI) &&
-								p instanceof AbstractDataInboundPort ;
+		PortI p = this.findPortFromURI(portURI);
+		return this.getOwner().isPortExisting(portURI) &&
+								p instanceof AbstractDataInboundPort;
 	}
 
 	/**
@@ -188,19 +187,19 @@ implements	PushControlImplementationI
 		final long interval
 		) throws Exception
 	{
-		assert	this.isInitialised() ;
-		assert	portURI != null ;
-		assert	interval > 0 ;
-		assert	this.isPortExisting(portURI) ;
+		assert	this.isInitialised();
+		assert	portURI != null;
+		assert	interval > 0;
+		assert	this.isPortExisting(portURI);
 
-		final DataInterfacesPushControlServerSidePlugin plugin = this ;
+		final DataInterfacesPushControlServerSidePlugin plugin = this;
 		ScheduledFuture<?> f =
 			this.scheduleTaskAtFixedRateOnComponent(
 					new AbstractComponent.AbstractTask() {					
 						@Override
 						public void run() {
 							try {
-								plugin.pushOnPort(portURI) ;
+								plugin.pushOnPort(portURI);
 							} catch (Exception e) {
 								throw new RuntimeException(e);
 							}
@@ -208,8 +207,8 @@ implements	PushControlImplementationI
 					},
 					interval,
 					interval,
-					TimeUnit.MILLISECONDS) ;
-		this.futures.put(portURI, f) ;
+					TimeUnit.MILLISECONDS);
+		this.futures.put(portURI, f);
 	}
 
 	/**
@@ -222,13 +221,13 @@ implements	PushControlImplementationI
 		final int n
 		) throws Exception
 	{
-		assert	this.isInitialised() ;
-		assert	portURI != null ;
-		assert	this.isPortExisting(portURI) ;
-		assert	interval > 0 ;
-		assert	n > 0 ;
+		assert	this.isInitialised();
+		assert	portURI != null;
+		assert	this.isPortExisting(portURI);
+		assert	interval > 0;
+		assert	n > 0;
 
-		final DataInterfacesPushControlServerSidePlugin plugin = this ;
+		final DataInterfacesPushControlServerSidePlugin plugin = this;
 		ScheduledFuture<?> f =
 			this.scheduleTaskOnComponent(
 					new AbstractComponent.AbstractTask() {
@@ -237,15 +236,15 @@ implements	PushControlImplementationI
 							try {
 								plugin.limitedPushingTask(portURI ,
 														  interval,
-														  n) ;
+														  n);
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								throw new RuntimeException(e);
 							}
 						}
 					},
 					interval,
-					TimeUnit.MILLISECONDS) ;
-		this.futures.put(portURI, f) ;
+					TimeUnit.MILLISECONDS);
+		this.futures.put(portURI, f);
 	}
 
 	/**
@@ -255,15 +254,15 @@ implements	PushControlImplementationI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	portURI != null and this.isPortExisting(portURI)
-	 * pre	interval &gt; 0 and n &gt;= 0
-	 * post	true			// no postcondition.
+	 * pre	{@code portURI != null && isPortExisting(portURI)}
+	 * pre	{@code interval > 0 && n >= 0}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI		URI of the port through which the push is done.
 	 * @param interval		delay between pushes (in milliseconds).
 	 * @param n				remaining number of pushes to be done, unless stopped.
-	 * @throws Exception 	<i>to do.</i>
+	 * @throws Exception 	<i>to do</i>.
 	 */
 	protected void		limitedPushingTask(	
 		final String portURI,
@@ -271,26 +270,26 @@ implements	PushControlImplementationI
 		final int n
 		) throws Exception
 	{
-		assert	portURI != null ;
-		assert	this.isPortExisting(portURI) ;
-		assert	interval > 0 ;
-		assert	n >= 0 ;
+		assert	portURI != null;
+		assert	this.isPortExisting(portURI);
+		assert	interval > 0;
+		assert	n >= 0;
 
 		// perform the next push.
 		try {
-			this.pushOnPort(portURI) ;
+			this.pushOnPort(portURI);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		// remove the future that corresponds to the current execution of
 		// the method (allows to stop the pushes when requested).
 		if (this.futures.containsKey(portURI)) {
-			this.futures.remove(portURI) ;
+			this.futures.remove(portURI);
 		}
 		// if there are still pushed to be done, schedule the next
 		// execution of the method.
 		if (n > 1) {
-			final DataInterfacesPushControlServerSidePlugin plugin = this ;
+			final DataInterfacesPushControlServerSidePlugin plugin = this;
 			ScheduledFuture<?> f =
 				this.scheduleTaskOnComponent(
 						new AbstractComponent.AbstractTask() {
@@ -301,12 +300,12 @@ implements	PushControlImplementationI
 															  interval,
 															  n - 1);
 								} catch (Exception e) {
-									throw new RuntimeException(e) ;
+									throw new RuntimeException(e);
 								}
 							}
 						},
 						interval,
-						TimeUnit.MILLISECONDS) ;
+						TimeUnit.MILLISECONDS);
 			this.futures.put(portURI, f) ;
 		}
 	}
@@ -317,11 +316,11 @@ implements	PushControlImplementationI
 	@Override
 	public boolean		currentlyPushesData(String portURI) throws Exception
 	{
-		assert	this.isInitialised() ;
-		assert	portURI != null ;
-		assert	this.isPortExisting(portURI) ;
+		assert	this.isInitialised();
+		assert	portURI != null;
+		assert	this.isPortExisting(portURI);
 
-		return this.futures.containsKey(portURI) ;
+		return this.futures.containsKey(portURI);
 	}
 
 	/**
@@ -330,13 +329,13 @@ implements	PushControlImplementationI
 	@Override
 	public void			stopPushing(String portURI) throws Exception
 	{
-		assert	this.isInitialised() ;
-		assert	portURI != null ;
-		assert	this.isPortExisting(portURI) ;
+		assert	this.isInitialised();
+		assert	portURI != null;
+		assert	this.isPortExisting(portURI);
 
 		if (this.currentlyPushesData(portURI)) {
-			ScheduledFuture<?> f = this.futures.remove(portURI) ;
-			f.cancel(false) ;
+			ScheduledFuture<?> f = this.futures.remove(portURI);
+			f.cancel(false);
 		}
 	}
 
@@ -348,15 +347,15 @@ implements	PushControlImplementationI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isInitialised()
-	 * pre	portURI != null
-	 * pre	this.currentlyPushesData(String portURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code isInitialised()}
+	 * pre	{@code portURI != null}
+	 * pre	{@code currentlyPushesData(String portURI)}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI		URI of the port on which data has to be pushed.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected abstract void	pushOnPort(String portURI) throws Exception ;	
 }
-//----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

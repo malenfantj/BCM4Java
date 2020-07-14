@@ -1,11 +1,10 @@
-package fr.sorbonne_u.components;
+package fr.sorbonne_u.components.exceptions;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// basic component programming model to program with components
-// distributed applications in the Java programming language.
+// new implementation of the DEVS simulation standard for Java.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -35,8 +34,9 @@ package fr.sorbonne_u.components;
 
 // -----------------------------------------------------------------------------
 /**
- * The enumeration <code>ComponentState</code> describes the different
- * states in which a component can be during its life-cycle.
+ * The class <code>ExecutorServicesManagementException</code> defines exceptions
+ * that are thrown when something goes wrong in the management of executor
+ * services.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -46,18 +46,45 @@ package fr.sorbonne_u.components;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2014-05-12</p>
+ * <p>Created on : 2020-07-07</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public enum				ComponentState
-implements	ComponentStateI
+public class			ExecutorServicesManagementException
+extends		BCMException
 {
-	INITIALISED,	// created, awaiting start
-	STARTED,		// may run tasks and services
-	FINALISED,		// resources freed before shutting down.
-	SHUTTINGDOWN,	// engaging shutdown, do not accept further tasks or requests
-	SHUTDOWN,		// all tasks finished
-	TERMINATED		// closed, may not be used anymore
+	private static final long serialVersionUID = 1L;
+
+	public				ExecutorServicesManagementException()
+	{
+	}
+
+	public				ExecutorServicesManagementException(String message)
+	{
+		super(message);
+	}
+
+	public				ExecutorServicesManagementException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	public				ExecutorServicesManagementException(
+		String message,
+		Throwable cause
+		)
+	{
+		super(message, cause);
+	}
+
+	public				ExecutorServicesManagementException(
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
 }
 // -----------------------------------------------------------------------------

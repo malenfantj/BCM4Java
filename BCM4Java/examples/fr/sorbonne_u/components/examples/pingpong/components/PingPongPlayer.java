@@ -215,12 +215,15 @@ extends		AbstractComponent
 		this.otherPingPongTwoWayPortURI = otherPingPongTwoWayPortURI ;
 		this.initialise(pingPongTwoWayPortURI) ;
 
-		this.tracer.setTitle(uri) ;
+		this.getTracer().setTitle(uri) ;
 		if (uri.equals(CVM.PING_PONG_URI_1)) {
-			this.tracer.setRelativePosition(1, 0) ;
+			this.getTracer().setRelativePosition(1, 0) ;
 		} else {
-			this.tracer.setRelativePosition(1, 1) ;
+			this.getTracer().setRelativePosition(1, 1) ;
 		}
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	/**

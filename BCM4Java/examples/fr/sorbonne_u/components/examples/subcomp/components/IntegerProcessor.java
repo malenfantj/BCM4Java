@@ -102,6 +102,9 @@ implements	IntegerProcessingI
 	{
 		super(1, 0) ;
 		this.initialise(process, myIPibpURI) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	/**
@@ -130,6 +133,9 @@ implements	IntegerProcessingI
 	{
 		super(reflectionInboundPortURI, 1, 0) ;
 		this.initialise(process, myIPibpURI) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	/**

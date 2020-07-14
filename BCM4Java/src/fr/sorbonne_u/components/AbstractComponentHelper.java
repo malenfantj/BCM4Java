@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -39,8 +38,9 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>AbstractComponentHelper</code> defines a set of static
  * methods used in the class <code>AbstractComponent</code> but also in
@@ -60,6 +60,8 @@ import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
  */
 public class			AbstractComponentHelper
 {
+	/** map of types that must be considered equivalent when looking for
+	 *  a constructor to create a component.								*/
 	private static final Map<Class<?>, Class<?>> equivalentTypeMap =
 															new HashMap<>(18) ;
 
@@ -91,8 +93,8 @@ public class			AbstractComponentHelper
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param type	a Java predefined type as a class or a wrapper class.
@@ -101,7 +103,7 @@ public class			AbstractComponentHelper
 	protected static Class<?>	getEquivalentType(Class<?> type)
 	{
 		if (!equivalentTypeMap.containsKey(type)) {
-			throw new RuntimeException("unknown type pr wrapper class: " +
+			throw new RuntimeException("unknown type or wrapper class: " +
 											type.getCanonicalName()) ;
 		}
 		return equivalentTypeMap.get(type) ;
@@ -114,8 +116,8 @@ public class			AbstractComponentHelper
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code class1 != null && class2 != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param class1	a class to be tested.
@@ -127,6 +129,10 @@ public class			AbstractComponentHelper
 		Class<?> class2
 		)
 	{
+		assert	class1 != null && class2 != null :
+					new PreconditionException(
+							"class1 != null && class2 != null");
+
 		if (class1.isPrimitive()) {
 			class1 = getEquivalentType(class1) ;
 		}
@@ -142,8 +148,8 @@ public class			AbstractComponentHelper
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	cl != null
-	 * post	true			// no postcondition.
+	 * pre	{@code cl != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param cl	a class to be checked.
@@ -151,7 +157,8 @@ public class			AbstractComponentHelper
 	 */
 	public static boolean	isComponentClass(Class<?> cl)
 	{
-		assert	cl != null ;
+		assert	cl != null :
+					new PreconditionException("cl != null");
 
 		// All component classes must inherit from AbstractComponent
 		boolean ret = AbstractComponent.class.isAssignableFrom(cl) ;
@@ -168,8 +175,8 @@ public class			AbstractComponentHelper
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	cl != null
-	 * post	true			// no postcondition.
+	 * pre	{@code cl != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param cl	a class that represents a component to be checked.
@@ -177,7 +184,8 @@ public class			AbstractComponentHelper
 	 */
 	public static boolean	protectedConstructorsOnly(Class<?> cl)
 	{
-		assert	cl != null ;
+		assert	cl != null :
+					new PreconditionException("cl != null");
 
 		boolean ret = true ;
 		while (!cl.equals(Object.class) && ret) {
@@ -197,7 +205,7 @@ public class			AbstractComponentHelper
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	cl != null and constructorParams != null
+	 * pre	{@code cl != null && constructorParams != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -212,6 +220,10 @@ public class			AbstractComponentHelper
 		Object[] constructorParams
 		) throws NoSuchMethodException, SecurityException
 	{
+		assert	cl != null && constructorParams != null :
+					new PreconditionException(
+							"cl != null && constructorParams != null");
+
 		Constructor<?> cons = null ;
 		Class<?>[] actualsTypes = new Class[constructorParams.length] ;
 		for (int i = 0 ; i < constructorParams.length ; i++) {
@@ -250,8 +262,8 @@ public class			AbstractComponentHelper
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	fromClass != null and toClass != null
-	 * post	true			// no postcondition.
+	 * pre	{@code fromClass != null && toClass != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param fromClass	actual parameter type which values must be assigned to the formal parameter.
@@ -260,13 +272,29 @@ public class			AbstractComponentHelper
 	 */
 	private static boolean	isAssignable(Class<?> fromClass, Class<?> toClass)
 	{
+		assert	fromClass != null && toClass != null :
+					new PreconditionException(
+							"fromClass != null && toClass != null");
+
 		return toClass.isAssignableFrom(fromClass) ||
 									areEquivalentTypes(fromClass, toClass) ;
 	}
 
+	/**
+	 * a simple test.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param args	command line arguments; here, nothing.
+	 */
 	public static void	main(String[] args)
 	{
 		System.out.println(isComponentClass(DynamicComponentCreator.class)) ;
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

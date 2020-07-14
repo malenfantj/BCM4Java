@@ -137,7 +137,7 @@ implements	DataOutboundPortI
 								"(executorServiceIndex == -1)");
 			assert	p.executorServiceURI == null ||
 							p.executorServiceIndex.get() ==
-									p.owner.getExecutorServiceIndex(
+									p.getExecutorServiceIndex(
 													p.executorServiceURI) :
 						new ImplementationInvariantException(
 								"executorServiceURI == null || " +
@@ -160,7 +160,7 @@ implements	DataOutboundPortI
 									+ p.getExecutorServiceURI());
 				assert	!p.hasExecutorService() ||
 								p.getExecutorServiceIndex() ==
-									p.getOwner().getExecutorServiceIndex(
+									p.getExecutorServiceIndex(
 													p.getExecutorServiceURI()) :
 							new ImplementationInvariantException(
 									"executor service with URI " +
@@ -301,7 +301,7 @@ implements	DataOutboundPortI
 		this.executorServiceURI = executorServiceURI;
 		if (executorServiceURI != null) {
 			this.executorServiceIndex.set(
-						this.owner.getExecutorServiceIndex(executorServiceURI));
+							this.getExecutorServiceIndex(executorServiceURI));
 		}
 
 		AbstractDataOutboundPort.checkImplementationInvariant(this);
@@ -781,16 +781,15 @@ implements	DataOutboundPortI
 												" has no executor service!");
 
 		this.executorServiceIndex.set(
-				this.owner.getExecutorServiceIndex(this.executorServiceURI));
+					this.getExecutorServiceIndex(this.executorServiceURI));
 
 		assert	this.getExecutorServiceIndex() ==
-							this.owner.getExecutorServiceIndex(
-												this.getExecutorServiceURI()) :
-					new PostconditionException(
-							"executor service with URI " +
-							this.getExecutorServiceURI() +
-							" does not have index "
-							+ this.getExecutorServiceIndex() + " in owner!");
+					this.getExecutorServiceIndex(this.getExecutorServiceURI()) :
+						new PostconditionException(
+								"executor service with URI " +
+								this.getExecutorServiceURI() +
+								" does not have index "
+								+ this.getExecutorServiceIndex() + " in owner!");
 	}
 
 	// -------------------------------------------------------------------------

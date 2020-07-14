@@ -121,7 +121,7 @@ implements	InboundPortI
 								"(executorServiceIndex == -1)");
 			assert	p.executorServiceURI == null ||
 							p.executorServiceIndex.get() ==
-								p.owner.getExecutorServiceIndex(
+								p.getExecutorServiceIndex(
 														p.executorServiceURI) :
 						new ImplementationInvariantException(
 								"executorServiceURI == null || " +
@@ -143,7 +143,7 @@ implements	InboundPortI
 								+ p.getExecutorServiceURI());
 			assert	!p.hasExecutorService() ||
 								p.getExecutorServiceIndex() ==
-									p.getOwner().getExecutorServiceIndex(
+									p.getExecutorServiceIndex(
 												p.getExecutorServiceURI()) :
 						new ImplementationInvariantException(
 								"executor service with URI " +
@@ -232,7 +232,7 @@ implements	InboundPortI
 		this.executorServiceURI = executorServiceURI;
 		if (executorServiceURI != null) {
 			this.executorServiceIndex.set(
-							owner.getExecutorServiceIndex(executorServiceURI));
+							this.getExecutorServiceIndex(executorServiceURI));
 		}
 
 		AbstractInboundPort.checkImplementationInvariant(this);
@@ -740,10 +740,10 @@ implements	InboundPortI
 												" has no executor service!");
 
 		this.executorServiceIndex.set(
-							owner.getExecutorServiceIndex(executorServiceURI));
+							this.getExecutorServiceIndex(executorServiceURI));
 
 		assert	this.getExecutorServiceIndex() ==
-							this.owner.getExecutorServiceIndex(
+							this.getExecutorServiceIndex(
 												this.getExecutorServiceURI()) :
 					new PostconditionException(
 							"executor service with URI " +

@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.plugins.dconnection.example;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -36,6 +37,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.plugins.dconnection.example.components.ClientSideExample;
 import fr.sorbonne_u.components.plugins.dconnection.example.components.ServerSideExample;
 
@@ -79,6 +81,24 @@ extends		AbstractDistributedCVM
 	{
 		System.out.println(thisJVMURI + " among " + CLIENT_SIDE_JVM_URI + " | " + SERVER_SIDE_JVM_URI) ;
 
+		// ---------------------------------------------------------------------
+		// Configuration phase
+		// ---------------------------------------------------------------------
+
+		// debugging mode configuration; comment and uncomment the line to see
+		// the difference
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.LIFE_CYCLE);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.INTERFACES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PORTS);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PLUGIN);
+
+		// ---------------------------------------------------------------------
+		// Creation phase
+		// ---------------------------------------------------------------------
+
 		if (thisJVMURI.equals(CLIENT_SIDE_JVM_URI)) {
 
 			AbstractComponent.createComponent(
@@ -104,6 +124,7 @@ extends		AbstractDistributedCVM
 	{
 		try {
 			DistributedCVM dcvm = new DistributedCVM(args) ;
+			CVM.DEBUG_MODE.add(CVMDebugModes.PLUGIN);
 			dcvm.startStandardLifeCycle(1000L) ;
 			Thread.sleep(10000L) ;
 			System.exit(0) ;

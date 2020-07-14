@@ -151,8 +151,8 @@ extends		AbstractComponent
 	{
 		super(SC_ReflectionInboundPort_URI, 1, 1) ;
 
-		this.tracer.setTitle("ServerComponent") ;
-		this.tracer.setRelativePosition(1,  0) ;
+		this.getTracer().setTitle("ServerComponent") ;
+		this.getTracer().setRelativePosition(1,  0) ;
 
 		// Add the standard component interfaces for data exchanging
 		// components.

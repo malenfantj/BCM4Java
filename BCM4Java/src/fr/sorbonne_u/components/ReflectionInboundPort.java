@@ -36,6 +36,7 @@ package fr.sorbonne_u.components;
 import java.lang.annotation.Annotation;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
@@ -75,7 +76,7 @@ implements	ReflectionI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, ReflectionI.class, owner) ;
+		super(uri, ReflectionI.class, owner);
 	}
 
 	public				ReflectionInboundPort(
@@ -99,10 +100,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().installPlugin(plugin) ;
-							return null ;
+							this.getServiceOwner().installPlugin(plugin);
+							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -116,9 +117,9 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-													hasInstalledPlugins() ;
+													hasInstalledPlugins();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -131,10 +132,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().finalisePlugin(pluginURI) ;
+							this.getServiceOwner().finalisePlugin(pluginURI);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -147,10 +148,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().uninstallPlugin(pluginId) ;
+							this.getServiceOwner().uninstallPlugin(pluginId);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -163,9 +164,9 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isInstalled(pluginId) ;
+							return this.getServiceOwner().isInstalled(pluginId);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -179,9 +180,9 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<PluginI>() {
 						@Override
 						public PluginI call() throws Exception {
-							return this.getServiceOwner().getPlugin(pluginURI) ;
+							return this.getServiceOwner().getPlugin(pluginURI);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -195,10 +196,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().initialisePlugin(pluginURI) ;
-							return null ;
+							this.getServiceOwner().initialisePlugin(pluginURI);
+							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -213,9 +214,9 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-												isInitialised(pluginURI) ;
+												isInitialised(pluginURI);
 						}
-					}) ;
+					});
 	}
 
 	// -------------------------------------------------------------------------
@@ -232,10 +233,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().toggleLogging() ;
+							this.getServiceOwner().toggleLogging();
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -248,10 +249,10 @@ implements	ReflectionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getServiceOwner().setLogger(logger) ;
-						return null ;
+						this.getServiceOwner().setLogger(logger);
+						return null;
 					}
-				}) ;
+				});
 	}
 
 	/**
@@ -264,10 +265,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().toggleTracing() ;
+							this.getServiceOwner().toggleTracing();
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -280,10 +281,10 @@ implements	ReflectionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getServiceOwner().setTracer(tracer) ;
-						return null ;
+						this.getServiceOwner().setTracer(tracer);
+						return null;
 					}
-				}) ;
+				});
 	}
 
 	/**
@@ -296,10 +297,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().logMessage(message) ;
+							this.getServiceOwner().logMessage(message);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -312,9 +313,9 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isLogging() ;
+							return this.getServiceOwner().isLogging();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -327,9 +328,9 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isTracing() ;
+							return this.getServiceOwner().isTracing();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -342,10 +343,10 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
-							this.getServiceOwner().printExecutionLog() ;
+							this.getServiceOwner().printExecutionLog();
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -360,10 +361,10 @@ implements	ReflectionI
 						@Override
 						public Void call() throws Exception {
 							this.getServiceOwner().
-										printExecutionLogOnFile(fileName) ;
+										printExecutionLogOnFile(fileName);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -376,10 +377,10 @@ implements	ReflectionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getServiceOwner().traceMessage(message) ;
-						return null ;
+						this.getServiceOwner().traceMessage(message);
+						return null;
 					}
-				}) ;
+				});
 	}
 
 	// -------------------------------------------------------------------------
@@ -398,9 +399,9 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-													isInStateAmong(states) ;
+													isInStateAmong(states);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -415,9 +416,9 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-													notInStateAmong(states) ;
+													notInStateAmong(states);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -430,9 +431,9 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().hasItsOwnThreads() ;
+							return this.getServiceOwner().hasItsOwnThreads();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -446,9 +447,9 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-												hasSerialisedExecution() ;
+												hasSerialisedExecution();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -461,9 +462,9 @@ implements	ReflectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().canScheduleTasks() ;
+							return this.getServiceOwner().canScheduleTasks();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -477,9 +478,9 @@ implements	ReflectionI
 						@Override
 						public Integer call() throws Exception {
 							return this.getServiceOwner().
-												getTotalNumberOfThreads() ;
+												getTotalNumberOfThreads();
 						}
-					}) ;
+					});
 	}
 
 	// -------------------------------------------------------------------------
@@ -490,96 +491,116 @@ implements	ReflectionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getInterfaces() throws Exception
+	public Class<? extends ComponentInterface>[]	getInterfaces() throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>[]>() {
+					new AbstractComponent.AbstractService<
+									Class<? extends ComponentInterface>[]>() {
 						@Override
-						public Class<?>[] call() throws Exception {
-							return this.getServiceOwner().getInterfaces() ;
+						public Class<? extends ComponentInterface>[] call()
+						throws Exception
+						{
+							return this.getServiceOwner().getInterfaces();
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getInterface(final Class<?> inter) throws Exception
+	public Class<? extends ComponentInterface>	getInterface(
+		final Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Class<?>>() {
+				new AbstractComponent.AbstractService<
+									Class<? extends ComponentInterface>>() {
 					@Override
-					public Class<?> call() throws Exception {
-						return this.getServiceOwner().getInterface(inter) ;
+					public Class<? extends ComponentInterface> call()
+					throws Exception
+					{
+						return this.getServiceOwner().getInterface(inter);
 					}
-				}) ;
+				});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getRequiredInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getRequiredInterfaces() throws Exception
+	public Class<? extends RequiredCI>[]	getRequiredInterfaces()
+	throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>[]>() {
+					new AbstractComponent.AbstractService<
+											Class<? extends RequiredCI>[]>() {
 						@Override
-						public Class<?>[] call() throws Exception {
+						public Class<? extends RequiredCI>[] call()
+						throws Exception
+						{
 							return this.getServiceOwner().
-												getRequiredInterfaces() ;
+												getRequiredInterfaces();
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getRequiredInterface(final Class<?> inter)
-	throws Exception
+	public Class<? extends RequiredCI>	getRequiredInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Class<?>>() {
+				new AbstractComponent.AbstractService<
+											Class<? extends RequiredCI>>() {
 					@Override
-					public Class<?> call() throws Exception {
+					public Class<? extends RequiredCI> call() throws Exception
+					{
 						return this.getServiceOwner().
-												getRequiredInterface(inter) ;
+												getRequiredInterface(inter);
 					}
-				}) ;
+				});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getOfferedInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getOfferedInterfaces() throws Exception
+	public Class<? extends OfferedCI>[]	getOfferedInterfaces() throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>[]>() {
+					new AbstractComponent.AbstractService<
+											Class<? extends OfferedCI>[]>() {
 						@Override
-						public Class<?>[] call() throws Exception {
+						public Class<? extends OfferedCI>[] call()
+						throws Exception
+						{
 							return this.getServiceOwner().
-												getOfferedInterfaces() ;
+												getOfferedInterfaces();
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getOfferedInterface(final Class<?> inter)
+	public Class<? extends OfferedCI>	getOfferedInterface(final Class<? extends OfferedCI> inter)
 	throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Class<?>>() {
+				new AbstractComponent.AbstractService<
+											Class<? extends OfferedCI>>() {
 					@Override
-					public Class<?> call() throws Exception {
+					public Class<? extends OfferedCI> call() throws Exception
+					{
 						return this.getServiceOwner().
-												getOfferedInterface(inter) ;
+											getOfferedInterface(inter);
 					}
-				}) ;
+				});
 	}
 
 	/**
@@ -595,10 +616,10 @@ implements	ReflectionI
 						@Override
 						public Void call() throws Exception {
 							this.getServiceOwner().
-												addRequiredInterface(inter) ;
+												addRequiredInterface(inter);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -614,10 +635,10 @@ implements	ReflectionI
 						@Override
 						public Void call() throws Exception {
 							this.getServiceOwner().
-											removeRequiredInterface(inter) ;
+											removeRequiredInterface(inter);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -633,10 +654,10 @@ implements	ReflectionI
 						@Override
 						public Void call() throws Exception {
 							this.getServiceOwner().
-											addOfferedInterface(inter) ;
+											addOfferedInterface(inter);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -652,58 +673,63 @@ implements	ReflectionI
 						@Override
 						public Void call() throws Exception {
 							this.getServiceOwner().
-											removeOfferedInterface(inter) ;
+											removeOfferedInterface(inter);
 							return null;
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isInterface(final Class<?> inter) throws Exception
+	public boolean		isInterface(
+		final Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isInterface(inter) ;
+							return this.getServiceOwner().isInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isRequiredInterface(final Class<?> inter)
-	throws Exception
+	public boolean		isRequiredInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-												isRequiredInterface(inter) ;
+												isRequiredInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isOfferedInterface(final Class<?> inter) throws Exception
+	public boolean		isOfferedInterface(
+		final Class<? extends OfferedCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-												isOfferedInterface(inter) ;
+												isOfferedInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	// -------------------------------------------------------------------------
@@ -714,68 +740,75 @@ implements	ReflectionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findPortURIsFromInterface(final Class<?> inter)
-	throws Exception
+	public String[]		findPortURIsFromInterface(
+		final Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
 							return this.getServiceOwner().
-											findPortURIsFromInterface(inter) ;
+											findPortURIsFromInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findInboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findInboundPortURIsFromInterface(final Class<?> inter)
-	throws Exception
+	public String[]		findInboundPortURIsFromInterface(
+		final Class<? extends OfferedCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
 							return this.getServiceOwner().
-									findInboundPortURIsFromInterface(inter) ;
+									findInboundPortURIsFromInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findOutboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findOutboundPortURIsFromInterface(final Class<?> inter)
-	throws Exception
+	public String[]		findOutboundPortURIsFromInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
 							return this.getServiceOwner().
-									findOutboundPortURIsFromInterface(inter) ;
+									findOutboundPortURIsFromInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getPortImplementedInterface(java.lang.String)
 	 */
 	@Override
-	public Class<?>		getPortImplementedInterface(final String portURI)
-	throws Exception
+	public Class<? extends ComponentInterface>	getPortImplementedInterface(
+		final String portURI
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>>() {
+					new AbstractComponent.AbstractService<
+										Class<? extends ComponentInterface>>() {
 						@Override
-						public Class<?> call() throws Exception {
+						public Class<? extends ComponentInterface> call()
+						throws Exception
+						{
 							return this.getServiceOwner().
-										getPortImplementedInterface(portURI) ;
+										getPortImplementedInterface(portURI);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -789,9 +822,9 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-												isPortExisting(portURI) ;
+												isPortExisting(portURI);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -806,9 +839,9 @@ implements	ReflectionI
 						@Override
 						public Boolean call() throws Exception {
 							return this.getServiceOwner().
-												isPortConnected(portURI) ;
+												isPortConnected(portURI);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -826,10 +859,10 @@ implements	ReflectionI
 					@Override
 					public Void call() throws Exception {
 						this.getServiceOwner().
-							doPortConnection(portURI, otherPortURI, ccname) ;
-						return null ;
+							doPortConnection(portURI, otherPortURI, ccname);
+						return null;
 					}
-				}) ;
+				});
 	}
 
 	/**
@@ -843,10 +876,10 @@ implements	ReflectionI
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
-						this.getServiceOwner().doPortDisconnection(portURI) ;
-						return null ;
+						this.getServiceOwner().doPortDisconnection(portURI);
+						return null;
 					}
-				}) ;
+				});
 	}
 
 	// -------------------------------------------------------------------------
@@ -864,9 +897,9 @@ implements	ReflectionI
 						@Override
 						public String call() throws Exception {
 							return this.getServiceOwner().
-										getComponentDefinitionClassName() ;
+										getComponentDefinitionClassName();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -880,9 +913,9 @@ implements	ReflectionI
 						@Override
 						public Annotation[] call() throws Exception {
 							return this.getServiceOwner().
-										getComponentAnnotations() ;
+										getComponentAnnotations();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -896,9 +929,9 @@ implements	ReflectionI
 						@Override
 						public ClassLoader call() throws Exception {
 							return this.getServiceOwner().
-												getComponentLoader() ;
+												getComponentLoader();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -913,9 +946,9 @@ implements	ReflectionI
 						@Override
 						public ServiceSignature[] call() throws Exception {
 							return this.getServiceOwner().
-											getComponentServiceSignatures() ;
+											getComponentServiceSignatures();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -930,26 +963,9 @@ implements	ReflectionI
 						@Override
 						public ConstructorSignature[] call() throws Exception {
 							return this.getServiceOwner().
-										getComponentConstructorSignatures() ;
+										getComponentConstructorSignatures();
 						}
-					}) ;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#newInstance(java.lang.Object[])
-	 */
-	@Override
-	public ComponentI		newInstance(Object[] parameters)
-	throws Exception
-	{
-		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<ComponentI>() {
-						@Override
-						public ComponentI call() throws Exception {
-							return this.getServiceOwner().
-												newInstance(parameters) ;
-						}
-					}) ;
+					});
 	}
 
 	/**
@@ -964,9 +980,9 @@ implements	ReflectionI
 						@Override
 						public Object call() throws Exception {
 							return this.getServiceOwner().
-												invokeService(name, params) ;
+												invokeService(name, params);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -981,9 +997,9 @@ implements	ReflectionI
 						@Override
 						public Object call() throws Exception {
 							return this.getServiceOwner().
-											invokeServiceSync(name, params) ;
+											invokeServiceSync(name, params);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -997,10 +1013,10 @@ implements	ReflectionI
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
-					this.getServiceOwner().invokeServiceAsync(name, params) ;
-					return null ;
+					this.getServiceOwner().invokeServiceAsync(name, params);
+					return null;
 				}
-			}) ;
+			});
 	}
 
 	/**
@@ -1014,12 +1030,12 @@ implements	ReflectionI
 				@Override
 				public void run() {
 					try {
-						this.getTaskOwner().execute() ;
+						this.getTaskOwner().execute();
 					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+						throw new RuntimeException(e);
 					}
 				}
-			}) ;
+			});
 	}
 
 	/**
@@ -1033,14 +1049,14 @@ implements	ReflectionI
 				new AbstractComponent.AbstractTask() {
 					public void run() {
 						try {
-							t.run() ;
+							t.run();
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							throw new RuntimeException(e);
 						}
 					}
-				} ;
-		t.setComponentTask(task) ;
-		this.getOwner().runTask(task) ;
+				};
+		t.setComponentTask(task);
+		this.getOwner().runTask(task);
 	}
 
 	/**
@@ -1056,14 +1072,14 @@ implements	ReflectionI
 				new AbstractComponent.AbstractTask() {
 					public void run() {
 						try {
-							t.run() ;
+							t.run();
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							throw new RuntimeException(e);
 						}
 					}
-				} ;
-		t.setComponentTask(task) ;
-		this.getOwner().runTask(executorServiceURI, task) ;
+				};
+		t.setComponentTask(task);
+		this.getOwner().runTask(executorServiceURI, task);
 	}
 
 	/**
@@ -1081,10 +1097,10 @@ implements	ReflectionI
 					@Override
 					public Void call() throws Exception {
 						this.getServiceOwner().insertBeforeService(
-							methodName, parametersCanonicalClassNames, code) ;
-						return null ;
+							methodName, parametersCanonicalClassNames, code);
+						return null;
 					}
-				}) ;
+				});
 	}
 
 	/**
@@ -1102,10 +1118,10 @@ implements	ReflectionI
 					@Override
 					public Void call() throws Exception {
 						this.getServiceOwner().insertAfterService(
-							methodName, parametersCanonicalClassNames, code) ;
-						return null ;
+							methodName, parametersCanonicalClassNames, code);
+						return null;
 					}
-				}) ;
+				});
 	}
 }
 // -----------------------------------------------------------------------------

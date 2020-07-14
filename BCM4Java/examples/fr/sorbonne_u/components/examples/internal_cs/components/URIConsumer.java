@@ -130,12 +130,15 @@ extends		AbstractComponent
 		this.counter = 0 ;
 
 		if (AbstractCVM.isDistributed) {
-			this.executionLog.setDirectory(System.getProperty("user.dir")) ;
+			this.getLogger().setDirectory(System.getProperty("user.dir")) ;
 		} else {
-			this.executionLog.setDirectory(System.getProperty("user.home")) ;
+			this.getLogger().setDirectory(System.getProperty("user.home")) ;
 		}
-		this.tracer.setTitle("consumer") ;
-		this.tracer.setRelativePosition(1, 1) ;
+		this.getTracer().setTitle("consumer") ;
+		this.getTracer().setRelativePosition(1, 1) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	//-------------------------------------------------------------------------

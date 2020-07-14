@@ -112,6 +112,9 @@ implements 	IntegerFilteringI
 	{
 		super(1, 0) ;
 		this.initialise(p, myInPort_URI, toIBP_URI) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	/**
@@ -142,6 +145,9 @@ implements 	IntegerFilteringI
 	{
 		super(reflectionInboundPortURI, 1, 0) ;
 		this.initialise(p, myInPort_URI, toIBP_URI) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	/**

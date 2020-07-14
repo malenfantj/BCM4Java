@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components;
 
+import java.io.FileNotFoundException;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -43,6 +45,9 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
@@ -98,7 +103,7 @@ import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 public interface		ComponentI
 {
 	// -------------------------------------------------------------------------
-	// Internal behaviour requests
+	// Life-cycle management
 	// -------------------------------------------------------------------------
 
 	/**
@@ -107,14 +112,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	states != null
-	 * post	true			// no postcondition.
+	 * pre	{@code states != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param states	states in which the components is tested to be.
 	 * @return			true if the component is in one of the given states.
 	 */
-	public boolean		isInStateAmong(ComponentStateI[] states) ;
+	public boolean		isInStateAmong(ComponentStateI[] states);
 
 	/**
 	 * return true if the component is in none of the mentioned component states.
@@ -122,14 +127,18 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	states != null
-	 * post	true			// no postcondition.
+	 * pre	{@code states != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param states	states in which the components is tested not to be.
 	 * @return			true if the component is in none of the given states.
 	 */
-	public boolean		notInStateAmong(ComponentStateI[] states) ;
+	public boolean		notInStateAmong(ComponentStateI[] states);
+
+	// -------------------------------------------------------------------------
+	// Executor services and internal parallelism management
+	// -------------------------------------------------------------------------
 
 	/**
 	 * true if the component executes concurrently with its own thread pool.
@@ -137,13 +146,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component executes concurrently with its own threads.
 	 */
-	public boolean		hasItsOwnThreads() ;
+	public boolean		hasItsOwnThreads();
 
 	/**
 	 * return	the number of threads, schedulable or not, in the component.
@@ -151,35 +160,40 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the number of threads, schedulable or not, in the component.
 	 */
-	public int			getTotalNumberOfThreads() ;
+	public int			getTotalNumberOfThreads();
 
 	/**
-	 * return true if the component guarantees a serialised execution of its services.
+	 * return true if the component guarantees a serialised execution of its 
+	 * services.
 	 * 
 	 * <p>
-	 * In the baseline definition, this returns true if the component has its own
-	 * threads and if the total number of threads is exactly one. A component can
-	 * guarantee its serialised execution in other ways and then should redefine
-	 * the method for example, by making all externally callable services
-	 * implemented by synchronised methods.
+	 * In the baseline definition, this returns true if the component has its
+	 * own threads and if the total number of threads is exactly one. A
+	 * component can guarantee its serialised execution in other ways and then
+	 * should redefine the method for example, by making all externally callable
+	 * services implemented by synchronised methods.
+	 * </p>
+	 * <p>
+	 * A component that has a serialised execution is in fact a thread-safe
+	 * monitor.
 	 * </p>
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component guarantees a serialised execution of its services.
 	 */
-	public boolean		hasSerialisedExecution() ;
+	public boolean		hasSerialisedExecution();
 
 	/**
 	 * true if the component executes concurrently with its own thread pool and
@@ -188,13 +202,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component can schedule tasks running after a specific delay or periodically.
 	 */
-	public boolean		canScheduleTasks() ;
+	public boolean		canScheduleTasks();
 
 	/**
 	 * return true if <code>uri</code> is  an existing executor service URI
@@ -203,14 +217,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param uri	possible URI of an existing executor service within this component.
-	 * @return		true if <code>uri</code> is  an existing executor service URI within this component.
+	 * @return		true if <code>uri</code> leads to an existing executor service URI within this component.
 	 */
-	public boolean		validExecutorServiceURI(String uri) ;
+	public boolean		validExecutorServiceURI(String uri);
 
 	/**
 	 * return true if <code>uri</code> is  an existing executor service index
@@ -219,14 +233,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param index	possible index of an existing executor service within this component.
-	 * @return		true if <code>uri</code> is  an existing executor service URI within this component.
+	 * @return		true if <code>index</code> leads to an existing executor service URI within this component.
 	 */
-	public boolean		validExecutorServiceIndex(int index) ;
+	public boolean		validExecutorServiceIndex(int index);
 
 	/**
 	 * return true if the executor service with the given URI is schedulable.
@@ -234,14 +248,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.validExecutorServiceURI(uri)
-	 * post	true			// no postcondition.
+	 * pre	{@code validExecutorServiceURI(uri)}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param uri	URI of the executor service to be tested.
 	 * @return		true if the executor service with the given URI is schedulable.
 	 */
-	public boolean		isSchedulable(String uri) ;
+	public boolean		isSchedulable(String uri);
 
 	/**
 	 * return true if the executor service with the given index is schedulable.
@@ -249,44 +263,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.validExecutorServiceIndex(index)
-	 * post	true			// no postcondition.
+	 * pre	{@code validExecutorServiceIndex(index)}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param index	the index of the executor service to be tested.
 	 * @return		true if the executor service with the given index is schedulable.
 	 */
-	public boolean		isSchedulable(int index) ;
-
-	/**
-	 * get the index of the executor service with the given URI.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.validExecutorServiceURI(uri)
-	 * post	this.validExecutorServiceIndex(return)
-	 * </pre>
-	 *
-	 * @param uri	URI of the sought executor service.
-	 * @return		the index of the executor service with the given URI.
-	 */
-	public int			getExecutorServiceIndex(String uri) ;
-
-	/**
-	 * return true if the component has at least one user-defined schedulable
-	 * executor service.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true if the component has at least one user-defined schedulable executor service.
-	 */
-	public boolean		hasUserDefinedSchedulableThreads() ;
+	public boolean		isSchedulable(int index);
 
 	// -------------------------------------------------------------------------
 	// Implemented interfaces
@@ -298,31 +282,33 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	interfaces required and offered by the component.
 	 */
-	public Class<?>[]	getInterfaces() ;
+	public Class<? extends ComponentInterface>[]	getInterfaces();
 
 	/**
 	 * return the interface, required or offered by this component, which
 	 * corresponds to the given interface; the result may be the same interface
-	 * of a sub-interface this "covering" the given one.
+	 * of a sub-interface "covering" the given one.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter	the interface to be checked for.
 	 * @return		the corresponding component interface or null if any.
 	 */
-	public Class<?>		getInterface(Class<?> inter) ;
+	public Class<? extends ComponentInterface>	getInterface(
+		Class<? extends ComponentInterface> inter
+		);
 
 	/**
 	 * return all the required interfaces of this component.
@@ -330,31 +316,33 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	required interfaces of this component.
 	 */
-	public Class<?>[]	getRequiredInterfaces() ;
+	public Class<? extends RequiredCI>[]	getRequiredInterfaces();
 
 	/**
 	 * return the interface required by this component, which corresponds to
 	 * the given interface; the result may be the same interface of a
-	 * sub-interface this "covering" the given one.
+	 * sub-interface "covering" the given one.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter	the interface to be checked for.
 	 * @return		the corresponding component interface or null if any.
 	 */
-	public Class<?>		getRequiredInterface(Class<?> inter) ;
+	public Class<? extends RequiredCI>	getRequiredInterface(
+		Class<? extends RequiredCI> inter
+		);
 
 	/**
 	 * return all the offered interfaces of this component.
@@ -362,13 +350,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	offered interfaces of this component.
 	 */
-	public Class<?>[]	getOfferedInterfaces() ;
+	public Class<? extends OfferedCI>[]	getOfferedInterfaces();
 
 	/**
 	 * return the interface offered by this component, which corresponds to
@@ -378,15 +366,17 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter	the interface to be checked for.
 	 * @return		the corresponding component interface or null if any.
 	 */
-	public Class<?>		getOfferedInterface(Class<?> inter) ;
+	public Class<? extends OfferedCI>	getOfferedInterface(
+		Class<? extends OfferedCI> inter
+		);
 
 	/**
 	 * check if an interface is one of this component or a super-interface of
@@ -395,14 +385,15 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter	interface to be checked for.
 	 * @return		true if inter is an interface of this component.
 	 */
-	public boolean		isInterface(Class<?> inter) ;
+	public boolean		isInterface(Class<? extends ComponentInterface> inter);
 
 	/**
 	 * check if an interface is a required one of this component or a
@@ -411,14 +402,15 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter	interface to be checked for.
 	 * @return		true if inter is a required interface of this component.
 	 */
-	public boolean		isRequiredInterface(Class<?> inter) ;
+	public boolean		isRequiredInterface(Class<? extends RequiredCI> inter);
 
 	/**
 	 * check if an interface is an offered one of this component or a
@@ -427,14 +419,15 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter	interface to be checked for.
 	 * @return		true if inter is an offered interface of this component.
 	 */
-	public boolean		isOfferedInterface(Class<?> inter) ;
+	public boolean		isOfferedInterface(Class<? extends OfferedCI> inter);
 
 	// -------------------------------------------------------------------------
 	// Port management
@@ -446,17 +439,18 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and this.isPortExisting(portURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && isPortExisting(portURI)}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port.
 	 * @return				the interface implemented by the port.
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
-	public Class<?>		getPortImplementedInterface(String portURI)
-	throws Exception ;
+	public Class<? extends ComponentInterface>	getPortImplementedInterface(
+		String portURI
+		) throws Exception;
 
 	/**
 	 * find the port URIs of this component that expose the interface inter.
@@ -464,17 +458,18 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface for which ports are sought.
 	 * @return				array of port URIs exposing <code>inter</code>.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String[]		findPortURIsFromInterface(Class<?> inter)
-	throws Exception ;
+	public String[]		findPortURIsFromInterface(
+		Class<? extends ComponentInterface> inter
+		) throws Exception;
 
 	/**
 	 * find the inbound port URIs of this component that expose the interface
@@ -483,17 +478,18 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface for which ports are sought.
-	 * @return				array of inbound port URIs exposing inter.
-	 * @throws Exception	<i>todo.</i>
+	 * @return				array of inbound port URIs exposing <code>inter</code>.
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String[]		findInboundPortURIsFromInterface(Class<?> inter)
-	throws Exception ;
+	public String[]		findInboundPortURIsFromInterface(
+		Class<? extends OfferedCI> inter
+		) throws Exception;
 
 	/**
 	 * find the outbound port URIs of this component that expose the interface inter.
@@ -501,17 +497,18 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	inter != null
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code inter != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @param inter			interface for which ports are sought.
-	 * @return				array of outbound port URIs exposing inter.
-	 * @throws Exception	<i>todo.</i>
+	 * @return				array of outbound port URIs exposing <code>inter</code>.
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String[]		findOutboundPortURIsFromInterface(Class<?> inter)
-	throws Exception ;
+	public String[]		findOutboundPortURIsFromInterface(
+		Class<? extends RequiredCI> inter
+		) throws Exception;
 
 	/**
 	 * true if the port with the given URI exists in this component, false
@@ -520,17 +517,17 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI		port URI to be tested.
 	 * @return				true if the port with the given URI exists.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public boolean		isPortExisting(String portURI)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * true if the port with the given URI is connected, false otherwise.
@@ -538,8 +535,8 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and this.isPortExisting(portURI)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && isPortExisting(portURI)}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -548,7 +545,7 @@ public interface		ComponentI
 	 * @throws Exception	if such a port does not exist in the component.
 	 */
 	public boolean		isPortConnected(String portURI)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * connect the component port to another component's port using the
@@ -557,23 +554,23 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and otherPortURI != null and connector != null
-	 * pre	this.isPortExisting(portURI)
-	 * pre	!this.isPortConnected(portURI)
-	 * post	this.isPortConnected(portURI)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && otherPortURI != null && connector != null}
+	 * pre	{@code isPortExisting(portURI)}
+	 * pre	{@code !isPortConnected(portURI)}
+	 * post	{@code isPortConnected(portURI)}
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port to be connected.
 	 * @param otherPortURI	URI of the other port to be connected with.
 	 * @param connector		connector to be used in the connection.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			doPortConnection(
 		String portURI,
 		String otherPortURI,
 		ConnectorI connector
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * connect the component port to another component's port using the
@@ -582,23 +579,25 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and otherPortURI != null and ccname != null
-	 * pre	this.isPortExisting(portURI)
-	 * pre	!this.isPortConnected(portURI)
-	 * post	this.isPortConnected(portURI)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && otherPortURI != null && ccname != null}
+	 * pre	{@code isPortExisting(portURI)}
+	 * pre	{@code !isPortConnected(portURI)}
+	 * post	{@code isPortConnected(portURI)}
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port to be connected.
 	 * @param otherPortURI	URI of the other port to be connected with.
 	 * @param ccname		connector class name to be used in the connection.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			doPortConnection(
-		String portURI,
-		String otherPortURI,
+//		RequiredCI required,
+		String requiredPortURI,
+//		RequiredCI offered,
+		String offeredPortURI,
 		String ccname
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * disconnect the component port.
@@ -606,18 +605,18 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and this.isPortExisting(portURI)
-	 * pre	this.isPortConnected(portURI)
-	 * post	!this.isPortConnected(portURI)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && isPortExisting(portURI)}
+	 * pre	{@code isPortConnected(portURI)}
+	 * post	{@code !isPortConnected(portURI)}
 	 * </pre>
 	 *
 	 * @param portURI		URI of the component's port to be connected.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			doPortDisconnection(
 		String portURI
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * remove a port from the set of ports of this component.
@@ -625,15 +624,15 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	portURI != null and this.isPortExisting(portURI)
-	 * post	!this.isPortExisting(portURI)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code portURI != null && isPortExisting(portURI)}
+	 * post	{@code !isPortExisting(portURI)}
 	 * </pre>
 	 *
-	 * @param portURI	URI of the port to be removed.
+	 * @param portURI		URI of the port to be removed.
 	 * @throws Exception	if this port does not exist or os still connected.
 	 */
-	public void			removePort(String portURI) throws Exception ;
+	public void			removePort(String portURI) throws Exception;
 
 	// -------------------------------------------------------------------------
 	// Plug-ins facilities
@@ -645,13 +644,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component has some installed plug-ins.
 	 */
-	public boolean		hasInstalledPlugins() ;
+	public boolean		hasInstalledPlugins();
 
 	/**
 	 * test if a plug-in is installed into this component.
@@ -659,15 +658,15 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null
-	 * post	true			// no postcondition.
+	 * pre	{@code pluginURI != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI		unique plug-in identifier.
+	 * @param pluginURI		unique plug-in identifier (within the component).
 	 * @return 				true if the named plug-in is installed into this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isInstalled(String pluginURI) throws Exception ;
+	public boolean		isInstalled(String pluginURI) throws Exception;
 
 	/**
 	 * return true if the plug-in with the passed URI is initialised.
@@ -675,15 +674,16 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginURI != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isPluginFacilitiesConfigured()}
+	 * pre	{@code pluginURI != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @param pluginURI		URI of the plug-in to be tested.
+	 * @param pluginURI		unique identifier (within the component) of the plug-in to be tested .
 	 * @return				true if the plug-in is installed and initialised.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public boolean		isInitialised(String pluginURI) throws Exception ;
+	public boolean		isInitialised(String pluginURI) throws Exception;
 
 	// -------------------------------------------------------------------------
 	// Logging facilities
@@ -695,13 +695,27 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	logger != null
-	 * post	true			// no postcondition.
+	 * pre	{@code logger != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param logger	the logger to be set.
 	 */
-	public void			setLogger(Logger logger) ;
+	public void			setLogger(Logger logger);
+
+	/**
+	 * return	true if a logger is set on this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if a logger is set on this component.
+	 */
+	public boolean		isLoggerSet();
 
 	/**
 	 * return true if the logging is currently active, false otherwise.
@@ -709,13 +723,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the logging is currently active, false otherwise.
 	 */
-	public boolean		isLogging() ;
+	public boolean		isLogging();
 
 	/**
 	 * toggle the logging mode.
@@ -723,12 +737,12 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code isLoggerSet()}
+	 * post	{@code isLogging() == !isLogging()@pre}
 	 * </pre>
 	 *
 	 */
-	public void			toggleLogging() ;
+	public void			toggleLogging();
 
 	/**
 	 * add a log message to the log buffer, tagging it with the current time
@@ -738,13 +752,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param message	string to be written on the log.
 	 */
-	public void			logMessage(String message) ;
+	public void			logMessage(String message);
 
 	/**
 	 * print the execution log on the predefined file.
@@ -752,12 +766,12 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code isLoggerSet()}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 */
-	public void			printExecutionLog() ;
+	public void			printExecutionLog();
 
 	/**
 	 * print the execution log on the given file.
@@ -765,13 +779,16 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	fileName != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isLoggerSet()}
+	 * pre	{@code fileName != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @param fileName	the file to output the log.
+	 * @param fileName					the file to output the log.
+	 * @throws FileNotFoundException	when {@code filename} is incorrect.
 	 */
-	public void			printExecutionLogOnFile(String fileName) ;
+	public void			printExecutionLogOnFile(String fileName)
+	throws FileNotFoundException;
 
 	/**
 	 * set a tracer for this component.
@@ -779,13 +796,27 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @param tracer	the tracer to be added.
+	 */
+	public void			setTracer(TracerWindow tracer);
+
+	/**
+	 * return	true if a tracer is set on this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
 	 * pre	true			// no precondition.
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param tracer			the tracer to be added.
+	 * @return	true if a tracer is set on this component.
 	 */
-	public void			setTracer(TracerWindow tracer) ;
+	public boolean		isTracerSet();
 
 	/**
 	 * toggle the tracing mode.
@@ -793,12 +824,12 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code isTracerSet()}
+	 * post	{@code isTracing() == ! isTracing()@pre}
 	 * </pre>
 	 *
 	 */
-	public void			toggleTracing() ;
+	public void			toggleTracing();
 
 	/**
 	 * add a trace message to the tracing console.
@@ -806,13 +837,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param message	trace message to be output.
 	 */
-	public void			traceMessage(String message) ;
+	public void			traceMessage(String message);
 
 	/**
 	 * return true if the tracing is currently active, false otherwise.
@@ -820,13 +851,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the tracing is currently active, false otherwise.
 	 */
-	public boolean		isTracing() ;
+	public boolean		isTracing();
 
 	// -------------------------------------------------------------------------
 	// Component life cycle
@@ -841,13 +872,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isInitialised()
-	 * post	this.isStarted()
+	 * pre	{@code isInitialised()}
+	 * post	{@code isStarted()}
 	 * </pre>
 	 *
-	 * @throws ComponentStartException	<i>todo.</i>
+	 * @throws ComponentStartException	<i>to do</i>.
 	 */
-	public void			start() throws ComponentStartException ;
+	public void			start() throws ComponentStartException;
 
 	/**
 	 * execute a task on the component after all components have been started;
@@ -862,13 +893,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			execute() throws Exception ;
+	public void			execute() throws Exception;
 
 	/**
 	 * finalise the component, freeing resources that need to be, before
@@ -877,13 +908,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * post	this.isFinalised()
+	 * pre	{@code isStarted()}
+	 * post	{@code isFinalised()}
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			finalise() throws Exception ;
+	public void			finalise() throws Exception;
 
 	/**
 	 * shutdown the component; inspired from the Java Executor framework.
@@ -891,13 +922,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isFinalised()
-	 * post	this.isShuttingDown() || this.isShutdown()
+	 * pre	{@code isFinalised()}
+	 * post	{@code isShuttingDown() || isShutdown()}
 	 * </pre>
 	 * 
-	 * @throws ComponentShutdownException	<i>todo.</i>
+	 * @throws ComponentShutdownException	<i>to do</i>.
 	 */
-	public void			shutdown() throws ComponentShutdownException ;
+	public void			shutdown() throws ComponentShutdownException;
 
 	/**
 	 * shutdown the component now; inspired from the Java Executor framework.
@@ -905,13 +936,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isFinalised()
-	 * post	this.isShutdown()
+	 * pre	{@code isFinalised()}
+	 * post	{@code isShutdown()}
 	 * </pre>
 	 *
-	 * @throws ComponentShutdownException	<i>todo.</i>
+	 * @throws ComponentShutdownException	<i>to do</i>.
 	 */
-	public void			shutdownNow() throws ComponentShutdownException ;
+	public void			shutdownNow() throws ComponentShutdownException;
 
 	/**
 	 * true if the component is in the initialised state.
@@ -919,13 +950,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component is in the initialised state.
 	 */
-	public boolean		isInitialised() ;
+	public boolean		isInitialised();
 
 	/**
 	 * true if the component is in the start state.
@@ -933,13 +964,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component is in the start state.
 	 */
-	public boolean		isStarted() ;
+	public boolean		isStarted();
 
 	/**
 	 * true if the component is in the finalised state.
@@ -947,13 +978,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component is in the finalised state.
 	 */
-	public boolean		isFinalised() ;
+	public boolean		isFinalised();
 
 	/**
 	 * true if the component is in the shutting down state.
@@ -961,13 +992,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component is in the shutting down state.
 	 */
-	public boolean		isShuttingDown() ;
+	public boolean		isShuttingDown();
 
 	/**
 	 * true if the component is in the shut down state.
@@ -975,13 +1006,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component is in the shut down state.
 	 */
-	public boolean		isShutdown() ;
+	public boolean		isShutdown();
 
 	/**
 	 * true if the component is in the terminated state.
@@ -989,13 +1020,13 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component is in the terminated state.
 	 */
-	public boolean		isTerminated() ;
+	public boolean		isTerminated();
 
 	/**
 	 * wait for the termination of the component; inspired from the Java
@@ -1004,8 +1035,8 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param timeout	the maximum time to wait.
@@ -1014,7 +1045,7 @@ public interface		ComponentI
 	 * @throws InterruptedException	if interrupted while waiting.
 	 */
 	public boolean		awaitTermination(long timeout, TimeUnit unit)
-	throws InterruptedException ;
+	throws InterruptedException;
 
 	// -------------------------------------------------------------------------
 	// Task execution
@@ -1033,15 +1064,14 @@ public interface		ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant		true
+	 * invariant	true
 	 * </pre>
 	 * 
 	 * <p>Created on : 2012-06-12</p>
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
-	public interface			ComponentTask
+	public interface	ComponentTask
 	extends Runnable
 	{
 		/**
@@ -1051,14 +1081,14 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	owner != null
-		 * pre	owner instanceof AbstractComponent
-		 * post	true			// no postcondition.
+		 * pre	{@code owner != null}
+		 * pre	{@code owner instanceof AbstractComponent}
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
-		 * @param owner		the component owner of the executor service that will execute this task.
+		 * @param owner	the component owner of the executor service that will execute this task.
 		 */
-		public void			setOwnerReference(ComponentI owner) ;
+		public void		setOwnerReference(ComponentI owner);
 
 		/**
 		 * return the reference to the component owner of the executor service
@@ -1067,13 +1097,13 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true	// no precondition.
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
 		 * @return	the reference to the component owner of the executor service that will execute this task.
 		 */
-		public ComponentI	getTaskOwner() ;
+		public ComponentI	getTaskOwner();
 
 		/**
 		 * return the reference to the component owner or its plug-in
@@ -1082,13 +1112,13 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true	// no precondition.
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
 		 * @return	 the reference to the component owner or its plug-in that will execute this task.
 		 */
-		public Object		getTaskProviderReference() ;
+		public Object	getTaskProviderReference();
 	}
 
 	/**
@@ -1107,7 +1137,7 @@ public interface		ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant		true
+	 * invariant	true
 	 * </pre>
 	 * 
 	 * <p>Created on : 2019-06-07</p>
@@ -1123,13 +1153,13 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	owner != null
-		 * post	true			// no postcondition.
+		 * pre	{@code owner != null}
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
-		 * @param owner		owner component.
+		 * @param owner	owner component.
 		 */
-		public void		run(ComponentI owner) ;
+		public void		run(ComponentI owner);
 	}
 
 	/**
@@ -1138,9 +1168,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								component task to be executed as main task.
@@ -1148,7 +1178,7 @@ public interface		ComponentI
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	public void			runTask(ComponentTask t)
-	throws	AssertionError, RejectedExecutionException ;
+	throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * run the lambda expression as a task of the component.
@@ -1156,9 +1186,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								component task to be executed as main task.
@@ -1166,7 +1196,7 @@ public interface		ComponentI
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	public void			runTask(FComponentTask t)
-	throws	AssertionError, RejectedExecutionException ;
+	throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * run the <code>ComponentTask</code> on the given executor service.
@@ -1174,9 +1204,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1187,7 +1217,7 @@ public interface		ComponentI
 	public void			runTask(
 		String executorServiceURI,
 		ComponentTask t
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 
 	/**
@@ -1196,9 +1226,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1209,7 +1239,7 @@ public interface		ComponentI
 	public void			runTask(
 		String executorServiceURI,
 		FComponentTask t
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 
 	/**
@@ -1218,9 +1248,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1229,7 +1259,7 @@ public interface		ComponentI
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	public void			runTask(int executorServiceIndex, ComponentTask t)
-	throws	AssertionError, RejectedExecutionException ;
+	throws	AssertionError, RejectedExecutionException;
 
 
 	/**
@@ -1238,9 +1268,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	t != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code t != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1251,7 +1281,7 @@ public interface		ComponentI
 	public void			runTask(
 		int executorServiceIndex,
 		FComponentTask t
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 
 	/**
@@ -1260,10 +1290,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()
+	 * pre	{@code t != null && delay &gt; 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1276,7 +1306,7 @@ public interface		ComponentI
 		ComponentTask t,
 		long delay, 
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression to be run after a given delay.
@@ -1284,9 +1314,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and delay &gt; 0 and u != null
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code t != null && delay > 0 && u != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -1300,7 +1330,7 @@ public interface		ComponentI
 		FComponentTask t,
 		long delay, 
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> to be run after a given delay on
@@ -1309,10 +1339,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code isSchedulable(executorServiceURI)}
+	 * pre	{@code t != && && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1327,7 +1358,7 @@ public interface		ComponentI
 		ComponentTask t,
 		long delay, 
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression to be run after a given delay on
@@ -1336,10 +1367,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code isSchedulable(executorServiceURI)}
+	 * pre	{@code t != && && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1354,7 +1386,7 @@ public interface		ComponentI
 		FComponentTask t,
 		long delay, 
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> to be run after a given delay on
@@ -1363,10 +1395,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
+	 * pre	{@code isSchedulable(executorServiceIndex)}
+	 * pre	{@code t != && && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1381,7 +1414,7 @@ public interface		ComponentI
 		ComponentTask t,
 		long delay, 
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression to be run after a given delay on
@@ -1390,10 +1423,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
+	 * pre	{@code isSchedulable(executorServiceIndex)}
+	 * pre	{@code t != && && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1408,7 +1442,7 @@ public interface		ComponentI
 		FComponentTask t,
 		long delay, 
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1425,10 +1459,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1443,7 +1477,7 @@ public interface		ComponentI
 		long initialDelay,
 		long period,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1460,10 +1494,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1478,7 +1512,7 @@ public interface		ComponentI
 		long initialDelay,
 		long period,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1495,9 +1529,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code isSchedulable(executorServiceURI)}
+	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -1515,7 +1550,7 @@ public interface		ComponentI
 		long initialDelay,
 		long period,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1532,10 +1567,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code isSchedulable(executorServiceURI)}
+	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1552,7 +1588,7 @@ public interface		ComponentI
 		long initialDelay,
 		long period,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1569,10 +1605,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
+	 * pre	{@code isSchedulable(executorServiceIndex)}
+	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1589,7 +1626,7 @@ public interface		ComponentI
 		long initialDelay,
 		long period,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1606,10 +1643,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
+	 * pre	{@code isSchedulable(executorServiceIndex)}
+	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1626,7 +1664,7 @@ public interface		ComponentI
 		long initialDelay,
 		long period,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1639,10 +1677,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code t != null && initialDelay >= 0 && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1657,7 +1695,7 @@ public interface		ComponentI
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1670,10 +1708,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code t != null && initialDelay >= 0 && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1688,7 +1726,7 @@ public interface		ComponentI
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1701,10 +1739,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code isSchedulable(executorServiceURI)}
+	 * pre	{@code t != null && initialDelay >= 0 && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1721,7 +1760,7 @@ public interface		ComponentI
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1734,10 +1773,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code isSchedulable(executorServiceURI)}
+	 * pre	{@code t != null && initialDelay >= 0 && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1754,7 +1794,7 @@ public interface		ComponentI
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a <code>ComponentTask</code> that becomes enabled first after
@@ -1767,10 +1807,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
+	 * pre	{@code isSchedulable(executorServiceIndex)}
+	 * pre	{@code t != null && initialDelay >= 0 && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1787,7 +1828,7 @@ public interface		ComponentI
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	/**
 	 * schedule a lambda expression that becomes enabled first after
@@ -1800,10 +1841,11 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	t != null and initialDelay &gt;= 0 and delay &gt;= 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
+	 * pre	{@code isSchedulable(executorServiceIndex)}
+	 * pre	{@code t != null && initialDelay >= 0 && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1820,7 +1862,7 @@ public interface		ComponentI
 		long initialDelay,
 		long delay,
 		TimeUnit u
-		) throws	AssertionError, RejectedExecutionException ;
+		) throws	AssertionError, RejectedExecutionException;
 
 	// -------------------------------------------------------------------------
 	// Request handling
@@ -1840,13 +1882,12 @@ public interface		ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant		true
+	 * invariant	true
 	 * </pre>
 	 * 
 	 * <p>Created on : 2012-06-12</p>
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
 	public interface		ComponentService<V>
 	extends Callable<V>
@@ -1858,13 +1899,13 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	owner != null
-		 * post	true			// no postcondition.
+		 * pre	{@code owner != null}
+		 * post	true		// no postcondition.
 		 * </pre>
 		 *
 		 * @param owner		the component owner of the executor service that will execute this task.
 		 */
-		public void			setOwnerReference(ComponentI owner) ;
+		public void			setOwnerReference(ComponentI owner);
 
 		/**
 		 * return the reference to the component owner of the executor service
@@ -1873,13 +1914,13 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true		// no precondition.
+		 * post	true		// no postcondition.
 		 * </pre>
 		 *
 		 * @return	the reference to the component owner of the executor service that will execute this service call.
 		 */
-		public AbstractComponent	getServiceOwner() ;
+		public AbstractComponent	getServiceOwner();
 
 		/**
 		 * return the reference to the component owner or its plug-in
@@ -1888,13 +1929,13 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true		// no precondition.
+		 * post	true		// no postcondition.
 		 * </pre>
 		 *
 		 * @return	the reference to the component owner of the executor service that will execute this task.
 		 */
-		public Object		getServiceProviderReference() ;
+		public Object		getServiceProviderReference();
 	}
 
 	/**
@@ -1929,16 +1970,16 @@ public interface		ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	owner != null
-		 * post	true			// no postcondition.
+		 * pre	{@code owner != null}
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
 		 * @param owner			owner component.
 		 * @return				the result of the service.
-		 * @throws Exception	<i>to do.</i>
+		 * @throws Exception	<i>to do</i>.
 		 */
 		public T		apply(ComponentI owner)
-		throws Exception ;
+		throws Exception;
 	}
 
 	/**
@@ -1949,9 +1990,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code task != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -1966,7 +2007,7 @@ public interface		ComponentI
 	throws	AssertionError,
 			RejectedExecutionException,
 			InterruptedException,
-			ExecutionException ;
+			ExecutionException;
 
 	/**
 	 * execute a request represented by a lambda expression on the
@@ -1976,9 +2017,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code task != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -1993,7 +2034,7 @@ public interface		ComponentI
 			throws	AssertionError,
 			RejectedExecutionException,
 			InterruptedException,
-			ExecutionException ;
+			ExecutionException;
 
 	/**
 	 * execute a request represented by a <code>ComponentService</code> on the
@@ -2003,9 +2044,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code task != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2023,7 +2064,7 @@ public interface		ComponentI
 		) 	throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * execute a request represented by a lambda expression on the
@@ -2033,9 +2074,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code task != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2053,7 +2094,7 @@ public interface		ComponentI
 		) 	throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * execute a request represented by a <code>ComponentService</code> on the
@@ -2063,9 +2104,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code task != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2083,7 +2124,7 @@ public interface		ComponentI
 		) 	throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 
 	/**
@@ -2094,9 +2135,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	task != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code task != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2114,7 +2155,7 @@ public interface		ComponentI
 		) 	throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * schedule a <code>ComponentService</code> for execution after a given
@@ -2123,10 +2164,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code s != null && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2146,7 +2187,7 @@ public interface		ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * schedule a lambda expression for execution after a given
@@ -2155,9 +2196,9 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code s != null && delay > 0 && u != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -2178,7 +2219,7 @@ public interface		ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * schedule a <code>ComponentService</code> for execution after a given
@@ -2187,10 +2228,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code s != null && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2212,7 +2253,7 @@ public interface		ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * schedule a lambda expression for execution after a given
@@ -2221,10 +2262,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code s != null && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2246,7 +2287,7 @@ public interface		ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * schedule a <code>ComponentService</code> for execution after a given
@@ -2255,10 +2296,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code s != null && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2280,7 +2321,7 @@ public interface		ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	/**
 	 * schedule a lambda expression for execution after a given
@@ -2289,10 +2330,10 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
-	 * pre	this.canScheduleTasks()
-	 * pre	s != null and delay &gt; 0 and u != null
-	 * post	true			// no postcondition.
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code s != null && delay > 0 && u != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -2314,7 +2355,7 @@ public interface		ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException,
 					InterruptedException,
-					ExecutionException ;
+					ExecutionException;
 
 	// -------------------------------------------------------------------------
 	// Reflection facility
@@ -2326,14 +2367,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the canonical name of the Java class implementing this component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public String		getComponentDefinitionClassName() throws Exception ;
+	public String		getComponentDefinitionClassName() throws Exception;
 
 	/**
 	 * return the annotations put on the Java class implementing the component.
@@ -2341,14 +2382,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the annotations put on the Java class implementing the component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public Annotation[]	getComponentAnnotations() throws Exception ;
+	public Annotation[]	getComponentAnnotations() throws Exception;
 
 	/**
 	 * return the loader of the Java class implementing the component;
@@ -2357,14 +2398,14 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the loader of the Java class implementing the component.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public ClassLoader	getComponentLoader() throws Exception ;
+	public ClassLoader	getComponentLoader() throws Exception;
 
 	/**
 	 * return the signatures of the component services.
@@ -2372,15 +2413,15 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the signatures of the component services.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public ServiceSignature[]		getComponentServiceSignatures()
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * return the signatures of the component constructors.
@@ -2388,30 +2429,15 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	true		// no precondition.
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the signatures of the component constructors.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public ConstructorSignature[]	getComponentConstructorSignatures()
-	throws Exception ;
-	/**
-	 * create a new instance of the component.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param parameters	parameters to be passed to the component constructor.
-	 * @return				a Java refercne to the object implementing the component.
-	 * @throws Exception	<i>todo.</i>
-	 */
-	public ComponentI	newInstance(Object[] parameters) throws Exception ;
+	throws Exception;
 
 	/**
 	 * invoke a component service.
@@ -2419,17 +2445,17 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	name != null
-	 * post	true			// no postcondition.
+	 * pre	{@code name != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
 	 * @return				the result of the service invocation.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public Object		invokeService(String name, Object[] params)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * invoke a component service synchronously.
@@ -2437,17 +2463,17 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	name != null
-	 * post	true			// no postcondition.
+	 * pre	{@code name != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
 	 * @return				the result of the service invocation.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public Object		invokeServiceSync(String name, Object[] params)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * invoke a component service asynchronously.
@@ -2455,16 +2481,16 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	name != null
-	 * post	true			// no postcondition.
+	 * pre	{@code name != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param name			name of the service.
 	 * @param params		parameters to be passed to the service.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			invokeServiceAsync(String name, Object[] params)
-	throws Exception ;
+	throws Exception;
 
 	/**
 	 * insert a piece of code at the beginning of the specified component
@@ -2473,22 +2499,22 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	serviceName != null
-	 * pre	parametersCanonicalClassNames != null
-	 * pre	code != null
-	 * post	true			// no postcondition.
+	 * pre	{@code serviceName != null}
+	 * pre	{@code parametersCanonicalClassNames != null}
+	 * pre	{@code code != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param serviceName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception					<i>todo.</i>
+	 * @throws Exception					<i>to do</i>.
 	 */
 	public void			insertBeforeService(
 		String serviceName,
 		String[] parametersCanonicalClassNames,
 		String code
-		) throws Exception ;
+		) throws Exception;
 
 	/**
 	 * insert a piece of code at the end of the specified component
@@ -2497,21 +2523,21 @@ public interface		ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	serviceName != null
-	 * pre	parametersCanonicalClassNames != null
-	 * pre	code != null
-	 * post	true			// no postcondition.
+	 * pre	{@code serviceName != null}
+	 * pre	{@code parametersCanonicalClassNames != null}
+	 * pre	{@code code != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param serviceName					name of the service method to be modified.
 	 * @param parametersCanonicalClassNames	names of the types of the parameters of the method.
 	 * @param code							code to be inserted.
-	 * @throws Exception					<i>todo.</i>
+	 * @throws Exception					<i>to do</i>.
 	 */
 	public void			insertAfterService(
 		String serviceName,
 		String[] parametersCanonicalClassNames,
 		String code
-		) throws Exception ;
+		) throws Exception;
 }
 // -----------------------------------------------------------------------------

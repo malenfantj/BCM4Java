@@ -82,10 +82,10 @@ public class				ValueConsumer
 extends		AbstractComponent
 //-----------------------------------------------------------------------------
 {
-	protected ValueProvidingOutboundPort outboundPort ;
+	protected ValueProvidingOutboundPort	outboundPort ;
 	protected String						valueProvidingInboundPortURI ;
-	protected int						sum ;
-	protected int						numberOfIterationsLeft ;
+	protected int							sum ;
+	protected int							numberOfIterationsLeft ;
 
 	// ------------------------------------------------------------------------
 	// Inner classes
@@ -239,8 +239,11 @@ extends		AbstractComponent
 		this.outboundPort = new ValueProvidingOutboundPort(this) ;
 		this.outboundPort.publishPort() ;
 
-		this.tracer.setTitle("ValueConsumer") ;
-		this.tracer.setRelativePosition(1, 2) ;
+		this.getTracer().setTitle("ValueConsumer") ;
+		this.getTracer().setRelativePosition(1, 2) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	/**
@@ -273,8 +276,8 @@ extends		AbstractComponent
 		this.outboundPort = new ValueProvidingOutboundPort(this) ;
 		this.outboundPort.publishPort();
 
-		this.tracer.setTitle("ValueConsumer") ;
-		this.tracer.setRelativePosition(1, 2) ;
+		this.getTracer().setTitle("ValueConsumer") ;
+		this.getTracer().setRelativePosition(1, 2) ;
 	}
 
 	// ------------------------------------------------------------------------

@@ -246,11 +246,11 @@ implements	ComponentVirtualMachineI
 
 		boolean ret = AbstractCVM.LOCAL_REGISTRY.containsKey(key);
 
-		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
-					"called isPublishedInLocalRegistry(" + key + ")" +
-					" returning " + ret);
-		}
+//		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+//			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
+//					"called isPublishedInLocalRegistry(" + key + ")" +
+//					" returning " + ret);
+//		}
 
 		return ret;
 	}
@@ -283,8 +283,8 @@ implements	ComponentVirtualMachineI
 
 		AbstractCVM.LOCAL_REGISTRY.put(key, p);
 
-		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 					"called publishInLocalRegistry(" + key + ", "
 					+ p.getPortURI() + ") ...done.");
 		}
@@ -314,11 +314,11 @@ implements	ComponentVirtualMachineI
 
 		PortI p = AbstractCVM.LOCAL_REGISTRY.get(key);
 
-		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
-					"called getFromLocalRegistry(" + key + ")"
-					+ " returning "	+ (p == null ? p : p.getPortURI()) + ")");
-		}
+//		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+//			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
+//					"called getFromLocalRegistry(" + key + ")"
+//					+ " returning "	+ (p == null ? p : p.getPortURI()) + ")");
+//		}
 
 		return p;
 	}
@@ -345,8 +345,8 @@ implements	ComponentVirtualMachineI
 
 		AbstractCVM.LOCAL_REGISTRY.remove(key);	
 
-		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 					"called unpublishFromLocalRegistry(" + key + ")"
 					+ " ...done. ");
 		}
@@ -497,8 +497,8 @@ implements	ComponentVirtualMachineI
 
 		AbstractCVM.publishInLocalRegistry(port.getPortURI(), port);
 
-		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 				"called localPublishPort(" + port.getPortURI() + ") ...done.");
 		}
 
@@ -535,8 +535,8 @@ implements	ComponentVirtualMachineI
 
 		AbstractCVM.unpublishFromLocalRegistry(port.getPortURI());
 
-		if (DEBUG_MODE.contains(CVMDebugModes.PUBLIHSING)) {
-			AbstractCVM.getCVM().logDebug(CVMDebugModes.PUBLIHSING,
+		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 				"called localUnpublishPort(" + port.getPortURI() + ") ...done.");
 		}
 
@@ -583,8 +583,8 @@ implements	ComponentVirtualMachineI
 
 		boolean ret = this.uri2component.containsKey(componentURI);
 
-		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
-			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
 						  "called isDeployedComponent(" + componentURI
 						  + ") returning " + ret + ".");
 		}
@@ -606,8 +606,8 @@ implements	ComponentVirtualMachineI
 
 		this.uri2component.put(componentURI, component);
 
-		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
-			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
 						  "called addDeployedComponent(" + component
 						  + ") ...done.");
 		}
@@ -619,19 +619,13 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			removeDeployedComponent(String componentURI)
 	{
-		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
-			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
-						  "called removeDeployedComponent(" + componentURI
-						  + ").");
-		}
-
 		assert	componentURI != null;
 		assert	this.isDeployedComponent(componentURI);
 
 		this.uri2component.remove(componentURI);
 
-		if (DEBUG_MODE.contains(CVMDebugModes.COMPONENT_DEPLOYMENT)) {
-			this.logDebug(CVMDebugModes.COMPONENT_DEPLOYMENT,
+		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
+			this.logDebug(CVMDebugModes.LIFE_CYCLE,
 						  "called removeDeployedComponent(" + componentURI
 						  + ") ...done.");
 		}
@@ -1078,9 +1072,12 @@ implements	ComponentVirtualMachineI
 	 */
 	public void			logDebug(CVMDebugModesI dm, String message)
 	{
-		String logEntry = this.logPrefix() + "|" + dm + "|" + message;
+		StringBuffer logEntry =
+			new StringBuffer().append(System.currentTimeMillis()).append("|").
+					append(this.logPrefix()).append("|").append(dm).
+					append("|").append(message);
 		System.out.println(logEntry);
-		this.debugginLogger.logMessage(logEntry);
+		this.debugginLogger.logMessage(logEntry.toString());
 	}
 
 	/**

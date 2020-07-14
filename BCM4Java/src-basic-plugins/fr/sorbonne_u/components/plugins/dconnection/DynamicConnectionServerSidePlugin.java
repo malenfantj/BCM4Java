@@ -86,7 +86,7 @@ import fr.sorbonne_u.components.ports.InboundPortI;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true		// TODO
+ * invariant	true		// TODO
  * </pre>
  * 
  * <p>Created on : 2013-03-04</p>
@@ -121,16 +121,16 @@ extends		AbstractPlugin
 	public void			installOn(ComponentI owner) throws Exception
 	{
 		// A plug-in is installed on an existing component.
-		assert	owner != null ;
+		assert	owner != null;
 		// Only one plug-in instance of a given URI can be installed on
 		// a component.
-		assert	!owner.isInstalled(this.getPluginURI()) ;
+		assert	!owner.isInstalled(this.getPluginURI());
 
-		super.installOn(owner) ;
+		super.installOn(owner);
 
 		// At installation time on a component, the plug-in adds the plug-in
 		// offered interfaces to the ones of the component.
-		this.addOfferedInterface(DynamicConnectionRequestI.class) ;
+		this.addOfferedInterface(DynamicConnectionRequestI.class);
 	}
 
 	/**
@@ -142,10 +142,10 @@ extends		AbstractPlugin
 		// The port offering DynamicConnectionRequestI is created and published.
 		this.dcrip =
 			new DynamicConnectionRequestInboundPort(
-										this.getPluginURI(), this.owner) ;
-		this.dcrip.publishPort() ;
+										this.getPluginURI(), this.getOwner());
+		this.dcrip.publishPort();
 
-		this.dynamicInboundPorts = new HashMap<>() ;
+		this.dynamicInboundPorts = new HashMap<>();
 	}
 
 	/**
@@ -163,15 +163,15 @@ extends		AbstractPlugin
 	public void			uninstall() throws Exception
 	{
 		for(InboundPortI p : this.dynamicInboundPorts.values()) {
-			p.unpublishPort() ;
-			p.destroyPort() ;
+			p.unpublishPort();
+			p.destroyPort();
 		}
-		this.dynamicInboundPorts.clear() ;
+		this.dynamicInboundPorts.clear();
 		// When uninstalling the plug-in, the ports and the interfaces added
 		// to the component at installation time are removed.
-		this.dcrip.unpublishPort() ;
-		this.dcrip.destroyPort() ;
-		this.removeOfferedInterface(DynamicConnectionRequestI.class) ;
+		this.dcrip.unpublishPort();
+		this.dcrip.destroyPort();
+		this.removeOfferedInterface(DynamicConnectionRequestI.class);
 	}
 
 	// -------------------------------------------------------------------------
@@ -186,8 +186,8 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	offeredInterface != null
-	 * post	true			// no postcondition.
+	 * pre	{@code offeredInterface != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param offeredInterface	server-side interface through which the connection is made.
@@ -198,18 +198,18 @@ extends		AbstractPlugin
 		Class<? extends OfferedCI> offeredInterface
 		) throws Exception
 	{
-		assert	offeredInterface != null ;
-		assert	this.owner.isOfferedInterface(offeredInterface) ;
+		assert	offeredInterface != null;
+		assert	this.getOwner().isOfferedInterface(offeredInterface);
 
-		InboundPortI p = null ;
+		InboundPortI p = null;
 		if (this.dynamicInboundPorts.containsKey(offeredInterface)) {
-			p = this.dynamicInboundPorts.get(offeredInterface) ;
+			p = this.dynamicInboundPorts.get(offeredInterface);
 		} else {
-			p = this.createAndPublishServerSideDynamicPort(offeredInterface) ;
-			this.dynamicInboundPorts.put(offeredInterface, p) ;
+			p = this.createAndPublishServerSideDynamicPort(offeredInterface);
+			this.dynamicInboundPorts.put(offeredInterface, p);
 		}
 
-		return p.getPortURI() ;
+		return p.getPortURI();
 	}
 
 	/**
@@ -219,8 +219,8 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	offeredInterface != null
-	 * post	true			// no postcondition.
+	 * pre	{@code offeredInterface != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param offeredInterface	server-side offered interface.
@@ -233,12 +233,12 @@ extends		AbstractPlugin
 		) throws Exception
 	{
 		if (this.dynamicInboundPorts.containsKey(offeredInterface)) {
-			InboundPortI p = this.dynamicInboundPorts.get(offeredInterface) ;
+			InboundPortI p = this.dynamicInboundPorts.get(offeredInterface);
 			if (p.getPortURI().equals(uri)) {
-				this.dynamicInboundPorts.remove(offeredInterface) ;
+				this.dynamicInboundPorts.remove(offeredInterface);
 				if (!p.connected()) {
-					p.unpublishPort() ;
-					p.destroyPort() ;
+					p.unpublishPort();
+					p.destroyPort();
 				}
 			}
 		}
@@ -254,8 +254,8 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	offeredInterface != null
-	 * post	true			// no postcondition.
+	 * pre	{@code offeredInterface != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param offeredInterface	server-side interface through which the connection is made.
@@ -264,6 +264,6 @@ extends		AbstractPlugin
 	 */
 	protected abstract InboundPortI	createAndPublishServerSideDynamicPort(
 		Class<? extends OfferedCI> offeredInterface
-		) throws Exception ;
+		) throws Exception;
 }
 // -----------------------------------------------------------------------------

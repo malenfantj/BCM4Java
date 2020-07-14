@@ -37,6 +37,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.plugins.dipc.example.components.ClientComponent;
 import fr.sorbonne_u.components.plugins.dipc.example.components.ServerComponent;
 
@@ -75,6 +76,24 @@ extends		AbstractCVM
 	@Override
 	public void				deploy() throws Exception
 	{
+		// ---------------------------------------------------------------------
+		// Configuration phase
+		// ---------------------------------------------------------------------
+
+		// debugging mode configuration; comment and uncomment the line to see
+		// the difference
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.LIFE_CYCLE);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.INTERFACES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PORTS);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PLUGIN);
+
+		// ---------------------------------------------------------------------
+		// Creation phase
+		// ---------------------------------------------------------------------
+
 		String clientURI =
 				AbstractComponent.createComponent(
 						ClientComponent.class.getCanonicalName(),
@@ -95,6 +114,7 @@ extends		AbstractCVM
 		CVM c;
 		try {
 			c = new CVM();
+			CVM.DEBUG_MODE.add(CVMDebugModes.PLUGIN);
 			c.startStandardLifeCycle(5000L) ;
 			Thread.sleep(10000L) ;
 			System.exit(0) ;

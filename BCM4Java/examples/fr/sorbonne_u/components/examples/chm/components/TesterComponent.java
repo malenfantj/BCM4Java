@@ -70,9 +70,9 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  */
 //-----------------------------------------------------------------------------
 @RequiredInterfaces(required = {ReflectionI.class,
-							   MapReading.class,
-		 					   MapTesting.class,
-		 					   MapWriting.class})
+								MapReading.class,
+								MapTesting.class,
+								MapWriting.class})
 public class				TesterComponent
 extends		AbstractComponent
 //-----------------------------------------------------------------------------
@@ -116,8 +116,8 @@ extends		AbstractComponent
 
 		assert	chmReflectionIBPUri != null ;
 
-		this.tracer.setTitle("TesterComponent") ;
-		this.tracer.setRelativePosition(0, 1) ;
+		this.getTracer().setTitle("TesterComponent") ;
+		this.getTracer().setRelativePosition(0, 1) ;
 
 		this.chmReflectionIBPUri = chmReflectionIBPUri ;
 
@@ -128,6 +128,9 @@ extends		AbstractComponent
 		this.writingOutboundPort =
 						new MapWritingOutboundPort<String,Integer>(this) ;
 		this.writingOutboundPort.publishPort() ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	// ------------------------------------------------------------------------

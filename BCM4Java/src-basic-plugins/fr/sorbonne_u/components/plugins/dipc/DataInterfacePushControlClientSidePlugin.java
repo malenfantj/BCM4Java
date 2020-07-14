@@ -1,10 +1,6 @@
 package fr.sorbonne_u.components.plugins.dipc;
 
-import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -44,27 +40,29 @@ import fr.sorbonne_u.components.plugins.dipc.ports.PushControlOutboundPort;
 import fr.sorbonne_u.components.plugins.helpers.AbstractClientSidePlugin;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.components.ports.OutboundPortI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>DataInterfacePushControlClientSidePlugin</code> implements
  * the client-side role in this plug-in.
  *
  * <p><strong>Description</strong></p>
  * 
- * See the package documentation for detaled explanations.
+ * See the package documentation for detailed explanations.
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	true
  * </pre>
  * 
  * <p>Created on : 2019-03-06</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				DataInterfacePushControlClientSidePlugin
+public class			DataInterfacePushControlClientSidePlugin
 extends		AbstractClientSidePlugin
 implements	PushControlImplementationI
 {
@@ -76,66 +74,66 @@ implements	PushControlImplementationI
 	@Override
 	public PushControlOutboundPort	getOutboundPort()
 	{
-		AbstractOutboundPort p = super.getOutboundPort() ;
-		assert	p instanceof PushControlOutboundPort ;
-		return (PushControlOutboundPort) p ;
+		AbstractOutboundPort p = super.getOutboundPort();
+		assert	p instanceof PushControlOutboundPort;
+		return (PushControlOutboundPort) p;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#isPortExisting(java.lang.String)
 	 */
 	@Override
-	public boolean			isPortExisting(String portURI)
+	public boolean		isPortExisting(String portURI)
 	throws Exception
 	{
 		return ((PushControlI)this.pluginOutboundPort).
-											isPortExisting(portURI) ;
+											isPortExisting(portURI);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#startUnlimitedPushing(java.lang.String, long)
 	 */
 	@Override
-	public void				startUnlimitedPushing(
+	public void			startUnlimitedPushing(
 		String portURI,
 		long interval
 		) throws Exception
 	{
 		((PushControlI)this.pluginOutboundPort).
-							startUnlimitedPushing(portURI, interval) ;
+							startUnlimitedPushing(portURI, interval);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#startLimitedPushing(java.lang.String, long, int)
 	 */
 	@Override
-	public void				startLimitedPushing(
+	public void			startLimitedPushing(
 		String portURI,
 		long interval,
 		int n
 		) throws Exception
 	{
 		((PushControlI)this.pluginOutboundPort).
-							startLimitedPushing(portURI, interval, n) ;
+							startLimitedPushing(portURI, interval, n);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#currentlyPushesData(java.lang.String)
 	 */
 	@Override
-	public boolean			currentlyPushesData(String portURI)
+	public boolean		currentlyPushesData(String portURI)
 	throws Exception
 	{
-		return ((PushControlI)this.pluginOutboundPort).currentlyPushesData(portURI) ;
+		return ((PushControlI)this.pluginOutboundPort).currentlyPushesData(portURI);
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI#stopPushing(java.lang.String)
 	 */
 	@Override
-	public void				stopPushing(String portURI) throws Exception
+	public void			stopPushing(String portURI) throws Exception
 	{
-		((PushControlI)this.pluginOutboundPort).stopPushing(portURI) ;
+		((PushControlI)this.pluginOutboundPort).stopPushing(portURI);
 	}
 
 	/**
@@ -144,7 +142,7 @@ implements	PushControlImplementationI
 	@Override
 	protected Class<? extends RequiredCI>	getRequiredInterface()
 	{
-		return PushControlI.class ;
+		return PushControlI.class;
 	}
 
 	/**
@@ -153,7 +151,7 @@ implements	PushControlImplementationI
 	@Override
 	protected Class<? extends OfferedCI>	getOfferedInterface()
 	{
-		return PushControlI.class ;
+		return PushControlI.class;
 	}
 
 	/**
@@ -162,7 +160,7 @@ implements	PushControlImplementationI
 	@Override
 	protected OutboundPortI	createOutboundPort() throws Exception
 	{
-		return new PushControlOutboundPort(this.owner) ;
+		return new PushControlOutboundPort(this.getOwner());
 	}
 
 	/**
@@ -171,7 +169,7 @@ implements	PushControlImplementationI
 	@Override
 	protected String		getConnectorClassName()
 	{
-		return PushControlConnector.class.getCanonicalName() ;
+		return PushControlConnector.class.getCanonicalName();
 	}
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

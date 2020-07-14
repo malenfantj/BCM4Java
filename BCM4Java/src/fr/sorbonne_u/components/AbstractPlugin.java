@@ -1,16 +1,6 @@
 package fr.sorbonne_u.components;
 
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import fr.sorbonne_u.components.AbstractComponent.ExecutorServiceFactory;
-import fr.sorbonne_u.components.ComponentI.ComponentService;
-import fr.sorbonne_u.components.ComponentI.ComponentTask;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -44,13 +34,25 @@ import fr.sorbonne_u.components.ComponentI.ComponentTask;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
+import fr.sorbonne_u.components.exceptions.PluginException;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import fr.sorbonne_u.components.AbstractComponent.ExecutorServiceFactory;
+import fr.sorbonne_u.components.ComponentI.ComponentService;
+import fr.sorbonne_u.components.ComponentI.ComponentTask;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The abstract class <code>AbstractPlugin</code> defines the most generic
  * methods and data for component plug-ins.
@@ -100,7 +102,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true		// TODO
+ * invariant	true		// TODO
  * </pre>
  * 
  * <p>Created on : 2016-02-03</p>
@@ -112,14 +114,14 @@ implements	PluginI
 {
 	private static final long	serialVersionUID = 1L;
 
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Inner classes
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
-	 * The static class <code>Fake</code> implements a fake component used to
-	 * call the services of the component on which the plug-in is to be
-	 * installed or uninstalled.
+	 * The static class <code>FakeComponent</code> implements a fake component
+	 * used to call the reflection services of the component on which the
+	 * plug-in is to be installed, finalised or uninstalled.
 	 *
 	 * <p><strong>Description</strong></p>
 	 * 
@@ -132,45 +134,48 @@ implements	PluginI
 	 * <p>Created on : 2017-01-10</p>
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
 	@RequiredInterfaces(required = {ReflectionI.class})
-	protected static class	Fake
+	protected static class	FakeComponent
 	extends		AbstractComponent
 	{
 		/** the outbound port used to call plug-in management services of the
 		 * other component.													*/
-		protected ReflectionOutboundPort	cpObp ;
+		protected final ReflectionOutboundPort	cpObp;
 
 		/**
-		 * create a fake component with a component plug-in outbound port
+		 * create a proxy component with a component plug-in outbound port
 		 * to be connected to the plug-in component owner.
 		 * 
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true			// no precondition.
-		 * post	true			// no postcondition.
+		 * pre	true	// no precondition.
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
-		 * @throws Exception		<i>todo.</i>
+		 * @throws Exception	<i>to do</i>.
 		 */
-		public			Fake() throws Exception
+		public			FakeComponent() throws Exception
 		{
-			super(0, 0) ;
+			super(0, 0);
 
-			this.cpObp = new ReflectionOutboundPort(this) ;
-			this.cpObp.publishPort() ;
+			this.cpObp = new ReflectionOutboundPort(this);
+			this.cpObp.publishPort();
 		}
 
 		/**
 		 * @see fr.sorbonne_u.components.AbstractComponent#finalise()
 		 */
 		@Override
-		public void finalise() throws Exception
+		public void		finalise() throws Exception
 		{
-			this.cpObp.unpublishPort() ;
-			this.removeRequiredInterface(ReflectionI.class) ;
+			assert	!this.cpObp.connected() :
+						new PluginException(
+								"reflection outbound port still connected!");
+
+			this.cpObp.unpublishPort();
+			this.removeRequiredInterface(ReflectionI.class);
 			super.finalise();
 		}
 
@@ -181,54 +186,66 @@ implements	PluginI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	plugin != null and pluginInboundPortURI != null
-		 * post	true			// no postcondition.
+		 * pre	{@code plugin != null && pluginInboundPortURI != null}
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
 		 * @param plugin				plug-in to be installed.
-		 * @param pluginInboundPortURI	URI of the plug-in inbound port of the owner component.
-		 * @throws Exception			<i>todo.</i>
+		 * @param pluginInboundPortURI	URI of the reflection inbound port of the component holding the plug-in to be finalised.
+		 * @throws Exception			<i>to do</i>.
 		 */
 		public void		doInstallPluginOn(
 			PluginI plugin,
 			String pluginInboundPortURI
 			) throws Exception
 		{
-			assert	plugin != null && pluginInboundPortURI != null ;
+			assert	plugin != null && pluginInboundPortURI != null :
+						new PreconditionException(
+								"plugin != null && "
+										+ "pluginInboundPortURI != null");
 
 			this.doPortConnection(
 						this.cpObp.getPortURI(),
 						pluginInboundPortURI,
-						ReflectionConnector.class.getCanonicalName()) ;
-			this.cpObp.installPlugin(plugin) ;
-			this.doPortDisconnection(this.cpObp.getPortURI()) ;
+						ReflectionConnector.class.getCanonicalName());
+			this.cpObp.installPlugin(plugin);
+			this.doPortDisconnection(this.cpObp.getPortURI());
+
+			assert	!this.cpObp.connected();
 		}
 
 		/**
-		 * 
+		 * finalise a plug-in installed on another component.
 		 * 
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	pluginInboundPortURI != null and pluginURI != null
-		 * post	true			// no postcondition.
+		 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
-		 * @param pluginInboundPortURI	inbound port URI of the plug-in.
-		 * @param pluginURI				URI of the plug-in.
-		 * @throws Exception		<i>todo.</i>
+		 * @param pluginInboundPortURI	URI of the reflection inbound port of the component holding the plug-in to be finalised.
+		 * @param pluginURI				URI of the plug-in to be finalised.
+		 * @throws Exception			<i>to do</i>.
 		 */
-		public void		doFinalise(
+		public void		doFinalisePlugin(
 			String pluginInboundPortURI,
 			String pluginURI
 			) throws Exception
 		{
+			assert	pluginInboundPortURI != null && pluginURI != null :
+						new PreconditionException(
+								"pluginInboundPortURI != null && "
+										+ "pluginURI != null");
+
 			this.doPortConnection(
 					this.cpObp.getPortURI(),
 					pluginInboundPortURI,
 					ReflectionConnector.class.getCanonicalName()) ;
 			this.cpObp.finalisePlugin(pluginURI) ;
 			this.doPortDisconnection(this.cpObp.getPortURI()) ;
+
+			assert	!this.cpObp.connected();
 		}
 
 		/**
@@ -238,31 +255,38 @@ implements	PluginI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	pluginInboundPortURI != null and pluginURI != null
-		 * post	true			// no postcondition.
+		 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
+		 * post	true	// no postcondition.
 		 * </pre>
 		 *
-		 * @param pluginInboundPortURI	URI of the plug-in inbound port of the owner component.
+		 * @param pluginInboundPortURI	URI of the reflection inbound port of the component holding the plug-in to be finalised.
 		 * @param pluginURI				URI of the plug-in to be uninstalled.
-		 * @throws Exception		<i>todo.</i>
+		 * @throws Exception			<i>to do</i>.
 		 */
 		public void		doUnistallPluginFrom(
 			String pluginInboundPortURI,
 			String pluginURI
 			) throws Exception
 		{
+			assert	pluginInboundPortURI != null && pluginURI != null :
+						new PreconditionException(
+								"pluginInboundPortURI != null && "
+										+ "pluginURI != null");
+
 			this.doPortConnection(
 					this.cpObp.getPortURI(),
 					pluginInboundPortURI,
 					ReflectionConnector.class.getCanonicalName()) ;
 			this.cpObp.uninstallPlugin(pluginURI) ;
 			this.doPortDisconnection(this.cpObp.getPortURI()) ;
+
+			assert	!this.cpObp.connected();
 		}
 	}
 
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in static services
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * install a plug-in on a component.
@@ -270,28 +294,35 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginInboundPortURI != null and plugin != null
-	 * post	true			// no postcondition.
+	 * pre	{@code pluginInboundPortURI != null && pluginToInstall != null}
+	 * pre	{@code pluginToInstall.getPluginURI() != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginInboundPortURI	URI of the plug-in management inbound port of the component.
 	 * @param pluginToInstall		plug-in to be installed.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception			<i>to do</i>.
 	 */
 	public static void	installPluginOn(
 		final String pluginInboundPortURI,
 		final PluginI pluginToInstall
 		) throws Exception
 	{
-		assert	pluginInboundPortURI != null && pluginToInstall != null ;
+		assert	pluginInboundPortURI != null && pluginToInstall != null :
+					new PreconditionException(
+							"pluginInboundPortURI != null && "
+									+ "pluginToInstall != null");
+		assert	pluginToInstall.getPluginURI() != null :
+					new PreconditionException(
+							"pluginToInstall.getPluginURI() != null");
 
-		Fake fake = new Fake() {} ;
+		FakeComponent fake = new FakeComponent() {} ;
 		fake.runTask(
 			new AbstractComponent.AbstractTask() {
 				@Override
 				public void run() {
 					try {
-						((Fake)this.getTaskOwner()).doInstallPluginOn(
+						((FakeComponent)this.getTaskOwner()).doInstallPluginOn(
 									pluginToInstall, pluginInboundPortURI) ;
 					} catch (Exception e) {
 						throw new RuntimeException(e);
@@ -306,7 +337,7 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginInboundPortURI != null and pluginURI != null
+	 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -319,16 +350,18 @@ implements	PluginI
 		final String pluginURI
 		) throws Exception
 	{
-		assert	pluginInboundPortURI != null && pluginURI != null ;
+		assert	pluginInboundPortURI != null && pluginURI != null :
+					new PreconditionException(
+							"pluginInboundPortURI != null && "
+									+ "pluginURI != null");
 
-
-		Fake fake = new Fake() {} ;
+		FakeComponent fake = new FakeComponent() {} ;
 		fake.runTask(
 			new AbstractComponent.AbstractTask() {
 				@Override
 				public void run() {
 					try {
-						((Fake) this.getTaskOwner()).doFinalise(
+						((FakeComponent) this.getTaskOwner()).doFinalisePlugin(
 								pluginInboundPortURI, pluginURI) ;
 					} catch (Exception e) {
 						throw new RuntimeException(e) ;
@@ -344,7 +377,7 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	pluginInboundPortURI != null and pluginURI != null
+	 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
@@ -357,15 +390,18 @@ implements	PluginI
 		final String pluginURI
 		) throws Exception
 	{
-		assert	pluginInboundPortURI != null && pluginURI != null ;
+		assert	pluginInboundPortURI != null && pluginURI != null :
+					new PreconditionException(
+							"pluginInboundPortURI != null && "
+									+ "pluginURI != null");
 
-		Fake fake = new Fake() {} ;
+		FakeComponent fake = new FakeComponent() {} ;
 		fake.runTask(
 			new AbstractComponent.AbstractTask() {
 				@Override
 				public void run() {
 					try {
-						((Fake) this.getTaskOwner()).
+						((FakeComponent) this.getTaskOwner()).
 							doUnistallPluginFrom(
 									pluginInboundPortURI, pluginURI) ;
 					} catch (Exception e) {
@@ -375,19 +411,20 @@ implements	PluginI
 			}) ;
 	}
 
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in instance variables and base constructor
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
-	/** component holding this plug-in								*/
-	protected ComponentI		owner ;
-	/** The URI of the plug-in.										*/
-	protected String			plugInURI ;
+	/** component holding this plug-in										*/
+	private final AtomicReference<ComponentI>	owner ;
+	/** URI of the plug-in.													*/
+	private final AtomicReference<String>		plugInURI ;
 	
 	public				AbstractPlugin()
 	{
 		super() ;
-		this.plugInURI = null ;
+		this.owner = new AtomicReference<ComponentI>(null);
+		this.plugInURI = new AtomicReference<String>(null) ;
 	}
 
 	// --------------------------------------------------------------------
@@ -395,12 +432,52 @@ implements	PluginI
 	// --------------------------------------------------------------------
 
 	/**
+	 * get the component owner of this plug-in.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the component owner of this plug-in.
+	 */
+	protected ComponentI	getOwner()
+	{
+		return this.owner.get();
+	}
+
+	/**
+	 * set the component owner of this plug-in.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code getOwner() == null}
+	 * pre	{@code owner != null}
+	 * post	{@code getOwner() != null}
+	 * </pre>
+	 *
+	 * @param owner			the component that will own this plug-in.
+	 * @throws Exception	
+	 */
+	protected void		setOwner(ComponentI owner)
+	{
+		assert	owner != null : new PreconditionException("owner != null");
+		assert	this.getOwner() == null :
+					new PreconditionException("getOwner() == null");
+
+		this.owner.set(owner);
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.PluginI#getPluginURI()
 	 */
 	@Override
 	public String		getPluginURI()
 	{
-		return this.plugInURI ;
+		return this.plugInURI.get() ;
 	}
 
 	/**
@@ -408,14 +485,12 @@ implements	PluginI
 	 */
 	@Override
 	public void			setPluginURI(String uri)
-	throws Exception
 	{
-		assert	uri != null ;
+		assert	uri != null : new PreconditionException("uri != null");
+		assert	this.getPluginURI() == null :
+					new PreconditionException("getPluginURI() == null");
 
-		if (this.plugInURI != null) {
-			throw new Exception("The URI of a plug-in can be set only once!") ;
-		}
-		this.plugInURI = uri ;
+		this.plugInURI.set(uri);
 	}
 
 	/**
@@ -424,11 +499,14 @@ implements	PluginI
 	@Override
 	public void			installOn(ComponentI owner) throws Exception
 	{
-		assert	owner != null ;
-		assert	this.getPluginURI() != null ;
-		assert	!owner.isInstalled(this.getPluginURI()) ;
+		assert	owner != null : new PreconditionException("owner != null");
+		assert	this.getPluginURI() != null :
+					new PreconditionException("getPluginURI() != null");
+		assert	!owner.isInstalled(this.getPluginURI()) :
+					new PreconditionException(
+							"!owner.isInstalled(getPluginURI())");
 
-		this.owner = owner ;
+		this.owner.set(owner);
 	}
 
 	/**
@@ -437,39 +515,44 @@ implements	PluginI
 	@Override
 	public void			initialise() throws Exception
 	{
-		// By default, do nothing.
+		assert	AbstractPlugin.initialisedAtAbstractPluginLevel(this) :
+					new PostconditionException("isInitialised()");
 	}
 
 	/**
+	 * check if the plug-in is initialised but only at the
+	 * <code>AbstractPlugin</code> level.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param p	plug-in to be tested.
+	 * @return	true if <code>p</code> appears as initialised at the <code>AbstractPlugin</code> level.
+	 */
+	private static boolean	initialisedAtAbstractPluginLevel(
+		AbstractPlugin p
+		)
+	{
+		return p.getOwner() != null;
+	}
+
+	/**
+	 * Default behaviour; should be extended in subclasses.
 	 * @see fr.sorbonne_u.components.PluginI#isInitialised()
 	 */
 	@Override
-	public boolean		isInitialised() throws Exception
+	public boolean		isInitialised()
 	{
-		return this.owner != null ;
+		return AbstractPlugin.initialisedAtAbstractPluginLevel(this);
 	}
 
-	/**
-	 * @see fr.sorbonne_u.components.PluginI#finalise()
-	 */
-	@Override
-	public void			finalise() throws Exception
-	{
-		// By default, do nothing.
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.PluginI#uninstall()
-	 */
-	@Override
-	public void			uninstall() throws Exception
-	{
-		// By default, do nothing.
-	}
-
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-in methods linking it to the base services of components
-	// --------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * find a port in the owner component, a method used in plug-in
@@ -479,8 +562,8 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	portURI != null
-	 * post	true			// no postcondition.
+	 * pre	{@code portURI != null}
+	 * post	true		// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI	the URI a the sought port.
@@ -489,9 +572,9 @@ implements	PluginI
 	protected PortI		findPortFromURI(String portURI)
 	{
 		assert	portURI != null :
-						new PreconditionException("portURI != null") ;
+						new PreconditionException("portURI != null");
 
-		return ((AbstractComponent) this.owner).findPortFromURI(portURI) ;
+		return ((AbstractComponent) this.getOwner()).findPortFromURI(portURI);
 	}
 
 	/**
@@ -501,17 +584,16 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	RequiredCI.class.isAssignableFrom(inter)
-	 * pre	!this.owner.isRequiredInterface(inter)
-	 * post	this.isRequiredInterface(inter)
+	 * pre	{@code getOwner().notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code !getOwner().isRequiredInterface(inter)}
+	 * post	{@code isRequiredInterface(inter)}
 	 * </pre>
 	 *
-	 * @param inter	required interface to be added.
+	 * @param inter		required interface to be added.
 	 */
-	protected void		addRequiredInterface(Class<?> inter)
+	protected void		addRequiredInterface(Class<? extends RequiredCI> inter)
 	{
-		((AbstractComponent) this.owner).addRequiredInterface(inter) ;
+		((AbstractComponent)this.getOwner()).addRequiredInterface(inter) ;
 	}
 
 	/**
@@ -521,17 +603,16 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.Owner.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	OfferedCI.class.isAssignableFrom(inter)
-	 * pre	!this.owner.isOfferedInterface(inter)
-	 * post	this.owner.isOfferedInterface(inter)
+	 * pre	{@code getOwner().notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code !owner.isOfferedInterface(inter)}
+	 * post	{@code owner.isOfferedInterface(inter)}
 	 * </pre>
 	 *
-	 * @param inter offered interface to be added.
+	 * @param inter		offered interface to be added.
 	 */
-	protected void		addOfferedInterface(Class<?> inter)
+	protected void		addOfferedInterface(Class<? extends OfferedCI> inter)
 	{
-		((AbstractComponent) this.owner).addOfferedInterface(inter) ;
+		((AbstractComponent)this.getOwner()).addOfferedInterface(inter) ;
 	}
 
 	/**
@@ -549,9 +630,11 @@ implements	PluginI
 	 *
 	 * @param inter required interface to be removed.
 	 */
-	protected void		removeRequiredInterface(Class<?> inter)
+	protected void		removeRequiredInterface(
+		Class<? extends RequiredCI> inter
+		)
 	{
-		((AbstractComponent) this.owner).removeRequiredInterface(inter) ;
+		((AbstractComponent)this.getOwner()).removeRequiredInterface(inter) ;
 	}
 
 	/**
@@ -569,9 +652,11 @@ implements	PluginI
 	 *
 	 * @param inter	offered interface to be removed
 	 */
-	protected void		removeOfferedInterface(Class<?> inter)
+	protected void		removeOfferedInterface(
+		Class<? extends OfferedCI> inter
+		)
 	{
-		((AbstractComponent) this.owner).removeOfferedInterface(inter) ;
+		((AbstractComponent) this.getOwner()).removeOfferedInterface(inter) ;
 	}
 
 	/**
@@ -588,7 +673,7 @@ implements	PluginI
 	 */
 	protected void		logMessage(String message)
 	{
-		this.owner.logMessage(message) ;
+		this.getOwner().logMessage(message) ;
 	}
 
 	/**
@@ -615,7 +700,7 @@ implements	PluginI
 		boolean schedulable
 		)
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 						createNewExecutorService(uri, nbThreads, schedulable) ;
 	}
 
@@ -640,20 +725,17 @@ implements	PluginI
 	 *
 	 * @param uri			URI of the new executor service.
 	 * @param nbThreads		number of threads of the new executor service.
-	 * @param schedulable	if true, the new executor service is schedulable otherwise it is not.
 	 * @param factory		an executor service factory used to create the new thread pool.
 	 * @return				the index associated with the new executor service.
 	 */
 	protected int			createNewExecutorService(
 		String uri,
 		int nbThreads,
-		boolean schedulable,
 		ExecutorServiceFactory factory
 		)
 	{
-		return ((AbstractComponent)this.owner).
-							createNewExecutorService(uri, nbThreads,
-													 schedulable, factory) ;
+		return ((AbstractComponent)this.getOwner()).
+							createNewExecutorService(uri, nbThreads, factory);
 	}
 
 	/**
@@ -678,7 +760,7 @@ implements	PluginI
 			) throws	AssertionError,
 						RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 								runTaskOnComponent(executorServiceIndex, t) ;
 	}
 
@@ -704,7 +786,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 								runTaskOnComponent(executorServiceURI, t) ;
 	}
 
@@ -727,7 +809,7 @@ implements	PluginI
 	throws	AssertionError,
 			RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).runTaskOnComponent(t) ;
+		return ((AbstractComponent)this.getOwner()).runTaskOnComponent(t) ;
 	}	
 
 	/**
@@ -757,7 +839,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskOnComponent(executorServiceIndex, t, delay, u) ;
 	}
 
@@ -789,7 +871,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskOnComponent(executorServiceURI, t, delay, u) ;
 	}
 
@@ -819,7 +901,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 									scheduleTaskOnComponent(t, delay, u) ;
 	}
 
@@ -859,7 +941,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
 							executorServiceIndex, t, initialDelay, period, u) ;
 	}
@@ -901,7 +983,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
 							executorServiceURI, t, initialDelay, period, u) ;
 	}
@@ -941,7 +1023,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
 												t, initialDelay, period, u) ;
 	}
@@ -979,7 +1061,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskWithFixedDelayOnComponent(
 							executorServiceIndex, t, initialDelay, delay, u) ;
 	}
@@ -1017,7 +1099,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskWithFixedDelayOnComponent(
 							executorServiceURI, t, initialDelay, delay, u) ;
 	}
@@ -1053,7 +1135,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).
+		return ((AbstractComponent)this.getOwner()).
 						scheduleTaskWithFixedDelayOnComponent(
 												t, initialDelay, delay, u) ;
 	}
@@ -1084,7 +1166,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).handleRequest(
+		return ((AbstractComponent)this.getOwner()).handleRequest(
 											executorServiceIndex, request) ;
 	}
 
@@ -1114,7 +1196,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).handleRequest(
+		return ((AbstractComponent)this.getOwner()).handleRequest(
 												executorServiceURI, request) ;
 	}
 
@@ -1149,7 +1231,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).handleRequest(request) ;
+		return ((AbstractComponent)this.getOwner()).handleRequest(request) ;
 	}
 
 	/**
@@ -1179,7 +1261,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.owner).scheduleRequest(
+		return ((AbstractComponent)this.getOwner()).scheduleRequest(
 									executorServiceIndex, request, delay, u) ;
 	}
 }

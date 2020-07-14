@@ -109,8 +109,11 @@ extends		AbstractComponent
 		this.launchInboundPort = new URIConsumerLaunchInboundPort(this) ;
 		this.launchInboundPort.publishPort() ;
 
-		this.tracer.setTitle("dynamic consumer") ;
-		this.tracer.setRelativePosition(1, 1) ;
+		this.getTracer().setTitle("dynamic consumer") ;
+		this.getTracer().setRelativePosition(1, 1) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	// ------------------------------------------------------------------------

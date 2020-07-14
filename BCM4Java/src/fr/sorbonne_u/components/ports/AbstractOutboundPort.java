@@ -443,10 +443,7 @@ implements	OutboundPortI
 	@Override
 	public boolean		connected() throws Exception
 	{
-		assert	!this.isDestroyed() :
-					new PreconditionException("!isDestroyed()");
-
-		return this.getConnector() != null;
+		return this.connector.get() != null;
 	}
 
 	/**

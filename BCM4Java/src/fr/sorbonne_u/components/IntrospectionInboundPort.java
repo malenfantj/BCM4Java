@@ -1,47 +1,48 @@
 package fr.sorbonne_u.components;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
+// Jacques.Malenfant@lip6.fr
 //
-//Jacques.Malenfant@lip6.fr
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
-//
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.lang.annotation.Annotation;
-
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.components.reflection.interfaces.IntrospectionI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>IntrospectionInboundPort</code> defines the inbound port
  * associated the interface <code>IntrospectionI</code>.
@@ -58,34 +59,34 @@ import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				IntrospectionInboundPort
+public class			IntrospectionInboundPort
 extends		AbstractInboundPort
 implements	IntrospectionI
 {
 	private static final long serialVersionUID = 1L;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	public				IntrospectionInboundPort(
 		String uri,
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, IntrospectionI.class, owner) ;
+		super(uri, IntrospectionI.class, owner);
 	}
 
 	public				IntrospectionInboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(IntrospectionI.class, owner) ;
+		super(IntrospectionI.class, owner);
 	}
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Plug-ins facilities
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#hasInstalledPlugins()
@@ -97,9 +98,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().hasInstalledPlugins() ;
+							return this.getServiceOwner().hasInstalledPlugins();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -112,9 +113,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isInstalled(pluginId) ;
+							return this.getServiceOwner().isInstalled(pluginId);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -128,9 +129,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<PluginI>() {
 						@Override
 						public PluginI call() throws Exception {
-							return this.getServiceOwner().getPlugin(servicePluginURI) ;
+							return this.getServiceOwner().getPlugin(servicePluginURI);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -144,9 +145,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isInitialised(servicePluginURI) ;
+							return this.getServiceOwner().isInitialised(servicePluginURI);
 						}
-					}) ;
+					});
 	}
 
 	// ------------------------------------------------------------------------
@@ -163,9 +164,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isLogging() ;
+							return this.getServiceOwner().isLogging();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -178,9 +179,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isTracing() ;
+							return this.getServiceOwner().isTracing();
 						}
-					}) ;
+					});
 	}
 
 	// ------------------------------------------------------------------------
@@ -198,9 +199,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isInStateAmong(states) ;
+							return this.getServiceOwner().isInStateAmong(states);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -214,9 +215,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().notInStateAmong(states) ;
+							return this.getServiceOwner().notInStateAmong(states);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -229,9 +230,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().hasItsOwnThreads() ;
+							return this.getServiceOwner().hasItsOwnThreads();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -244,9 +245,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().hasSerialisedExecution() ;
+							return this.getServiceOwner().hasSerialisedExecution();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -259,9 +260,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().canScheduleTasks() ;
+							return this.getServiceOwner().canScheduleTasks();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -274,9 +275,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Integer>() {
 						@Override
 						public Integer call() throws Exception {
-							return this.getServiceOwner().getTotalNumberOfThreads() ;
+							return this.getServiceOwner().getTotalNumberOfThreads();
 						}
-					}) ;
+					});
 	}
 
 	// ------------------------------------------------------------------------
@@ -287,138 +288,163 @@ implements	IntrospectionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getInterfaces() throws Exception
+	public Class<? extends ComponentInterface>[]	getInterfaces()
+	throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>[]>() {
+					new AbstractComponent.AbstractService<
+									Class<? extends ComponentInterface>[]>() {
 						@Override
-						public Class<?>[] call() throws Exception {
-							return this.getServiceOwner().getInterfaces() ;
+						public Class<? extends ComponentInterface>[] call()
+						throws Exception
+						{
+							return this.getServiceOwner().getInterfaces();
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getInterface(final Class<?> inter) throws Exception
+	public Class<? extends ComponentInterface>	getInterface(
+		final Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Class<?>>() {
+				new AbstractComponent.AbstractService<
+									Class<? extends ComponentInterface>>() {
 					@Override
-					public Class<?> call() throws Exception {
-						return this.getServiceOwner().getInterface(inter) ;
+					public Class<? extends ComponentInterface> call()
+					throws Exception
+					{
+						return this.getServiceOwner().getInterface(inter);
 					}
-				}) ;
+				});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getRequiredInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getRequiredInterfaces() throws Exception
+	public Class<? extends RequiredCI>[]	getRequiredInterfaces() throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>[]>() {
+					new AbstractComponent.AbstractService<
+											Class<? extends RequiredCI>[]>() {
 						@Override
-						public Class<?>[] call() throws Exception {
-							return this.getServiceOwner().getRequiredInterfaces() ;
+						public Class<? extends RequiredCI>[] call()
+						throws Exception
+						{
+							return this.getServiceOwner().getRequiredInterfaces();
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getRequiredInterface(final Class<?> inter)
-	throws Exception
+	public Class<? extends RequiredCI>	getRequiredInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Class<?>>() {
+				new AbstractComponent.AbstractService<
+											Class<? extends RequiredCI>>() {
 					@Override
-					public Class<?> call() throws Exception {
-						return this.getServiceOwner().getRequiredInterface(inter) ;
+					public Class<? extends RequiredCI> call() throws Exception {
+						return this.getServiceOwner().getRequiredInterface(inter);
 					}
-				}) ;
+				});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getOfferedInterfaces()
 	 */
 	@Override
-	public Class<?>[]	getOfferedInterfaces() throws Exception
+	public Class<? extends OfferedCI>[]	getOfferedInterfaces() throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>[]>() {
+					new AbstractComponent.AbstractService<
+											Class<? extends OfferedCI>[]>() {
 						@Override
-						public Class<?>[] call() throws Exception {
-							return this.getServiceOwner().getOfferedInterfaces() ;
+						public Class<? extends OfferedCI>[] call()
+						throws Exception
+						{
+							return this.getServiceOwner().getOfferedInterfaces();
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public Class<?>		getOfferedInterface(final Class<?> inter)
-	throws Exception
+	public Class<? extends OfferedCI>	getOfferedInterface(
+		final Class<? extends OfferedCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-				new AbstractComponent.AbstractService<Class<?>>() {
+				new AbstractComponent.AbstractService<
+											Class<? extends OfferedCI>>() {
 					@Override
-					public Class<?> call() throws Exception {
-						return this.getServiceOwner().getOfferedInterface(inter) ;
+					public Class<? extends OfferedCI> call()throws Exception
+					{
+						return this.getServiceOwner().getOfferedInterface(inter);
 					}
-				}) ;
+				});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isInterface(final Class<?> inter) throws Exception
+	public boolean		isInterface(
+		final Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isInterface(inter) ;
+							return this.getServiceOwner().isInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isRequiredInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isRequiredInterface(final Class<?> inter)
-	throws Exception
+	public boolean		isRequiredInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isRequiredInterface(inter) ;
+							return this.getServiceOwner().isRequiredInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isOfferedInterface(java.lang.Class)
 	 */
 	@Override
-	public boolean		isOfferedInterface(final Class<?> inter) throws Exception
+	public boolean		isOfferedInterface(
+		final Class<? extends OfferedCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isOfferedInterface(inter) ;
+							return this.getServiceOwner().isOfferedInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	// ------------------------------------------------------------------------
@@ -429,64 +455,71 @@ implements	IntrospectionI
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findPortURIsFromInterface(final Class<?> inter)
-	throws Exception
+	public String[]		findPortURIsFromInterface(
+		final Class<? extends ComponentInterface> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
-							return this.getServiceOwner().findPortURIsFromInterface(inter) ;
+							return this.getServiceOwner().findPortURIsFromInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findInboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findInboundPortURIsFromInterface(final Class<?> inter)
-	throws Exception
+	public String[]		findInboundPortURIsFromInterface(
+		final Class<? extends OfferedCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
-							return this.getServiceOwner().findInboundPortURIsFromInterface(inter) ;
+							return this.getServiceOwner().findInboundPortURIsFromInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findOutboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
-	public String[]		findOutboundPortURIsFromInterface(final Class<?> inter)
-	throws Exception
+	public String[]		findOutboundPortURIsFromInterface(
+		final Class<? extends RequiredCI> inter
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
-							return this.getServiceOwner().findOutboundPortURIsFromInterface(inter) ;
+							return this.getServiceOwner().findOutboundPortURIsFromInterface(inter);
 						}
-					}) ;
+					});
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getPortImplementedInterface(java.lang.String)
 	 */
 	@Override
-	public Class<?>		getPortImplementedInterface(final String portURI)
-	throws Exception
+	public Class<? extends ComponentInterface>	getPortImplementedInterface(
+		final String portURI
+		) throws Exception
 	{
 		return this.getOwner().handleRequestSync(
-					new AbstractComponent.AbstractService<Class<?>>() {
+					new AbstractComponent.AbstractService<
+										Class<? extends ComponentInterface>>() {
 						@Override
-						public Class<?> call() throws Exception {
-							return this.getServiceOwner().getPortImplementedInterface(portURI) ;
+						public Class<? extends ComponentInterface> call()
+						throws Exception
+						{
+							return this.getServiceOwner().getPortImplementedInterface(portURI);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -499,9 +532,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isPortExisting(portURI) ;
+							return this.getServiceOwner().isPortExisting(portURI);
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -515,9 +548,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							return this.getServiceOwner().isPortConnected(portURI) ;
+							return this.getServiceOwner().isPortConnected(portURI);
 						}
-					}) ;
+					});
 	}
 
 	// ------------------------------------------------------------------------
@@ -534,9 +567,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<String>() {
 						@Override
 						public String call() throws Exception {
-							return this.getServiceOwner().getComponentDefinitionClassName() ;
+							return this.getServiceOwner().getComponentDefinitionClassName();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -549,9 +582,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<Annotation[]>() {
 						@Override
 						public Annotation[] call() throws Exception {
-							return this.getServiceOwner().getComponentAnnotations() ;
+							return this.getServiceOwner().getComponentAnnotations();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -564,9 +597,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<ClassLoader>() {
 						@Override
 						public ClassLoader call() throws Exception {
-							return this.getServiceOwner().getComponentLoader() ;
+							return this.getServiceOwner().getComponentLoader();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -580,9 +613,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<ServiceSignature[]>() {
 						@Override
 						public ServiceSignature[] call() throws Exception {
-							return this.getServiceOwner().getComponentServiceSignatures() ;
+							return this.getServiceOwner().getComponentServiceSignatures();
 						}
-					}) ;
+					});
 	}
 
 	/**
@@ -596,9 +629,9 @@ implements	IntrospectionI
 					new AbstractComponent.AbstractService<ConstructorSignature[]>() {
 						@Override
 						public ConstructorSignature[] call() throws Exception {
-							return this.getServiceOwner().getComponentConstructorSignatures() ;
+							return this.getServiceOwner().getComponentConstructorSignatures();
 						}
-					}) ;
+					});
 	}
 }
 //-----------------------------------------------------------------------------

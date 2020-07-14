@@ -147,6 +147,9 @@ extends		AbstractComponent
 				this.providerJVMURI + AbstractCVM.DCC_INBOUNDPORT_URI_SUFFIX,
 				DynamicComponentCreationConnector.class.getCanonicalName()) ;
 
+			AbstractComponent.checkImplementationInvariant(this);
+			AbstractComponent.checkInvariant(this);
+
 			this.runTask(
 					new AbstractComponent.AbstractTask() {
 							@Override

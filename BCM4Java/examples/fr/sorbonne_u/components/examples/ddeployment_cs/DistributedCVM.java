@@ -1,6 +1,7 @@
 package fr.sorbonne_u.components.examples.ddeployment_cs;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -38,6 +39,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicAssembler;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 
 //-----------------------------------------------------------------------------
 /**
@@ -117,6 +119,23 @@ extends		AbstractDistributedCVM
 	@Override
 	public void			instantiateAndPublish() throws Exception
 	{
+		// ---------------------------------------------------------------------
+		// Configuration phase
+		// ---------------------------------------------------------------------
+
+		// debugging mode configuration; comment and uncomment the line to see
+		// the difference
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.LIFE_CYCLE);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.INTERFACES);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.PORTS);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CONNECTING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING);
+		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
+
+		// ---------------------------------------------------------------------
+		// Creation phase
+		// ---------------------------------------------------------------------
+
 		if (thisJVMURI.equals(ASSEMBLER_JVM_URI)) {
 
 			@SuppressWarnings("unused")

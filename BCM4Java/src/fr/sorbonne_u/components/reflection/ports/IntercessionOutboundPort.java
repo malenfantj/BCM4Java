@@ -280,15 +280,6 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#newInstance(java.lang.Object[])
-	 */
-	@Override
-	public ComponentI	newInstance(Object[] parameters) throws Exception
-	{
-		return ((IntercessionI)this.getConnector()).newInstance(parameters) ;
-	}
-
-	/**
 	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeService(java.lang.String, java.lang.Object[])
 	 */
 	@Override

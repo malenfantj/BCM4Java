@@ -103,8 +103,11 @@ extends		AbstractComponent
 										 this) ;
 		this.inboundPort.publishPort() ;
 
-		this.tracer.setTitle("RandomValueProvider") ;
-		this.tracer.setRelativePosition(1, 1) ;
+		this.getTracer().setTitle("RandomValueProvider") ;
+		this.getTracer().setRelativePosition(1, 1) ;
+
+		AbstractComponent.checkImplementationInvariant(this);
+		AbstractComponent.checkInvariant(this);
 	}
 
 	/**
@@ -135,8 +138,8 @@ extends		AbstractComponent
 										 this) ;
 		this.inboundPort.publishPort();
 
-		this.tracer.setTitle("RandomValueProvider") ;
-		this.tracer.setRelativePosition(1, 1) ;
+		this.getTracer().setTitle("RandomValueProvider") ;
+		this.getTracer().setRelativePosition(1, 1) ;
 	}
 
 	// ------------------------------------------------------------------------
