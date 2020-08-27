@@ -89,6 +89,8 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.util.HotSwapAgent;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -6594,7 +6596,8 @@ implements	ComponentI
 	{
 		if (AbstractComponent.javassistClassPool == null) {
 			AbstractComponent.javassistClassPool = javassist.ClassPool.getDefault();
-			String rtpath = System.getProperty("java.home") + "/lib/rt.jar";
+			String rtpath = System.getProperty("java.home") +
+						File.separator + "lib" + File.separator + "rt.jar";
 			AbstractComponent.javassistClassPool.appendClassPath(rtpath);
 		}
 		if (this.javassistClassForComponent == null) {

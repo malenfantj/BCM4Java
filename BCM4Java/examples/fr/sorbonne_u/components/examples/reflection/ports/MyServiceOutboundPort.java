@@ -76,12 +76,12 @@ implements	MyServiceI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI#test()
+	 * @see fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI#myService(java.lang.String)
 	 */
 	@Override
-	public void			test() throws Exception
+	public void			myService(String message) throws Exception
 	{
-		((MyServiceI)this.getConnector()).test() ;
+		((MyServiceI)this.getConnector()).myService(message) ;
 	}
 }
 // -----------------------------------------------------------------------------

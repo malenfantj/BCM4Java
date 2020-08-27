@@ -109,10 +109,7 @@ extends		AbstractComponent
 					uris[0],
 					MyServiceConnector.class.getCanonicalName()) ;
 
-		System.out.println("-------------------------------------------") ;
-		System.out.println("Before change:") ;
-		this.servicePort.test() ;
-		System.out.println("-------------------------------------------") ;
+		this.servicePort.myService("Before change:") ;
 
 		this.rObp.insertBeforeService(
 						"test",
@@ -123,10 +120,7 @@ extends		AbstractComponent
 						new String[]{},
 						"System.out.println(\"Again!\") ;");
 
-		System.out.println("-------------------------------------------") ;
-		System.out.println("After change:") ;
-		this.servicePort.test() ;
-		System.out.println("-------------------------------------------") ;
+		this.servicePort.myService("After change:") ;
 	}
 
 	/**
