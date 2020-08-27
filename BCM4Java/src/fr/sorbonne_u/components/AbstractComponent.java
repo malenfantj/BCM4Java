@@ -54,7 +54,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
-
 import fr.sorbonne_u.components.annotations.AddPlugin;
 import fr.sorbonne_u.components.annotations.AddPlugins;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
@@ -6595,13 +6594,8 @@ implements	ComponentI
 	{
 		if (AbstractComponent.javassistClassPool == null) {
 			AbstractComponent.javassistClassPool = javassist.ClassPool.getDefault();
-			String libFullName =
-				ClassLoader.getSystemClassLoader().getParent().
-					getResource("java/lang/String.class").toString();
-			libFullName =
-				libFullName.replaceAll("rt.jar!/java/lang/String.class", "");
-			libFullName = libFullName.replaceAll("jar:file:", "");
-			AbstractComponent.javassistClassPool.appendClassPath(libFullName);
+			String rtpath = System.getProperty("java.home") + "/lib/rt.jar";
+			AbstractComponent.javassistClassPool.appendClassPath(rtpath);
 		}
 		if (this.javassistClassForComponent == null) {
 			this.javassistClassForComponent =
