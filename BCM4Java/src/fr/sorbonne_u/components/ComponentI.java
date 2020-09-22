@@ -586,15 +586,13 @@ public interface		ComponentI
 	 * post	{@code isPortConnected(portURI)}
 	 * </pre>
 	 *
-	 * @param portURI		URI of the component's port to be connected.
-	 * @param otherPortURI	URI of the other port to be connected with.
-	 * @param ccname		connector class name to be used in the connection.
-	 * @throws Exception	<i>to do</i>.
+	 * @param requiredPortURI	URI of the component's required port to be connected.
+	 * @param offeredPortURI	URI of the other port to be connected with.
+	 * @param ccname			connector class name to be used in the connection.
+	 * @throws Exception		<i>to do</i>.
 	 */
 	public void			doPortConnection(
-//		RequiredCI required,
 		String requiredPortURI,
-//		RequiredCI offered,
 		String offeredPortURI,
 		String ccname
 		) throws Exception;
@@ -1291,7 +1289,7 @@ public interface		ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code isStarted()}
-	 * pre	{@code canScheduleTasks()
+	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code t != null && delay &gt; 0 && u != null}
 	 * post	true		// no postcondition.
 	 * </pre>

@@ -47,6 +47,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import fr.sorbonne_u.components.AbstractComponent.ExecutorServiceFactory;
 import fr.sorbonne_u.components.ComponentI.ComponentService;
@@ -241,9 +242,9 @@ implements	PluginI
 			this.doPortConnection(
 					this.cpObp.getPortURI(),
 					pluginInboundPortURI,
-					ReflectionConnector.class.getCanonicalName()) ;
-			this.cpObp.finalisePlugin(pluginURI) ;
-			this.doPortDisconnection(this.cpObp.getPortURI()) ;
+					ReflectionConnector.class.getCanonicalName());
+			this.cpObp.finalisePlugin(pluginURI);
+			this.doPortDisconnection(this.cpObp.getPortURI());
 
 			assert	!this.cpObp.connected();
 		}
@@ -276,9 +277,9 @@ implements	PluginI
 			this.doPortConnection(
 					this.cpObp.getPortURI(),
 					pluginInboundPortURI,
-					ReflectionConnector.class.getCanonicalName()) ;
-			this.cpObp.uninstallPlugin(pluginURI) ;
-			this.doPortDisconnection(this.cpObp.getPortURI()) ;
+					ReflectionConnector.class.getCanonicalName());
+			this.cpObp.uninstallPlugin(pluginURI);
+			this.doPortDisconnection(this.cpObp.getPortURI());
 
 			assert	!this.cpObp.connected();
 		}
@@ -316,19 +317,19 @@ implements	PluginI
 					new PreconditionException(
 							"pluginToInstall.getPluginURI() != null");
 
-		FakeComponent fake = new FakeComponent() {} ;
+		FakeComponent fake = new FakeComponent() {};
 		fake.runTask(
 			new AbstractComponent.AbstractTask() {
 				@Override
 				public void run() {
 					try {
 						((FakeComponent)this.getTaskOwner()).doInstallPluginOn(
-									pluginToInstall, pluginInboundPortURI) ;
+									pluginToInstall, pluginInboundPortURI);
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
 				}
-			}) ;		
+			});		
 	}
 
 	/**
@@ -355,19 +356,19 @@ implements	PluginI
 							"pluginInboundPortURI != null && "
 									+ "pluginURI != null");
 
-		FakeComponent fake = new FakeComponent() {} ;
+		FakeComponent fake = new FakeComponent() {};
 		fake.runTask(
 			new AbstractComponent.AbstractTask() {
 				@Override
 				public void run() {
 					try {
 						((FakeComponent) this.getTaskOwner()).doFinalisePlugin(
-								pluginInboundPortURI, pluginURI) ;
+								pluginInboundPortURI, pluginURI);
 					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+						throw new RuntimeException(e);
 					}
 				}
-			}) ;
+			});
 
 	}
 
@@ -395,7 +396,7 @@ implements	PluginI
 							"pluginInboundPortURI != null && "
 									+ "pluginURI != null");
 
-		FakeComponent fake = new FakeComponent() {} ;
+		FakeComponent fake = new FakeComponent() {};
 		fake.runTask(
 			new AbstractComponent.AbstractTask() {
 				@Override
@@ -403,30 +404,49 @@ implements	PluginI
 					try {
 						((FakeComponent) this.getTaskOwner()).
 							doUnistallPluginFrom(
-									pluginInboundPortURI, pluginURI) ;
+									pluginInboundPortURI, pluginURI);
 					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+						throw new RuntimeException(e);
 					}
 				}
-			}) ;
+			});
 	}
 
 	// -------------------------------------------------------------------------
 	// Plug-in instance variables and base constructor
 	// -------------------------------------------------------------------------
 
-	/** component holding this plug-in										*/
-	private final AtomicReference<ComponentI>	owner ;
 	/** URI of the plug-in.													*/
-	private final AtomicReference<String>		plugInURI ;
-	
+	private final AtomicReference<String>		plugInURI;
+	/** component holding this plug-in										*/
+	private final AtomicReference<ComponentI>	owner;
+	/** URI of the preferred executor service used to execute services
+	 *  on owner.															*/
+	private final AtomicReference<String>		preferredExecutorServiceURI;
+	/** index of the preferred executor service used to execute services
+	 *  on owner.															*/
+	private final AtomicInteger					preferredExecutorServiceIndex;
+
+	/**
+	 * create a new plug-in instance.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 */
 	public				AbstractPlugin()
 	{
-		super() ;
+		super();
 		this.owner = new AtomicReference<ComponentI>(null);
-		this.plugInURI = new AtomicReference<String>(null) ;
+		this.plugInURI = new AtomicReference<String>(null);
+		this.preferredExecutorServiceURI = new AtomicReference<String>();
+		this.preferredExecutorServiceIndex = new AtomicInteger();
 	}
-
+	
 	// --------------------------------------------------------------------
 	// Plug-in base services
 	// --------------------------------------------------------------------
@@ -460,7 +480,6 @@ implements	PluginI
 	 * </pre>
 	 *
 	 * @param owner			the component that will own this plug-in.
-	 * @throws Exception	
 	 */
 	protected void		setOwner(ComponentI owner)
 	{
@@ -477,7 +496,7 @@ implements	PluginI
 	@Override
 	public String		getPluginURI()
 	{
-		return this.plugInURI.get() ;
+		return this.plugInURI.get();
 	}
 
 	/**
@@ -491,6 +510,61 @@ implements	PluginI
 					new PreconditionException("getPluginURI() == null");
 
 		this.plugInURI.set(uri);
+	}
+
+	/**
+	 * get the URI of the executor service used to execute simulations.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the URI of the executor service used to execute simulations.
+	 */
+	public String		getPreferredExecutionServiceURI()
+	{
+		return this.preferredExecutorServiceURI.get();
+	}
+
+	public int			getPreferredExecutionServiceIndex()
+	{
+		return this.preferredExecutorServiceIndex.get();
+	}
+
+	/**
+	 * set the URI of the executor service used to execute simulations.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code executorServiceURI != null}
+	 * pre	{@code this.getOwner() != null}
+	 * pre	{@code this.getOwner().validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code this.getExecutionServiceURI() == null}
+	 * post	{@code executorServiceURI.equals(this.getExecutionServiceURI())}
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service used to execute simulations.
+	 */
+	public void			setPreferredExecutionServiceURI(
+		String executorServiceURI
+		)
+	{
+		assert	executorServiceURI != null;
+		assert	this.getOwner() != null;
+		assert	this.getOwner().validExecutorServiceURI(executorServiceURI);
+		assert	this.getPreferredExecutionServiceURI() == null;
+
+		this.preferredExecutorServiceURI.set(executorServiceURI);
+		this.preferredExecutorServiceIndex.set(
+			((AbstractComponent)this.getOwner()).
+								getExecutorServiceIndex(executorServiceURI));
+
+		assert	executorServiceURI.equals(
+									this.getPreferredExecutionServiceURI());
 	}
 
 	/**
@@ -593,7 +667,7 @@ implements	PluginI
 	 */
 	protected void		addRequiredInterface(Class<? extends RequiredCI> inter)
 	{
-		((AbstractComponent)this.getOwner()).addRequiredInterface(inter) ;
+		((AbstractComponent)this.getOwner()).addRequiredInterface(inter);
 	}
 
 	/**
@@ -612,7 +686,7 @@ implements	PluginI
 	 */
 	protected void		addOfferedInterface(Class<? extends OfferedCI> inter)
 	{
-		((AbstractComponent)this.getOwner()).addOfferedInterface(inter) ;
+		((AbstractComponent)this.getOwner()).addOfferedInterface(inter);
 	}
 
 	/**
@@ -634,7 +708,7 @@ implements	PluginI
 		Class<? extends RequiredCI> inter
 		)
 	{
-		((AbstractComponent)this.getOwner()).removeRequiredInterface(inter) ;
+		((AbstractComponent)this.getOwner()).removeRequiredInterface(inter);
 	}
 
 	/**
@@ -656,7 +730,7 @@ implements	PluginI
 		Class<? extends OfferedCI> inter
 		)
 	{
-		((AbstractComponent) this.getOwner()).removeOfferedInterface(inter) ;
+		((AbstractComponent) this.getOwner()).removeOfferedInterface(inter);
 	}
 
 	/**
@@ -673,7 +747,7 @@ implements	PluginI
 	 */
 	protected void		logMessage(String message)
 	{
-		this.getOwner().logMessage(message) ;
+		this.getOwner().logMessage(message);
 	}
 
 	/**
@@ -701,7 +775,7 @@ implements	PluginI
 		)
 	{
 		return ((AbstractComponent)this.getOwner()).
-						createNewExecutorService(uri, nbThreads, schedulable) ;
+						createNewExecutorService(uri, nbThreads, schedulable);
 	}
 
 	/**
@@ -755,13 +829,13 @@ implements	PluginI
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
 	protected Future<?>		runTaskOnComponent(
-			int executorServiceIndex,
-			ComponentTask t
-			) throws	AssertionError,
-						RejectedExecutionException
+		int executorServiceIndex,
+		ComponentTask t
+		) throws	AssertionError,
+					RejectedExecutionException
 	{
 		return ((AbstractComponent)this.getOwner()).
-								runTaskOnComponent(executorServiceIndex, t) ;
+								runTaskOnComponent(executorServiceIndex, t);
 	}
 
 	/**
@@ -787,7 +861,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		return ((AbstractComponent)this.getOwner()).
-								runTaskOnComponent(executorServiceURI, t) ;
+								runTaskOnComponent(executorServiceURI, t);
 	}
 
 	/**
@@ -809,7 +883,12 @@ implements	PluginI
 	throws	AssertionError,
 			RejectedExecutionException
 	{
-		return ((AbstractComponent)this.getOwner()).runTaskOnComponent(t) ;
+		if (this.getPreferredExecutionServiceURI() != null) {
+			return ((AbstractComponent)this.getOwner()).runTaskOnComponent(
+								this.getPreferredExecutionServiceIndex(), t);
+		} else {
+			return ((AbstractComponent)this.getOwner()).runTaskOnComponent(t);
+		}
 	}	
 
 	/**
@@ -840,7 +919,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		return ((AbstractComponent)this.getOwner()).
-					scheduleTaskOnComponent(executorServiceIndex, t, delay, u) ;
+					scheduleTaskOnComponent(executorServiceIndex, t, delay, u);
 	}
 
 
@@ -872,7 +951,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		return ((AbstractComponent)this.getOwner()).
-					scheduleTaskOnComponent(executorServiceURI, t, delay, u) ;
+					scheduleTaskOnComponent(executorServiceURI, t, delay, u);
 	}
 
 
@@ -901,8 +980,14 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.getOwner()).
-									scheduleTaskOnComponent(t, delay, u) ;
+		if (this.getPreferredExecutionServiceURI() != null) {
+			return ((AbstractComponent)this.getOwner()).
+					scheduleTaskOnComponent(
+						this.getPreferredExecutionServiceIndex(), t, delay, u);
+		} else {
+			return ((AbstractComponent)this.getOwner()).
+									scheduleTaskOnComponent(t, delay, u);
+		}
 	}
 
 
@@ -943,7 +1028,7 @@ implements	PluginI
 	{
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
-							executorServiceIndex, t, initialDelay, period, u) ;
+							executorServiceIndex, t, initialDelay, period, u);
 	}
 
 	/**
@@ -985,7 +1070,7 @@ implements	PluginI
 	{
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
-							executorServiceURI, t, initialDelay, period, u) ;
+							executorServiceURI, t, initialDelay, period, u);
 	}
 
 	/**
@@ -1023,9 +1108,16 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.getOwner()).
+		if (this.getPreferredExecutionServiceURI() != null) {
+			return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
-												t, initialDelay, period, u) ;
+								this.getPreferredExecutionServiceIndex(),
+								t, initialDelay, period, u);
+		} else {
+			return ((AbstractComponent)this.getOwner()).
+							scheduleTaskAtFixedRateOnComponent(
+												t, initialDelay, period, u);
+		}
 	}
 
 	/**
@@ -1063,7 +1155,7 @@ implements	PluginI
 	{
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskWithFixedDelayOnComponent(
-							executorServiceIndex, t, initialDelay, delay, u) ;
+							executorServiceIndex, t, initialDelay, delay, u);
 	}
 
 	/**
@@ -1101,7 +1193,7 @@ implements	PluginI
 	{
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskWithFixedDelayOnComponent(
-							executorServiceURI, t, initialDelay, delay, u) ;
+							executorServiceURI, t, initialDelay, delay, u);
 	}
 
 	/**
@@ -1135,9 +1227,16 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.getOwner()).
+		if (this.getPreferredExecutionServiceURI() != null) {
+			return ((AbstractComponent)this.getOwner()).
+					scheduleTaskWithFixedDelayOnComponent(
+								this.getPreferredExecutionServiceIndex(),
+								t, initialDelay, delay, u);
+		} else {
+			return ((AbstractComponent)this.getOwner()).
 						scheduleTaskWithFixedDelayOnComponent(
-												t, initialDelay, delay, u) ;
+												t, initialDelay, delay, u);
+		}
 	}
 
 	/**
@@ -1167,7 +1266,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		return ((AbstractComponent)this.getOwner()).handleRequest(
-											executorServiceIndex, request) ;
+											executorServiceIndex, request);
 	}
 
 	/**
@@ -1197,7 +1296,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		return ((AbstractComponent)this.getOwner()).handleRequest(
-												executorServiceURI, request) ;
+												executorServiceURI, request);
 	}
 
 
@@ -1231,11 +1330,17 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		return ((AbstractComponent)this.getOwner()).handleRequest(request) ;
+		if (this.getPreferredExecutionServiceURI() != null) {
+			return ((AbstractComponent)this.getOwner()).handleRequest(
+							this.getPreferredExecutionServiceIndex(), request);
+		} else {
+			return ((AbstractComponent)this.getOwner()).handleRequest(request);
+		}
 	}
 
 	/**
-	 * schedule a service for execution after a given delay.
+	 * schedule a service for execution on the given executor service after a
+	 * given delay.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1262,7 +1367,72 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		return ((AbstractComponent)this.getOwner()).scheduleRequest(
-									executorServiceIndex, request, delay, u) ;
+									executorServiceIndex, request, delay, u);
+	}
+
+	/**
+	 * schedule a service for execution on the given executor service after a
+	 * given delay.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the component is not started, this index is not valid, the executor is not schedulable or the request in null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected <T> ScheduledFuture<T>	scheduleRequest(
+		String executorServiceURI,
+		ComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		return ((AbstractComponent)this.getOwner()).scheduleRequest(
+									executorServiceURI, request, delay, u);
+	}
+
+	/**
+	 * schedule a service for execution on the preferred executor service after
+	 * a given delay.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code getPreferredExecutionServiceURI() != null}
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the component is not started, this index is not valid, the executor is not schedulable or the request in null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected <T> ScheduledFuture<T>	scheduleRequest(
+		ComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.getPreferredExecutionServiceURI() != null;
+
+		return ((AbstractComponent)this.getOwner()).scheduleRequest(
+									this.getPreferredExecutionServiceIndex(),
+									request, delay, u);
 	}
 }
 // -----------------------------------------------------------------------------

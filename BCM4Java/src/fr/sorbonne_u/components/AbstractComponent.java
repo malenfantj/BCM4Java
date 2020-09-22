@@ -2285,7 +2285,6 @@ implements	ComponentI
 	 * </pre>
 	 *
 	 * @param ac	component object on which the invariant is checked.
-	 * @return		true if the invariant holds, false otherwise.
 	 */
 	protected static void	checkInvariant(AbstractComponent ac)
 	{
@@ -3619,7 +3618,7 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
 	 * pre	{@code p != null}
 	 * pre	{@code this.equals(p.getOwner())}
 	 * pre	{@code exist(PortI p1 : this.findPortsFromInterface(p.getImplementedInterface())) { p1.equals(p)); }}
@@ -4354,7 +4353,7 @@ implements	ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	{@ t != null}
+		 * pre	{@code t != null}
 		 * post	true	// no postcondition.
 		 * </pre>
 		 *
@@ -6240,7 +6239,7 @@ implements	ComponentI
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
-	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
 	 * @param request						service request to be scheduled.
 	 * @param delay							delay after which the task must be run.
 	 * @param u								time unit in which the delay is expressed.

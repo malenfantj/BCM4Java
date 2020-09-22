@@ -81,7 +81,6 @@ extends		Serializable
 	 * </pre>
 	 *
 	 * @param uri			the URI that will become the one of the plug-in.
-	 * @throws Exception	when one tries to set the URI of a plug-in more than once.
 	 */
 	public void			setPluginURI(String uri);
 
@@ -133,7 +132,6 @@ extends		Serializable
 	 * </pre>
 	 *
 	 * @return				true if the plug-in is fully initialised.
-	 * @throws Exception	<i>to do</i>
 	 */
 	public boolean		isInitialised();
 
