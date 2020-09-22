@@ -289,10 +289,12 @@ implements	TwoWayPortI<TWI>
 	public				AbstractTwoWayPort(
 		String uri,
 		Class<? extends TwoWayCI> implementedInterface,
-		ComponentI owner
+		ComponentI owner,
+		String pluginURI,
+		String executorServiceURI
 		) throws Exception
 	{
-		super(uri, implementedInterface, owner);
+		super(uri, implementedInterface, owner, pluginURI, executorServiceURI);
 
 		this.clientPortURI= new AtomicReference<String>(null);
 		this.serverPortURI= new AtomicReference<String>(null);
@@ -310,6 +312,68 @@ implements	TwoWayPortI<TWI>
 		assert	!this.connected() : new PostconditionException("!connected()");
 		assert	!this.isRemotelyConnected() :
 					new PostconditionException("!isRemotelyConnected()");
+	}
+
+	/**
+	 * create and initialise two-way ports, with a given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null && uri != null}
+	 * pre	{@code implementedInterface != null}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * </pre>
+	 *
+	 * @param uri					unique identifier of the port.
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component that owns this port.
+	 * @throws Exception 			<i>to do.</i>
+	 */
+	public				AbstractTwoWayPort(
+		String uri,
+		Class<? extends TwoWayCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		this(uri, implementedInterface, owner, null, null);
+	}
+
+	/**
+	 * create and initialise two-way ports.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(getPortURI())}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * </pre>
+	 *
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component that owns this port.
+	 * @throws Exception 			<i>to do.</i>
+	 */
+	public				AbstractTwoWayPort(
+		Class<? extends TwoWayCI> implementedInterface,
+		ComponentI owner,
+		String pluginURI,
+		String executorServiceURI
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(implementedInterface),
+			 implementedInterface, owner, pluginURI, executorServiceURI);
 	}
 
 	/**
@@ -337,8 +401,7 @@ implements	TwoWayPortI<TWI>
 		ComponentI owner
 		) throws Exception
 	{
-		this(AbstractPort.generatePortURI(implementedInterface),
-			 implementedInterface, owner);
+		this(implementedInterface, owner, null, null);
 	}
 
 	// -------------------------------------------------------------------------

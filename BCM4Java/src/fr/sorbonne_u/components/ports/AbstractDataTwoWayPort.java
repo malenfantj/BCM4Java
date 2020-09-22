@@ -150,14 +150,76 @@ implements	DataTwoWayCI
 	public 				AbstractDataTwoWayPort(
 		String uri,
 		Class<? extends DataTwoWayCI> implementedInterface,
+		ComponentI owner,
+		String pluginURI,
+		String executorServiceURI
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner, pluginURI, executorServiceURI);
+
+		this.initialise();
+	}
+
+	/**
+	 * create and initialise data two-way ports, with a given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null && uri != null}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * </pre>
+	 *
+	 * @param uri						unique identifier of the port.
+	 * @param implementedInterface		interface implemented by this port.
+	 * @param owner						component that owns this port.
+	 * @throws Exception 				<i>to do.</i>
+	 */
+	public 				AbstractDataTwoWayPort(
+		String uri,
+		Class<? extends DataTwoWayCI> implementedInterface,
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, implementedInterface, owner) ;
-
-		this.initialise() ;
+		this(uri, implementedInterface, owner, null, null);
 	}
-	
+
+	/**
+	 * create and initialise data two-way ports.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(getPortURI())}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * </pre>
+	 *
+	 * @param implementedInterface		interface implemented by this port.
+	 * @param owner						component that owns this port.
+	 * @throws Exception 				<i>to do.</i>
+	 */
+	public				AbstractDataTwoWayPort(
+		Class<? extends DataTwoWayCI> implementedInterface,
+		ComponentI owner,
+		String pluginURI,
+		String executorServiceURI
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(implementedInterface),
+			 implementedInterface, owner, pluginURI, executorServiceURI) ;
+	}
+
 	/**
 	 * create and initialise data two-way ports.
 	 * 
@@ -182,8 +244,7 @@ implements	DataTwoWayCI
 		ComponentI owner
 		) throws Exception
 	{
-		this(AbstractPort.generatePortURI(implementedInterface),
-			 implementedInterface, owner) ;
+		this(implementedInterface, owner, null, null) ;
 	}
 
 	/**

@@ -91,20 +91,20 @@ implements	DataOutboundPortI
 	// Constants and variables
 	// -------------------------------------------------------------------------
 
-	private static final long serialVersionUID = 1L;
+	private static final long		serialVersionUID = 1L;
 	/** push interface implemented by this port, to receive data from the
 	 *  provider.									 						*/
 	protected final Class<? extends DataRequiredCI.PushCI>
 												implementedPushInterface;
 	/** URI of the plug-in to be called in the owner or null if none.		*/
-	protected final String		pluginURI;
+	protected final String			pluginURI;
 	/** URI of the executor service to be used to execute the service on the
 	 *  owner or null if none.												*/
-	protected final String		executorServiceURI;
+	protected final String			executorServiceURI;
 	/** index of the executor service in the owner (beware that this can
 	 *  change over the execution of the owner if executor services are shut
 	 *  down dynamically).													*/
-	protected AtomicInteger		executorServiceIndex = new AtomicInteger(-1);
+	protected final AtomicInteger	executorServiceIndex = new AtomicInteger(-1);
 
 	// -------------------------------------------------------------------------
 	// Constructors
