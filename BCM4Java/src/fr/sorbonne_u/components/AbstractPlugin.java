@@ -535,14 +535,15 @@ implements	PluginI
 	}
 
 	/**
-	 * set the URI of the executor service used to execute simulations.
+	 * set the URI of the executor service used to execute simulations; this
+	 * method must be called at most once before installing the plug-in on
+	 * the owner component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	{@code executorServiceURI != null}
-	 * pre	{@code this.getOwner() != null}
-	 * pre	{@code this.getOwner().validExecutorServiceURI(executorServiceURI)}
+	 * pre	{@code this.getOwner() == null}
 	 * pre	{@code this.getExecutionServiceURI() == null}
 	 * post	{@code executorServiceURI.equals(this.getExecutionServiceURI())}
 	 * </pre>
@@ -559,9 +560,6 @@ implements	PluginI
 		assert	this.getPreferredExecutionServiceURI() == null;
 
 		this.preferredExecutorServiceURI.set(executorServiceURI);
-		this.preferredExecutorServiceIndex.set(
-			((AbstractComponent)this.getOwner()).
-								getExecutorServiceIndex(executorServiceURI));
 
 		assert	executorServiceURI.equals(
 									this.getPreferredExecutionServiceURI());
@@ -579,8 +577,19 @@ implements	PluginI
 		assert	!owner.isInstalled(this.getPluginURI()) :
 					new PreconditionException(
 							"!owner.isInstalled(getPluginURI())");
+		assert	getPreferredExecutionServiceURI() == null ||
+				 			owner.validExecutorServiceURI(
+				 						getPreferredExecutionServiceURI()) :
+				 	new PreconditionException(
+				 			"getPreferredExecutionServiceURI() == null || " + 
+				 			"owner.validExecutorServiceURI(" + 
+				 			"getPreferredExecutionServiceURI())");
 
 		this.owner.set(owner);
+		this.preferredExecutorServiceIndex.set(
+					((AbstractComponent)this.getOwner()).
+							getExecutorServiceIndex(
+									this.getPreferredExecutionServiceURI()));
 	}
 
 	/**

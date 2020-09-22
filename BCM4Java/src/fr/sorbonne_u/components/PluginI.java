@@ -95,6 +95,7 @@ extends		Serializable
 	 * pre	{@code owner != null}
 	 * pre	{@code getPluginURI() != null}
 	 * pre	{@code !owner.isInstalled(getPluginURI())}
+	 * pre 	{@code getPreferredExecutionServiceURI() == null || owner.validExecutorServiceURI(getPreferredExecutionServiceURI())}
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
