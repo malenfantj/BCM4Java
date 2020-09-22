@@ -284,6 +284,8 @@ implements	TwoWayPortI<TWI>
 	 * @param uri					unique identifier of the port.
 	 * @param implementedInterface	interface implemented by this port.
 	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
 	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractTwoWayPort(
@@ -363,6 +365,8 @@ implements	TwoWayPortI<TWI>
 	 *
 	 * @param implementedInterface	interface implemented by this port.
 	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
 	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractTwoWayPort(

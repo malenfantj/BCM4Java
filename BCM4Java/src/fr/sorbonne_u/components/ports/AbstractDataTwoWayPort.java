@@ -142,10 +142,12 @@ implements	DataTwoWayCI
 	 * post	{@code getImplementedInterface().equals(implementedInterface)}
 	 * </pre>
 	 *
-	 * @param uri						unique identifier of the port.
-	 * @param implementedInterface		interface implemented by this port.
-	 * @param owner						component that owns this port.
-	 * @throws Exception 				<i>to do.</i>
+	 * @param uri					unique identifier of the port.
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws Exception 			<i>to do.</i>
 	 */
 	public 				AbstractDataTwoWayPort(
 		String uri,
@@ -205,9 +207,11 @@ implements	DataTwoWayCI
 	 * post	{@code getImplementedInterface().equals(implementedInterface)}
 	 * </pre>
 	 *
-	 * @param implementedInterface		interface implemented by this port.
-	 * @param owner						component that owns this port.
-	 * @throws Exception 				<i>to do.</i>
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws Exception 			<i>to do.</i>
 	 */
 	public				AbstractDataTwoWayPort(
 		Class<? extends DataTwoWayCI> implementedInterface,
