@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.examples.basic_cs.ports;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 //-----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  */
 public class			URIConsumerOutboundPort
 extends		AbstractOutboundPort
-implements	URIConsumerI
+implements	URIConsumerCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -79,7 +79,7 @@ implements	URIConsumerI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, URIConsumerI.class, owner) ;
+		super(uri, URIConsumerCI.class, owner) ;
 
 		assert	uri != null && owner != null ;
 	}
@@ -100,7 +100,7 @@ implements	URIConsumerI
 	public				URIConsumerOutboundPort(ComponentI owner)
 	throws Exception
 	{
-		super(URIConsumerI.class, owner) ;
+		super(URIConsumerCI.class, owner) ;
 
 		assert	owner != null ;
 	}
@@ -116,21 +116,21 @@ implements	URIConsumerI
 	 * post	true				// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI#getURI()
+	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI#getURI()
 	 */
 	@Override
 	public String		getURI() throws Exception
 	{
-		return ((URIConsumerI)this.getConnector()).getURI() ;
+		return ((URIConsumerCI)this.getConnector()).getURI() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI#getURIs(int)
+	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI#getURIs(int)
 	 */
 	@Override
 	public String[]		getURIs(int numberOfURIs) throws Exception
 	{
-		return ((URIConsumerI)this.getConnector()).getURIs(numberOfURIs) ;
+		return ((URIConsumerCI)this.getConnector()).getURIs(numberOfURIs) ;
 	}
 }
 //-----------------------------------------------------------------------------

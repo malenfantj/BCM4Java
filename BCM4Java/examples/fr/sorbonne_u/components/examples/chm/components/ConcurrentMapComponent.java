@@ -36,9 +36,9 @@ package fr.sorbonne_u.components.examples.chm.components;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapReading;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
 import fr.sorbonne_u.components.examples.chm.ports.MapReadingInboundPort;
 import fr.sorbonne_u.components.examples.chm.ports.MapWritingInboundPort;
 import java.util.HashMap;
@@ -93,9 +93,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 //-----------------------------------------------------------------------------
-@OfferedInterfaces(offered = {MapReading.class,
-							  MapTesting.class,
-							  MapWriting.class})
+@OfferedInterfaces(offered = {MapReadingCI.class,
+							  MapTestingCI.class,
+							  MapWritingCI.class})
 public class			ConcurrentMapComponent<K,V>
 extends		AbstractComponent
 //-----------------------------------------------------------------------------

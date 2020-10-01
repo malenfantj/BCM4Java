@@ -38,18 +38,18 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.connectors.URIConsumerLaunchConnector;
-import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
+import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchCI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.ports.URIConsumerLaunchOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.pre.dcc.connectors.DynamicComponentCreationConnector;
-import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI;
+import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI;
 import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationOutboundPort;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 
 //-----------------------------------------------------------------------------
@@ -70,8 +70,8 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-@RequiredInterfaces(required = {DynamicComponentCreationI.class,
-							   URIConsumerLaunchI.class})
+@RequiredInterfaces(required = {DynamicComponentCreationCI.class,
+							   URIConsumerLaunchCI.class})
 public class			DynamicAssembler
 extends		AbstractComponent
 {
@@ -283,7 +283,7 @@ extends		AbstractComponent
 								new Object[]{}) ;
 		this.portToConsumerJVM.startComponent(consumerRIPURI) ;
 
-		this.addRequiredInterface(ReflectionI.class) ;
+		this.addRequiredInterface(ReflectionCI.class) ;
 		ReflectionOutboundPort rop = new ReflectionOutboundPort(this) ;
 		rop.localPublishPort() ;
 
@@ -295,7 +295,7 @@ extends		AbstractComponent
 		// get the URI of the URI provider inbound port of the provider
 		// component.
 		String[] uris =
-			rop.findInboundPortURIsFromInterface(URIProviderI.class) ;
+			rop.findInboundPortURIsFromInterface(URIProviderCI.class) ;
 		assert	uris != null && uris.length == 1 ;
 		this.providerInboundPortURI = uris[0] ;
 		this.doPortDisconnection(rop.getPortURI()) ;
@@ -306,12 +306,12 @@ extends		AbstractComponent
 		// toggle logging on the consumer component
 		rop.toggleTracing() ;
 		// get the URI of the launch inbound port of the consumer component.
-		uris = rop.findInboundPortURIsFromInterface(URIConsumerLaunchI.class) ;
+		uris = rop.findInboundPortURIsFromInterface(URIConsumerLaunchCI.class) ;
 		assert	uris != null && uris.length == 1 ;
 		this.consumerLaunchInboundPortURI = uris[0] ;
 		// get the URI of the URI consumer outbound port of the consumer
 		// component.
-		uris = rop.findOutboundPortURIsFromInterface(URIConsumerI.class) ;
+		uris = rop.findOutboundPortURIsFromInterface(URIConsumerCI.class) ;
 		assert	uris != null && uris.length == 1 ;
 		this.consumerOutboundPortURI = uris[0] ;
 		// connect the consumer outbound port top the provider inbound one.

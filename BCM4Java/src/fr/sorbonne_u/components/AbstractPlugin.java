@@ -39,7 +39,7 @@ import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
@@ -137,7 +137,7 @@ implements	PluginI
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 */
-	@RequiredInterfaces(required = {ReflectionI.class})
+	@RequiredInterfaces(required = {ReflectionCI.class})
 	protected static class	FakeComponent
 	extends		AbstractComponent
 	{
@@ -177,7 +177,7 @@ implements	PluginI
 								"reflection outbound port still connected!");
 
 			this.cpObp.unpublishPort();
-			this.removeRequiredInterface(ReflectionI.class);
+			this.removeRequiredInterface(ReflectionCI.class);
 			super.finalise();
 		}
 

@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.reflection.interfaces;
+package fr.sorbonne_u.components.examples.cps.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -38,8 +38,8 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 // -----------------------------------------------------------------------------
 /**
- * The interface <code>MyServiceI</code> is the service interface for
- * the reflection example.
+ * The interface <code>ValueProvidingCI</code> defines a simple service
+ * providing integer values.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -49,14 +49,27 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2018-02-19</p>
+ * <p>Created on : 2018-03-17</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MyServiceI
-extends		RequiredCI,
-			OfferedCI
+public interface		ValueProvidingCI
+extends		OfferedCI,
+			RequiredCI
 {
-	public void			myService(String message) throws Exception ;
+	/**
+	 * return an integer value.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	an integer value.
+	 * @throws Exception		<i>todo.</i>
+	 */
+	public int			getValue() throws Exception;
 }
 // -----------------------------------------------------------------------------

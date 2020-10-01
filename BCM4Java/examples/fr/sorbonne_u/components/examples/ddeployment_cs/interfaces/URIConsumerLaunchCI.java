@@ -1,7 +1,6 @@
-package fr.sorbonne_u.components.examples.chm.interfaces;
+package fr.sorbonne_u.components.examples.ddeployment_cs.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -37,10 +36,10 @@ package fr.sorbonne_u.components.examples.chm.interfaces;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
- * The interface <code>MapReading</code> defines services that access the
- * values in the map without changing its state.
+ * The interface <code>URIConsumerLaunchCI</code> defines the client component
+ * task to be called to do the work in the example.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -50,44 +49,14 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-01-22</p>
+ * <p>Created on : 2017-02-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapReading<K,V>
-extends		RequiredCI,
-			OfferedCI
+public interface		URIConsumerLaunchCI
+extends		OfferedCI,
+			RequiredCI
 {
-	/**
-	 * get the value associated with the given key and return it or null if
-	 * none.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	key != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param key			the key which value must be returned.
-	 * @return				the value associated with the given key or null if none.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public V				get(K key) throws Exception ;
-
-	/**
-	 * return the number of key/value pairs kept in the map.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return				the number of key/value pairs kept in the map.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public int			size() throws Exception ;
+	public void			getURIandPrint() throws Exception ;
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

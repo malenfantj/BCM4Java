@@ -39,7 +39,7 @@ import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.interfaces.DataOfferedCI;
 import fr.sorbonne_u.components.plugins.dipc.DataInterfacesPushControlServerSidePlugin;
-import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI;
+import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataCI;
 import fr.sorbonne_u.components.plugins.dipc.example.ports.PairDataInboundPort;
 
 //------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ extends		AbstractComponent
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
 	 */
 	public static class		IntPair
-	implements PairDataI.PairI
+	implements PairDataCI.PairI
 	{
 		private static final long serialVersionUID = 1L ;
 		protected final int	x ;
@@ -228,7 +228,7 @@ extends		AbstractComponent
 	 *
 	 * @return	the next data item.
 	 */
-	public PairDataI.PairI	produceNextData()
+	public PairDataCI.PairI	produceNextData()
 	{
 		IntPair d = new IntPair(this.x++, this.y++) ;
 		this.logMessage("server component produces next data: " + d) ;

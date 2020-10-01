@@ -40,7 +40,7 @@ import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
-import fr.sorbonne_u.components.reflection.interfaces.IntrospectionI;
+import fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
@@ -63,7 +63,7 @@ import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
  */
 public class			IntrospectionConnector
 extends		AbstractConnector
-implements	IntrospectionI
+implements	IntrospectionCI
 {
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -79,39 +79,39 @@ implements	IntrospectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#hasInstalledPlugins()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#hasInstalledPlugins()
 	 */
 	@Override
 	public boolean		hasInstalledPlugins() throws Exception
 	{
-		return ((IntrospectionI)this.offering).hasInstalledPlugins();
+		return ((IntrospectionCI)this.offering).hasInstalledPlugins();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isInstalled(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isInstalled(java.lang.String)
 	 */
 	@Override
 	public boolean		isInstalled(String pluginId) throws Exception
 	{
-		return ((IntrospectionI)this.offering).isInstalled(pluginId);
+		return ((IntrospectionCI)this.offering).isInstalled(pluginId);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getPlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getPlugin(java.lang.String)
 	 */
 	@Override
 	public PluginI		getPlugin(String pluginURI) throws Exception
 	{
-		return ((IntrospectionI)this.offering).getPlugin(pluginURI);
+		return ((IntrospectionCI)this.offering).getPlugin(pluginURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isInitialised(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isInitialised(java.lang.String)
 	 */
 	@Override
 	public boolean		isInitialised(String pluginURI) throws Exception
 	{
-		return ((IntrospectionI)this.offering).isInitialised(pluginURI);
+		return ((IntrospectionCI)this.offering).isInitialised(pluginURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -119,21 +119,21 @@ implements	IntrospectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isLogging()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isLogging()
 	 */
 	@Override
 	public boolean		isLogging() throws Exception
 	{
-		return ((IntrospectionI)this.offering).isLogging();
+		return ((IntrospectionCI)this.offering).isLogging();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isTracing()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isTracing()
 	 */
 	@Override
 	public boolean		isTracing() throws Exception
 	{
-		return ((IntrospectionI)this.offering).isTracing();
+		return ((IntrospectionCI)this.offering).isTracing();
 	}
 
 	// -------------------------------------------------------------------------
@@ -141,59 +141,59 @@ implements	IntrospectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
 	 */
 	@Override
 	public boolean		isInStateAmong(ComponentStateI[] states)
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).isInStateAmong(states);
+		return ((IntrospectionCI)this.offering).isInStateAmong(states);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#notInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#notInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
 	 */
 	@Override
 	public boolean		notInStateAmong(ComponentStateI[] states)
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).notInStateAmong(states);
+		return ((IntrospectionCI)this.offering).notInStateAmong(states);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#hasItsOwnThreads()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#hasItsOwnThreads()
 	 */
 	@Override
 	public boolean		hasItsOwnThreads() throws Exception
 	{
-		return ((IntrospectionI)this.offering).hasItsOwnThreads();
+		return ((IntrospectionCI)this.offering).hasItsOwnThreads();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#hasSerialisedExecution()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#hasSerialisedExecution()
 	 */
 	@Override
 	public boolean		hasSerialisedExecution() throws Exception
 	{
-		return ((IntrospectionI)this.offering).hasSerialisedExecution();
+		return ((IntrospectionCI)this.offering).hasSerialisedExecution();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#canScheduleTasks()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#canScheduleTasks()
 	 */
 	@Override
 	public boolean		canScheduleTasks() throws Exception
 	{
-		return ((IntrospectionI)this.offering).canScheduleTasks();
+		return ((IntrospectionCI)this.offering).canScheduleTasks();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getTotalNumberOfThreads()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getTotalNumberOfThreads()
 	 */
 	@Override
 	public int			getTotalNumberOfThreads() throws Exception
 	{
-		return ((IntrospectionI)this.offering).getTotalNumberOfThreads();
+		return ((IntrospectionCI)this.offering).getTotalNumberOfThreads();
 	}
 
 	// -------------------------------------------------------------------------
@@ -201,96 +201,96 @@ implements	IntrospectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getInterfaces()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getInterfaces()
 	 */
 	@Override
 	public Class<? extends ComponentInterface>[]	getInterfaces()
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).getInterfaces();
+		return ((IntrospectionCI)this.offering).getInterfaces();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getInterface(java.lang.Class)
 	 */
 	@Override
 	public Class<? extends ComponentInterface>	getInterface(
 		Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return ((IntrospectionI)this.offering).getInterface(inter);
+		return ((IntrospectionCI)this.offering).getInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getRequiredInterfaces()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getRequiredInterfaces()
 	 */
 	@Override
 	public Class<? extends RequiredCI>[]	getRequiredInterfaces()
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).getRequiredInterfaces();
+		return ((IntrospectionCI)this.offering).getRequiredInterfaces();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public Class<? extends RequiredCI>	getRequiredInterface(
 		Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return ((IntrospectionI)this.offering).getRequiredInterface(inter);
+		return ((IntrospectionCI)this.offering).getRequiredInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getOfferedInterfaces()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getOfferedInterfaces()
 	 */
 	@Override
 	public Class<? extends OfferedCI>[]	getOfferedInterfaces()
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).getOfferedInterfaces();
+		return ((IntrospectionCI)this.offering).getOfferedInterfaces();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public Class<? extends OfferedCI>	getOfferedInterface(
 		Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return ((IntrospectionI)this.offering).getOfferedInterface(inter);
+		return ((IntrospectionCI)this.offering).getOfferedInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isInterface(java.lang.Class)
 	 */
 	@Override
 	public boolean		isInterface(Class<? extends ComponentInterface> inter)
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).isInterface(inter);
+		return ((IntrospectionCI)this.offering).isInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public boolean		isRequiredInterface(Class<? extends RequiredCI> inter)
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).isRequiredInterface(inter);
+		return ((IntrospectionCI)this.offering).isRequiredInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public boolean		isOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).isOfferedInterface(inter);
+		return ((IntrospectionCI)this.offering).isOfferedInterface(inter);
 	}
 
 	// -------------------------------------------------------------------------
@@ -298,68 +298,68 @@ implements	IntrospectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findPortURIsFromInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#findPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
 	public String[]		findPortURIsFromInterface(
 		Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return ((IntrospectionI)this.offering).findPortURIsFromInterface(inter);
+		return ((IntrospectionCI)this.offering).findPortURIsFromInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findInboundPortURIsFromInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#findInboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
 	public String[]		findInboundPortURIsFromInterface(
 		Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return ((IntrospectionI)this.offering).
+		return ((IntrospectionCI)this.offering).
 										findInboundPortURIsFromInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#findOutboundPortURIsFromInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#findOutboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
 	public String[]		findOutboundPortURIsFromInterface(
 		Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return ((IntrospectionI)this.offering).findOutboundPortURIsFromInterface(inter);
+		return ((IntrospectionCI)this.offering).findOutboundPortURIsFromInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getPortImplementedInterface(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getPortImplementedInterface(java.lang.String)
 	 */
 	@Override
 	public Class<? extends ComponentInterface>	getPortImplementedInterface(
 		String portURI
 		) throws Exception
 	{
-		return ((IntrospectionI)this.offering).
+		return ((IntrospectionCI)this.offering).
 										getPortImplementedInterface(portURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isPortExisting(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isPortExisting(java.lang.String)
 	 */
 	@Override
 	public boolean			isPortExisting(String portURI) throws Exception
 	{
-		return ((IntrospectionI)this.offering).isPortExisting(portURI);
+		return ((IntrospectionCI)this.offering).isPortExisting(portURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isPortConnected(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isPortConnected(java.lang.String)
 	 */
 	@Override
 	public boolean		isPortConnected(String portURI)
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).isPortConnected(portURI);
+		return ((IntrospectionCI)this.offering).isPortConnected(portURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -367,51 +367,51 @@ implements	IntrospectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentDefinitionClassName()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentDefinitionClassName()
 	 */
 	@Override
 	public String		getComponentDefinitionClassName() throws Exception
 	{
-		return ((IntrospectionI)this.offering).
+		return ((IntrospectionCI)this.offering).
 										getComponentDefinitionClassName();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentAnnotations()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentAnnotations()
 	 */
 	@Override
 	public Annotation[]	getComponentAnnotations() throws Exception
 	{
-		return ((IntrospectionI)this.offering).getComponentAnnotations();
+		return ((IntrospectionCI)this.offering).getComponentAnnotations();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentLoader()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentLoader()
 	 */
 	@Override
 	public ClassLoader	getComponentLoader() throws Exception
 	{
-		return ((IntrospectionI)this.offering).getComponentLoader();
+		return ((IntrospectionCI)this.offering).getComponentLoader();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentServiceSignatures()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentServiceSignatures()
 	 */
 	@Override
 	public ServiceSignature[]	getComponentServiceSignatures()
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).getComponentServiceSignatures();
+		return ((IntrospectionCI)this.offering).getComponentServiceSignatures();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentConstructorSignatures()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentConstructorSignatures()
 	 */
 	@Override
 	public ConstructorSignature[]	getComponentConstructorSignatures()
 	throws Exception
 	{
-		return ((IntrospectionI)this.offering).
+		return ((IntrospectionCI)this.offering).
 									getComponentConstructorSignatures();
 	}
 }

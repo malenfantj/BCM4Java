@@ -40,7 +40,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.components.ports.OutboundPortI;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -259,8 +259,8 @@ implements	ClientSidePluginI
 		boolean ret = true;
 
 		boolean wasRequiringReflectionI = true;
-		if (!this.getOwner().isRequiredInterface(ReflectionI.class)) {
-			this.addRequiredInterface(ReflectionI.class);
+		if (!this.getOwner().isRequiredInterface(ReflectionCI.class)) {
+			this.addRequiredInterface(ReflectionCI.class);
 			wasRequiringReflectionI = false;
 		}
 
@@ -291,7 +291,7 @@ implements	ClientSidePluginI
 		rop.destroyPort();
 
 		if (!wasRequiringReflectionI) {
-			this.removeRequiredInterface(ReflectionI.class);
+			this.removeRequiredInterface(ReflectionCI.class);
 		}
 
 		return ret;

@@ -41,11 +41,11 @@ import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.plugins.dconnection.connectors.DynamicConnectionRequestConnector;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionDescriptorI;
-import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
+import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI;
 import fr.sorbonne_u.components.plugins.dconnection.ports.DynamicConnectionRequestOutboundPort;
 import fr.sorbonne_u.components.ports.OutboundPortI;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -165,7 +165,7 @@ extends		AbstractPlugin
 
 		// At installation time on a component, the plug-in adds the plug-in
 		// required interfaces to the ones of the component.
-		this.addRequiredInterface(DynamicConnectionRequestI.class);
+		this.addRequiredInterface(DynamicConnectionRequestCI.class);
 	}
 
 	/**
@@ -202,7 +202,7 @@ extends		AbstractPlugin
 	{
 		// When uninstalling the plug-in, the ports and the interfaces added
 		// to the component at installation time are removed.
-		this.removeRequiredInterface(DynamicConnectionRequestI.class);
+		this.removeRequiredInterface(DynamicConnectionRequestCI.class);
 	}
 
 	// -------------------------------------------------------------------------
@@ -270,8 +270,8 @@ extends		AbstractPlugin
 		assert	!this.isConnectedToServerSide();
 
 		boolean wasRequiringReflectionI = true;
-		if (!this.getOwner().isRequiredInterface(ReflectionI.class)) {
-			this.addRequiredInterface(ReflectionI.class);
+		if (!this.getOwner().isRequiredInterface(ReflectionCI.class)) {
+			this.addRequiredInterface(ReflectionCI.class);
 			wasRequiringReflectionI = false;
 		}
 
@@ -290,7 +290,7 @@ extends		AbstractPlugin
 
 		String[] otherInboundPortURI =
 				rop.findInboundPortURIsFromInterface(
-									DynamicConnectionRequestI.class);
+									DynamicConnectionRequestCI.class);
 
 		this.getOwner().doPortConnection(
 				this.dcrop.getPortURI(),
@@ -301,7 +301,7 @@ extends		AbstractPlugin
 		rop.unpublishPort();
 		rop.destroyPort();
 		if (!wasRequiringReflectionI) {
-			this.removeRequiredInterface(ReflectionI.class);
+			this.removeRequiredInterface(ReflectionCI.class);
 		}
 
 		assert	this.isConnectedToServerSide();

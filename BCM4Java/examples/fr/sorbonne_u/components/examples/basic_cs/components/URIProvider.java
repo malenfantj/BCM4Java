@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.examples.basic_cs.components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
 import fr.sorbonne_u.components.examples.basic_cs.ports.URIProviderInboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
@@ -63,7 +63,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-@OfferedInterfaces(offered = {URIProviderI.class})
+@OfferedInterfaces(offered = {URIProviderCI.class})
 public class			URIProvider
 extends		AbstractComponent
 {
@@ -83,7 +83,7 @@ extends		AbstractComponent
 	{
 		assert	c.uriPrefix != null :
 					new InvariantException("The URI prefix is null!");
-		assert	c.isOfferedInterface(URIProviderI.class) :
+		assert	c.isOfferedInterface(URIProviderCI.class) :
 					new InvariantException("The URI component should "
 							+ "offer the interface URIProviderI!");
 	}
@@ -150,7 +150,7 @@ extends		AbstractComponent
 					new PostconditionException("The component must have a "
 							+ "port with URI " + providerPortURI);
 		assert	this.findPortFromURI(providerPortURI).
-					getImplementedInterface().equals(URIProviderI.class) :
+					getImplementedInterface().equals(URIProviderCI.class) :
 					new PostconditionException("The component must have a "
 							+ "port with implemented interface URIProviderI");
 		assert	this.findPortFromURI(providerPortURI).isPublished() :
@@ -190,7 +190,7 @@ extends		AbstractComponent
 	public void			shutdown() throws ComponentShutdownException
 	{
 		try {
-			PortI[] p = this.findPortsFromInterface(URIProviderI.class);
+			PortI[] p = this.findPortsFromInterface(URIProviderCI.class);
 			p[0].unpublishPort();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
@@ -205,7 +205,7 @@ extends		AbstractComponent
 	public void			shutdownNow() throws ComponentShutdownException
 	{
 		try {
-			PortI[] p = this.findPortsFromInterface(URIProviderI.class);
+			PortI[] p = this.findPortsFromInterface(URIProviderCI.class);
 			p[0].unpublishPort();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);

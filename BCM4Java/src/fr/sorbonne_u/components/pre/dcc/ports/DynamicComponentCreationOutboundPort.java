@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.pre.dcc.ports;
 
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
-import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI;
+import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -56,7 +56,7 @@ import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI;
  */
 public class			DynamicComponentCreationOutboundPort
 extends		AbstractOutboundPort
-implements	DynamicComponentCreationI
+implements	DynamicComponentCreationCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -64,7 +64,7 @@ implements	DynamicComponentCreationI
 		ComponentI owner
 		) throws Exception
 	{
-		super(DynamicComponentCreationI.class, owner);
+		super(DynamicComponentCreationCI.class, owner);
 	}
 
 	public				DynamicComponentCreationOutboundPort(
@@ -72,11 +72,11 @@ implements	DynamicComponentCreationI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, DynamicComponentCreationI.class, owner);
+		super(uri, DynamicComponentCreationCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#createComponent(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#createComponent(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public String		createComponent(
@@ -84,112 +84,112 @@ implements	DynamicComponentCreationI
 		Object[] constructorParams
 		) throws Exception
 	{
-		return ((DynamicComponentCreationI)this.getConnector()).
+		return ((DynamicComponentCreationCI)this.getConnector()).
 							createComponent(classname, constructorParams) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#startComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#startComponent(java.lang.String)
 	 */
 	@Override
 	public void			startComponent(String reflectionInboundPortURI)
 	throws Exception
 	{
-		((DynamicComponentCreationI)this.getConnector()).
+		((DynamicComponentCreationCI)this.getConnector()).
 								startComponent(reflectionInboundPortURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#executeComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#executeComponent(java.lang.String)
 	 */
 	@Override
 	public void			executeComponent(String componentURI) throws Exception
 	{
-		((DynamicComponentCreationI)this.getConnector()).
+		((DynamicComponentCreationCI)this.getConnector()).
 								executeComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#finaliseComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#finaliseComponent(java.lang.String)
 	 */
 	@Override
 	public void			finaliseComponent(String componentURI) throws Exception
 	{
-		((DynamicComponentCreationI)this.getConnector()).
+		((DynamicComponentCreationCI)this.getConnector()).
 								finaliseComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#shutdownComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#shutdownComponent(java.lang.String)
 	 */
 	@Override
 	public void			shutdownComponent(String componentURI) throws Exception
 	{
-		((DynamicComponentCreationI)this.getConnector()).
+		((DynamicComponentCreationCI)this.getConnector()).
 								shutdownComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#shutdownNowComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#shutdownNowComponent(java.lang.String)
 	 */
 	@Override
 	public void			shutdownNowComponent(String componentURI)
 	throws Exception
 	{
-		((DynamicComponentCreationI)this.getConnector()).
+		((DynamicComponentCreationCI)this.getConnector()).
 								shutdownNowComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isDeployedComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#isDeployedComponent(java.lang.String)
 	 */
 	@Override
 	public boolean		isDeployedComponent(String reflectionInboundPortURI)
 	throws Exception
 	{
-		return ((DynamicComponentCreationI)this.getConnector()).
+		return ((DynamicComponentCreationCI)this.getConnector()).
 								isDeployedComponent(reflectionInboundPortURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isStartedComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#isStartedComponent(java.lang.String)
 	 */
 	@Override
 	public boolean		isStartedComponent(String componentURI) throws Exception
 	{
-		return ((DynamicComponentCreationI)this.getConnector()).
+		return ((DynamicComponentCreationCI)this.getConnector()).
 								isStartedComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isFinalisedComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#isFinalisedComponent(java.lang.String)
 	 */
 	@Override
 	public boolean		isFinalisedComponent(String componentURI)
 	throws Exception
 	{
-		return ((DynamicComponentCreationI)this.getConnector()).
+		return ((DynamicComponentCreationCI)this.getConnector()).
 								isFinalisedComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isShutdownComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#isShutdownComponent(java.lang.String)
 	 */
 	@Override
 	public boolean		isShutdownComponent(String componentURI) throws Exception
 	{
-		return ((DynamicComponentCreationI)this.getConnector()).
+		return ((DynamicComponentCreationCI)this.getConnector()).
 								isShutdownComponent(componentURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI#isTerminatedComponent(java.lang.String)
+	 * @see fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI#isTerminatedComponent(java.lang.String)
 	 */
 	@Override
 	public boolean		isTerminatedComponent(String componentURI)
 	throws Exception
 	{
-		return ((DynamicComponentCreationI)this.getConnector()).
+		return ((DynamicComponentCreationCI)this.getConnector()).
 								isTerminatedComponent(componentURI) ;
 	}
 }

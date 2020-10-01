@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.plugins.dconnection.example.connectors;
+package fr.sorbonne_u.components.plugins.dconnection.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -33,37 +33,66 @@ package fr.sorbonne_u.components.plugins.dconnection.example.connectors;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ExampleConnector</code> defines the connector
- * associated with the interface <code>ExampleI</code>.
+ * The interface <code>DynamicConnectionRequestCI</code> is offered by
+ * components that propose a dynamic connection through some other
+ * dynamically connected interface.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * See the <code>fr.sorbonne_u.components.patterns.dconnection</code>
+ * package documentation.
  * 
- * <pre>
- * invariant	true
- * </pre>
- * 
- * <p>Created on : 2017-02-17</p>
+ * <p>Created on : 2013-01-23</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ExampleConnector
-extends		AbstractConnector
-implements	ExampleCI
+public interface		DynamicConnectionRequestCI
+extends		OfferedCI,
+			RequiredCI
 {
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI#exampleCall(int)
+	 * provides the URI of a new port implementing some interface that is
+	 * offered through a dynamic connection, so the receiver creates a port
+	 * and sends its URI back.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	offeredInterface != null
+	 * post	result != null
+	 * </pre>
+	 *
+	 * @param offeredInterface	interface of the connection to be established.
+	 * @return					the URI of an inbound port implementing <code>offeredInterface</code>.
+	 * @throws Exception		<i>to do</i>.
 	 */
-	@Override
-	public int			exampleCall(int i) throws Exception
-	{
-		return ((ExampleCI)this.offering).exampleCall(i) ;
-	}
+	public String		requestDynamicPortURI(
+		Class<? extends OfferedCI> offeredInterface
+		) throws Exception ;
+
+	/**
+	 * remove the inbound port with the given URI that implements the given
+	 * offered interface, if it exists.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	offeredInterface != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param offeredInterface	server-side offered interface.
+	 * @param uri				URI of a previously created port.
+	 * @throws Exception 		<i>to do</i>.
+	 */
+	public void			removeDynamicPort(
+		Class<? extends OfferedCI> offeredInterface,
+		String uri
+		) throws Exception ;
 }
 // -----------------------------------------------------------------------------

@@ -44,14 +44,14 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 // -----------------------------------------------------------------------------
 /**
- * The interface <code>IntercessionI</code> defines the intercession
+ * The interface <code>IntercessionCI</code> defines the intercession
  * services offered by the Basic Component Model.
  *
  * <p><strong>Description</strong></p>
  * 
  * The Basic Component Model reflection facility is still under construction.
  * 
- * The interface <code>IntercessionI</code> mirrors to a large extent
+ * The interface <code>IntercessionCI</code> mirrors to a large extent
  * the interface <code>ComponentI</code> implemented by the abstract
  * class <code>AbstractComponent</code> and exposes the methods that
  * allow to modify the internal representation of the component.
@@ -60,7 +60,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		IntercessionI
+public interface		IntercessionCI
 extends		OfferedCI,
 			RequiredCI
 {

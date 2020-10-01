@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.plugins.dconnection.example.interfaces;
+package fr.sorbonne_u.components.plugins.dipc.example.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -33,30 +33,38 @@ package fr.sorbonne_u.components.plugins.dconnection.example.interfaces;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
+import fr.sorbonne_u.components.interfaces.DataOfferedCI;
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 
 // -----------------------------------------------------------------------------
 /**
- * The interface <code>ExampleI</code> defines the service that can be called
- * on the server in this dynamic connection example.
+ * The interface <code>PairDataCI</code> extends the corresponding data
+ * interfaces in the <code>DataOfferedCI</code> and <code>DataRequiredCI</code>
+ * interfaces to define the data objects that will be exchanged in the
+ * data interfaces push control basic example.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant	true
+ * invariant		true
  * </pre>
  * 
- * <p>Created on : 2017-02-17</p>
+ * <p>Created on : 2018-09-21</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			ExampleI
-extends		OfferedCI,
-			RequiredCI
+public interface			PairDataCI
+extends		DataOfferedCI,
+			DataRequiredCI
 {
-	public int			exampleCall(int i) throws Exception ;
+	public interface		PairI
+	extends	DataOfferedCI.DataI,
+			DataRequiredCI.DataI
+	{
+		public Object	getFirst() ;
+		public Object	getSecond() ;
+	}
 }
 // -----------------------------------------------------------------------------

@@ -1,7 +1,6 @@
 package fr.sorbonne_u.components.examples.chm.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -37,9 +36,9 @@ package fr.sorbonne_u.components.examples.chm.interfaces;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
- * The interface <code>MapTesting</code> defines services that test the
+ * The interface <code>MapTestingCI</code> defines services that test the
  * state of the map without changing it.
  *
  * <p><strong>Description</strong></p>
@@ -54,7 +53,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapTesting<K,V>
+public interface			MapTestingCI<K,V>
 extends		RequiredCI,
 			OfferedCI
 {
@@ -105,4 +104,4 @@ extends		RequiredCI,
 	 */
 	public boolean		isEmpty() throws Exception ;
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

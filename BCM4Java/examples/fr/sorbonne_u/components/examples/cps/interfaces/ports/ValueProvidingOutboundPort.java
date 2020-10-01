@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.examples.cps.interfaces.ports;
 
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.cps.components.ValueConsumer;
-import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI;
+import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  */
 public class			ValueProvidingOutboundPort
 extends		AbstractOutboundPort
-implements	ValueProvidingI
+implements	ValueProvidingCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -66,7 +66,7 @@ implements	ValueProvidingI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, ValueProvidingI.class, owner) ;
+		super(uri, ValueProvidingCI.class, owner) ;
 		assert	uri != null ;
 		assert	this.owner instanceof ValueConsumer ;
 	}
@@ -74,16 +74,16 @@ implements	ValueProvidingI
 	public				ValueProvidingOutboundPort(ComponentI owner)
 	throws Exception
 	{
-		super(ValueProvidingI.class, owner);
+		super(ValueProvidingCI.class, owner);
 		assert	this.owner instanceof ValueConsumer ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI#getValue()
+	 * @see fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI#getValue()
 	 */
 	@Override
 	public int getValue() throws Exception {
-		return ((ValueProvidingI)this.getConnector()).getValue() ;
+		return ((ValueProvidingCI)this.getConnector()).getValue() ;
 	}
 }
 // -----------------------------------------------------------------------------

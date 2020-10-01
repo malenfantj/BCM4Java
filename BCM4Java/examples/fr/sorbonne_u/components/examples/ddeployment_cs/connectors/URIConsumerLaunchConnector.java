@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.examples.ddeployment_cs.connectors;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
+import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -56,15 +56,15 @@ import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLa
  */
 public class				URIConsumerLaunchConnector
 extends		AbstractConnector
-implements	URIConsumerLaunchI
+implements	URIConsumerLaunchCI
 {
 	/**
-	 * @see fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI#getURIandPrint()
+	 * @see fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchCI#getURIandPrint()
 	 */
 	@Override
 	public void			getURIandPrint() throws Exception
 	{
-		((URIConsumerLaunchI)this.offering).getURIandPrint() ;
+		((URIConsumerLaunchCI)this.offering).getURIandPrint() ;
 	}
 }
 //-----------------------------------------------------------------------------

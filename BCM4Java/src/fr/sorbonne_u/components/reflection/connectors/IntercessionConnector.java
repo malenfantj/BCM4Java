@@ -39,7 +39,7 @@ import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
-import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
+import fr.sorbonne_u.components.reflection.interfaces.IntercessionCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -60,7 +60,7 @@ import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
  */
 public class				IntercessionConnector
 extends		AbstractConnector
-implements	IntercessionI
+implements	IntercessionCI
 {
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -76,39 +76,39 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#installPlugin(fr.sorbonne_u.components.PluginI)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#installPlugin(fr.sorbonne_u.components.PluginI)
 	 */
 	@Override
 	public void			installPlugin(PluginI plugin) throws Exception
 	{
-		((IntercessionI)this.offering).installPlugin(plugin) ;
+		((IntercessionCI)this.offering).installPlugin(plugin) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#initialisePlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#initialisePlugin(java.lang.String)
 	 */
 	@Override
 	public void			initialisePlugin(String pluginURI) throws Exception
 	{
-		((IntercessionI)this.offering).initialisePlugin(pluginURI) ;
+		((IntercessionCI)this.offering).initialisePlugin(pluginURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#finalisePlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#finalisePlugin(java.lang.String)
 	 */
 	@Override
 	public void			finalisePlugin(String pluginURI) throws Exception
 	{
-		((IntercessionI)this.offering).finalisePlugin(pluginURI) ;
+		((IntercessionCI)this.offering).finalisePlugin(pluginURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#uninstallPlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#uninstallPlugin(java.lang.String)
 	 */
 	@Override
 	public void			uninstallPlugin(String pluginId) throws Exception
 	{
-		((IntercessionI)this.offering).uninstallPlugin(pluginId) ;
+		((IntercessionCI)this.offering).uninstallPlugin(pluginId) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -116,76 +116,76 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#toggleLogging()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#toggleLogging()
 	 */
 	@Override
 	public void			toggleLogging() throws Exception
 	{
-		((IntercessionI)this.offering).toggleLogging() ;
+		((IntercessionCI)this.offering).toggleLogging() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setLogger(fr.sorbonne_u.components.helpers.Logger)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setLogger(fr.sorbonne_u.components.helpers.Logger)
 	 */
 	@Override
 	public void			setLogger(Logger logger) throws Exception
 	{
-		((IntercessionI)this.offering).setLogger(logger) ;
+		((IntercessionCI)this.offering).setLogger(logger) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#toggleTracing()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#toggleTracing()
 	 */
 	@Override
 	public void			toggleTracing() throws Exception
 	{
-		((IntercessionI)this.offering).toggleTracing() ;
+		((IntercessionCI)this.offering).toggleTracing() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
 	 */
 	@Override
 	public void			setTracer(TracerWindow tracer) throws Exception
 	{
-		((IntercessionI)this.offering).setTracer(tracer) ;
+		((IntercessionCI)this.offering).setTracer(tracer) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#traceMessage(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#traceMessage(java.lang.String)
 	 */
 	@Override
 	public void			traceMessage(String message) throws Exception
 	{
-		((IntercessionI)this.offering).traceMessage(message) ;
+		((IntercessionCI)this.offering).traceMessage(message) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#logMessage(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#logMessage(java.lang.String)
 	 */
 	@Override
 	public void			logMessage(String message) throws Exception
 	{
-		((IntercessionI)this.offering).logMessage(message) ;
+		((IntercessionCI)this.offering).logMessage(message) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#printExecutionLog()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#printExecutionLog()
 	 */
 	@Override
 	public void			printExecutionLog() throws Exception
 	{
-		((IntercessionI)this.offering).printExecutionLog() ;
+		((IntercessionCI)this.offering).printExecutionLog() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#printExecutionLogOnFile(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#printExecutionLogOnFile(java.lang.String)
 	 */
 	@Override
 	public void			printExecutionLogOnFile(String fileName)
 	throws Exception
 	{
-		((IntercessionI)this.offering).printExecutionLogOnFile(fileName) ;
+		((IntercessionCI)this.offering).printExecutionLogOnFile(fileName) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -193,43 +193,43 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#addRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public void			addRequiredInterface(Class<? extends RequiredCI> inter)
 	throws Exception
 	{
-		((IntercessionI)this.offering).addRequiredInterface(inter) ;
+		((IntercessionCI)this.offering).addRequiredInterface(inter) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#removeRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public void			removeRequiredInterface(
 		Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		((IntercessionI)this.offering).removeRequiredInterface(inter) ;
+		((IntercessionCI)this.offering).removeRequiredInterface(inter) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#addOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public void			addOfferedInterface(Class<? extends OfferedCI> inter) throws Exception
 	{
-		((IntercessionI)this.offering).addOfferedInterface(inter) ;
+		((IntercessionCI)this.offering).addOfferedInterface(inter) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#removeOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public void			removeOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		((IntercessionI)this.offering).removeOfferedInterface(inter) ;
+		((IntercessionCI)this.offering).removeOfferedInterface(inter) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -237,7 +237,7 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#doPortConnection(java.lang.String, java.lang.String, java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#doPortConnection(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void			doPortConnection(
@@ -246,18 +246,18 @@ implements	IntercessionI
 		String ccname
 		) throws Exception
 	{
-		((IntercessionI)this.offering).
+		((IntercessionCI)this.offering).
 							doPortConnection(portURI, otherPortURI, ccname) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#doPortDisconnection(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#doPortDisconnection(java.lang.String)
 	 */
 	@Override
 	public void			doPortDisconnection(String portURI)
 	throws Exception
 	{
-		((IntercessionI)this.offering).doPortDisconnection(portURI) ;
+		((IntercessionCI)this.offering).doPortDisconnection(portURI) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -265,56 +265,56 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeService(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeService(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.offering).invokeService(name, params) ;
+		return ((IntercessionCI)this.offering).invokeService(name, params) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceSync(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeServiceSync(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.offering).invokeServiceSync(name, params) ;
+		return ((IntercessionCI)this.offering).invokeServiceSync(name, params) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceAsync(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeServiceAsync(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception
 	{
-		((IntercessionI)this.offering).invokeServiceAsync(name, params) ;
+		((IntercessionCI)this.offering).invokeServiceAsync(name, params) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#execute()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#execute()
 	 */
 	@Override
 	public void			execute() throws Exception
 	{
-		((IntercessionI)this.offering).execute() ;
+		((IntercessionCI)this.offering).execute() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#runTask(fr.sorbonne_u.components.reflection.interfaces.IntercessionCI.AbstractRemoteComponentTask)
 	 */
 	@Override
 	public void			runTask(AbstractRemoteComponentTask t)
 	throws Exception
 	{
-		((IntercessionI)this.offering).runTask(t) ;
+		((IntercessionCI)this.offering).runTask(t) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(java.lang.String, fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#runTask(java.lang.String, fr.sorbonne_u.components.reflection.interfaces.IntercessionCI.AbstractRemoteComponentTask)
 	 */
 	@Override
 	public void			runTask(
@@ -322,11 +322,11 @@ implements	IntercessionI
 		AbstractRemoteComponentTask t
 		) throws Exception
 	{
-		((IntercessionI)this.offering).runTask(executorServiceURI, t) ;
+		((IntercessionCI)this.offering).runTask(executorServiceURI, t) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
 	public void			insertBeforeService(
@@ -335,13 +335,13 @@ implements	IntercessionI
 		String code
 		) throws Exception
 	{
-		((IntercessionI)this.offering).
+		((IntercessionCI)this.offering).
 			insertBeforeService(
 					methodName, parametersCanonicalClassNames, code) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertAfterService(java.lang.String, java.lang.String[], java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#insertAfterService(java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
 	public void			insertAfterService(
@@ -350,7 +350,7 @@ implements	IntercessionI
 		String code
 		) throws Exception
 	{
-		((IntercessionI)this.offering).
+		((IntercessionCI)this.offering).
 			insertAfterService(
 					methodName, parametersCanonicalClassNames, code) ;		
 	}

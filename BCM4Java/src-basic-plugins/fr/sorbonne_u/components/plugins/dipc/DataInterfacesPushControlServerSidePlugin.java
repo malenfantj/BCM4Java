@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlI;
+import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlCI;
 import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI;
 import fr.sorbonne_u.components.plugins.dipc.ports.PushControlInboundPort;
 import fr.sorbonne_u.components.ports.AbstractDataInboundPort;
@@ -108,7 +108,7 @@ implements	PushControlImplementationI
 
 		super.installOn(owner);
 
-		this.addOfferedInterface(PushControlI.class);
+		this.addOfferedInterface(PushControlCI.class);
 	}
 
 	/**
@@ -156,7 +156,7 @@ implements	PushControlImplementationI
 	{
 		this.pushControlInboundPort.unpublishPort();
 		this.pushControlInboundPort.destroyPort();
-		this.removeOfferedInterface(PushControlI.class);
+		this.removeOfferedInterface(PushControlCI.class);
 	}
 
 	// -------------------------------------------------------------------------

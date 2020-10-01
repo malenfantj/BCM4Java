@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.examples.chm.connectors;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
 
 //------------------------------------------------------------------------------
 /**
@@ -56,7 +56,7 @@ import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
  */
 public class				MapWritingConnector<K, V>
 extends		AbstractConnector
-implements	MapWriting<K, V>
+implements	MapWritingCI<K, V>
 {
 	public				MapWritingConnector()
 	{
@@ -64,23 +64,23 @@ implements	MapWriting<K, V>
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#put(java.lang.Object, java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI#put(java.lang.Object, java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V				put(K key, V value) throws Exception
 	{
-		return ((MapWriting<K, V>)this.offering).put(key, value) ;
+		return ((MapWritingCI<K, V>)this.offering).put(key, value) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#remove(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI#remove(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V				remove(K key) throws Exception
 	{
-		return ((MapWriting<K, V>)this.offering).remove(key) ;
+		return ((MapWritingCI<K, V>)this.offering).remove(key) ;
 	}
 }
 //------------------------------------------------------------------------------

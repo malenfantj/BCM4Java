@@ -37,7 +37,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
-import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationI;
+import fr.sorbonne_u.components.pre.dcc.interfaces.DynamicComponentCreationCI;
 import fr.sorbonne_u.components.pre.dcc.ports.DynamicComponentCreationInboundPort;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
@@ -61,7 +61,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-@OfferedInterfaces(offered = {DynamicComponentCreationI.class})
+@OfferedInterfaces(offered = {DynamicComponentCreationCI.class})
 public class			DynamicComponentCreator
 extends		AbstractComponent
 {

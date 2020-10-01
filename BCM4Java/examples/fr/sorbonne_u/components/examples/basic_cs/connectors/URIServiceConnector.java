@@ -35,8 +35,8 @@ package fr.sorbonne_u.components.examples.basic_cs.connectors;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -61,7 +61,7 @@ import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
  */
 public class			URIServiceConnector
 extends		AbstractConnector
-implements	URIConsumerI
+implements	URIConsumerCI
 {
 	/**
 	 * implement the required interface by simply calling the inbound port with
@@ -74,12 +74,12 @@ implements	URIConsumerI
 	 * post	ret != null
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI#getURI()
+	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI#getURI()
 	 */
 	@Override
 	public String		getURI() throws Exception
 	{
-		return ((URIProviderI)this.offering).provideURI() ;
+		return ((URIProviderCI)this.offering).provideURI() ;
 	}
 
 	/**
@@ -93,12 +93,12 @@ implements	URIConsumerI
 	 * post	ret != null and ret.length == numberOfURIs
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI#getURIs(int)
+	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI#getURIs(int)
 	 */
 	@Override
 	public String[]		getURIs(int numberOfURIs) throws Exception
 	{
-		return ((URIProviderI)this.offering).provideURIs(numberOfURIs) ;
+		return ((URIProviderCI)this.offering).provideURIs(numberOfURIs) ;
 	}
 }
 //-----------------------------------------------------------------------------

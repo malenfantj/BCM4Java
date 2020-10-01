@@ -76,7 +76,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.InboundPortI;
 import fr.sorbonne_u.components.ports.OutboundPortI;
 import fr.sorbonne_u.components.ports.PortI;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
@@ -1979,7 +1979,7 @@ implements	ComponentI
 		int nbSchedulableThreads
 		)
 	{
-		this(AbstractPort.generatePortURI(ReflectionI.class),
+		this(AbstractPort.generatePortURI(ReflectionCI.class),
 											nbThreads, nbSchedulableThreads);
 	}
 
@@ -2487,7 +2487,7 @@ implements	ComponentI
 					new PreconditionException(
 							"reflectionInboundPortURI != null");
 
-		this.addOfferedInterface(ReflectionI.class);
+		this.addOfferedInterface(ReflectionCI.class);
 		
 		try {
 			ReflectionInboundPort rip =
@@ -2497,21 +2497,21 @@ implements	ComponentI
 			throw new RuntimeException(e);
 		}
 
-		assert	this.isOfferedInterface(ReflectionI.class) :
+		assert	this.isOfferedInterface(ReflectionCI.class) :
 					new PostconditionException(
 							"isOfferedInterface(ReflectionI.class)");
-		assert	this.findInboundPortURIsFromInterface(ReflectionI.class)
+		assert	this.findInboundPortURIsFromInterface(ReflectionCI.class)
 																	!= null :
 					new PostconditionException(
 							"findInboundPortURIsFromInterface("
 									+ "ReflectionI.class) != null");
-		assert	this.findInboundPortURIsFromInterface(ReflectionI.class).length
+		assert	this.findInboundPortURIsFromInterface(ReflectionCI.class).length
 																		== 1 :
 					new PostconditionException(
 							"findInboundPortURIsFromInterface("
 									+ "ReflectionI.class).length == 1");
 		assert	this.findInboundPortURIsFromInterface(
-						ReflectionI.class)[0].equals(reflectionInboundPortURI) :
+						ReflectionCI.class)[0].equals(reflectionInboundPortURI) :
 					new PostconditionException(
 							"findInboundPortURIsFromInterface("
 									+ "ReflectionI.class)[0].equals("
@@ -2581,7 +2581,7 @@ implements	ComponentI
 		ComponentI component =
 				instantiateComponent(classname, constructorParams);
 		String[] ret =
-				component.findInboundPortURIsFromInterface(ReflectionI.class);
+				component.findInboundPortURIsFromInterface(ReflectionCI.class);
 		assert	ret != null && ret.length == 1 && ret[0] != null;
 
 		AbstractCVM.getCVM().addDeployedComponent(ret[0], component);
@@ -2707,7 +2707,7 @@ implements	ComponentI
 		ComponentI component =
 				instantiateComponent(classname, constructorParams);
 		String[] ret =
-				component.findInboundPortURIsFromInterface(ReflectionI.class);
+				component.findInboundPortURIsFromInterface(ReflectionCI.class);
 		assert	ret != null && ret.length == 1 && ret[0] != null;
 
 		this.innerComponents.put(ret[0], (AbstractComponent)component);
@@ -3958,7 +3958,7 @@ implements	ComponentI
 			}
 		}
 		String[] reflPortURI =
-				this.findInboundPortURIsFromInterface(ReflectionI.class);
+				this.findInboundPortURIsFromInterface(ReflectionCI.class);
 		PortI reflPort = this.findPortFromURI(reflPortURI[0]);
 		reflPort.unpublishPort();
 

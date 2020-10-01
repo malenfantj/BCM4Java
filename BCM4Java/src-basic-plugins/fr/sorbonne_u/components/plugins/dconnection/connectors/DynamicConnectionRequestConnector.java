@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.plugins.dconnection.connectors;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
+import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -56,22 +56,22 @@ import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnection
  */
 public class			DynamicConnectionRequestConnector
 extends		AbstractConnector
-implements	DynamicConnectionRequestI
+implements	DynamicConnectionRequestCI
 {
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#requestDynamicPortURI(java.lang.Class)
+	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI#requestDynamicPortURI(java.lang.Class)
 	 */
 	@Override
 	public String		requestDynamicPortURI(
 		Class<? extends OfferedCI> offeredInterface
 		) throws Exception
 	{
-		return ((DynamicConnectionRequestI)this.offering).
+		return ((DynamicConnectionRequestCI)this.offering).
 								requestDynamicPortURI(offeredInterface) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#removeDynamicPort(java.lang.Class, java.lang.String)
+	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI#removeDynamicPort(java.lang.Class, java.lang.String)
 	 */
 	@Override
 	public void			removeDynamicPort(
@@ -79,7 +79,7 @@ implements	DynamicConnectionRequestI
 		String uri
 		) throws Exception
 	{
-		((DynamicConnectionRequestI)this.offering).
+		((DynamicConnectionRequestCI)this.offering).
 								removeDynamicPort(offeredInterface, uri) ;
 	}
 }

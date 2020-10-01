@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.pingpong.interfaces;
+package fr.sorbonne_u.components.examples.basic_cs.interfaces;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -34,46 +34,57 @@ package fr.sorbonne_u.components.examples.pingpong.interfaces;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.TwoWayCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
-//----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
- * The interface <code>PingPongI</code> defines the service
- * <code>pingPong()</code> called by each player to send the control to the
- * other player.
+ * The interface <code>URIConsumerCI</code> defines the interface required by a
+ * component that needs to get URI from an URI provider component.
  *
  * <p><strong>Description</strong></p>
  * 
- * Note the argument of <code>pingPong()</code> providing the URI of the
- * port owned by the caller component that is used in the port and the
- * connector to identify the way the call must go.
+ * As a RMI remote interface, all of the methods must return
+ * <code>RemoteException</code>. The choice here is to throw
+ * <code>Exception</code> to cater for potential exceptions
+ * thrown by the implementation methods.
  * 
- * <p><strong>Invariant</strong></p>
- * 
- * <pre>
- * invariant		true
- * </pre>
- * 
- * <p>Created on : 2018-03-14</p>
+ * <p>Created on : 2014-01-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			PingPongTwoWayI
-extends		TwoWayCI
+public interface		URIConsumerCI
+extends		RequiredCI
 {
 	/**
-	 * service called by each player to send the control to the other
-	 * player.
+	 * get a new URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * post	ret != null
 	 * </pre>
 	 *
+	 * @return			the requested URI.
+	 * @throws Exception	<i>todo.</i>
+	 */
+	public String		getURI() throws Exception ;
+
+	/**
+	 * get several new URIs at once.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	numberOfURIs &gt; 0
+	 * post	ret != null and ret.length == numberOfURIs
+	 * post	forall i in 0..numberOfURIs-1, ret[i] !! null
+	 * </pre>
+	 *
+	 * @param numberOfURIs	number of requested URIs.
+	 * @return				array of URIs.
 	 * @throws Exception		<i>todo.</i>
 	 */
-	public void			pingPong() throws Exception ;
+	public String[]		getURIs(int numberOfURIs) throws Exception ;
 }
-//----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

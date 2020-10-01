@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.examples.reflection.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.reflection.components.ReflectionServer;
-import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI;
+import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 // -----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class				MyServiceInboundPort
 extends		AbstractInboundPort
-implements	MyServiceI
+implements	MyServiceCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -67,18 +67,18 @@ implements	MyServiceI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, MyServiceI.class, owner);
+		super(uri, MyServiceCI.class, owner);
 	}
 
 	public				MyServiceInboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(MyServiceI.class, owner);
+		super(MyServiceCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI#myService(java.lang.String)
+	 * @see fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceCI#myService(java.lang.String)
 	 */
 	@Override
 	public void			myService(String message) throws Exception

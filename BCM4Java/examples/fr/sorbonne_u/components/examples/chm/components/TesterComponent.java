@@ -40,14 +40,14 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.examples.chm.connectors.MapReadingConnector;
 import fr.sorbonne_u.components.examples.chm.connectors.MapWritingConnector;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapReading;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
 import fr.sorbonne_u.components.examples.chm.ports.MapReadingOutboundPort;
 import fr.sorbonne_u.components.examples.chm.ports.MapWritingOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 
 //------------------------------------------------------------------------------
@@ -69,10 +69,10 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 //-----------------------------------------------------------------------------
-@RequiredInterfaces(required = {ReflectionI.class,
-								MapReading.class,
-								MapTesting.class,
-								MapWriting.class})
+@RequiredInterfaces(required = {ReflectionCI.class,
+								MapReadingCI.class,
+								MapTestingCI.class,
+								MapWritingCI.class})
 public class				TesterComponent
 extends		AbstractComponent
 //-----------------------------------------------------------------------------
@@ -152,7 +152,7 @@ extends		AbstractComponent
 							  chmReflectionIBPUri,
 							  ReflectionConnector.class.getCanonicalName());
 		String[] readingIBPURI =
-				rop.findInboundPortURIsFromInterface(MapReading.class) ;
+				rop.findInboundPortURIsFromInterface(MapReadingCI.class) ;
 		assert	readingIBPURI != null && readingIBPURI.length == 1 ;
 		this.doPortConnection(
 				this.readingOutboundPort.getPortURI(),
@@ -160,7 +160,7 @@ extends		AbstractComponent
 				MapReadingConnector.class.getCanonicalName()) ;
 
 		String[] writingIBPURI =
-				rop.findInboundPortURIsFromInterface(MapWriting.class) ;
+				rop.findInboundPortURIsFromInterface(MapWritingCI.class) ;
 		assert	writingIBPURI != null && writingIBPURI.length == 1 ;
 		this.doPortConnection(
 				this.writingOutboundPort.getPortURI(),

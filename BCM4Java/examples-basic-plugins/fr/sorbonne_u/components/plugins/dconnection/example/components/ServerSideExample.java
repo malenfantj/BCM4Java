@@ -39,7 +39,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.plugins.dconnection.DynamicConnectionServerSidePlugin;
-import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleI;
+import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI;
 import fr.sorbonne_u.components.plugins.dconnection.example.ports.ExampleInboundPort;
 import fr.sorbonne_u.components.ports.InboundPortI;
 import fr.sorbonne_u.components.ports.PortI;
@@ -65,7 +65,7 @@ import fr.sorbonne_u.components.ports.PortI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 // -----------------------------------------------------------------------------
-@OfferedInterfaces(offered = {ExampleI.class})
+@OfferedInterfaces(offered = {ExampleCI.class})
 @AddPlugin(pluginClass = ServerSideExample.ServerSidePlugin.class,
 		   pluginURI = ServerSideExample.DYNAMIC_CONNECTION_PLUGIN_URI)
 // -----------------------------------------------------------------------------
@@ -110,8 +110,8 @@ extends		AbstractComponent
 			Class<? extends OfferedCI> offeredInterface
 			) throws Exception
 		{
-			assert	ExampleI.class.isAssignableFrom(offeredInterface) &&
-						offeredInterface.isAssignableFrom(ExampleI.class);
+			assert	ExampleCI.class.isAssignableFrom(offeredInterface) &&
+						offeredInterface.isAssignableFrom(ExampleCI.class);
 
 			InboundPortI ret = new ExampleInboundPort(this.getOwner());
 			ret.publishPort();
@@ -158,7 +158,7 @@ extends		AbstractComponent
 	{
 		try {
 			String[] uris =
-					this.findInboundPortURIsFromInterface(ExampleI.class);
+					this.findInboundPortURIsFromInterface(ExampleCI.class);
 			PortI p = this.findPortFromURI(uris[0]);
 			p.unpublishPort();
 		} catch (Exception e) {

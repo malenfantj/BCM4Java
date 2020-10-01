@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.examples.pingpong.connectors;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractTwoWayConnector;
-import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayI;
+import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayCI;
 
 //----------------------------------------------------------------------------
 /**
@@ -59,8 +59,8 @@ import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class				PingPongTwoWayConnector
-extends		AbstractTwoWayConnector<PingPongTwoWayI>
-implements	PingPongTwoWayI
+extends		AbstractTwoWayConnector<PingPongTwoWayCI>
+implements	PingPongTwoWayCI
 {
 	// ------------------------------------------------------------------------
 	// Inner classes
@@ -83,8 +83,8 @@ implements	PingPongTwoWayI
 	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
 	protected static class	ProxyToOtherComponent
-	extends			AbstractTwoWayConnector.ProxyToOtherComponent<PingPongTwoWayI>
-	implements		PingPongTwoWayI
+	extends			AbstractTwoWayConnector.ProxyToOtherComponent<PingPongTwoWayCI>
+	implements		PingPongTwoWayCI
 	{
 		public				ProxyToOtherComponent(
 			PingPongTwoWayConnector owner,
@@ -95,7 +95,7 @@ implements	PingPongTwoWayI
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayI#pingPong()
+		 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayCI#pingPong()
 		 */
 		@Override
 		public void			pingPong() throws Exception
@@ -104,9 +104,9 @@ implements	PingPongTwoWayI
 			// right direction depending on the origin of the call.
 			assert	this.senderPortURI != null ;
 			if (this.getRequiringPortURI().equals(senderPortURI)) {
-				((PingPongTwoWayI)this.getOffering()).pingPong() ;
+				((PingPongTwoWayCI)this.getOffering()).pingPong() ;
 			} else {
-				((PingPongTwoWayI)this.getRequiring()).pingPong() ;
+				((PingPongTwoWayCI)this.getRequiring()).pingPong() ;
 			}
 		}
 	}
@@ -116,7 +116,7 @@ implements	PingPongTwoWayI
 	// ------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayI#pingPong()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayCI#pingPong()
 	 */
 	@Override
 	public void			pingPong() throws Exception
@@ -129,11 +129,11 @@ implements	PingPongTwoWayI
 	 * @see fr.sorbonne_u.components.connectors.AbstractTwoWayConnector#getProxyTowardsOtherComponent(java.lang.String)
 	 */
 	@Override
-	public PingPongTwoWayI	getProxyTowardsOtherComponent(
+	public PingPongTwoWayCI	getProxyTowardsOtherComponent(
 		String senderPortURI
 		) throws Exception
 	{
-		return (PingPongTwoWayI)
+		return (PingPongTwoWayCI)
 						new ProxyToOtherComponent(this, senderPortURI) ;
 	}
 }

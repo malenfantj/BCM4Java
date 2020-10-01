@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.plugins.dconnection.example.connectors;
+package fr.sorbonne_u.components.examples.reflection.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -33,37 +33,30 @@ package fr.sorbonne_u.components.plugins.dconnection.example.connectors;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ExampleConnector</code> defines the connector
- * associated with the interface <code>ExampleI</code>.
+ * The interface <code>MyServiceCI</code> is the service interface for
+ * the reflection example.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant	true
+ * invariant		true
  * </pre>
  * 
- * <p>Created on : 2017-02-17</p>
+ * <p>Created on : 2018-02-19</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ExampleConnector
-extends		AbstractConnector
-implements	ExampleCI
+public interface		MyServiceCI
+extends		RequiredCI,
+			OfferedCI
 {
-	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI#exampleCall(int)
-	 */
-	@Override
-	public int			exampleCall(int i) throws Exception
-	{
-		return ((ExampleCI)this.offering).exampleCall(i) ;
-	}
+	public void			myService(String message) throws Exception ;
 }
 // -----------------------------------------------------------------------------

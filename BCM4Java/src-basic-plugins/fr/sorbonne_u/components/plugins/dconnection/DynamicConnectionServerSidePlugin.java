@@ -38,7 +38,7 @@ import java.util.Map;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
+import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI;
 import fr.sorbonne_u.components.plugins.dconnection.ports.DynamicConnectionRequestInboundPort;
 import fr.sorbonne_u.components.ports.InboundPortI;
 
@@ -130,7 +130,7 @@ extends		AbstractPlugin
 
 		// At installation time on a component, the plug-in adds the plug-in
 		// offered interfaces to the ones of the component.
-		this.addOfferedInterface(DynamicConnectionRequestI.class);
+		this.addOfferedInterface(DynamicConnectionRequestCI.class);
 	}
 
 	/**
@@ -171,7 +171,7 @@ extends		AbstractPlugin
 		// to the component at installation time are removed.
 		this.dcrip.unpublishPort();
 		this.dcrip.destroyPort();
-		this.removeOfferedInterface(DynamicConnectionRequestI.class);
+		this.removeOfferedInterface(DynamicConnectionRequestCI.class);
 	}
 
 	// -------------------------------------------------------------------------

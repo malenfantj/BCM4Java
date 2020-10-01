@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.plugins.dconnection.example.ports;
 
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.plugins.dconnection.example.components.ServerSideExample;
-import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleI;
+import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 // -----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class			ExampleInboundPort
 extends		AbstractInboundPort
-implements	ExampleI
+implements	ExampleCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -66,18 +66,18 @@ implements	ExampleI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, ExampleI.class, owner);
+		super(uri, ExampleCI.class, owner);
 	}
 
 	public				ExampleInboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(ExampleI.class, owner);
+		super(ExampleCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleI#exampleCall(int)
+	 * @see fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI#exampleCall(int)
 	 */
 	@Override
 	public int			exampleCall(int i) throws Exception

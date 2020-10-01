@@ -36,10 +36,10 @@ package fr.sorbonne_u.components.examples.reflection.components;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.examples.reflection.connectors.MyServiceConnector;
-import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI;
+import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceCI;
 import fr.sorbonne_u.components.examples.reflection.ports.MyServiceOutboundPort;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 
 //-----------------------------------------------------------------------------
@@ -83,11 +83,11 @@ extends		AbstractComponent
 		assert	serverRIPURI != null ;
 
 		this.serverRIPURI = serverRIPURI ;
-		this.addRequiredInterface(ReflectionI.class) ;
+		this.addRequiredInterface(ReflectionCI.class) ;
 		this.rObp = new ReflectionOutboundPort(this) ;
 		this.rObp.publishPort() ;
 
-		this.addRequiredInterface(MyServiceI.class) ;
+		this.addRequiredInterface(MyServiceCI.class) ;
 		this.servicePort = new MyServiceOutboundPort(this) ;
 		this.servicePort.publishPort() ;
 	}
@@ -103,7 +103,7 @@ extends		AbstractComponent
 					ReflectionConnector.class.getCanonicalName());
 		String[] uris =
 				this.rObp.findInboundPortURIsFromInterface(
-													MyServiceI.class) ;
+													MyServiceCI.class) ;
 		this.doPortConnection(
 					this.servicePort.getPortURI(),
 					uris[0],

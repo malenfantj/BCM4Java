@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.basic_cs.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //-----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class			URIProviderInboundPort
 extends		AbstractInboundPort
-implements	URIProviderI
+implements	URIProviderCI
 {
 	/** required by UnicastRemonteObject.									*/
 	private static final long serialVersionUID = 1L;
@@ -90,7 +90,7 @@ implements	URIProviderI
 		) throws Exception
 	{
 		// the implemented interface is statically known
-		super(uri, URIProviderI.class, owner) ;
+		super(uri, URIProviderCI.class, owner) ;
 
 		assert	uri != null && owner instanceof URIProvider ;
 	}
@@ -118,7 +118,7 @@ implements	URIProviderI
 		) throws Exception
 	{
 		// the implemented interface is statically known
-		super(URIProviderI.class, owner) ;
+		super(URIProviderCI.class, owner) ;
 
 		assert	owner instanceof URIProvider ;
 	}
@@ -134,7 +134,7 @@ implements	URIProviderI
 	 * post	ret != null
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI#provideURI()
+	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI#provideURI()
 	 */
 	@Override
 	public String		provideURI() throws Exception
@@ -149,7 +149,7 @@ implements	URIProviderI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderI#provideURIs(int)
+	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI#provideURIs(int)
 	 */
 	@Override
 	public String[]		provideURIs(final int numberOfRequestedURIs)

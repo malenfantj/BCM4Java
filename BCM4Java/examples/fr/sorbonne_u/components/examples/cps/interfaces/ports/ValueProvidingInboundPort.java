@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.cps.interfaces.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.cps.components.RandomValueProvider;
-import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI;
+import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //-----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class				ValueProvidingInboundPort
 extends		AbstractInboundPort
-implements	ValueProvidingI
+implements	ValueProvidingCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -68,7 +68,7 @@ implements	ValueProvidingI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, ValueProvidingI.class, owner) ;
+		super(uri, ValueProvidingCI.class, owner) ;
 		assert	uri != null ;
 		assert	owner instanceof RandomValueProvider ;
 	}
@@ -76,12 +76,12 @@ implements	ValueProvidingI
 	public				ValueProvidingInboundPort(ComponentI owner)
 	throws Exception
 	{
-		super(ValueProvidingI.class, owner);
+		super(ValueProvidingCI.class, owner);
 		assert	owner instanceof RandomValueProvider ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI#getValue()
+	 * @see fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI#getValue()
 	 */
 	@Override
 	public int			getValue() throws Exception

@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.examples.cps.connectors;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI;
+import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI;
 
 /**
  * The class <code>ValueProvidingConnector</code> implements a connector
@@ -55,14 +55,14 @@ import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI;
  */
 public class				ValueProvidingConnector
 extends		AbstractConnector
-implements	ValueProvidingI
+implements	ValueProvidingCI
 {
 	/**
-	 * @see fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI#getValue()
+	 * @see fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI#getValue()
 	 */
 	@Override
 	public int			getValue() throws Exception
 	{
-		return ((ValueProvidingI)this.offering).getValue();
+		return ((ValueProvidingCI)this.offering).getValue();
 	}
 }

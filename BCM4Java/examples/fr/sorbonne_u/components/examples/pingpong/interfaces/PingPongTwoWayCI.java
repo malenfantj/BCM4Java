@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.plugins.dconnection.interfaces;
+package fr.sorbonne_u.components.examples.pingpong.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -33,66 +33,46 @@ package fr.sorbonne_u.components.plugins.dconnection.interfaces;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
+import fr.sorbonne_u.components.interfaces.TwoWayCI;
 
 // -----------------------------------------------------------------------------
 /**
- * The interface <code>DynamicConnectionRequestI</code> is offered by
- * components that propose a dynamic connection through some other
- * dynamically connected interface.
+ * The interface <code>PingPongTwoWayCI</code> defines the service
+ * <code>pingPong()</code> called by each player to send the control to the
+ * other player.
  *
  * <p><strong>Description</strong></p>
  * 
- * See the <code>fr.sorbonne_u.components.patterns.dconnection</code>
- * package documentation.
+ * Note the argument of <code>pingPong()</code> providing the URI of the
+ * port owned by the caller component that is used in the port and the
+ * connector to identify the way the call must go.
  * 
- * <p>Created on : 2013-01-23</p>
+ * <p><strong>Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant		true
+ * </pre>
+ * 
+ * <p>Created on : 2018-03-14</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		DynamicConnectionRequestI
-extends		OfferedCI,
-			RequiredCI
+public interface		PingPongTwoWayCI
+extends		TwoWayCI
 {
 	/**
-	 * provides the URI of a new port implementing some interface that is
-	 * offered through a dynamic connection, so the receiver creates a port
-	 * and sends its URI back.
+	 * service called by each player to send the control to the other
+	 * player.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	offeredInterface != null
-	 * post	result != null
-	 * </pre>
-	 *
-	 * @param offeredInterface	interface of the connection to be established.
-	 * @return					the URI of an inbound port implementing <code>offeredInterface</code>.
-	 * @throws Exception		<i>to do</i>.
-	 */
-	public String		requestDynamicPortURI(
-		Class<? extends OfferedCI> offeredInterface
-		) throws Exception ;
-
-	/**
-	 * remove the inbound port with the given URI that implements the given
-	 * offered interface, if it exists.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	offeredInterface != null
+	 * pre	true			// no precondition.
 	 * post	true			// no postcondition.
 	 * </pre>
 	 *
-	 * @param offeredInterface	server-side offered interface.
-	 * @param uri				URI of a previously created port.
-	 * @throws Exception 		<i>to do</i>.
+	 * @throws Exception		<i>todo.</i>
 	 */
-	public void			removeDynamicPort(
-		Class<? extends OfferedCI> offeredInterface,
-		String uri
-		) throws Exception ;
+	public void			pingPong() throws Exception ;
 }
 // -----------------------------------------------------------------------------

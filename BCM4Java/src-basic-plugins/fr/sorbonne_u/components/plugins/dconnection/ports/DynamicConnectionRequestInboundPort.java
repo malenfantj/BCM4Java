@@ -37,7 +37,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.plugins.dconnection.DynamicConnectionServerSidePlugin;
-import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI;
+import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 // -----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class			DynamicConnectionRequestInboundPort
 extends		AbstractInboundPort
-implements	DynamicConnectionRequestI
+implements	DynamicConnectionRequestCI
 {
 	private static final long	serialVersionUID = 1L ;
 
@@ -85,7 +85,7 @@ implements	DynamicConnectionRequestI
 		ComponentI owner
 		) throws Exception
 	{
-		super(DynamicConnectionRequestI.class, owner, pluginURI, null) ;
+		super(DynamicConnectionRequestCI.class, owner, pluginURI, null) ;
 	}
 
 	/**
@@ -112,11 +112,11 @@ implements	DynamicConnectionRequestI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, DynamicConnectionRequestI.class, owner, pluginURI, null) ;
+		super(uri, DynamicConnectionRequestCI.class, owner, pluginURI, null) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#requestDynamicPortURI(java.lang.Class)
+	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI#requestDynamicPortURI(java.lang.Class)
 	 */
 	@Override
 	public String		requestDynamicPortURI(Class<? extends OfferedCI> offeredInterface)
@@ -134,7 +134,7 @@ implements	DynamicConnectionRequestI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestI#removeDynamicPort(java.lang.Class, java.lang.String)
+	 * @see fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionRequestCI#removeDynamicPort(java.lang.Class, java.lang.String)
 	 */
 	@Override
 	public void			removeDynamicPort(

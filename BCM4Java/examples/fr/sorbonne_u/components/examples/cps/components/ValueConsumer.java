@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.cps.components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.examples.cps.connectors.ValueProvidingConnector;
-import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI;
+import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI;
 import fr.sorbonne_u.components.examples.cps.interfaces.ports.ValueProvidingOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.pre.controlflowhelpers.AbstractLocalComposedContinuation;
@@ -77,7 +77,7 @@ import fr.sorbonne_u.exceptions.InvariantException;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 //-----------------------------------------------------------------------------
-@RequiredInterfaces(required = {ValueProvidingI.class})
+@RequiredInterfaces(required = {ValueProvidingCI.class})
 public class				ValueConsumer
 extends		AbstractComponent
 //-----------------------------------------------------------------------------

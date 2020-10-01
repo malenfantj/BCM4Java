@@ -40,8 +40,8 @@ import fr.sorbonne_u.components.connectors.DataTwoWayConnector;
 import fr.sorbonne_u.components.examples.pingpong.CVM;
 import fr.sorbonne_u.components.examples.pingpong.connectors.PingPongConnector;
 import fr.sorbonne_u.components.examples.pingpong.connectors.PingPongTwoWayConnector;
-import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI;
-import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayI;
+import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI;
+import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayCI;
 import fr.sorbonne_u.components.examples.pingpong.ports.PingPongDataInboundPort;
 import fr.sorbonne_u.components.examples.pingpong.ports.PingPongDataOutboundPort;
 import fr.sorbonne_u.components.examples.pingpong.ports.PingPongDataTwoWayPort;
@@ -251,8 +251,8 @@ extends		AbstractComponent
 
 		// The standard offered and required interfaces and the ports.
 
-		this.addRequiredInterface(PingPongI.class) ;
-		this.addOfferedInterface(PingPongI.class) ;
+		this.addRequiredInterface(PingPongCI.class) ;
+		this.addOfferedInterface(PingPongCI.class) ;
 		this.pingPongOutboundPort = new PingPongOutboundPort(this) ;
 		this.pingPongOutboundPort.localPublishPort() ;
 		if (this.hasService) {
@@ -293,8 +293,8 @@ extends		AbstractComponent
 
 		// The two way interface and port.
 
-		this.addOfferedInterface(PingPongTwoWayI.class) ;
-		this.addRequiredInterface(PingPongTwoWayI.class) ;
+		this.addOfferedInterface(PingPongTwoWayCI.class) ;
+		this.addRequiredInterface(PingPongTwoWayCI.class) ;
 		this.pingPongTwoWayPort =
 				new PingPongTwoWayPort(pingPongTwoWayPortURI, this) ;
 		this.pingPongTwoWayPort.publishPort() ;

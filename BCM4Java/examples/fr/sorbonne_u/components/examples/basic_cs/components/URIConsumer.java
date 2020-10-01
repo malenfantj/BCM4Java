@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
 import fr.sorbonne_u.components.examples.basic_cs.ports.URIConsumerOutboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 
@@ -77,7 +77,7 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
  */
 // The next annotation requires that the referenced interface is added to
 // the required interfaces of the component.
-@RequiredInterfaces(required = {URIConsumerI.class})
+@RequiredInterfaces(required = {URIConsumerCI.class})
 public class			URIConsumer
 extends		AbstractComponent
 {

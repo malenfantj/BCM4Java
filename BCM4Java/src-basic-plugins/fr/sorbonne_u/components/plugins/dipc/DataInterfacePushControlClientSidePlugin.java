@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.plugins.dipc;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.plugins.dipc.connectors.PushControlConnector;
-import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlI;
+import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlCI;
 import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlImplementationI;
 import fr.sorbonne_u.components.plugins.dipc.ports.PushControlOutboundPort;
 import fr.sorbonne_u.components.plugins.helpers.AbstractClientSidePlugin;
@@ -86,7 +86,7 @@ implements	PushControlImplementationI
 	public boolean		isPortExisting(String portURI)
 	throws Exception
 	{
-		return ((PushControlI)this.pluginOutboundPort).
+		return ((PushControlCI)this.pluginOutboundPort).
 											isPortExisting(portURI);
 	}
 
@@ -99,7 +99,7 @@ implements	PushControlImplementationI
 		long interval
 		) throws Exception
 	{
-		((PushControlI)this.pluginOutboundPort).
+		((PushControlCI)this.pluginOutboundPort).
 							startUnlimitedPushing(portURI, interval);
 	}
 
@@ -113,7 +113,7 @@ implements	PushControlImplementationI
 		int n
 		) throws Exception
 	{
-		((PushControlI)this.pluginOutboundPort).
+		((PushControlCI)this.pluginOutboundPort).
 							startLimitedPushing(portURI, interval, n);
 	}
 
@@ -124,7 +124,7 @@ implements	PushControlImplementationI
 	public boolean		currentlyPushesData(String portURI)
 	throws Exception
 	{
-		return ((PushControlI)this.pluginOutboundPort).currentlyPushesData(portURI);
+		return ((PushControlCI)this.pluginOutboundPort).currentlyPushesData(portURI);
 	}
 
 	/**
@@ -133,7 +133,7 @@ implements	PushControlImplementationI
 	@Override
 	public void			stopPushing(String portURI) throws Exception
 	{
-		((PushControlI)this.pluginOutboundPort).stopPushing(portURI);
+		((PushControlCI)this.pluginOutboundPort).stopPushing(portURI);
 	}
 
 	/**
@@ -142,7 +142,7 @@ implements	PushControlImplementationI
 	@Override
 	protected Class<? extends RequiredCI>	getRequiredInterface()
 	{
-		return PushControlI.class;
+		return PushControlCI.class;
 	}
 
 	/**
@@ -151,7 +151,7 @@ implements	PushControlImplementationI
 	@Override
 	protected Class<? extends OfferedCI>	getOfferedInterface()
 	{
-		return PushControlI.class;
+		return PushControlCI.class;
 	}
 
 	/**

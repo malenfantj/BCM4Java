@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.plugins.dipc.connectors;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlI;
+import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlCI;
 
 //-----------------------------------------------------------------------------
 /**
@@ -55,15 +55,15 @@ import fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlI;
  */
 public class				PushControlConnector
 extends		AbstractConnector
-implements	PushControlI
+implements	PushControlCI
 {
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlI#isPortExisting(java.lang.String)
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlCI#isPortExisting(java.lang.String)
 	 */
 	@Override
 	public boolean		isPortExisting(String portURI) throws Exception
 	{
-		return ((PushControlI)this.offering).isPortExisting(portURI) ;
+		return ((PushControlCI)this.offering).isPortExisting(portURI) ;
 	}
 
 	/**
@@ -73,7 +73,7 @@ implements	PushControlI
 	public void			startUnlimitedPushing(String portURI, long interval)
 	throws Exception
 	{
-		((PushControlI)this.offering).
+		((PushControlCI)this.offering).
 								startUnlimitedPushing(portURI, interval) ;
 	}
 
@@ -87,26 +87,26 @@ implements	PushControlI
 		int n
 		) throws Exception
 	{
-		((PushControlI)this.offering).
+		((PushControlCI)this.offering).
 								startLimitedPushing(portURI, interval, n) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlI#currentlyPushesData(java.lang.String)
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlCI#currentlyPushesData(java.lang.String)
 	 */
 	@Override
 	public boolean		currentlyPushesData(String portURI) throws Exception
 	{
-		return ((PushControlI)this.offering).currentlyPushesData(portURI) ;
+		return ((PushControlCI)this.offering).currentlyPushesData(portURI) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlI#stopPushing(java.lang.String)
+	 * @see fr.sorbonne_u.components.plugins.dipc.interfaces.PushControlCI#stopPushing(java.lang.String)
 	 */
 	@Override
 	public void			stopPushing(String portURI) throws Exception
 	{
-		((PushControlI)this.offering).stopPushing(portURI) ;
+		((PushControlCI)this.offering).stopPushing(portURI) ;
 	}
 }
 //-----------------------------------------------------------------------------

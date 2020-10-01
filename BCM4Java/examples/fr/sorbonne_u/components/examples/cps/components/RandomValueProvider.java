@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.examples.cps.components;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
-import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingI;
+import fr.sorbonne_u.components.examples.cps.interfaces.ValueProvidingCI;
 import fr.sorbonne_u.components.examples.cps.interfaces.ports.ValueProvidingInboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
@@ -62,7 +62,7 @@ import org.apache.commons.math3.random.Well19937c;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 // -----------------------------------------------------------------------------
-@OfferedInterfaces(offered = {ValueProvidingI.class})
+@OfferedInterfaces(offered = {ValueProvidingCI.class})
 public class			RandomValueProvider
 extends		AbstractComponent
 //-----------------------------------------------------------------------------

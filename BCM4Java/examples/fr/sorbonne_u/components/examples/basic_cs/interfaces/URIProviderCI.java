@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.cps.interfaces;
+package fr.sorbonne_u.components.examples.basic_cs.interfaces;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -35,42 +35,57 @@ package fr.sorbonne_u.components.examples.cps.interfaces;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 //-----------------------------------------------------------------------------
 /**
- * The interface <code>ValueProvidingI</code> defines a simple service
- * providing integer values.
+ * The interface <code>URIProviderCI</code> defines the interface offered by a
+ * an URI provider component.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * As a RMI remote interface, all of the methods must return
+ * <code>RemoteException</code>. The choice here is to throw
+ * <code>Exception</code> to cater for potential exceptions
+ * thrown by the implementation methods.
  * 
- * <pre>
- * invariant		true
- * </pre>
- * 
- * <p>Created on : 2018-03-17</p>
+ * <p>Created on : 2014-01-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			ValueProvidingI
-extends		OfferedCI,
-			RequiredCI
+public interface		URIProviderCI
+extends		OfferedCI
 {
 	/**
-	 * return an integer value.
+	 * return a URI considered as a string.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * post	ret != null
 	 * </pre>
 	 *
-	 * @return	an integer value.
-	 * @throws Exception		<i>todo.</i>
+	 * @return			a new URI.
+	 * @throws Exception	<i>todo.</i>
 	 */
-	public int			getValue() throws Exception;
+	public String		provideURI() throws Exception ;
+
+	/**
+	 * return an array of URIs each considered as a string.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	numberOfRequestedURIs &gt; 0
+	 * post	ret != null and ret.length == numberOfRequestedURIs
+	 * post	forall i in 0..numberOfRequestedURIs-1, ret[i] != null
+	 * </pre>
+	 *
+	 * @param numberOfRequestedURIs		number of URIs to be returned.
+	 * @return							array of new URIs.
+	 * @throws Exception					<i>todo.</i>
+	 */
+	public String[]		provideURIs(int numberOfRequestedURIs)
+	throws Exception ;
 }
 //-----------------------------------------------------------------------------

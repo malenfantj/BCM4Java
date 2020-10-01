@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.examples.reflection.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI;
+import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  */
 public class			MyServiceOutboundPort
 extends		AbstractOutboundPort
-implements	MyServiceI
+implements	MyServiceCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -65,23 +65,23 @@ implements	MyServiceI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, MyServiceI.class, owner);
+		super(uri, MyServiceCI.class, owner);
 	}
 
 	public				MyServiceOutboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(MyServiceI.class, owner);
+		super(MyServiceCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI#myService(java.lang.String)
+	 * @see fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceCI#myService(java.lang.String)
 	 */
 	@Override
 	public void			myService(String message) throws Exception
 	{
-		((MyServiceI)this.getConnector()).myService(message) ;
+		((MyServiceCI)this.getConnector()).myService(message) ;
 	}
 }
 // -----------------------------------------------------------------------------

@@ -1,7 +1,6 @@
-package fr.sorbonne_u.components.examples.chm.interfaces;
+package fr.sorbonne_u.components.reflection.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
-//
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
@@ -34,15 +33,21 @@ package fr.sorbonne_u.components.examples.chm.interfaces;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.OfferedCI;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
-
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
- * The interface <code>MapWriting</code> defines services that change the
- * state of a map.
+ * The interface <code>ReflectionCI</code> introduces the reflection services
+ * offered by the Basic Component Model.
  *
  * <p><strong>Description</strong></p>
+ * 
+ * The Basic Component Model reflection facility is still under construction.
+ * The core idea is to expose through the interface
+ * <code>IntrospectionCI</code> methods allowing to introspect components while
+ * the interface <code>IntercessionCI</code> exposes the ones that allows to
+ * perform intercession with components' own structure and behaviour. In a sense,
+ * these interfaces mirror to a large extent the interface
+ * <code>ComponentI</code> implemented by the abstract class
+ * <code>AbstractComponent</code> and expose it as a component interface.
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -50,47 +55,14 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * invariant		true
  * </pre>
  * 
- * <p>Created on : 2019-01-22</p>
+ * <p>Created on : 2018-02-16</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapWriting<K,V>
-extends		RequiredCI,
-			OfferedCI
+public interface		ReflectionCI
+extends		IntrospectionCI,
+			IntercessionCI
 {
-	/**
-	 * associate the given key to the given value in the map, returning the
-	 * value previously associated to the key or null if none.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	key != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param key			the key to be associated to the given value.
-	 * @param value			the value to be associated to the given key.
-	 * @return				the value previously associated to the key or null if none.
-	 * @throws Exception		<i>to do.</i>
-	 */
-	public V				put(K key, V value) throws Exception ;
 
-	/**
-	 * remove the value associated to the given key, returning the value
-	 * previously associated to the key or null if none.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	key != null
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param key			key which association must be removed.
-	 * @return				the value previously associated to the key or null if none.
-	 * @throws Exception	<i>to do.</i>
-	 */
-	public V				remove(K key) throws Exception ;
 }
-//------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

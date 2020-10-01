@@ -42,7 +42,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 import fr.sorbonne_u.components.plugins.dipc.DataInterfacePushControlClientSidePlugin;
-import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI;
+import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataCI;
 import fr.sorbonne_u.components.plugins.dipc.example.ports.PairDataOutboundPort;
 
 //------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ extends		AbstractComponent
 	 *
 	 * @param d	the pushed data.
 	 */
-	public void			consumeData(PairDataI.PairI d)
+	public void			consumeData(PairDataCI.PairI d)
 	{
 		assert	d != null ;
 

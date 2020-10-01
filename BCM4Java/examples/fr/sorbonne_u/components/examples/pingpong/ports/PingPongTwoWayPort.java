@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.pingpong.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.pingpong.components.PingPongPlayer;
-import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayI;
+import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayCI;
 import fr.sorbonne_u.components.ports.AbstractTwoWayPort;
 
 //----------------------------------------------------------------------------
@@ -61,8 +61,8 @@ import fr.sorbonne_u.components.ports.AbstractTwoWayPort;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class				PingPongTwoWayPort
-extends		AbstractTwoWayPort<PingPongTwoWayI>
-implements	PingPongTwoWayI
+extends		AbstractTwoWayPort<PingPongTwoWayCI>
+implements	PingPongTwoWayCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -89,8 +89,8 @@ implements	PingPongTwoWayI
 	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
 	protected static class	PingPongOutProxy
-	extends		AbstractTwoWayPort.OutProxy<PingPongTwoWayI>
-	implements	PingPongTwoWayI
+	extends		AbstractTwoWayPort.OutProxy<PingPongTwoWayCI>
+	implements	PingPongTwoWayCI
 	{
 		public				PingPongOutProxy(PingPongTwoWayPort owner)
 		{
@@ -98,13 +98,13 @@ implements	PingPongTwoWayI
 		}
 
 		/**
-		 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayI#pingPong()
+		 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongTwoWayCI#pingPong()
 		 */
 		@Override
 		public void			pingPong() throws Exception
 		{
 			//System.out.println("OutProxy>>pingPong()") ;
-			((PingPongTwoWayI)this.getProxyTowardsOtherComponent()).
+			((PingPongTwoWayCI)this.getProxyTowardsOtherComponent()).
 															pingPong() ;
 		}
 	}
@@ -116,14 +116,14 @@ implements	PingPongTwoWayI
 	public				PingPongTwoWayPort(String uri, ComponentI owner)
 	throws Exception
 	{
-		super(uri, PingPongTwoWayI.class, owner) ;
+		super(uri, PingPongTwoWayCI.class, owner) ;
 		this.initialise() ;
 	}
 
 	public				PingPongTwoWayPort(ComponentI owner)
 	throws Exception
 	{
-		super(PingPongTwoWayI.class, owner) ;
+		super(PingPongTwoWayCI.class, owner) ;
 		this.initialise() ;
 	}
 

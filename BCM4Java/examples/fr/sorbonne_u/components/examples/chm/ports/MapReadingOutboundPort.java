@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.examples.chm.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapReading;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -57,8 +57,8 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  */
 public class			MapReadingOutboundPort<K,V>
 extends AbstractOutboundPort
-implements	MapReading<K,V>,
-			MapTesting<K,V>
+implements	MapReadingCI<K,V>,
+			MapTestingCI<K,V>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -67,63 +67,63 @@ implements	MapReading<K,V>,
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, MapReading.class, owner);
+		super(uri, MapReadingCI.class, owner);
 	}
 
 	public				MapReadingOutboundPort(ComponentI owner)
 	throws Exception
 	{
-		super(MapReading.class, owner);
+		super(MapReadingCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#get(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#get(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V			get(K key) throws Exception
 	{
-		return ((MapReading<K,V>)this.getConnector()).get(key) ;
+		return ((MapReadingCI<K,V>)this.getConnector()).get(key) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#size()
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#size()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public int			size() throws Exception
 	{
-		return ((MapReading<K,V>)this.getConnector()).size() ;
+		return ((MapReadingCI<K,V>)this.getConnector()).size() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsValue(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsValue(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean		containsValue(V value) throws Exception
 	{
-		return ((MapTesting<K,V>)this.getConnector()).containsValue(value) ;
+		return ((MapTestingCI<K,V>)this.getConnector()).containsValue(value) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsKey(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsKey(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean		containsKey(K key) throws Exception
 	{
-		return ((MapTesting<K,V>)this.getConnector()).containsKey(key) ;
+		return ((MapTestingCI<K,V>)this.getConnector()).containsKey(key) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#isEmpty()
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#isEmpty()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean		isEmpty() throws Exception
 	{
-		return ((MapTesting<K,V>)this.getConnector()).isEmpty() ;
+		return ((MapTestingCI<K,V>)this.getConnector()).isEmpty() ;
 	}
 }
 // -----------------------------------------------------------------------------

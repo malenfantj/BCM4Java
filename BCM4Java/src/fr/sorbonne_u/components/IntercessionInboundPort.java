@@ -38,7 +38,7 @@ import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
-import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
+import fr.sorbonne_u.components.reflection.interfaces.IntercessionCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -59,7 +59,7 @@ import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
  */
 public class				IntercessionInboundPort
 extends		AbstractInboundPort
-implements	IntercessionI
+implements	IntercessionCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -68,14 +68,14 @@ implements	IntercessionI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, IntercessionI.class, owner) ;
+		super(uri, IntercessionCI.class, owner) ;
 	}
 
 	public				IntercessionInboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(IntercessionI.class, owner) ;
+		super(IntercessionCI.class, owner) ;
 	}
 
 	// -------------------------------------------------------------------------
@@ -83,7 +83,7 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#installPlugin(fr.sorbonne_u.components.PluginI)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#installPlugin(fr.sorbonne_u.components.PluginI)
 	 */
 	@Override
 	public void			installPlugin(final PluginI plugin) throws Exception
@@ -99,7 +99,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#initialisePlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#initialisePlugin(java.lang.String)
 	 */
 	@Override
 	public void			initialisePlugin(final String pluginURI)
@@ -116,7 +116,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#finalisePlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#finalisePlugin(java.lang.String)
 	 */
 	@Override
 	public void			finalisePlugin(String pluginURI) throws Exception
@@ -133,7 +133,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#uninstallPlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#uninstallPlugin(java.lang.String)
 	 */
 	@Override
 	public void			uninstallPlugin(final String pluginId) throws Exception
@@ -153,7 +153,7 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#toggleLogging()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#toggleLogging()
 	 */
 	@Override
 	public void			toggleLogging() throws Exception
@@ -169,7 +169,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setLogger(fr.sorbonne_u.components.helpers.Logger)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setLogger(fr.sorbonne_u.components.helpers.Logger)
 	 */
 	@Override
 	public void			setLogger(Logger logger) throws Exception
@@ -185,7 +185,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#toggleTracing()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#toggleTracing()
 	 */
 	@Override
 	public void			toggleTracing() throws Exception
@@ -201,7 +201,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
 	 */
 	@Override
 	public void			setTracer(TracerWindow tracer) throws Exception
@@ -217,7 +217,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#logMessage(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#logMessage(java.lang.String)
 	 */
 	@Override
 	public void			logMessage(final String message) throws Exception
@@ -233,7 +233,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#printExecutionLog()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#printExecutionLog()
 	 */
 	@Override
 	public void			printExecutionLog() throws Exception
@@ -249,7 +249,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#printExecutionLogOnFile(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#printExecutionLogOnFile(java.lang.String)
 	 */
 	@Override
 	public void			printExecutionLogOnFile(final String fileName)
@@ -267,7 +267,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#traceMessage(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#traceMessage(java.lang.String)
 	 */
 	@Override
 	public void			traceMessage(String message) throws Exception
@@ -287,7 +287,7 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#addRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public void			addRequiredInterface(
@@ -306,7 +306,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#removeRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public void			removeRequiredInterface(
@@ -325,7 +325,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#addOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#addOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public void			addOfferedInterface(
@@ -343,7 +343,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#removeOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#removeOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public void			removeOfferedInterface(
@@ -366,7 +366,7 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#doPortConnection(java.lang.String, java.lang.String, java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#doPortConnection(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void			doPortConnection(
@@ -387,7 +387,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#doPortDisconnection(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#doPortDisconnection(java.lang.String)
 	 */
 	@Override
 	public void			doPortDisconnection(final String portURI)
@@ -408,7 +408,7 @@ implements	IntercessionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeService(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeService(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public Object		invokeService(String name, Object[] params)
@@ -425,7 +425,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceSync(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeServiceSync(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public Object		invokeServiceSync(String name, Object[] params)
@@ -442,7 +442,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceAsync(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeServiceAsync(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public void			invokeServiceAsync(String name, Object[] params)
@@ -459,7 +459,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#execute()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#execute()
 	 */
 	@Override
 	public void			execute() throws Exception
@@ -478,7 +478,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#runTask(fr.sorbonne_u.components.reflection.interfaces.IntercessionCI.AbstractRemoteComponentTask)
 	 */
 	@Override
 	public void			runTask(AbstractRemoteComponentTask t)
@@ -499,7 +499,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(java.lang.String, fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#runTask(java.lang.String, fr.sorbonne_u.components.reflection.interfaces.IntercessionCI.AbstractRemoteComponentTask)
 	 */
 	@Override
 	public void			runTask(
@@ -522,7 +522,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
 	public void			insertBeforeService(
@@ -545,7 +545,7 @@ implements	IntercessionI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertAfterService(java.lang.String, java.lang.String[], java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#insertAfterService(java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
 	public void			insertAfterService(

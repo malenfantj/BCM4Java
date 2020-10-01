@@ -39,9 +39,9 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerI;
+import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
 import fr.sorbonne_u.components.examples.basic_cs.ports.URIConsumerOutboundPort;
-import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
+import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchCI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.ports.URIConsumerLaunchInboundPort;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 
@@ -63,8 +63,8 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-@RequiredInterfaces(required = {URIConsumerI.class})
-@OfferedInterfaces(offered = {URIConsumerLaunchI.class})
+@RequiredInterfaces(required = {URIConsumerCI.class})
+@OfferedInterfaces(offered = {URIConsumerLaunchCI.class})
 public class			DynamicURIConsumer
 extends		AbstractComponent
 {

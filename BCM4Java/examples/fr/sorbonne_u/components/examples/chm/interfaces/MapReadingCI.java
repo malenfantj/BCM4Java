@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.plugins.dconnection.example.connectors;
+package fr.sorbonne_u.components.examples.chm.interfaces;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -33,37 +33,60 @@ package fr.sorbonne_u.components.plugins.dconnection.example.connectors;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI;
+import fr.sorbonne_u.components.interfaces.OfferedCI;
+import fr.sorbonne_u.components.interfaces.RequiredCI;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ExampleConnector</code> defines the connector
- * associated with the interface <code>ExampleI</code>.
+ * The interface <code>MapReadingCI</code> defines services that access the
+ * values in the map without changing its state.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant	true
+ * invariant		true
  * </pre>
  * 
- * <p>Created on : 2017-02-17</p>
+ * <p>Created on : 2019-01-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ExampleConnector
-extends		AbstractConnector
-implements	ExampleCI
+public interface			MapReadingCI<K,V>
+extends		RequiredCI,
+			OfferedCI
 {
 	/**
-	 * @see fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI#exampleCall(int)
+	 * get the value associated with the given key and return it or null if
+	 * none.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	key != null
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @param key			the key which value must be returned.
+	 * @return				the value associated with the given key or null if none.
+	 * @throws Exception		<i>to do.</i>
 	 */
-	@Override
-	public int			exampleCall(int i) throws Exception
-	{
-		return ((ExampleCI)this.offering).exampleCall(i) ;
-	}
+	public V				get(K key) throws Exception ;
+
+	/**
+	 * return the number of key/value pairs kept in the map.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return				the number of key/value pairs kept in the map.
+	 * @throws Exception		<i>to do.</i>
+	 */
+	public int			size() throws Exception ;
 }
 // -----------------------------------------------------------------------------

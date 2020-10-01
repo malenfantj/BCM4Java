@@ -39,11 +39,11 @@ import fr.sorbonne_u.components.annotations.AddPlugin;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.plugins.dconnection.DynamicConnectionClientSidePlugin;
 import fr.sorbonne_u.components.plugins.dconnection.example.connectors.ExampleConnector;
-import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleI;
+import fr.sorbonne_u.components.plugins.dconnection.example.interfaces.ExampleCI;
 import fr.sorbonne_u.components.plugins.dconnection.example.ports.ExampleOutboundPort;
 import fr.sorbonne_u.components.plugins.dconnection.interfaces.DynamicConnectionDescriptorI;
 import fr.sorbonne_u.components.ports.OutboundPortI;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -67,7 +67,7 @@ import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 // -----------------------------------------------------------------------------
-@RequiredInterfaces(required = {ReflectionI.class, ExampleI.class})
+@RequiredInterfaces(required = {ReflectionCI.class, ExampleCI.class})
 @AddPlugin(pluginClass = DynamicConnectionClientSidePlugin.class,
 		   pluginURI = ClientSideExample.DYNAMIC_CONNECTION_PLUGIN_URI)
 // -----------------------------------------------------------------------------
@@ -142,15 +142,15 @@ extends		AbstractComponent
 		ExampleOutboundPort top =
 			(ExampleOutboundPort)
 				dconnectionPlugIn.doDynamicConnection(
-					ExampleI.class,
-					ExampleI.class,
+					ExampleCI.class,
+					ExampleCI.class,
 					new DynamicConnectionDescriptorI() {
 						@Override
 						public OutboundPortI	 createClientSideDynamicPort(
 								Class<?> requiredInterface,
 								ComponentI owner) {
 							try {
-								assert	requiredInterface.equals(ExampleI.class) ;
+								assert	requiredInterface.equals(ExampleCI.class) ;
 								return new ExampleOutboundPort(owner) ;
 							} catch (Exception e) {
 								throw new RuntimeException(e) ;
@@ -162,7 +162,7 @@ extends		AbstractComponent
 							Class<?> requiredInterface
 							)
 						{
-							assert	requiredInterface.equals(ExampleI.class) ;
+							assert	requiredInterface.equals(ExampleCI.class) ;
 							return ExampleConnector.class.getCanonicalName() ;
 						}
 					}) ;
@@ -170,7 +170,7 @@ extends		AbstractComponent
 		this.traceMessage("client about to call the server...\n") ;
 		int res = top.exampleCall(10) ;
 		this.traceMessage("...result = " + res + "\n") ;
-		dconnectionPlugIn.doDynamicDisconnection(ExampleI.class) ;
+		dconnectionPlugIn.doDynamicDisconnection(ExampleCI.class) ;
 		dconnectionPlugIn.disconnectFromServerSide() ;
 	}
 }

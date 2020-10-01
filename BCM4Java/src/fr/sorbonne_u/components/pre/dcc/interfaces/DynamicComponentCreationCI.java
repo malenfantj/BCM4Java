@@ -51,7 +51,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		DynamicComponentCreationI
+public interface		DynamicComponentCreationCI
 extends		OfferedCI,
 			RequiredCI
 {

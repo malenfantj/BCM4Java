@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.ddeployment_cs.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicURIConsumer;
-import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
+import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 // -----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class				URIConsumerLaunchInboundPort
 extends		AbstractInboundPort
-implements	URIConsumerLaunchI
+implements	URIConsumerLaunchCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -68,14 +68,14 @@ implements	URIConsumerLaunchI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, URIConsumerLaunchI.class, owner) ;
+		super(uri, URIConsumerLaunchCI.class, owner) ;
 		assert	owner instanceof DynamicURIConsumer ;
 	}
 
 	public 			URIConsumerLaunchInboundPort(ComponentI owner)
 	throws Exception
 	{
-		super(URIConsumerLaunchI.class, owner);
+		super(URIConsumerLaunchCI.class, owner);
 		assert	owner instanceof DynamicURIConsumer ;
 	}
 

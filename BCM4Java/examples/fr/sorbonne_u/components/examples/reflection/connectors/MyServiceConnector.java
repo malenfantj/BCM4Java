@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.examples.reflection.connectors;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
-import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI;
+import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceCI;
 
 // -----------------------------------------------------------------------------
 /**
@@ -55,12 +55,12 @@ import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI;
  */
 public class				MyServiceConnector
 extends		AbstractConnector
-implements	MyServiceI
+implements	MyServiceCI
 {
 	@Override
 	public void			myService(String message) throws Exception
 	{
-		((MyServiceI)this.offering).myService(message) ;
+		((MyServiceCI)this.offering).myService(message) ;
 	}
 }
 // -----------------------------------------------------------------------------

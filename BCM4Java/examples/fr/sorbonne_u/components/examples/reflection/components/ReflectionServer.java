@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.examples.reflection.components;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceI;
+import fr.sorbonne_u.components.examples.reflection.interfaces.MyServiceCI;
 import fr.sorbonne_u.components.examples.reflection.ports.MyServiceInboundPort;
 import fr.sorbonne_u.components.ports.PortI;
 
@@ -68,7 +68,7 @@ extends		AbstractComponent
 	{
 		super(reflectionInboundPortURI, 1, 0) ;
 
-		this.addOfferedInterface(MyServiceI.class) ;
+		this.addOfferedInterface(MyServiceCI.class) ;
 		MyServiceInboundPort ip = new MyServiceInboundPort(this) ;
 		ip.publishPort() ;
 	}
@@ -79,7 +79,7 @@ extends		AbstractComponent
 	@Override
 	public void			finalise() throws Exception
 	{
-		PortI[] p = this.findPortsFromInterface(MyServiceI.class) ;
+		PortI[] p = this.findPortsFromInterface(MyServiceCI.class) ;
 		p[0].unpublishPort() ;
 
 		super.finalise();

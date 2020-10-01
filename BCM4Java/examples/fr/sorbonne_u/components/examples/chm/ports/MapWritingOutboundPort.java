@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.examples.chm.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  */
 public class			MapWritingOutboundPort<K,V>
 extends		AbstractOutboundPort
-implements	MapWriting<K, V>
+implements	MapWritingCI<K, V>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -65,34 +65,34 @@ implements	MapWriting<K, V>
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, MapWriting.class, owner);
+		super(uri, MapWritingCI.class, owner);
 	}
 
 	public				MapWritingOutboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(MapWriting.class, owner);
+		super(MapWritingCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#put(java.lang.Object, java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI#put(java.lang.Object, java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V			put(K key, V value) throws Exception
 	{
-		return ((MapWriting<K, V>)this.getConnector()).put(key, value) ;
+		return ((MapWritingCI<K, V>)this.getConnector()).put(key, value) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#remove(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI#remove(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public V			remove(K key) throws Exception
 	{
-		return ((MapWriting<K, V>)this.getConnector()).remove(key) ;
+		return ((MapWritingCI<K, V>)this.getConnector()).remove(key) ;
 	}
 }
 // -----------------------------------------------------------------------------

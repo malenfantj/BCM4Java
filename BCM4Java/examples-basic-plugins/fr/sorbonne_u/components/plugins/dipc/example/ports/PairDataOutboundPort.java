@@ -37,7 +37,7 @@ import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.interfaces.DataRequiredCI;
 import fr.sorbonne_u.components.interfaces.DataRequiredCI.DataI;
 import fr.sorbonne_u.components.plugins.dipc.example.components.ClientComponent;
-import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataI.PairI;
+import fr.sorbonne_u.components.plugins.dipc.example.interfaces.PairDataCI.PairI;
 import fr.sorbonne_u.components.ports.AbstractDataOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ extends		AbstractDataOutboundPort
 	@Override
 	public void			receive(DataI d) throws Exception
 	{
-		((ClientComponent)this.owner).consumeData((PairI) d) ;
+		((ClientComponent)this.getOwner()).consumeData((PairI) d) ;
 	}
 }
 //------------------------------------------------------------------------------

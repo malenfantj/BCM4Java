@@ -43,9 +43,9 @@ import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
-import fr.sorbonne_u.components.reflection.interfaces.IntercessionI;
-import fr.sorbonne_u.components.reflection.interfaces.IntrospectionI;
-import fr.sorbonne_u.components.reflection.interfaces.ReflectionI;
+import fr.sorbonne_u.components.reflection.interfaces.IntercessionCI;
+import fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI;
+import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
 
@@ -68,7 +68,7 @@ import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
  */
 public class			ReflectionOutboundPort
 extends		AbstractOutboundPort
-implements	ReflectionI
+implements	ReflectionCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -81,14 +81,14 @@ implements	ReflectionI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, ReflectionI.class, owner);
+		super(uri, ReflectionCI.class, owner);
 	}
 
 	public				ReflectionOutboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(ReflectionI.class, owner);
+		super(ReflectionCI.class, owner);
 	}
 
 	// -------------------------------------------------------------------------
@@ -96,75 +96,75 @@ implements	ReflectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#installPlugin(fr.sorbonne_u.components.PluginI)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#installPlugin(fr.sorbonne_u.components.PluginI)
 	 */
 	@Override
 	public void			installPlugin(PluginI plugin) throws Exception
 	{
-		((ReflectionI)this.getConnector()).installPlugin(plugin);
+		((ReflectionCI)this.getConnector()).installPlugin(plugin);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#hasInstalledPlugins()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#hasInstalledPlugins()
 	 */
 	@Override
 	public boolean		hasInstalledPlugins() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).hasInstalledPlugins();
+		return ((ReflectionCI)this.getConnector()).hasInstalledPlugins();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#finalisePlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#finalisePlugin(java.lang.String)
 	 */
 	@Override
 	public void			finalisePlugin(String pluginURI) throws Exception
 	{
-		((ReflectionI)this.getConnector()).finalisePlugin(pluginURI);
+		((ReflectionCI)this.getConnector()).finalisePlugin(pluginURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#uninstallPlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#uninstallPlugin(java.lang.String)
 	 */
 	@Override
 	public void			uninstallPlugin(String pluginId) throws Exception
 	{
-		((ReflectionI)this.getConnector()).uninstallPlugin(pluginId);
+		((ReflectionCI)this.getConnector()).uninstallPlugin(pluginId);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isInstalled(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isInstalled(java.lang.String)
 	 */
 	@Override
 	public boolean		isInstalled(String pluginId) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInstalled(pluginId);
+		return ((ReflectionCI)this.getConnector()).isInstalled(pluginId);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getPlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getPlugin(java.lang.String)
 	 */
 	@Override
 	public PluginI		getPlugin(String pluginURI) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getPlugin(pluginURI);
+		return ((ReflectionCI)this.getConnector()).getPlugin(pluginURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#initialisePlugin(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#initialisePlugin(java.lang.String)
 	 */
 	@Override
 	public void			initialisePlugin(String pluginURI) throws Exception
 	{
-		((ReflectionI)this.getConnector()).initialisePlugin(pluginURI);
+		((ReflectionCI)this.getConnector()).initialisePlugin(pluginURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isInitialised(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isInitialised(java.lang.String)
 	 */
 	@Override
 	public boolean		isInitialised(String pluginURI) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInitialised(pluginURI);
+		return ((ReflectionCI)this.getConnector()).isInitialised(pluginURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -172,94 +172,94 @@ implements	ReflectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#toggleLogging()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#toggleLogging()
 	 */
 	@Override
 	public void			toggleLogging() throws Exception
 	{
-		((ReflectionI)this.getConnector()).toggleLogging();
+		((ReflectionCI)this.getConnector()).toggleLogging();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setLogger(fr.sorbonne_u.components.helpers.Logger)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setLogger(fr.sorbonne_u.components.helpers.Logger)
 	 */
 	@Override
 	public void			setLogger(Logger logger) throws Exception
 	{
-		((IntercessionI)this.getConnector()).setLogger(logger);
+		((IntercessionCI)this.getConnector()).setLogger(logger);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#toggleTracing()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#toggleTracing()
 	 */
 	@Override
 	public void			toggleTracing() throws Exception
 	{
-		((ReflectionI)this.getConnector()).toggleTracing();
+		((ReflectionCI)this.getConnector()).toggleTracing();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
 	 */
 	@Override
 	public void			setTracer(TracerWindow tracer) throws Exception
 	{
-		((IntercessionI)this.getConnector()).setTracer(tracer);
+		((IntercessionCI)this.getConnector()).setTracer(tracer);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#traceMessage(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#traceMessage(java.lang.String)
 	 */
 	@Override
 	public void			traceMessage(String message) throws Exception
 	{
-		((IntercessionI)this.getConnector()).traceMessage(message);
+		((IntercessionCI)this.getConnector()).traceMessage(message);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#logMessage(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#logMessage(java.lang.String)
 	 */
 	@Override
 	public void			logMessage(String message) throws Exception
 	{
-		((ReflectionI)this.getConnector()).logMessage(message);
+		((ReflectionCI)this.getConnector()).logMessage(message);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isLogging()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isLogging()
 	 */
 	@Override
 	public boolean		isLogging() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isLogging();
+		return ((ReflectionCI)this.getConnector()).isLogging();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isTracing()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isTracing()
 	 */
 	@Override
 	public boolean		isTracing() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isTracing();
+		return ((ReflectionCI)this.getConnector()).isTracing();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#printExecutionLog()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#printExecutionLog()
 	 */
 	@Override
 	public void			printExecutionLog() throws Exception
 	{
-		((ReflectionI)this.getConnector()).printExecutionLog();
+		((ReflectionCI)this.getConnector()).printExecutionLog();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#printExecutionLogOnFile(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#printExecutionLogOnFile(java.lang.String)
 	 */
 	@Override
 	public void			printExecutionLogOnFile(String fileName)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).printExecutionLogOnFile(fileName);
+		((ReflectionCI)this.getConnector()).printExecutionLogOnFile(fileName);
 	}
 
 	// -------------------------------------------------------------------------
@@ -267,59 +267,59 @@ implements	ReflectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
 	 */
 	@Override
 	public boolean		isInStateAmong(ComponentStateI[] states)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInStateAmong(states);
+		return ((ReflectionCI)this.getConnector()).isInStateAmong(states);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#notInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#notInStateAmong(fr.sorbonne_u.components.ComponentStateI[])
 	 */
 	@Override
 	public boolean		notInStateAmong(ComponentStateI[] states)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).notInStateAmong(states);
+		return ((ReflectionCI)this.getConnector()).notInStateAmong(states);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#hasItsOwnThreads()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#hasItsOwnThreads()
 	 */
 	@Override
 	public boolean		hasItsOwnThreads() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).hasItsOwnThreads();
+		return ((ReflectionCI)this.getConnector()).hasItsOwnThreads();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#hasSerialisedExecution()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#hasSerialisedExecution()
 	 */
 	@Override
 	public boolean		hasSerialisedExecution() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).hasSerialisedExecution();
+		return ((ReflectionCI)this.getConnector()).hasSerialisedExecution();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#canScheduleTasks()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#canScheduleTasks()
 	 */
 	@Override
 	public boolean		canScheduleTasks() throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).canScheduleTasks();
+		return ((ReflectionCI)this.getConnector()).canScheduleTasks();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getTotalNumberOfThreads()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getTotalNumberOfThreads()
 	 */
 	@Override
 	public int			getTotalNumberOfThreads() throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).getTotalNumberOfThreads();
+		return ((IntrospectionCI)this.getConnector()).getTotalNumberOfThreads();
 	}
 
 	// -------------------------------------------------------------------------
@@ -327,137 +327,137 @@ implements	ReflectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getInterfaces()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getInterfaces()
 	 */
 	@Override
 	public Class<? extends ComponentInterface>[]	getInterfaces()
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getInterfaces();
+		return ((ReflectionCI)this.getConnector()).getInterfaces();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getInterface(java.lang.Class)
 	 */
 	@Override
 	public Class<? extends ComponentInterface>	getInterface(
 		Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getInterface(inter);
+		return ((ReflectionCI)this.getConnector()).getInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getRequiredInterfaces()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getRequiredInterfaces()
 	 */
 	@Override
 	public Class<? extends RequiredCI>[]	getRequiredInterfaces()
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getRequiredInterfaces();
+		return ((ReflectionCI)this.getConnector()).getRequiredInterfaces();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public Class<? extends RequiredCI>	getRequiredInterface(
 		Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getRequiredInterface(inter);
+		return ((ReflectionCI)this.getConnector()).getRequiredInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getOfferedInterfaces()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getOfferedInterfaces()
 	 */
 	@Override
 	public Class<? extends OfferedCI>[]	getOfferedInterfaces()
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getOfferedInterfaces();
+		return ((ReflectionCI)this.getConnector()).getOfferedInterfaces();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public Class<? extends OfferedCI>	getOfferedInterface(
 		Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).getOfferedInterface(inter);
+		return ((ReflectionCI)this.getConnector()).getOfferedInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#addRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#addRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public void			addRequiredInterface(Class<? extends RequiredCI> inter)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).addRequiredInterface(inter);
+		((ReflectionCI)this.getConnector()).addRequiredInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#removeRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#removeRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public void			removeRequiredInterface(
 		Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		((ReflectionI)this.getConnector()).removeRequiredInterface(inter);
+		((ReflectionCI)this.getConnector()).removeRequiredInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#addOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#addOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public void			addOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).addOfferedInterface(inter);
+		((ReflectionCI)this.getConnector()).addOfferedInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#removeOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#removeOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public void			removeOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).removeOfferedInterface(inter);
+		((ReflectionCI)this.getConnector()).removeOfferedInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isInterface(java.lang.Class)
 	 */
 	@Override
 	public boolean		isInterface(Class<? extends ComponentInterface> inter)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isInterface(inter);
+		return ((ReflectionCI)this.getConnector()).isInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isRequiredInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isRequiredInterface(java.lang.Class)
 	 */
 	@Override
 	public boolean		isRequiredInterface(Class<? extends RequiredCI> inter)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isRequiredInterface(inter);
+		return ((ReflectionCI)this.getConnector()).isRequiredInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isOfferedInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isOfferedInterface(java.lang.Class)
 	 */
 	@Override
 	public boolean		isOfferedInterface(Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isOfferedInterface(inter);
+		return ((ReflectionCI)this.getConnector()).isOfferedInterface(inter);
 	}
 
 	// -------------------------------------------------------------------------
@@ -465,73 +465,73 @@ implements	ReflectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#findPortURIsFromInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#findPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
 	public String[]		findPortURIsFromInterface(
 		Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).
+		return ((ReflectionCI)this.getConnector()).
 										findPortURIsFromInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#findInboundPortURIsFromInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#findInboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
 	public String[]		findInboundPortURIsFromInterface(
 		Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).findInboundPortURIsFromInterface(inter);
+		return ((ReflectionCI)this.getConnector()).findInboundPortURIsFromInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#findOutboundPortURIsFromInterface(java.lang.Class)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#findOutboundPortURIsFromInterface(java.lang.Class)
 	 */
 	@Override
 	public String[]		findOutboundPortURIsFromInterface(
 		Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).
+		return ((ReflectionCI)this.getConnector()).
 									findOutboundPortURIsFromInterface(inter);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#getPortImplementedInterface(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#getPortImplementedInterface(java.lang.String)
 	 */
 	@Override
 	public Class<? extends ComponentInterface>	getPortImplementedInterface(
 		String portURI
 		) throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).
+		return ((ReflectionCI)this.getConnector()).
 										getPortImplementedInterface(portURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#isPortExisting(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#isPortExisting(java.lang.String)
 	 */
 	@Override
 	public boolean		isPortExisting(String portURI) throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).isPortExisting(portURI);
+		return ((IntrospectionCI)this.getConnector()).isPortExisting(portURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#isPortConnected(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#isPortConnected(java.lang.String)
 	 */
 	@Override
 	public boolean		isPortConnected(String portURI)
 	throws Exception
 	{
-		return ((ReflectionI)this.getConnector()).isPortConnected(portURI);
+		return ((ReflectionCI)this.getConnector()).isPortConnected(portURI);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#doPortConnection(java.lang.String, java.lang.String, java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#doPortConnection(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void			doPortConnection(
@@ -540,18 +540,18 @@ implements	ReflectionI
 		String ccname
 		) throws Exception
 	{
-		((ReflectionI)this.getConnector()).
+		((ReflectionCI)this.getConnector()).
 							doPortConnection(portURI, otherPortURI, ccname);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionI#doPortDisconnection(java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.ReflectionCI#doPortDisconnection(java.lang.String)
 	 */
 	@Override
 	public void			doPortDisconnection(String portURI)
 	throws Exception
 	{
-		((ReflectionI)this.getConnector()).doPortDisconnection(portURI);
+		((ReflectionCI)this.getConnector()).doPortDisconnection(portURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -559,106 +559,106 @@ implements	ReflectionI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentDefinitionClassName()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentDefinitionClassName()
 	 */
 	@Override
 	public String		getComponentDefinitionClassName() throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).
+		return ((IntrospectionCI)this.getConnector()).
 									getComponentDefinitionClassName();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentAnnotations()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentAnnotations()
 	 */
 	@Override
 	public Annotation[]	getComponentAnnotations() throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).getComponentAnnotations();
+		return ((IntrospectionCI)this.getConnector()).getComponentAnnotations();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentLoader()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentLoader()
 	 */
 	@Override
 	public ClassLoader	getComponentLoader() throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).getComponentLoader();
+		return ((IntrospectionCI)this.getConnector()).getComponentLoader();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentServiceSignatures()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentServiceSignatures()
 	 */
 	@Override
 	public ServiceSignature[]	getComponentServiceSignatures()
 	throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).
+		return ((IntrospectionCI)this.getConnector()).
 										getComponentServiceSignatures();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionI#getComponentConstructorSignatures()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntrospectionCI#getComponentConstructorSignatures()
 	 */
 	@Override
 	public ConstructorSignature[]	getComponentConstructorSignatures()
 	throws Exception
 	{
-		return ((IntrospectionI)this.getConnector()).
+		return ((IntrospectionCI)this.getConnector()).
 										getComponentConstructorSignatures();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeService(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeService(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.getConnector()).invokeService(name, params);
+		return ((IntercessionCI)this.getConnector()).invokeService(name, params);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceSync(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeServiceSync(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception
 	{
-		return ((IntercessionI)this.getConnector()).
+		return ((IntercessionCI)this.getConnector()).
 											invokeServiceSync(name, params);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#invokeServiceAsync(java.lang.String, java.lang.Object[])
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#invokeServiceAsync(java.lang.String, java.lang.Object[])
 	 */
 	@Override
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception
 	{
-		((IntercessionI)this.getConnector()).invokeServiceAsync(name, params);
+		((IntercessionCI)this.getConnector()).invokeServiceAsync(name, params);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#execute()
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#execute()
 	 */
 	@Override
 	public void			execute() throws Exception
 	{
-		((IntercessionI)this.getConnector()).execute();
+		((IntercessionCI)this.getConnector()).execute();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#runTask(fr.sorbonne_u.components.reflection.interfaces.IntercessionCI.AbstractRemoteComponentTask)
 	 */
 	@Override
 	public void			runTask(AbstractRemoteComponentTask t) throws Exception
 	{
-		((IntercessionI)this.getConnector()).runTask(t);
+		((IntercessionCI)this.getConnector()).runTask(t);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#runTask(java.lang.String, fr.sorbonne_u.components.reflection.interfaces.IntercessionI.AbstractRemoteComponentTask)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#runTask(java.lang.String, fr.sorbonne_u.components.reflection.interfaces.IntercessionCI.AbstractRemoteComponentTask)
 	 */
 	@Override
 	public void			runTask(
@@ -666,11 +666,11 @@ implements	ReflectionI
 		AbstractRemoteComponentTask t
 		) throws Exception
 	{
-		((IntercessionI)this.getConnector()).runTask(executorServiceURI, t);
+		((IntercessionCI)this.getConnector()).runTask(executorServiceURI, t);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#insertBeforeService(java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
 	public void			insertBeforeService(
@@ -679,13 +679,13 @@ implements	ReflectionI
 		String code
 		) throws Exception
 	{
-		((ReflectionI)this.getConnector()).
+		((ReflectionCI)this.getConnector()).
 			insertBeforeService(
 					methodName, parametersCanonicalClassNames, code);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionI#insertAfterService(java.lang.String, java.lang.String[], java.lang.String)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#insertAfterService(java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
 	public void			insertAfterService(
@@ -694,7 +694,7 @@ implements	ReflectionI
 		String code
 		) throws Exception
 	{
-		((ReflectionI)this.getConnector()).
+		((ReflectionCI)this.getConnector()).
 			insertAfterService(
 					methodName, parametersCanonicalClassNames, code);
 	}

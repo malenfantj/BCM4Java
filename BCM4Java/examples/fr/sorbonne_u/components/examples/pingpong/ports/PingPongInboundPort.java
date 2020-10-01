@@ -38,7 +38,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.pingpong.components.Ball;
 import fr.sorbonne_u.components.examples.pingpong.components.PingPongPlayer;
-import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI;
+import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class				PingPongInboundPort
 extends		AbstractInboundPort
-implements	PingPongI
+implements	PingPongCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -69,17 +69,17 @@ implements	PingPongI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, PingPongI.class, owner);
+		super(uri, PingPongCI.class, owner);
 	}
 
 	public				PingPongInboundPort(ComponentI owner)
 	throws Exception
 	{
-		super(PingPongI.class, owner);
+		super(PingPongCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#play()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#play()
 	 */
 	@Override
 	public void			play() throws Exception
@@ -98,7 +98,7 @@ implements	PingPongI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#playOnDataPull()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#playOnDataPull()
 	 */
 	@Override
 	public void			playOnDataPull() throws Exception
@@ -117,7 +117,7 @@ implements	PingPongI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#playOnDataReception(fr.sorbonne_u.components.examples.pingpong.components.Ball)
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#playOnDataReception(fr.sorbonne_u.components.examples.pingpong.components.Ball)
 	 */
 	@Override
 	public void			playOnDataReception(Ball b) throws Exception
@@ -136,7 +136,7 @@ implements	PingPongI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#pingPong()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#pingPong()
 	 */
 	@Override
 	public void			pingPong() throws Exception
@@ -155,7 +155,7 @@ implements	PingPongI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#goToService()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#goToService()
 	 */
 	@Override
 	public void			goToService() throws Exception
@@ -170,7 +170,7 @@ implements	PingPongI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#hit(fr.sorbonne_u.components.examples.pingpong.components.Ball)
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#hit(fr.sorbonne_u.components.examples.pingpong.components.Ball)
 	 */
 	@Override
 	public void			hit(Ball b) throws Exception

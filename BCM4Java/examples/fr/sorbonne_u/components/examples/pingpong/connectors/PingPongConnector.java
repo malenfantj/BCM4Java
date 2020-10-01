@@ -36,7 +36,7 @@ package fr.sorbonne_u.components.examples.pingpong.connectors;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.components.examples.pingpong.components.Ball;
-import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI;
+import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI;
 
 //----------------------------------------------------------------------------
 /**
@@ -57,60 +57,60 @@ import fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI;
  */
 public class				PingPongConnector
 extends		AbstractConnector
-implements	PingPongI
+implements	PingPongCI
 {
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#play()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#play()
 	 */
 	@Override
 	public void			play() throws Exception
 	{
-		((PingPongI)this.offering).play() ;
+		((PingPongCI)this.offering).play() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#goToService()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#goToService()
 	 */
 	@Override
 	public void			goToService() throws Exception
 	{
-		((PingPongI)this.offering).goToService() ;
+		((PingPongCI)this.offering).goToService() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#playOnDataPull()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#playOnDataPull()
 	 */
 	@Override
 	public void			playOnDataPull() throws Exception
 	{
-		((PingPongI)this.offering).playOnDataPull() ;
+		((PingPongCI)this.offering).playOnDataPull() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#playOnDataReception(fr.sorbonne_u.components.examples.pingpong.components.Ball)
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#playOnDataReception(fr.sorbonne_u.components.examples.pingpong.components.Ball)
 	 */
 	@Override
 	public void			playOnDataReception(Ball b) throws Exception
 	{
-		((PingPongI)this.offering).playOnDataReception(b) ;
+		((PingPongCI)this.offering).playOnDataReception(b) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#pingPong()
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#pingPong()
 	 */
 	@Override
 	public void			pingPong() throws Exception
 	{
-		((PingPongI)this.offering).pingPong() ;
+		((PingPongCI)this.offering).pingPong() ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongI#hit(fr.sorbonne_u.components.examples.pingpong.components.Ball)
+	 * @see fr.sorbonne_u.components.examples.pingpong.interfaces.PingPongCI#hit(fr.sorbonne_u.components.examples.pingpong.components.Ball)
 	 */
 	@Override
 	public void			hit(Ball b) throws Exception
 	{
-		((PingPongI)this.offering).hit(b) ;
+		((PingPongCI)this.offering).hit(b) ;
 	}
 }
 //----------------------------------------------------------------------------

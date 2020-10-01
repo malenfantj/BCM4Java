@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.chm.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapWriting;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class				MapWritingInboundPort<K,V>
 extends		AbstractInboundPort
-implements	MapWriting<K,V>
+implements	MapWritingCI<K,V>
 {
 	private static final long serialVersionUID = 1L;
 	protected final int	executorIndex ;
@@ -85,7 +85,7 @@ implements	MapWriting<K,V>
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, MapWriting.class, owner);
+		super(uri, MapWritingCI.class, owner);
 
 		assert	owner.validExecutorServiceIndex(executorIndex) ;
 
@@ -111,7 +111,7 @@ implements	MapWriting<K,V>
 		ComponentI owner
 		) throws Exception
 	{
-		super(MapWriting.class, owner);
+		super(MapWritingCI.class, owner);
 
 		assert	owner.validExecutorServiceIndex(executorIndex) ;
 
@@ -119,7 +119,7 @@ implements	MapWriting<K,V>
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#put(java.lang.Object, java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI#put(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public V			put(K key, V value) throws Exception
@@ -139,7 +139,7 @@ implements	MapWriting<K,V>
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWriting#remove(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI#remove(java.lang.Object)
 	 */
 	@Override
 	public V			remove(K key) throws Exception

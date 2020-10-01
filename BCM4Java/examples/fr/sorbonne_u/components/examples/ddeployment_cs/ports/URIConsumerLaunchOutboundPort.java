@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.examples.ddeployment_cs.ports;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI;
+import fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 
 // -----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  */
 public class			URIConsumerLaunchOutboundPort
 extends		AbstractOutboundPort
-implements	URIConsumerLaunchI
+implements	URIConsumerLaunchCI
 {
 	private static final long serialVersionUID = 1L;
 
@@ -65,23 +65,23 @@ implements	URIConsumerLaunchI
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, URIConsumerLaunchI.class, owner) ;
+		super(uri, URIConsumerLaunchCI.class, owner) ;
 	}
 
 	public				URIConsumerLaunchOutboundPort(
 		ComponentI owner
 		) throws Exception
 	{
-		super(URIConsumerLaunchI.class, owner);
+		super(URIConsumerLaunchCI.class, owner);
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchI#getURIandPrint()
+	 * @see fr.sorbonne_u.components.examples.ddeployment_cs.interfaces.URIConsumerLaunchCI#getURIandPrint()
 	 */
 	@Override
 	public void			getURIandPrint() throws Exception
 	{
-		((URIConsumerLaunchI)this.getConnector()).getURIandPrint() ;
+		((URIConsumerLaunchCI)this.getConnector()).getURIandPrint() ;
 	}
 }
 // -----------------------------------------------------------------------------

@@ -37,8 +37,8 @@ package fr.sorbonne_u.components.examples.chm.ports;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapReading;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTesting;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
+import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //------------------------------------------------------------------------------
@@ -60,8 +60,8 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  */
 public class				MapReadingInboundPort<K,V>
 extends		AbstractInboundPort
-implements	MapReading<K,V>,
-			MapTesting<K,V>
+implements	MapReadingCI<K,V>,
+			MapTestingCI<K,V>
 {
 	private static final long serialVersionUID = 1L ;
 	protected final int	executorIndex ;
@@ -87,7 +87,7 @@ implements	MapReading<K,V>,
 		ComponentI owner
 		) throws Exception
 	{
-		super(uri, MapReading.class, owner);
+		super(uri, MapReadingCI.class, owner);
 
 		assert	owner.validExecutorServiceIndex(executorIndex) ;
 
@@ -113,7 +113,7 @@ implements	MapReading<K,V>,
 		ComponentI owner
 		) throws Exception
 	{
-		super(MapReading.class, owner);
+		super(MapReadingCI.class, owner);
 
 		assert	owner.validExecutorServiceIndex(executorIndex) ;
 
@@ -121,7 +121,7 @@ implements	MapReading<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#get(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#get(java.lang.Object)
 	 */
 	@Override
 	public V				get(K key) throws Exception
@@ -141,7 +141,7 @@ implements	MapReading<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReading#size()
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#size()
 	 */
 	@Override
 	public int			size() throws Exception
@@ -159,7 +159,7 @@ implements	MapReading<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsValue(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsValue(java.lang.Object)
 	 */
 	@Override
 	public boolean		containsValue(V value) throws Exception
@@ -177,7 +177,7 @@ implements	MapReading<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#containsKey(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsKey(java.lang.Object)
 	 */
 	@Override
 	public boolean		containsKey(K key) throws Exception
@@ -197,7 +197,7 @@ implements	MapReading<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTesting#isEmpty()
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#isEmpty()
 	 */
 	@Override
 	public boolean		isEmpty() throws Exception
