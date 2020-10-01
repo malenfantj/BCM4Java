@@ -85,6 +85,55 @@ extends		Serializable
 	public void			setPluginURI(String uri);
 
 	/**
+	 * get the URI of the executor service used to execute services on the
+	 * owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the URI of the executor service used to execute services on the owner component.
+	 */
+	public String		getPreferredExecutionServiceURI();
+
+	/**
+	 * get the index of the executor service used to execute services on the
+	 * owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	true			// no precondition.
+	 * post	true			// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the index of the executor service used to execute services on the owner component.
+	 */
+	public int			getPreferredExecutionServiceIndex();
+
+	/**
+	 * set the URI of the executor service used to execute simulations; this
+	 * method must be called at most once before installing the plug-in on
+	 * the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code executorServiceURI != null}
+	 * pre	{@code getOwner() == null || getOwner().validExecutorServiceURI(executorServiceURI)} 
+	 * post	{@code executorServiceURI.equals(getExecutionServiceURI())}
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service used to execute simulations.
+	 */
+	public void			setPreferredExecutionServiceURI(
+		String executorServiceURI
+		);
+
+	/**
 	 * initialise the plug-in reference to its owner component and add to the
 	 * component every specific information, ports, etc. required to run the
 	 * plug-in.
@@ -96,7 +145,8 @@ extends		Serializable
 	 * pre	{@code getPluginURI() != null}
 	 * pre	{@code !owner.isInstalled(getPluginURI())}
 	 * pre 	{@code getPreferredExecutionServiceURI() == null || owner.validExecutorServiceURI(getPreferredExecutionServiceURI())}
-	 * post	true			// no postcondition.
+	 * post	{@code owner == getOwner()}
+	 * post	{@code getPreferredExecutionServiceURI() == null || getPreferredExecutionServiceIndex() == ((AbstractComponent)owner).getExecutorServiceIndex(getPreferredExecutionServiceURI())}
 	 * </pre>
 	 *
 	 * @param owner			component on which the plug-in must be installed.
