@@ -128,7 +128,7 @@ implements	MapReadingCI<K,V>,
 	{
 		assert	key != null ;
 
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<V>() {
 					@SuppressWarnings("unchecked")
@@ -146,7 +146,7 @@ implements	MapReadingCI<K,V>,
 	@Override
 	public int			size() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<Integer>() {
 					@SuppressWarnings("unchecked")
@@ -164,7 +164,7 @@ implements	MapReadingCI<K,V>,
 	@Override
 	public boolean		containsValue(V value) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<Boolean>() {
 					@SuppressWarnings("unchecked")
@@ -184,7 +184,7 @@ implements	MapReadingCI<K,V>,
 	{
 		assert	key != null ;
 
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<Boolean>() {
 					@SuppressWarnings("unchecked")
@@ -202,7 +202,7 @@ implements	MapReadingCI<K,V>,
 	@Override
 	public boolean		isEmpty() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<Boolean>() {
 					@SuppressWarnings("unchecked")

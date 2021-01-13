@@ -94,7 +94,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean		hasInstalledPlugins() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -109,7 +109,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean		isInstalled(final String pluginId) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -125,7 +125,7 @@ implements	IntrospectionCI
 	public PluginI		getPlugin(final String pluginURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<PluginI>() {
 						@Override
 						public PluginI call() throws Exception {
@@ -141,7 +141,7 @@ implements	IntrospectionCI
 	public boolean		isInitialised(final String pluginURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -160,7 +160,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean		isLogging() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -175,7 +175,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean		isTracing() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -195,7 +195,7 @@ implements	IntrospectionCI
 	public boolean		isInStateAmong(final ComponentStateI[] states)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -211,7 +211,7 @@ implements	IntrospectionCI
 	public boolean		notInStateAmong(final ComponentStateI[] states)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -226,7 +226,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean		hasItsOwnThreads() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -241,7 +241,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean		hasSerialisedExecution() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -256,7 +256,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean		canScheduleTasks() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -271,7 +271,7 @@ implements	IntrospectionCI
 	@Override
 	public int			getTotalNumberOfThreads() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Integer>() {
 						@Override
 						public Integer call() throws Exception {
@@ -291,7 +291,7 @@ implements	IntrospectionCI
 	public Class<? extends ComponentInterface>[]	getInterfaces()
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 									Class<? extends ComponentInterface>[]>() {
 						@Override
@@ -311,7 +311,7 @@ implements	IntrospectionCI
 		final Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<
 									Class<? extends ComponentInterface>>() {
 					@Override
@@ -329,7 +329,7 @@ implements	IntrospectionCI
 	@Override
 	public Class<? extends RequiredCI>[]	getRequiredInterfaces() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 											Class<? extends RequiredCI>[]>() {
 						@Override
@@ -349,7 +349,7 @@ implements	IntrospectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<
 											Class<? extends RequiredCI>>() {
 					@Override
@@ -365,7 +365,7 @@ implements	IntrospectionCI
 	@Override
 	public Class<? extends OfferedCI>[]	getOfferedInterfaces() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 											Class<? extends OfferedCI>[]>() {
 						@Override
@@ -385,7 +385,7 @@ implements	IntrospectionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<
 											Class<? extends OfferedCI>>() {
 					@Override
@@ -404,7 +404,7 @@ implements	IntrospectionCI
 		final Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -421,7 +421,7 @@ implements	IntrospectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -438,7 +438,7 @@ implements	IntrospectionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -459,7 +459,7 @@ implements	IntrospectionCI
 		final Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
@@ -476,7 +476,7 @@ implements	IntrospectionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
@@ -493,7 +493,7 @@ implements	IntrospectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
@@ -510,7 +510,7 @@ implements	IntrospectionCI
 		final String portURI
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 										Class<? extends ComponentInterface>>() {
 						@Override
@@ -528,7 +528,7 @@ implements	IntrospectionCI
 	@Override
 	public boolean			isPortExisting(String portURI) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -544,7 +544,7 @@ implements	IntrospectionCI
 	public boolean		isPortConnected(final String portURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -563,7 +563,7 @@ implements	IntrospectionCI
 	@Override
 	public String		getComponentDefinitionClassName() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String>() {
 						@Override
 						public String call() throws Exception {
@@ -578,7 +578,7 @@ implements	IntrospectionCI
 	@Override
 	public Annotation[]	getComponentAnnotations() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Annotation[]>() {
 						@Override
 						public Annotation[] call() throws Exception {
@@ -593,7 +593,7 @@ implements	IntrospectionCI
 	@Override
 	public ClassLoader	getComponentLoader() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<ClassLoader>() {
 						@Override
 						public ClassLoader call() throws Exception {
@@ -609,7 +609,7 @@ implements	IntrospectionCI
 	public ServiceSignature[]	getComponentServiceSignatures()
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<ServiceSignature[]>() {
 						@Override
 						public ServiceSignature[] call() throws Exception {
@@ -625,7 +625,7 @@ implements	IntrospectionCI
 	public ConstructorSignature[]	getComponentConstructorSignatures()
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<ConstructorSignature[]>() {
 						@Override
 						public ConstructorSignature[] call() throws Exception {

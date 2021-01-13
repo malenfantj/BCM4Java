@@ -83,7 +83,7 @@ implements	MyServiceCI
 	@Override
 	public void			myService(String message) throws Exception
 	{
-		this.owner.handleRequestSync(
+		this.owner.handleRequest(
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {

@@ -124,7 +124,7 @@ implements	PushControlCI
 	@Override
 	public boolean		isPortExisting(String portURI) throws Exception
 	{
-		return this.owner.handleRequestSync(
+		return this.owner.handleRequest(
 			new AbstractComponent.AbstractService<Boolean>(this.getPluginURI()) {
 				@Override
 				public Boolean call() throws Exception {
@@ -144,7 +144,7 @@ implements	PushControlCI
 		long interval
 		) throws Exception
 	{
-		this.owner.handleRequestSync(
+		this.owner.handleRequest(
 			new AbstractComponent.AbstractService<Void>(this.getPluginURI()) {
 				@Override
 				public Void call() throws Exception {
@@ -166,7 +166,7 @@ implements	PushControlCI
 		int n
 		) throws Exception
 	{
-		this.owner.handleRequestSync(
+		this.owner.handleRequest(
 			new AbstractComponent.AbstractService<Void>(this.getPluginURI()) {
 				@Override
 				public Void call() throws Exception {
@@ -185,7 +185,7 @@ implements	PushControlCI
 	public boolean		currentlyPushesData(String portURI)
 	throws Exception
 	{
-		return this.owner.handleRequestSync(
+		return this.owner.handleRequest(
 			new AbstractComponent.AbstractService<Boolean>(this.getPluginURI()) {
 				@Override
 				public Boolean call() throws Exception {
@@ -203,7 +203,7 @@ implements	PushControlCI
 	public void			stopPushing(String portURI)
 	throws Exception
 	{
-		this.owner.handleRequestSync(
+		this.owner.handleRequest(
 			new AbstractComponent.AbstractService<Void>(this.getPluginURI()) {
 				@Override
 				public Void call() throws Exception {

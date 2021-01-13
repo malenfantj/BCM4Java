@@ -144,7 +144,7 @@ implements	URIProviderCI
 		// Here, we illustrate the use of Java 8 lambda expressions in
 		// defining the service to be called (to be contrasted with the
 		// anonymous class used in provideURIs.
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 						owner -> ((URIProvider)owner).provideURIService()) ;
 	}
 
@@ -155,7 +155,7 @@ implements	URIProviderCI
 	public String[]		provideURIs(final int numberOfRequestedURIs)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<String[]>() {
 					@Override
 					public String[] call() throws Exception {

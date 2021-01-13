@@ -5828,7 +5828,7 @@ implements	ComponentI
 	 * @throws AssertionError				if the component is not started, the index is not valid or the request is null.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	protected <T> Future<T>		handleRequest(
+	protected <T> Future<T>		baselineHandleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request
 		) throws	AssertionError,
@@ -5934,7 +5934,7 @@ implements	ComponentI
 	 * @throws AssertionError				if the component is not started, the URI is not valid or the request is null.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	protected <T> Future<T>		handleRequest(
+	protected <T> Future<T>		baselineHandleRequest(
 		String executorServiceURI,
 		ComponentService<T> request
 		) throws	AssertionError,
@@ -5951,7 +5951,7 @@ implements	ComponentI
 
 			int executorServiceIndex =
 					this.getExecutorServiceIndex(executorServiceURI);
-			return this.handleRequest(executorServiceIndex, request);
+			return this.baselineHandleRequest(executorServiceIndex, request);
 		} finally {
 			this.executorServicesLock.readLock().unlock();
 		}
@@ -5985,7 +5985,7 @@ implements	ComponentI
 	 * @throws AssertionError				if the component is not started or the request is null.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	protected <T> Future<T>		handleRequest(
+	protected <T> Future<T>		baselineHandleRequest(
 		ComponentService<T> request
 		) throws	AssertionError,
 					RejectedExecutionException
@@ -5996,17 +5996,17 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			if (this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)) {
-				return this.handleRequest(this.getExecutorServiceIndex(
+				return this.baselineHandleRequest(this.getExecutorServiceIndex(
 												STANDARD_REQUEST_HANDLER_URI),
 										  request);
 			} else if (this.validExecutorServiceURI(
 											STANDARD_SCHEDULABLE_HANDLER_URI)) {
-				return this.handleRequest(
+				return this.baselineHandleRequest(
 								this.getExecutorServiceIndex(
 											STANDARD_SCHEDULABLE_HANDLER_URI),
 								request);
 			} else {
-				return this.handleRequest(-1, request);
+				return this.baselineHandleRequest(-1, request);
 			}
 		} finally {
 			this.executorServicesLock.readLock().unlock();
@@ -6014,10 +6014,10 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.ComponentService)
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequest(int, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request
 		) throws	AssertionError,
@@ -6028,14 +6028,14 @@ implements	ComponentI
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequest(executorServiceIndex, request).get();
+		return this.baselineHandleRequest(executorServiceIndex, request).get();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(fr.sorbonne_u.components.ComponentI.ComponentService)
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequest(fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
-	public <T> T		handleRequestSync(ComponentService<T> request)
+	public <T> T		handleRequest(ComponentService<T> request)
 	throws	AssertionError,
 			RejectedExecutionException,
 			InterruptedException,
@@ -6048,20 +6048,20 @@ implements	ComponentI
 		try {
 			if (this.hasItsOwnThreads()) {
 				if (this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)) {
-					return this.handleRequest(
+					return this.baselineHandleRequest(
 								this.getExecutorServiceIndex(
 												STANDARD_REQUEST_HANDLER_URI),
 								request).get();
 				} else {
 					assert this.validExecutorServiceURI(STANDARD_SCHEDULABLE_HANDLER_URI);
 
-					return this.handleRequest(
+					return this.baselineHandleRequest(
 								this.getExecutorServiceIndex(
 											STANDARD_SCHEDULABLE_HANDLER_URI),
 								request).get();
 				}
 			} else {
-				return this.handleRequest(-1, request).get();
+				return this.baselineHandleRequest(-1, request).get();
 			}
 		} finally {
 			this.executorServicesLock.readLock().unlock();
@@ -6069,10 +6069,10 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(fr.sorbonne_u.components.ComponentI.FComponentService)
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequest(fr.sorbonne_u.components.ComponentI.FComponentService)
 	 */
 	@Override
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		FComponentService<T> request
 		) throws	AssertionError,
 					RejectedExecutionException,
@@ -6082,7 +6082,7 @@ implements	ComponentI
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequestSync(
+		return this.handleRequest(
 							new AbstractService<T>() {
 								@Override
 								public T call() throws Exception {
@@ -6092,10 +6092,10 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequest(java.lang.String, fr.sorbonne_u.components.ComponentI.ComponentService)
 	 */
 	@Override
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		String executorServiceURI,
 		ComponentService<T> request
 		) throws	AssertionError,
@@ -6106,14 +6106,14 @@ implements	ComponentI
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequest(executorServiceURI, request).get();
+		return this.baselineHandleRequest(executorServiceURI, request).get();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService)
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequest(java.lang.String, fr.sorbonne_u.components.ComponentI.FComponentService)
 	 */
 	@Override
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		String executorServiceURI,
 		FComponentService<T> request
 		) throws	AssertionError,
@@ -6124,7 +6124,7 @@ implements	ComponentI
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequestSync(
+		return this.handleRequest(
 							executorServiceURI,
 							new AbstractService<T>() {
 								@Override
@@ -6135,10 +6135,10 @@ implements	ComponentI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#handleRequestSync(int, fr.sorbonne_u.components.ComponentI.FComponentService)
+	 * @see fr.sorbonne_u.components.ComponentI#handleRequest(int, fr.sorbonne_u.components.ComponentI.FComponentService)
 	 */
 	@Override
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		int executorServiceIndex,
 		FComponentService<T> request
 		) throws	AssertionError,
@@ -6149,7 +6149,7 @@ implements	ComponentI
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequestSync(
+		return this.handleRequest(
 							executorServiceIndex,
 							new AbstractService<T>() {
 								@Override
@@ -6516,7 +6516,7 @@ implements	ComponentI
 			index = this.getExecutorServiceIndex(
 										STANDARD_SCHEDULABLE_HANDLER_URI);
 		}
-		return this.handleRequest(
+		return this.baselineHandleRequest(
 						index,
 						new AbstractService<Object>() {
 							@Override
@@ -6538,7 +6538,7 @@ implements	ComponentI
 			pTypes[i] = params[i].getClass();
 		}
 		Method m = this.getClass().getMethod(name, pTypes);
-		return this.handleRequestSync(
+		return this.handleRequest(
 						new AbstractService<Object>() {
 							@Override
 							public Object call() throws Exception {

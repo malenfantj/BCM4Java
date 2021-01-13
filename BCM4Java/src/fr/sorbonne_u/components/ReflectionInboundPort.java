@@ -96,7 +96,7 @@ implements	ReflectionCI
 	@Override
 	public void			installPlugin(final PluginI plugin) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -112,7 +112,7 @@ implements	ReflectionCI
 	@Override
 	public boolean		hasInstalledPlugins() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -128,7 +128,7 @@ implements	ReflectionCI
 	@Override
 	public void			finalisePlugin(final String pluginURI) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -144,7 +144,7 @@ implements	ReflectionCI
 	@Override
 	public void			uninstallPlugin(final String pluginId) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -160,7 +160,7 @@ implements	ReflectionCI
 	@Override
 	public boolean		isInstalled(final String pluginId) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -176,7 +176,7 @@ implements	ReflectionCI
 	public PluginI		getPlugin(final String pluginURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<PluginI>() {
 						@Override
 						public PluginI call() throws Exception {
@@ -192,7 +192,7 @@ implements	ReflectionCI
 	public void			initialisePlugin(final String pluginURI)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -209,7 +209,7 @@ implements	ReflectionCI
 	public boolean		isInitialised(final String pluginURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -229,7 +229,7 @@ implements	ReflectionCI
 	@Override
 	public void			toggleLogging() throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -245,7 +245,7 @@ implements	ReflectionCI
 	@Override
 	public void			setLogger(Logger logger) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -261,7 +261,7 @@ implements	ReflectionCI
 	@Override
 	public void			toggleTracing() throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -277,7 +277,7 @@ implements	ReflectionCI
 	@Override
 	public void			setTracer(TracerWindow tracer) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -293,7 +293,7 @@ implements	ReflectionCI
 	@Override
 	public void			logMessage(final String message) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -309,7 +309,7 @@ implements	ReflectionCI
 	@Override
 	public boolean		isLogging() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -324,7 +324,7 @@ implements	ReflectionCI
 	@Override
 	public boolean		isTracing() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -339,7 +339,7 @@ implements	ReflectionCI
 	@Override
 	public void			printExecutionLog() throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -356,7 +356,7 @@ implements	ReflectionCI
 	public void			printExecutionLogOnFile(final String fileName)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -373,7 +373,7 @@ implements	ReflectionCI
 	@Override
 	public void			traceMessage(String message) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -394,7 +394,7 @@ implements	ReflectionCI
 	public boolean		isInStateAmong(final ComponentStateI[] states)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -411,7 +411,7 @@ implements	ReflectionCI
 	public boolean		notInStateAmong(final ComponentStateI[] states)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -427,7 +427,7 @@ implements	ReflectionCI
 	@Override
 	public boolean		hasItsOwnThreads() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -442,7 +442,7 @@ implements	ReflectionCI
 	@Override
 	public boolean		hasSerialisedExecution() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -458,7 +458,7 @@ implements	ReflectionCI
 	@Override
 	public boolean		canScheduleTasks() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -473,7 +473,7 @@ implements	ReflectionCI
 	@Override
 	public int			getTotalNumberOfThreads() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Integer>() {
 						@Override
 						public Integer call() throws Exception {
@@ -493,7 +493,7 @@ implements	ReflectionCI
 	@Override
 	public Class<? extends ComponentInterface>[]	getInterfaces() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 									Class<? extends ComponentInterface>[]>() {
 						@Override
@@ -513,7 +513,7 @@ implements	ReflectionCI
 		final Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<
 									Class<? extends ComponentInterface>>() {
 					@Override
@@ -532,7 +532,7 @@ implements	ReflectionCI
 	public Class<? extends RequiredCI>[]	getRequiredInterfaces()
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 											Class<? extends RequiredCI>[]>() {
 						@Override
@@ -553,7 +553,7 @@ implements	ReflectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<
 											Class<? extends RequiredCI>>() {
 					@Override
@@ -571,7 +571,7 @@ implements	ReflectionCI
 	@Override
 	public Class<? extends OfferedCI>[]	getOfferedInterfaces() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 											Class<? extends OfferedCI>[]>() {
 						@Override
@@ -591,7 +591,7 @@ implements	ReflectionCI
 	public Class<? extends OfferedCI>	getOfferedInterface(final Class<? extends OfferedCI> inter)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<
 											Class<? extends OfferedCI>>() {
 					@Override
@@ -611,7 +611,7 @@ implements	ReflectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -630,7 +630,7 @@ implements	ReflectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -649,7 +649,7 @@ implements	ReflectionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -668,7 +668,7 @@ implements	ReflectionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -687,7 +687,7 @@ implements	ReflectionCI
 		final Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -704,7 +704,7 @@ implements	ReflectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -722,7 +722,7 @@ implements	ReflectionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -744,7 +744,7 @@ implements	ReflectionCI
 		final Class<? extends ComponentInterface> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
@@ -762,7 +762,7 @@ implements	ReflectionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
@@ -780,7 +780,7 @@ implements	ReflectionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String[]>() {
 						@Override
 						public String[] call() throws Exception {
@@ -798,7 +798,7 @@ implements	ReflectionCI
 		final String portURI
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<
 										Class<? extends ComponentInterface>>() {
 						@Override
@@ -817,7 +817,7 @@ implements	ReflectionCI
 	@Override
 	public boolean			isPortExisting(String portURI) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -834,7 +834,7 @@ implements	ReflectionCI
 	public boolean		isPortConnected(final String portURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
@@ -854,7 +854,7 @@ implements	ReflectionCI
 		final String ccname
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -872,7 +872,7 @@ implements	ReflectionCI
 	public void			doPortDisconnection(final String portURI)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -892,7 +892,7 @@ implements	ReflectionCI
 	@Override
 	public String		getComponentDefinitionClassName() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<String>() {
 						@Override
 						public String call() throws Exception {
@@ -908,7 +908,7 @@ implements	ReflectionCI
 	@Override
 	public Annotation[]	getComponentAnnotations() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Annotation[]>() {
 						@Override
 						public Annotation[] call() throws Exception {
@@ -924,7 +924,7 @@ implements	ReflectionCI
 	@Override
 	public ClassLoader	getComponentLoader() throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<ClassLoader>() {
 						@Override
 						public ClassLoader call() throws Exception {
@@ -941,7 +941,7 @@ implements	ReflectionCI
 	public ServiceSignature[]	getComponentServiceSignatures()
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<ServiceSignature[]>() {
 						@Override
 						public ServiceSignature[] call() throws Exception {
@@ -958,7 +958,7 @@ implements	ReflectionCI
 	public ConstructorSignature[]	getComponentConstructorSignatures()
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<ConstructorSignature[]>() {
 						@Override
 						public ConstructorSignature[] call() throws Exception {
@@ -975,7 +975,7 @@ implements	ReflectionCI
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Object>() {
 						@Override
 						public Object call() throws Exception {
@@ -992,7 +992,7 @@ implements	ReflectionCI
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Object>() {
 						@Override
 						public Object call() throws Exception {
@@ -1009,7 +1009,7 @@ implements	ReflectionCI
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
@@ -1092,7 +1092,7 @@ implements	ReflectionCI
 		String code
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -1113,7 +1113,7 @@ implements	ReflectionCI
 		String code
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {

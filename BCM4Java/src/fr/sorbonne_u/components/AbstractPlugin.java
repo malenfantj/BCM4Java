@@ -1382,7 +1382,7 @@ implements	PluginI
 							"getOwner().validExecutorServiceIndex("
 													+ "executorServiceIndex)");
 
-		return ((AbstractComponent)this.getOwner()).handleRequest(
+		return ((AbstractComponent)this.getOwner()).baselineHandleRequest(
 											executorServiceIndex, request);
 	}
 
@@ -1420,7 +1420,7 @@ implements	PluginI
 							"getOwner().validExecutorServiceURI("
 													+ "executorServiceURI)");
 
-		return ((AbstractComponent)this.getOwner()).handleRequest(
+		return ((AbstractComponent)this.getOwner()).baselineHandleRequest(
 												executorServiceURI, request);
 	}
 
@@ -1459,10 +1459,10 @@ implements	PluginI
 					new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
-			return ((AbstractComponent)this.getOwner()).handleRequest(
+			return ((AbstractComponent)this.getOwner()).baselineHandleRequest(
 							this.getPreferredExecutionServiceIndex(), request);
 		} else {
-			return ((AbstractComponent)this.getOwner()).handleRequest(request);
+			return ((AbstractComponent)this.getOwner()).baselineHandleRequest(request);
 		}
 	}
 

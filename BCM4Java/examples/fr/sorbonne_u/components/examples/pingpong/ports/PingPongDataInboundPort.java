@@ -86,7 +86,7 @@ extends		AbstractDataInboundPort
 	@Override
 	public DataOfferedCI.DataI	get() throws Exception
 	{
-		return this.owner.handleRequestSync(
+		return this.owner.handleRequest(
 				new AbstractComponent.AbstractService<DataOfferedCI.DataI>() {
 					@Override
 					public DataOfferedCI.DataI call() throws Exception {

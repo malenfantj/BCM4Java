@@ -141,7 +141,7 @@ implements	URIProviderCI
 	{
 		// the handleRequestSync wait for the result before returning to the
 		// caller; hence it is a synchronous remote method invocation.
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<String>() {
 					@Override
 					public String call() throws Exception {
@@ -158,7 +158,7 @@ implements	URIProviderCI
 	public String[]		provideURIs(final int numberOfRequestedURIs)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<String[]>() {
 					@Override
 					public String[] call() throws Exception {

@@ -2001,7 +2001,7 @@ public interface		ComponentI
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
-	public <T> T		handleRequestSync(ComponentService<T> request)
+	public <T> T		handleRequest(ComponentService<T> request)
 	throws	AssertionError,
 			RejectedExecutionException,
 			InterruptedException,
@@ -2028,7 +2028,7 @@ public interface		ComponentI
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
-	public <T> T		handleRequestSync(FComponentService<T> request)
+	public <T> T		handleRequest(FComponentService<T> request)
 			throws	AssertionError,
 			RejectedExecutionException,
 			InterruptedException,
@@ -2056,7 +2056,7 @@ public interface		ComponentI
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		String executorServiceURI,
 		ComponentService<T> request
 		) 	throws	AssertionError,
@@ -2086,7 +2086,7 @@ public interface		ComponentI
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		String executorServiceURI,
 		FComponentService<T> request
 		) 	throws	AssertionError,
@@ -2116,7 +2116,7 @@ public interface		ComponentI
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		int executorServiceIndex,
 		ComponentService<T> request
 		) 	throws	AssertionError,
@@ -2147,7 +2147,7 @@ public interface		ComponentI
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
-	public <T> T		handleRequestSync(
+	public <T> T		handleRequest(
 		int executorServiceIndex,
 		FComponentService<T> request
 		) 	throws	AssertionError,

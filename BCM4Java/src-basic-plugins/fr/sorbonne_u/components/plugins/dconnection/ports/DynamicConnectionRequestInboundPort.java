@@ -122,7 +122,7 @@ implements	DynamicConnectionRequestCI
 	public String		requestDynamicPortURI(Class<? extends OfferedCI> offeredInterface)
 	throws Exception
 	{
-		return this.owner.handleRequestSync(
+		return this.owner.handleRequest(
 			new AbstractComponent.AbstractService<String>(this.getPluginURI()) {
 				@Override
 				public String call() throws Exception {
@@ -142,7 +142,7 @@ implements	DynamicConnectionRequestCI
 		String uri
 		) throws Exception
 	{
-		this.owner.handleRequestSync(
+		this.owner.handleRequest(
 			new AbstractComponent.AbstractService<String>(this.getPluginURI()) {
 				@Override
 				public String call() throws Exception {

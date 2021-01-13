@@ -89,7 +89,7 @@ implements	ValueProvidingCI
 		// Notice the call through handleRequestSync which forces to wait for
 		// the result before releasing the caller thread (with the result) when
 		// executing the return.
-		return this.owner.handleRequestSync(
+		return this.owner.handleRequest(
 				new AbstractComponent.AbstractService<Integer>() {
 					@Override
 					public Integer call() throws Exception {

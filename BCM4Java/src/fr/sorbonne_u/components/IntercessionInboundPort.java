@@ -88,7 +88,7 @@ implements	IntercessionCI
 	@Override
 	public void			installPlugin(final PluginI plugin) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -105,7 +105,7 @@ implements	IntercessionCI
 	public void			initialisePlugin(final String pluginURI)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -121,7 +121,7 @@ implements	IntercessionCI
 	@Override
 	public void			finalisePlugin(String pluginURI) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -138,7 +138,7 @@ implements	IntercessionCI
 	@Override
 	public void			uninstallPlugin(final String pluginId) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -158,7 +158,7 @@ implements	IntercessionCI
 	@Override
 	public void			toggleLogging() throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -174,7 +174,7 @@ implements	IntercessionCI
 	@Override
 	public void			setLogger(Logger logger) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -190,7 +190,7 @@ implements	IntercessionCI
 	@Override
 	public void			toggleTracing() throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -206,7 +206,7 @@ implements	IntercessionCI
 	@Override
 	public void			setTracer(TracerWindow tracer) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -222,7 +222,7 @@ implements	IntercessionCI
 	@Override
 	public void			logMessage(final String message) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -238,7 +238,7 @@ implements	IntercessionCI
 	@Override
 	public void			printExecutionLog() throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -255,7 +255,7 @@ implements	IntercessionCI
 	public void			printExecutionLogOnFile(final String fileName)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -272,7 +272,7 @@ implements	IntercessionCI
 	@Override
 	public void			traceMessage(String message) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -294,7 +294,7 @@ implements	IntercessionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -313,7 +313,7 @@ implements	IntercessionCI
 		final Class<? extends RequiredCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -332,7 +332,7 @@ implements	IntercessionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -350,7 +350,7 @@ implements	IntercessionCI
 		final Class<? extends OfferedCI> inter
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Void>() {
 						@Override
 						public Void call() throws Exception {
@@ -375,7 +375,7 @@ implements	IntercessionCI
 		final String ccname
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -393,7 +393,7 @@ implements	IntercessionCI
 	public void			doPortDisconnection(final String portURI)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -414,7 +414,7 @@ implements	IntercessionCI
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Object>() {
 						@Override
 						public Object call() throws Exception {
@@ -431,7 +431,7 @@ implements	IntercessionCI
 	public Object		invokeServiceSync(String name, Object[] params)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 					new AbstractComponent.AbstractService<Object>() {
 						@Override
 						public Object call() throws Exception {
@@ -448,7 +448,7 @@ implements	IntercessionCI
 	public void			invokeServiceAsync(String name, Object[] params)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 			new AbstractComponent.AbstractService<Void>() {
 				@Override
 				public Void call() throws Exception {
@@ -531,7 +531,7 @@ implements	IntercessionCI
 		String code
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -554,7 +554,7 @@ implements	IntercessionCI
 		String code
 		) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {

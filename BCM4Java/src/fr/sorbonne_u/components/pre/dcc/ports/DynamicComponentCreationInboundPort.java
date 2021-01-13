@@ -86,7 +86,7 @@ implements	DynamicComponentCreationCI
 		Object[] constructorParams
 		) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<String>() {
 					@Override
 					public String call() throws Exception {
@@ -105,7 +105,7 @@ implements	DynamicComponentCreationCI
 	public void			startComponent(String reflectionInboundPortURI)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -123,7 +123,7 @@ implements	DynamicComponentCreationCI
 	@Override
 	public void			executeComponent(String componentURI) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -140,7 +140,7 @@ implements	DynamicComponentCreationCI
 	 */
 	@Override
 	public void			finaliseComponent(String componentURI) throws Exception {
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -158,7 +158,7 @@ implements	DynamicComponentCreationCI
 	@Override
 	public void			shutdownComponent(String componentURI) throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -177,7 +177,7 @@ implements	DynamicComponentCreationCI
 	public void			shutdownNowComponent(String componentURI)
 	throws Exception
 	{
-		this.getOwner().handleRequestSync(
+		this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Void>() {
 					@Override
 					public Void call() throws Exception {
@@ -196,7 +196,7 @@ implements	DynamicComponentCreationCI
 	public boolean		isDeployedComponent(String reflectionInboundPortURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
@@ -214,7 +214,7 @@ implements	DynamicComponentCreationCI
 	@Override
 	public boolean		isStartedComponent(String componentURI) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
@@ -232,7 +232,7 @@ implements	DynamicComponentCreationCI
 	public boolean		isFinalisedComponent(String componentURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
@@ -249,7 +249,7 @@ implements	DynamicComponentCreationCI
 	@Override
 	public boolean		isShutdownComponent(String componentURI) throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
@@ -267,7 +267,7 @@ implements	DynamicComponentCreationCI
 	public boolean		isTerminatedComponent(String componentURI)
 	throws Exception
 	{
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {

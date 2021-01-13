@@ -126,7 +126,7 @@ implements	MapWritingCI<K,V>
 	{
 		assert	key != null ;
 
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<V>() {
 					@SuppressWarnings("unchecked")
@@ -146,7 +146,7 @@ implements	MapWritingCI<K,V>
 	{
 		assert	key != null ;
 
-		return this.getOwner().handleRequestSync(
+		return this.getOwner().handleRequest(
 				executorIndex,			// identifies the pool of threads to be used
 				new AbstractComponent.AbstractService<V>() {
 					@SuppressWarnings("unchecked")
