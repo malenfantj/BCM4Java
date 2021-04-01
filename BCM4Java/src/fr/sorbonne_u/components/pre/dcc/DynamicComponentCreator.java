@@ -329,13 +329,6 @@ extends		AbstractComponent
 							componentURI + "that is not finalised!") ;
 
 		AbstractCVM.getCVM().shutdownComponent(componentURI) ;
-
-		assert	this.isShutdownComponent(componentURI) :
-					new PostconditionException(
-							"DynamicComponentCreator on the JVM " + 
-							AbstractCVM.getThisJVMURI() +
-							" tried to shut down a component with URI " +
-							componentURI + "but still is not!") ;
 	}
 
 	/**
@@ -375,13 +368,6 @@ extends		AbstractComponent
 							componentURI + "that is not finalised!") ;
 
 		AbstractCVM.getCVM().shutdownNowComponent(componentURI) ;
-
-		assert	this.isShutdownComponent(componentURI) :
-					new PostconditionException(
-							"DynamicComponentCreator on the JVM " + 
-							AbstractCVM.getThisJVMURI() +
-							" tried to shut down now a component with URI " +
-							componentURI + "but still is not!") ;
 	}
 
 	/**
