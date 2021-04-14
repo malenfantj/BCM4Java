@@ -731,5 +731,34 @@ implements	PortI
 	 * @throws Exception	<i>to do</i>.
 	 */
 	protected abstract void	doMyDisconnection() throws Exception ;
+
+	// -------------------------------------------------------------------------
+	// Internal methods
+	// -------------------------------------------------------------------------
+
+	/**
+	 * get the plug-in with the given URI from the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code pluginURI != null && pluginURI.length() > 0}
+	 * pre	{@code getOwner().isInstalled(pluginURI);}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @param pluginURI	URI of the sought plug-in.
+	 * @return			the reference to the plug-in in the owner component.
+	 */
+	protected PluginI	getOwnerPlugin(String pluginURI)
+	{
+		try {
+			assert	pluginURI != null && pluginURI.length() > 0;
+			assert	this.getOwner().isInstalled(pluginURI);
+			return ((AbstractComponent)this.getOwner()).getPlugin(pluginURI);
+		} catch (Exception e) {
+			throw new RuntimeException(e) ;
+		}
+	}
 }
 // -----------------------------------------------------------------------------
