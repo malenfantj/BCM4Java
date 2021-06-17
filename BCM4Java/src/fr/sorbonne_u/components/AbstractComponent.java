@@ -2145,19 +2145,21 @@ implements	ComponentI
 								"executorServices and executorServicesIndexes"
 								+ " not in synchrony!");
 
-			for (int i = 0 ; i < ac.executorServices.get().length ; i++) {
-				if (ac.executorServices.get()[i] != null) {
-					assert	ac.executorServicesIndexes.containsValue(i) :
-								new ImplementationInvariantException(
+			if (ac.executorServices.get() != null) {
+				for (int i = 0 ; i < ac.executorServices.get().length ; i++) {
+					if (ac.executorServices.get()[i] != null) {
+						assert	ac.executorServicesIndexes.containsValue(i) :
+									new ImplementationInvariantException(
 										i + " is a valid executor service "
 										+ "index but is not in "
 										+ "executorServicesIndexes");
-				} else {
-					assert	!ac.executorServicesIndexes.containsValue(i) :
-								new ImplementationInvariantException(
+					} else {
+						assert	!ac.executorServicesIndexes.containsValue(i) :
+									new ImplementationInvariantException(
 										i + " is not  a valid executor service "
 										+ "index but is in "
 										+ "executorServicesIndexes");
+					}
 				}
 			}
 		} finally {
@@ -4012,9 +4014,12 @@ implements	ComponentI
 				 */
 				@Override
 				public void run() {
-					for (int i = 0; i < executorServices.get().length; i++) {
-						if (executorServices.get()[i] != null) {
-							executorServices.get()[i].shutdown();
+					if (executorServices.get() != null) {
+						for (int i = 0; i < executorServices.get().length; i++)
+						{
+							if (executorServices.get()[i] != null) {
+								executorServices.get()[i].shutdown();
+							}
 						}
 					}
 					state.set(ComponentState.SHUTTINGDOWN);
