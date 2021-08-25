@@ -115,7 +115,7 @@ extends		AbstractComponent
 						try {
 							ce.sumVectorUnitask(vector, finalContinuation1) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 					}
 				}) ;
@@ -144,7 +144,7 @@ extends		AbstractComponent
 						try {
 							ce.sumVectorMultitask(vector, finalContinuation2) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 					}
 				}) ;
@@ -264,7 +264,7 @@ extends		AbstractComponent
 									}
 								}) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 					}
 				}) ;

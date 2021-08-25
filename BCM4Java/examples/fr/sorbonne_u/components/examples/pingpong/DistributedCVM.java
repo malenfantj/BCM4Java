@@ -196,7 +196,7 @@ extends		AbstractDistributedCVM
 									 PLAYER1_PING_PONG_TWOWAY_PORT_URI}) ;
 				this.toggleTracing(pp2URI) ;
 		} else {
-			throw new RuntimeException("Unknown JVM URI: " + thisJVMURI) ;
+			throw new Exception("Unknown JVM URI: " + thisJVMURI) ;
 		}
 		super.instantiateAndPublish();
 	}
@@ -209,7 +209,7 @@ extends		AbstractDistributedCVM
 			Thread.sleep(5000L) ;
 			System.exit(0) ;
 		} catch (Exception e) {
-			throw new RuntimeException(e) ;
+			e.printStackTrace();
 		}		
 	}
 }

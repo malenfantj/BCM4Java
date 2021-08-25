@@ -194,7 +194,7 @@ extends		AbstractComponent
 								((URIConsumer)this.getTaskOwner()).
 													getURIandPrint() ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 					},
@@ -261,7 +261,7 @@ extends		AbstractComponent
 					try {
 						((URIConsumer)this.getTaskOwner()).getURIandPrint() ;
 					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+						e.printStackTrace();
 					}
 				}
 			}) ;

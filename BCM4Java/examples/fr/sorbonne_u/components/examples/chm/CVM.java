@@ -128,7 +128,7 @@ extends		AbstractCVM
 			// properly in BCM).
 			System.exit(0) ;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 }

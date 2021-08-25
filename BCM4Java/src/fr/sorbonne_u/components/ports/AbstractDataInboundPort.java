@@ -194,7 +194,7 @@ implements	DataInboundPortI
 	{
 		 // avoids missing super constructor error
 		super(implementedInterface, owner) ;
-		throw new RuntimeException("AbstractDataInboundPort: must use the " +
+		throw new Exception("AbstractDataInboundPort: must use the " +
 				"three or four parameters version of the constructor.");
 	}
 
@@ -206,7 +206,7 @@ implements	DataInboundPortI
 	{
 		 // avoids missing super constructor error
 		super(uri, implementedInterface, owner);
-		throw new RuntimeException("AbstractDataInboundPort: must use the " +
+		throw new Exception("AbstractDataInboundPort: must use the " +
 				"three or four parameters version of the constructor.");
 	}
 

@@ -1032,7 +1032,7 @@ implements	ReflectionCI
 					try {
 						this.getTaskOwner().execute();
 					} catch (Exception e) {
-						throw new RuntimeException(e);
+						e.printStackTrace();
 					}
 				}
 			});
@@ -1051,7 +1051,7 @@ implements	ReflectionCI
 						try {
 							t.run();
 						} catch (Exception e) {
-							throw new RuntimeException(e);
+							e.printStackTrace();
 						}
 					}
 				};
@@ -1074,7 +1074,7 @@ implements	ReflectionCI
 						try {
 							t.run();
 						} catch (Exception e) {
-							throw new RuntimeException(e);
+							e.printStackTrace();
 						}
 					}
 				};

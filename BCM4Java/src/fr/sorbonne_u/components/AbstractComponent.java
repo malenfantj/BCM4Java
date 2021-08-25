@@ -1390,14 +1390,14 @@ implements	ComponentI
 	{
 		synchronized (this.installedPlugins) {
 			assert	!this.isPluginFacilitiesConfigured() :
-						new RuntimeException(
+						new PreconditionException(
 								"Can't configure plug-in "
 										+ "facilities, already done!");
 
 			this.installedPlugins.set(new ConcurrentHashMap<String,PluginI>());
 
 			assert	this.isPluginFacilitiesConfigured() :
-						new RuntimeException(
+						new PostconditionException(
 								"Plug-in facilities configuration "
 										+ "not achieved correctly!");
 
@@ -2428,7 +2428,7 @@ implements	ComponentI
 	protected void		addPluginsFromAnnotations()
 	{
 		assert	this.isPluginFacilitiesConfigured() :
-					new RuntimeException("Can't install plug-ins, "
+					new PreconditionException("Can't install plug-ins, "
 							+ "plug-in facilities are not configured!");
 
 		try {
@@ -3925,7 +3925,7 @@ implements	ComponentI
 							try {
 								this.getTaskOwner().execute();
 							} catch (Exception e) {
-								throw new RuntimeException(e);
+								e.printStackTrace();
 							}
 						}
 					});
@@ -4386,7 +4386,7 @@ implements	ComponentI
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
 	 * @param t								component task to be executed as main task.
-	 * @return								a future allowing to cancel and synchronize on the task execution.
+	 * @return								a future allowing to cancel and synchronise on the task execution.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */

@@ -271,7 +271,7 @@ implements	IntegerFilteringI,
 			this.inPort.unpublishPort() ;
 			this.outPort.unpublishPort() ;
 		} catch (Exception e) {
-			throw new RuntimeException(e) ;
+			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown() ;
 	}
@@ -286,7 +286,7 @@ implements	IntegerFilteringI,
 			this.inPort.unpublishPort() ;
 			this.outPort.unpublishPort() ;
 		} catch (Exception e) {
-			throw new RuntimeException(e) ;
+			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdownNow() ;
 	}

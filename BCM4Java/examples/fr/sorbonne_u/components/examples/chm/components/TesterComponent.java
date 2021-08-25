@@ -203,7 +203,7 @@ extends		AbstractComponent
 						try {
 							tc.verifyPresence(key + count, count) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 					}
 				}, 100L, TimeUnit.MILLISECONDS) ;
@@ -219,7 +219,7 @@ extends		AbstractComponent
 						try {
 							tc.remove(key + count, count) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 					}
 				}, 100L, TimeUnit.MILLISECONDS) ;
@@ -253,7 +253,7 @@ extends		AbstractComponent
 						try {
 							tc.verifyPresence(key, value) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 					}
 				}) ;

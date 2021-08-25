@@ -158,7 +158,7 @@ extends		AbstractComponent
 									((DynamicAssembler)this.getTaskOwner()).
 															dynamicDeploy() ;
 								} catch (Exception e) {
-									throw new RuntimeException(e) ;
+									e.printStackTrace();
 								}
 							}
 						}) ;
@@ -328,7 +328,7 @@ extends		AbstractComponent
 							try {
 								((DynamicAssembler)this.getTaskOwner()).launch() ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 					}) ;

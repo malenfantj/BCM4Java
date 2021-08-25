@@ -243,7 +243,7 @@ public class			DCVMCyclicBarrier
 												ResumeResponse(false)).
 															response2string());
 								} catch (IOException e) {
-									throw new RuntimeException(e);
+									e.printStackTrace();
 								}
 							}
 							awaitingSites.clear();

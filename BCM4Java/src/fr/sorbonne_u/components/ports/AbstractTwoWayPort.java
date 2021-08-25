@@ -717,8 +717,7 @@ implements	TwoWayPortI<TWI>
 			this.isRemotelyConnected.set(false);
 		}
 		assert	serverPort != null :
-					new RuntimeException("Unkown port URI: " +
-												this.getServerPortURI()) ;
+					new Exception("Unkown port URI: " + this.getServerPortURI());
 		this.getConnector().connect((OfferedCI)serverPort, this) ;
 	}
 

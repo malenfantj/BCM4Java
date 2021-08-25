@@ -515,7 +515,7 @@ extends		AbstractComponent
 								((PingPongPlayer)this.getTaskOwner()).
 											pingPongOutboundPort.play() ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 					},
@@ -577,7 +577,7 @@ extends		AbstractComponent
 								((PingPongPlayer)this.getTaskOwner()).
 									pingPongOutboundPort.playOnDataPull() ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 					},
@@ -635,7 +635,7 @@ extends		AbstractComponent
 								((PingPongPlayer)this.getTaskOwner()).
 									pingPongDataInboundPort.send(b) ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 					},
@@ -682,7 +682,7 @@ extends		AbstractComponent
 							((PingPongPlayer)this.getTaskOwner()).
 								pingPongTwoWayPort.getOut().pingPong() ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						};
 					}
 				},
@@ -702,7 +702,7 @@ extends		AbstractComponent
 							((PingPongPlayer)this.getTaskOwner()).
 								pingpongDataTwoWayPort.getOut().send(b) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						};
 					}
 				},
@@ -743,7 +743,7 @@ extends		AbstractComponent
 							((PingPongPlayer)this.getTaskOwner()).
 								pingpongDataTwoWayPort.getOut().send(b) ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						};
 					}
 				},

@@ -97,6 +97,7 @@ implements	ComposedContinuationI<ParameterType>
 		try {
 			this.following.waitUntilParameterInitialised() ;
 		} catch (InterruptedException e) {
+			e.printStackTrace();
 			throw new RuntimeException(e) ;
 		}
 		if (this.runFollowerAsTask) {
@@ -125,7 +126,7 @@ implements	ComposedContinuationI<ParameterType>
 							k.getSubContinuation().
 										waitUntilParameterInitialised() ;
 						} catch (InterruptedException e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 						if (k.runFollowerAsTask) {
 							k.following.runAsTask() ;

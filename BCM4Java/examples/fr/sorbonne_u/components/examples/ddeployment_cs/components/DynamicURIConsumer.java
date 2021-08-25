@@ -201,7 +201,7 @@ extends		AbstractComponent
 								((DynamicURIConsumer)this.getTaskOwner()).
 														getURIandPrint() ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 					},

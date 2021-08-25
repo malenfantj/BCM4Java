@@ -685,7 +685,7 @@ implements	ComponentVirtualMachineI
 						try {
 							this.getTaskOwner().execute() ;
 						} catch (Exception e) {
-							throw new RuntimeException(e) ;
+							e.printStackTrace();
 						}
 					}
 				});
@@ -714,7 +714,7 @@ implements	ComponentVirtualMachineI
 							try {
 								this.getTaskOwner().execute() ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 				}) ;

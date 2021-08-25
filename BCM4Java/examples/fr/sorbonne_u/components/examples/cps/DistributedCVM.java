@@ -111,7 +111,7 @@ extends		AbstractDistributedCVM
 						new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI}) ;
 			this.toggleTracing(rvpURI) ;
 		} else {
-			throw new RuntimeException("Uknown JVM URI: " + thisJVMURI) ;
+			throw new Exception("Uknown JVM URI: " + thisJVMURI) ;
 		}
 		super.instantiateAndPublish();
 	}
@@ -124,7 +124,7 @@ extends		AbstractDistributedCVM
 			Thread.sleep(5000L) ;
 			System.exit(0) ;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 }

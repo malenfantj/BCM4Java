@@ -245,6 +245,7 @@ public class				GlobalRegistry
 			try {
 				request = br.readLine() ;
 			} catch (IOException e) {
+				e.printStackTrace();
 				throw new RuntimeException(e);
 			}
 
@@ -274,6 +275,7 @@ public class				GlobalRegistry
 						req = Request.string2request(request);
 					}
 				} catch (IOException e1) {
+					e1.printStackTrace();
 					throw new RuntimeException(e1) ;
 				}
 				if (GLOBAL_REGISTRY_IS_LOGGING) {
@@ -297,6 +299,7 @@ public class				GlobalRegistry
 				this.br.close() ;
 				s.close() ;
 			} catch (IOException e) {
+				e.printStackTrace();
 				throw new RuntimeException(e);
 			} finally {
 				this.finished.countDown() ;

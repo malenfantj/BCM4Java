@@ -281,7 +281,7 @@ extends		AbstractDistributedCVM
 			Thread.sleep(10000L);
 			System.exit(0);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 }

@@ -201,7 +201,7 @@ implements	PushControlImplementationI
 							try {
 								plugin.pushOnPort(portURI);
 							} catch (Exception e) {
-								throw new RuntimeException(e);
+								e.printStackTrace();
 							}
 						}
 					},
@@ -238,7 +238,7 @@ implements	PushControlImplementationI
 														  interval,
 														  n);
 							} catch (Exception e) {
-								throw new RuntimeException(e);
+								e.printStackTrace();
 							}
 						}
 					},
@@ -279,7 +279,7 @@ implements	PushControlImplementationI
 		try {
 			this.pushOnPort(portURI);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new Exception(e);
 		}
 		// remove the future that corresponds to the current execution of
 		// the method (allows to stop the pushes when requested).
@@ -300,7 +300,7 @@ implements	PushControlImplementationI
 															  interval,
 															  n - 1);
 								} catch (Exception e) {
-									throw new RuntimeException(e);
+									e.printStackTrace();
 								}
 							}
 						},

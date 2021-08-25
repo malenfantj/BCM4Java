@@ -108,7 +108,6 @@ extends		AbstractComponent
 	 * <p>Created on : 2018-03-21</p>
 	 * 
 	 * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
-	 * @version	$Name$ -- $Revision$ -- $Date$
 	 */
 	public static class		ComputeAndThenPrintContinuation
 	extends		AbstractLocalComposedContinuation<Integer>
@@ -323,7 +322,7 @@ extends		AbstractComponent
 						((ValueConsumer)this.getTaskOwner()).
 												computeAndThenPrint() ;
 					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+						e.printStackTrace();
 					}
 				}
 			}) ;
@@ -338,7 +337,7 @@ extends		AbstractComponent
 //								new ComputeAndThenPrintFinalContinuation(
 //										((ValueConsumer)this.getOwner()))) ;
 //					} catch (Exception e) {
-//						throw new RuntimeException(e) ;
+//						e.printStackTrace();
 //					}
 //				}
 //			}) ;
@@ -407,7 +406,7 @@ extends		AbstractComponent
 								}
 							}) ;
 					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+						e.printStackTrace();
 					}
 				}
 			}).start() ;
@@ -452,7 +451,7 @@ extends		AbstractComponent
 								((ValueConsumer)this.getTaskOwner()).
 													computeAndThenPrint() ;
 							} catch (Exception e) {
-								throw new RuntimeException(e) ;
+								e.printStackTrace();
 							}
 						}
 					}) ;
@@ -516,12 +515,12 @@ extends		AbstractComponent
 													vc, result, continuation
 													)) ;
 									} catch (Exception e) {
-										throw new RuntimeException(e) ;
+										e.printStackTrace();
 									}
 								}
 							});
 					} catch (Exception e) {
-						throw new RuntimeException(e) ;
+						e.printStackTrace();
 					}
 				}
 			}).start() ;
