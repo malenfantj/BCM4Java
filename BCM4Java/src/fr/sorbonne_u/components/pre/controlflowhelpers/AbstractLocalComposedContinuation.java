@@ -1,7 +1,5 @@
 package fr.sorbonne_u.components.pre.controlflowhelpers;
 
-import fr.sorbonne_u.components.AbstractComponent;
-
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -36,6 +34,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 
 //-----------------------------------------------------------------------------

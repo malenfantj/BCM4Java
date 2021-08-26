@@ -169,7 +169,7 @@ implements	DataOutboundPortI
 									p.getExecutorServiceIndex() +
 									" in owner!");
 			} catch (Exception e) {
-				throw new RuntimeException(e) ;
+				throw new Exception(e) ;
 			}
 		}
 	}
@@ -216,7 +216,7 @@ implements	DataOutboundPortI
 		) throws Exception
 	{
 		super(implementedInterface, owner);
-		throw new RuntimeException("AbstractDataOutboundPort: must use the " +
+		throw new Exception("AbstractDataOutboundPort: must use the " +
 				"three or four parameters version of the constructor.");
 	}
 
@@ -230,7 +230,7 @@ implements	DataOutboundPortI
 		) throws Exception
 	{
 		super(uri, implementedInterface, owner);
-		throw new RuntimeException("AbstractDataOutboundPort: must use the " +
+		throw new Exception("AbstractDataOutboundPort: must use the " +
 				"three or four parameters version of the constructor.");
 	}
 

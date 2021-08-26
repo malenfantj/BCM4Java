@@ -432,7 +432,7 @@ public class				GlobalRegistry
 		try {
 			this.ss.close() ;
 		} catch (IOException e) {
-			;
+			e.printStackTrace();
 		}
 	}
 
@@ -484,7 +484,7 @@ public class				GlobalRegistry
 			reg.closing() ;
 			System.exit(0) ;
 		} catch (Exception e) {
-			throw new RuntimeException(e) ;
+			e.printStackTrace();
 		}
 	}
 }

@@ -415,6 +415,7 @@ public class			DCVMCyclicBarrier
 				try {
 					this.localCyclicBarrier.await();
 				} catch (Exception e) {
+					e.printStackTrace();
 					throw new RuntimeException(e);
 				}
 				try {
@@ -422,6 +423,7 @@ public class			DCVMCyclicBarrier
 						request = br.readLine();
 					}
 				} catch (IOException e) {
+					e.printStackTrace();
 					throw new RuntimeException(e);
 				}
 				req = CyclicBarrierProtocol.Request.string2request(request);
@@ -429,6 +431,7 @@ public class			DCVMCyclicBarrier
 			try {
 				s.close();
 			} catch (IOException e) {
+				e.printStackTrace();
 				throw new RuntimeException(e);
 			}
 			if (AbstractCVM.DEBUG_MODE.contains(
@@ -478,6 +481,7 @@ public class			DCVMCyclicBarrier
 							this.executionLog,
 							this.tracer));
 			} catch (Exception e) {
+				e.printStackTrace();
 				throw new RuntimeException(e);
 			}
 			connected++ ;
@@ -489,6 +493,7 @@ public class			DCVMCyclicBarrier
 		try {
 			this.ss.close();
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 
@@ -497,6 +502,7 @@ public class			DCVMCyclicBarrier
 			this.closing();
 			REQUEST_HANDLER.shutdownNow();
 		} catch (InterruptedException | FileNotFoundException e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
@@ -533,7 +539,7 @@ public class			DCVMCyclicBarrier
 			as.run();
 			System.exit(0);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 }
