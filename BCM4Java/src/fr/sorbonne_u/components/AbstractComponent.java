@@ -1150,6 +1150,43 @@ implements	ComponentI
 	}
 
 	/**
+	 * get the standard executor service or the standard schedulable executor
+	 * service if no standard executor service exists.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI) || }
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @return		the standard executor service.
+	 */
+	protected ExecutorService	getExecutorService()
+	{
+		this.executorServicesLock.readLock().lock();
+		try {
+			assert	this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)
+					|| this.validExecutorServiceURI(
+											STANDARD_SCHEDULABLE_HANDLER_URI) :
+						new PreconditionException(
+								"invalid standard executor service!");
+
+			int index = -1;
+			if (this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)) {
+				index = this.getExecutorServiceIndex(
+											STANDARD_REQUEST_HANDLER_URI);
+			} else {
+				index = this.getExecutorServiceIndex(
+											STANDARD_SCHEDULABLE_HANDLER_URI);
+			}
+			return this.executorServices.get()[index].getExecutorService();
+		} finally {
+			this.executorServicesLock.readLock().unlock();
+		}
+	}
+
+	/**
 	 * get the executor service at the given index.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -1204,7 +1241,38 @@ implements	ComponentI
 	}
 
 	/**
-	 * get the executor service at the given index.
+	 * get the standard schedulable executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code validExecutorServiceURI(STANDARD_SCHEDULABLE_HANDLER_URI)}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @return		the standard schedulable executor service.
+	 */
+	protected ScheduledExecutorService	getSchedulableExecutorService()
+	{
+		this.executorServicesLock.readLock().lock();
+		try {
+			assert	this.validExecutorServiceURI(
+										STANDARD_SCHEDULABLE_HANDLER_URI) :
+						new PreconditionException(
+							"invalid standard schedulable executor service!");
+
+			int index =
+				this.getExecutorServiceIndex(STANDARD_SCHEDULABLE_HANDLER_URI);
+			return ((ComponentSchedulableExecutorServiceManager) 
+									this.executorServices.get()[index]).
+											getScheduledExecutorService();
+		} finally {
+			this.executorServicesLock.readLock().unlock();
+		}
+	}
+
+	/**
+	 * get the schedulable executor service at the given index.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1239,7 +1307,7 @@ implements	ComponentI
 	}
 
 	/**
-	 * get the executor service at the given URI.
+	 * get the schedulable executor service at the given URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1249,8 +1317,8 @@ implements	ComponentI
 	 * post	true		// no postcondition.
 	 * </pre>
 	 *
-	 * @param uri	URI of the sought executor service.
-	 * @return		the executor service at the given URI.
+	 * @param uri	URI of the sought schedulable executor service.
+	 * @return		the schedulable executor service at the given URI.
 	 */
 	protected ScheduledExecutorService	getSchedulableExecutorService(
 		String uri
@@ -1261,6 +1329,8 @@ implements	ComponentI
 			assert	this.validExecutorServiceURI(uri) :
 						new PreconditionException(
 								"validExecutorServiceURI(" + uri + ")");
+			assert	this.isSchedulable(uri) :
+						new PreconditionException("isSchedulable(" + uri + ")");
 
 			return this.getSchedulableExecutorService(
 											this.getExecutorServiceIndex(uri));
@@ -1270,8 +1340,8 @@ implements	ComponentI
 	}
 
 	/**
-	 * shutdown the given executor service and remove it from the executor
-	 * services of the component.
+	 * shutdown the executor service with the given URI and remove it from the
+	 * executor services of the component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -1317,8 +1387,8 @@ implements	ComponentI
 	}
 
 	/**
-	 * shutdown immediately the given executor service and remove it from the
-	 * executor services of the component.
+	 * shutdown immediately the executor service with the given URI and remove
+	 * it from the executor services of the component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -4417,16 +4487,14 @@ implements	ComponentI
 						append(".").toString());
 		}
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			t.setOwnerReference(this);
-			if (this.hasItsOwnThreads() &&
+		t.setOwnerReference(this);
+		if (this.hasItsOwnThreads() &&
 						this.validExecutorServiceIndex(executorServiceIndex)) {
-				return this.getExecutorService(executorServiceIndex).submit(t);
-			} else {
-				t.run();
-				Future<?> f =
-						new Future<Object>() {
+			return this.getExecutorService(executorServiceIndex).submit(t);
+		} else {
+			t.run();
+			Future<?> f =
+					new Future<Object>() {
 							@Override
 							public boolean	cancel(boolean maybeInterrupted)
 							{ return false; }
@@ -4450,11 +4518,8 @@ implements	ComponentI
 							@Override
 							public boolean	isDone()
 							{ return true; }
-						};
-				return f;
-			}
-		} finally {
-			this.executorServicesLock.readLock().unlock();
+					};
+			return f;
 		}
 	}
 
@@ -4486,18 +4551,8 @@ implements	ComponentI
 		assert	t != null :
 					new PreconditionException("trying to run a null task!");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceURI(executorServiceURI) :
-						new PreconditionException(
-								"validExecutorServiceURI(executorServiceURI)");
-
-			int executorServiceIndex =
-						this.getExecutorServiceIndex(executorServiceURI);
-			return this.runTaskOnComponent(executorServiceIndex, t);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		t.setOwnerReference(this);
+		return this.getExecutorService(executorServiceURI).submit(t);
 	}
 
 	/**
@@ -4524,31 +4579,12 @@ implements	ComponentI
 		assert	t != null :
 					new PreconditionException("trying to run a null task!");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			if (this.hasItsOwnThreads()) {
-				if (this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)) {
-					return this.runTaskOnComponent(
-									this.getExecutorServiceIndex(
-											STANDARD_REQUEST_HANDLER_URI),
-									t);
-				} else {
-					assert	this.validExecutorServiceURI(
-											STANDARD_SCHEDULABLE_HANDLER_URI) :
-								new ComponentTaskExecutionException(
-										"incoherent status for component "
-										+ "threads!");
-					return this.runTaskOnComponent(
-									this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-									t);
-				}
-			} else {
-				return this.runTaskOnComponent(-1, t);
-			}			
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		if (this.hasItsOwnThreads()) {
+			t.setOwnerReference(this);
+			return this.getExecutorService().submit(t);
+		} else {
+			return this.runTaskOnComponent(-1, t);
+		}			
 	}
 
 	/**
@@ -4559,10 +4595,6 @@ implements	ComponentI
 	throws	AssertionError,
 			RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null :
-					new PreconditionException("trying to run a null task!");
-
 		this.runTaskOnComponent(t);
 	}
 
@@ -4574,14 +4606,13 @@ implements	ComponentI
 	throws	AssertionError,
 			RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null :
-					new PreconditionException("trying to run a null task!");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.runTask(new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-		 			 });
+		this.runTaskOnComponent(
+					new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+					});
 	}
 
 	/**
@@ -4592,10 +4623,6 @@ implements	ComponentI
 	throws	AssertionError,
 			RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null :
-					new PreconditionException("trying to run a null task!");
-
 		this.runTaskOnComponent(executorServiceIndex, t);
 	}
 
@@ -4609,10 +4636,6 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null :
-					new PreconditionException("trying to run a null task!");
-
 		this.runTaskOnComponent(executorServiceURI, t);
 	}
 
@@ -4626,15 +4649,14 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null :
-					new PreconditionException("trying to run a null task!");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.runTask(executorServiceURI, 
-					 new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					 });
+		this.runTaskOnComponent(
+					executorServiceURI, 
+					new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+					});
 	}
 
 	/**
@@ -4645,15 +4667,14 @@ implements	ComponentI
 	throws	AssertionError,
 			RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null :
-					new PreconditionException("trying to run a null task!");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.runTask(executorServiceIndex,
-					 new AbstractTask() {
-						@Override
-						public void run() { this.runTaskLambda(t); }
-					 });
+		this.runTaskOnComponent(
+					executorServiceIndex,
+					new AbstractTask() {
+							@Override
+							public void run() { this.runTaskLambda(t); }
+					});
 	}
 
 	/**
@@ -4708,22 +4729,9 @@ implements	ComponentI
 						append(".").toString());
 		}
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceIndex(executorServiceIndex) :
-						new PreconditionException(
-								"validExecutorServiceIndex("
-								+ "executorServiceIndex)");
-			assert	this.isSchedulable(executorServiceIndex) :
-						new PreconditionException(
-								"isSchedulable(executorServiceIndex)");
-
-			t.setOwnerReference(this);
-			return this.getSchedulableExecutorService(executorServiceIndex).
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceIndex).
 														schedule(t, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
 	}
 
 	/**
@@ -4761,21 +4769,9 @@ implements	ComponentI
 					new PreconditionException(
 							"t != null && delay > 0 && u != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceURI(executorServiceURI) :
-						new PreconditionException(
-								"validExecutorServiceURI(executorServiceURI)");
-			assert	this.isSchedulable(executorServiceURI) :
-						new PreconditionException(
-								"isSchedulable(executorServiceIndex)");
-
-			int executorServiceIndex =
-							this.getExecutorServiceIndex(executorServiceURI);
-			return this.scheduleTaskOnComponent(executorServiceIndex, t, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceURI).
+														schedule(t, delay, u);
 	}
 
 	/**
@@ -4811,23 +4807,8 @@ implements	ComponentI
 					new PreconditionException(
 							"t != null && delay > 0 && u != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.canScheduleTasks() :
-						new PreconditionException("canScheduleTasks()");
-			assert	this.validExecutorServiceURI(
-											STANDARD_SCHEDULABLE_HANDLER_URI) :
-						new ComponentTaskExecutionException(
-								"validExecutorServiceIndex(" + 
-								"standardSchedulableHandlerIndex)");
-
-			return this.scheduleTaskOnComponent(
-							this.getExecutorServiceIndex(
-									STANDARD_SCHEDULABLE_HANDLER_URI),
-							t, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService().schedule(t, delay, u);
 	}
 
 	/**
@@ -4841,14 +4822,7 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
-
-		this.scheduleTask(this.getExecutorServiceIndex(
-										STANDARD_SCHEDULABLE_HANDLER_URI),
-						  t, delay, u);
+		this.scheduleTaskOnComponent(t, delay, u);
 	}
 
 	/**
@@ -4862,15 +4836,13 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTask(new AbstractTask() {
+		this.scheduleTaskOnComponent(
+					new AbstractTask() {
 							@Override
 							public void run() { this.runTaskLambda(t); }
-						  }, delay, u);
+					}, delay, u);
 	}
 
 	/**
@@ -4885,11 +4857,6 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
-
 		this.scheduleTaskOnComponent(executorServiceURI, t, delay, u);
 	}
 
@@ -4905,16 +4872,14 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTask(executorServiceURI, 
-						  new AbstractTask() {
-							@Override
-							public void run() { this.runTaskLambda(t); }
-						  }, delay, u);
+		this.scheduleTaskOnComponent(
+							executorServiceURI, 
+							new AbstractTask() {
+									@Override
+									public void run() { this.runTaskLambda(t); }
+							}, delay, u);
 	}
 
 	/**
@@ -4929,11 +4894,6 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
-
 		this.scheduleTaskOnComponent(executorServiceIndex, t, delay, u);
 	}
 
@@ -4949,16 +4909,14 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTask(executorServiceIndex,
-						  new AbstractTask() {
+		this.scheduleTaskOnComponent(
+					executorServiceIndex,
+					new AbstractTask() {
 							@Override
 							public void run() { this.runTaskLambda(t); }
-						  }, delay, u);
+					}, delay, u);
 	}
 
 	/**
@@ -5025,22 +4983,9 @@ implements	ComponentI
 						append(".").toString());
 		}
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceIndex(executorServiceIndex) :
-						new PreconditionException(
-								"validExecutorServiceIndex("
-								+ "executorServiceIndex)");
-			assert	this.isSchedulable(executorServiceIndex) :
-						new PreconditionException(
-								"isSchedulable(executorServiceIndex)");
-
-			t.setOwnerReference(this);
-			return this.getSchedulableExecutorService(executorServiceIndex).
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceIndex).
 								scheduleAtFixedRate(t, initialDelay, period, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
 	}
 
 	/**
@@ -5084,26 +5029,14 @@ implements	ComponentI
 					RejectedExecutionException
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	this.validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"validExecutorServiceURI(executorServiceURI)");
-		assert	this.isSchedulable(executorServiceURI) :
-					new PreconditionException(
-							"isSchedulable(executorServiceURI)");
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
 					new PreconditionException(
 							"t != null && initialDelay >= 0  && period > 0 "
 									+ "&& u != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			int executorServiceIndex =
-							this.getExecutorServiceIndex(executorServiceURI);
-			return this.scheduleTaskAtFixedRateOnComponent(
-							executorServiceIndex, t, initialDelay, period, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceURI).
+								scheduleAtFixedRate(t, initialDelay, period, u);
 	}
 
 	/**
@@ -5149,22 +5082,9 @@ implements	ComponentI
 							"t != null && initialDelay >= 0  && period > 0 "
 									+ "&& u != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.canScheduleTasks() :
-						new PreconditionException("canScheduleTasks()");
-			assert	this.validExecutorServiceURI(STANDARD_SCHEDULABLE_HANDLER_URI) :
-						new ComponentTaskExecutionException(
-								"validExecutorServiceIndex(" + 
-								"this.standardRequestHandlerIndex)");
-
-			return this.scheduleTaskAtFixedRateOnComponent(
-								this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-								t, initialDelay, period, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService().
+								scheduleAtFixedRate(t, initialDelay, period, u);
 	}
 
 	/**
@@ -5179,15 +5099,7 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
-
-		this.scheduleTaskAtFixedRate(this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-									 t, initialDelay, period, u);
+		this.scheduleTaskAtFixedRateOnComponent(t, initialDelay, period, u);
 	}
 
 	/**
@@ -5202,13 +5114,9 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTaskAtFixedRate(
+		this.scheduleTaskAtFixedRateOnComponent(
 						new AbstractTask() {
 							@Override
 							public void run() { this.runTaskLambda(t); }
@@ -5228,12 +5136,6 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
-
 		this.scheduleTaskAtFixedRateOnComponent(
 										executorServiceURI,
 										t, initialDelay, period, u);
@@ -5252,13 +5154,9 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTaskAtFixedRate(
+		this.scheduleTaskAtFixedRateOnComponent(
 						executorServiceURI,
 						new AbstractTask() {
 							@Override
@@ -5279,12 +5177,6 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
-
 		this.scheduleTaskAtFixedRateOnComponent(executorServiceIndex,
 												t, initialDelay, period, u);
 	}
@@ -5302,13 +5194,9 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTaskAtFixedRate(
+		this.scheduleTaskAtFixedRateOnComponent(
 					executorServiceIndex,
 					new AbstractTask() {
 						@Override
@@ -5376,22 +5264,9 @@ implements	ComponentI
 						append(".").toString());
 		}
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceIndex(executorServiceIndex) :
-						new PreconditionException(
-								"validExecutorServiceIndex("
-								+ "executorServiceIndex)");
-			assert	this.isSchedulable(executorServiceIndex) :
-						new PreconditionException(
-								"isSchedulable(executorServiceIndex)");
-
-			t.setOwnerReference(this);
-			return this.getSchedulableExecutorService(executorServiceIndex).
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceIndex).
 							scheduleWithFixedDelay(t, initialDelay, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
 	}
 
 	/**
@@ -5436,22 +5311,9 @@ implements	ComponentI
 							"t != null && initialDelay >= 0 && delay >= 0 "
 									+ "&& u != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceURI(executorServiceURI) :
-						new PreconditionException(
-								"validExecutorServiceURI(executorServiceURI)");
-			assert	this.isSchedulable(executorServiceURI) :
-						new PreconditionException(
-								"isSchedulable(executorServiceURI)");
-
-			int executorServiceIndex =
-							this.getExecutorServiceIndex(executorServiceURI);
-			return this.scheduleTaskWithFixedDelayOnComponent(
-							executorServiceIndex, t, initialDelay, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceURI).
+							scheduleWithFixedDelay(t, initialDelay, delay, u);
 	}
 
 	/**
@@ -5495,21 +5357,9 @@ implements	ComponentI
 							"t != null && initialDelay >= 0 && delay >= 0 "
 									+ "&& u != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceURI(
-											STANDARD_SCHEDULABLE_HANDLER_URI) :
-						new ComponentTaskExecutionException(
-								"validExecutorServiceURI("
-										+ "STANDARD_SCHEDULABLE_HANDLER_URI)");
-
-			return this.scheduleTaskWithFixedDelayOnComponent(
-								this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-								t, initialDelay, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		t.setOwnerReference(this);
+		return this.getSchedulableExecutorService().
+							scheduleWithFixedDelay(t, initialDelay, delay, u);
 	}
 
 	/**
@@ -5524,15 +5374,7 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0 && delay >= 0 "
-									+ "&& u != null");
-
-		this.scheduleTaskWithFixedDelay(this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-										t, initialDelay, delay, u);
+		this.scheduleTaskWithFixedDelayOnComponent(t, initialDelay, delay, u);
 	}
 
 	/**
@@ -5547,13 +5389,9 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0 && delay >= 0 "
-									+ "&& u != null");
+		assert	t != null :new PreconditionException("t != null");
 
-		this.scheduleTaskWithFixedDelay(
+		this.scheduleTaskWithFixedDelayOnComponent(
 					new AbstractTask() {
 						@Override
 						public void run() { this.runTaskLambda(t); }
@@ -5573,15 +5411,8 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0 && delay >= 0 "
-									+ "&& u != null");
-
-		this.scheduleTaskWithFixedDelayOnComponent(
-										executorServiceURI,
-										t, initialDelay, delay, u);
+		this.scheduleTaskWithFixedDelayOnComponent(executorServiceURI,
+												   t, initialDelay, delay, u);
 	}
 
 	/**
@@ -5597,13 +5428,9 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0 && delay >= 0 "
-									+ "&& u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTaskWithFixedDelay(
+		this.scheduleTaskWithFixedDelayOnComponent(
 						executorServiceURI,
 						new AbstractTask() {
 							@Override
@@ -5624,12 +5451,6 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0 && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
-
 		this.scheduleTaskWithFixedDelayOnComponent(executorServiceIndex,
 												   t, initialDelay, delay, u);
 	}
@@ -5647,13 +5468,9 @@ implements	ComponentI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && initialDelay >= 0 && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+		assert	t != null : new PreconditionException("t != null");
 
-		this.scheduleTaskWithFixedDelay(
+		this.scheduleTaskWithFixedDelayOnComponent(
 						executorServiceIndex,
 						new AbstractTask() {
 							@Override
@@ -5821,8 +5638,6 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code isStarted()}
 	 * pre	{@code request != null}
-	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
-	 * pre	{@code isSchedulable(executorServiceIndex)}
 	 * post	true		// no postcondition.
 	 * </pre>
 	 *
@@ -5859,16 +5674,14 @@ implements	ComponentI
 						append(".").toString());
 		}
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			request.setOwnerReference(this);
-			if (this.hasItsOwnThreads() &&
+		request.setOwnerReference(this);
+		if (this.hasItsOwnThreads() &&
 						this.validExecutorServiceIndex(executorServiceIndex)) {
-				return this.getExecutorService(executorServiceIndex).
-																submit(request);
-			} else {
-				final ComponentService<T> t = request;
-				return new Future<T>() {
+			return this.getExecutorService(executorServiceIndex).
+															submit(request);
+		} else {
+			final ComponentService<T> t = request;
+			return new Future<T>() {
 							@Override
 							public boolean	cancel(boolean mayInterruptIfRunning)
 							{ return false; }
@@ -5905,9 +5718,6 @@ implements	ComponentI
 							public boolean	isDone()
 							{ return true; }
 						};
-			}
-		} finally {
-			this.executorServicesLock.readLock().unlock();
 		}
 	}
 
@@ -5948,18 +5758,8 @@ implements	ComponentI
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceURI(executorServiceURI) :
-						new PreconditionException(
-								"validExecutorServiceURI(executorServiceURI)");
-
-			int executorServiceIndex =
-					this.getExecutorServiceIndex(executorServiceURI);
-			return this.baselineHandleRequest(executorServiceIndex, request);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		request.setOwnerReference(this);
+		return this.getExecutorService(executorServiceURI).submit(request);
 	}
 
 	/**
@@ -5978,8 +5778,6 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code isStarted()}
-	 * pre	{@code validExecutorServiceIndex(standardRequestHandlerIndex) ||
-	 *             validExecutorServiceIndex(standardSchedulableHandlerIndex)}
 	 * pre	{@code request != null}
 	 * post	true		// no postcondition.
 	 * </pre>
@@ -5998,23 +5796,11 @@ implements	ComponentI
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			if (this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)) {
-				return this.baselineHandleRequest(this.getExecutorServiceIndex(
-												STANDARD_REQUEST_HANDLER_URI),
-										  request);
-			} else if (this.validExecutorServiceURI(
-											STANDARD_SCHEDULABLE_HANDLER_URI)) {
-				return this.baselineHandleRequest(
-								this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-								request);
-			} else {
-				return this.baselineHandleRequest(-1, request);
-			}
-		} finally {
-			this.executorServicesLock.readLock().unlock();
+		if (this.hasItsOwnThreads()) {
+			request.setOwnerReference(this);
+			return this.getExecutorService().submit(request);
+		} else {
+			return this.baselineHandleRequest(-1, request);
 		}
 	}
 
@@ -6030,9 +5816,6 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	request != null : new PreconditionException("request != null");
-
 		return this.baselineHandleRequest(executorServiceIndex, request).get();
 	}
 
@@ -6046,31 +5829,7 @@ implements	ComponentI
 			InterruptedException,
 			ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	request != null : new PreconditionException("request != null");
-
-		this.executorServicesLock.readLock().lock();
-		try {
-			if (this.hasItsOwnThreads()) {
-				if (this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)) {
-					return this.baselineHandleRequest(
-								this.getExecutorServiceIndex(
-												STANDARD_REQUEST_HANDLER_URI),
-								request).get();
-				} else {
-					assert this.validExecutorServiceURI(STANDARD_SCHEDULABLE_HANDLER_URI);
-
-					return this.baselineHandleRequest(
-								this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-								request).get();
-				}
-			} else {
-				return this.baselineHandleRequest(-1, request).get();
-			}
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+		return this.baselineHandleRequest(request).get();
 	}
 
 	/**
@@ -6084,16 +5843,15 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequest(
+		return this.baselineHandleRequest(
 							new AbstractService<T>() {
 								@Override
 								public T call() throws Exception {
 									return this.callServiceLambda(request);
 								}								
-							});
+							}).get();
 	}
 
 	/**
@@ -6108,9 +5866,6 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	request != null : new PreconditionException("request != null");
-
 		return this.baselineHandleRequest(executorServiceURI, request).get();
 	}
 
@@ -6126,17 +5881,16 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequest(
+		return this.baselineHandleRequest(
 							executorServiceURI,
 							new AbstractService<T>() {
 								@Override
 								public T call() throws Exception {
 									return this.callServiceLambda(request);
 								}
-							});
+							}).get();
 	}
 
 	/**
@@ -6151,17 +5905,16 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
 
-		return this.handleRequest(
+		return this.baselineHandleRequest(
 							executorServiceIndex,
 							new AbstractService<T>() {
 								@Override
 								public T call() throws Exception {
 									return this.callServiceLambda(request);
 								}
-							});
+							}).get();
 	}
 
 	/**
@@ -6214,23 +5967,11 @@ implements	ComponentI
 						append(".").toString());
 		}
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceIndex(executorServiceIndex) :
-						new PreconditionException(
-								"validExecutorServiceIndex("
-										+ "executorServiceIndex)");
-			assert	this.isSchedulable(executorServiceIndex) :
-						new PreconditionException(
-								"isSchedulable(executorServiceIndex)");
-
-			request.setOwnerReference(this);
-			return this.getSchedulableExecutorService(executorServiceIndex).
+		request.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceIndex).
 													schedule(request, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
 	}
+
 	/**
 	 * schedule a service for execution after a given delay.
 	 * 
@@ -6264,20 +6005,44 @@ implements	ComponentI
 		assert	request != null : new PreconditionException("request != null");
 		assert	delay >= 0 && u != null;
 
-		this.executorServicesLock.readLock().lock();
-		try {
-			assert	this.validExecutorServiceURI(executorServiceURI) :
-						new PreconditionException(
-								"validExecutorServiceURI(executorServiceURI)");
-			assert	this.isSchedulable(executorServiceURI) :
-						new PreconditionException(
-								"isSchedulable(executorServiceURI)");
+		request.setOwnerReference(this);
+		return this.getSchedulableExecutorService(executorServiceURI).
+													schedule(request, delay, u);
+	}
 
-			int index = this.getExecutorServiceIndex(executorServiceURI);
-			return this.scheduleRequest(index, request, delay, u);
-		} finally {
-			this.executorServicesLock.readLock().unlock();
-		}
+	/**
+	 * schedule a service for execution after a given delay.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code isStarted()}
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code s != null && delay > 0 && u != null}
+	 * post	true		// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>							the type of the value returned by the request.
+	 * @param request						service request to be scheduled.
+	 * @param delay							delay after which the task must be run.
+	 * @param u								time unit in which the delay is expressed.
+	 * @return								a scheduled future to synchronise with the task.
+	 * @throws AssertionError				if the component is not started, this index is not valid, the executor is not schedulable or the request in null.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected <T> ScheduledFuture<T>	scheduleRequest(
+		ComponentService<T> request,
+		long delay,
+		TimeUnit u
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	this.isStarted() : new PreconditionException("isStarted()");
+		assert	request != null : new PreconditionException("request != null");
+		assert	delay >= 0 && u != null;
+
+		request.setOwnerReference(this);
+		return this.getSchedulableExecutorService().schedule(request, delay, u);
 	}
 
 	/**
@@ -6294,9 +6059,6 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	request != null && delay >= 0 && u != null;
-
 		return this.scheduleRequest(
 						executorServiceIndex, request, delay, u).get();
 	}
@@ -6314,12 +6076,7 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	request != null && delay >= 0 && u != null;
-
-		return this.scheduleRequestSync(this.getExecutorServiceIndex(
-											STANDARD_SCHEDULABLE_HANDLER_URI),
-										request, delay, u);
+		return this.scheduleRequest(request, delay, u).get();
 	}
 
 	/**
@@ -6335,16 +6092,15 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null && delay >= 0 && u != null;
 
-		return this.scheduleRequestSync(
+		return this.scheduleRequest(
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
 										return this.callServiceLambda(request);
 									}
-								}, delay, u);
+								}, delay, u).get();
 	}
 
 	/**
@@ -6361,9 +6117,6 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
-		assert	request != null && delay >= 0 && u != null;
-
 		return this.scheduleRequest(
 							executorServiceURI, request, delay, u).get();
 	}
@@ -6382,17 +6135,16 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null && delay >= 0 && u != null;
 
-		return this.scheduleRequestSync(
+		return this.scheduleRequest(
 								executorServiceURI,
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
 										return this.callServiceLambda(request);
 									}
-								}, delay, u);
+								}, delay, u).get();
 	}
 
 	/**
@@ -6409,17 +6161,16 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null && delay >= 0 && u != null;
 
-		return this.scheduleRequestSync(
+		return this.scheduleRequest(
 								executorServiceIndex,
 								new AbstractService<T>() {
 									@Override
 									public T call() throws Exception {
 										return this.callServiceLambda(request);
 									}
-								}, delay, u);
+								}, delay, u).get();
 	}
 
 	// -------------------------------------------------------------------------
