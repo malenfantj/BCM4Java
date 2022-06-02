@@ -1,8 +1,5 @@
 package fr.sorbonne_u.components.examples.ddeployment_cs;
 
-import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.cvm.AbstractCVM;
-
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -37,6 +34,8 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.ddeployment_cs.components.DynamicAssembler;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
@@ -62,19 +61,15 @@ public class				DistributedCVM
 extends		AbstractDistributedCVM
 {
 	/* The following must be the same as the ones in the confi.xml file.	*/
-	protected static String		ASSEMBLER_JVM_URI = "assembler" ;
-	protected static String		PROVIDER_JVM_URI = "provider" ;
-	protected static String		CONSUMER_JVM_URI = "consumer" ;
+	protected static String		ASSEMBLER_JVM_URI = "assembler";
+	protected static String		PROVIDER_JVM_URI = "provider";
+	protected static String		CONSUMER_JVM_URI = "consumer";
 
-	protected DynamicAssembler	da ;
+	protected DynamicAssembler	da;
 
-	public				DistributedCVM(
-		String[] args,
-		int xLayout,
-		int yLayout
-		) throws Exception
+	public				DistributedCVM(String[] args) throws Exception
 	{
-		super(args, xLayout, yLayout) ;
+		super(args);
 	}
 
 	/**
@@ -83,26 +78,26 @@ extends		AbstractDistributedCVM
 	@Override
 	public void			initialise() throws Exception
 	{
-		super.initialise() ;
+		super.initialise();
 
-		String[] jvmURIs = this.configurationParameters.getJvmURIs() ;
-		boolean assemblerJVM_URI_OK = false ;
-		boolean providerJVM_URI_OK = false ;
-		boolean consumerJVM_URI_OK = false ;
-		for (int i = 0 ; i < jvmURIs.length &&
+		String[] jvmURIs = this.configurationParameters.getJvmURIs();
+		boolean assemblerJVM_URI_OK = false;
+		boolean providerJVM_URI_OK = false;
+		boolean consumerJVM_URI_OK = false;
+		for (int i = 0; i < jvmURIs.length &&
 										(!assemblerJVM_URI_OK ||
 										!providerJVM_URI_OK ||
-										!consumerJVM_URI_OK) ; i++) {
+										!consumerJVM_URI_OK); i++) {
 			if (jvmURIs[i].equals(ASSEMBLER_JVM_URI)) {
-				assemblerJVM_URI_OK = true ;
+				assemblerJVM_URI_OK = true;
 			} else if (jvmURIs[i].equals(PROVIDER_JVM_URI)) {
-				providerJVM_URI_OK = true ;
+				providerJVM_URI_OK = true;
 			} else if (jvmURIs[i].equals(CONSUMER_JVM_URI)) {
-				consumerJVM_URI_OK = true ;
+				consumerJVM_URI_OK = true;
 			}
 		}
 		assert	assemblerJVM_URI_OK && providerJVM_URI_OK &&
-												consumerJVM_URI_OK ;
+												consumerJVM_URI_OK;
 	}
 
 	/**
@@ -142,7 +137,7 @@ extends		AbstractDistributedCVM
 			String daURI =
 				AbstractComponent.createComponent(
 						DynamicAssembler.class.getCanonicalName(),
-						new Object[]{CONSUMER_JVM_URI, PROVIDER_JVM_URI}) ;
+						new Object[]{CONSUMER_JVM_URI, PROVIDER_JVM_URI});
 
 		}
 
@@ -152,10 +147,10 @@ extends		AbstractDistributedCVM
 	public static void	main(String[] args)
 	{
 		try {
-			DistributedCVM dda = new DistributedCVM(args, 2, 5) ;
-			dda.startStandardLifeCycle(15000) ;
-			Thread.sleep(5000L) ;
-			System.exit(0) ;
+			DistributedCVM dda = new DistributedCVM(args);
+			dda.startStandardLifeCycle(15000);
+			Thread.sleep(5000L);
+			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

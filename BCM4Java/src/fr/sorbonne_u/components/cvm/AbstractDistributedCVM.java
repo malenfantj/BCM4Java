@@ -162,7 +162,7 @@ import fr.sorbonne_u.components.registry.protocol.Response;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true			// no invariant yet, TODO
+ * invariant	{@code true}			// no invariant yet, TODO
  * </pre>
  * 
  * <p>Created on : 2012-05-22</p>
@@ -204,8 +204,8 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	ret != null
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code ret != null}
 	 * </pre>
 	 *
 	 * @return	a reference on the component distributed virtual machine instance running on this Java virtual machine.
@@ -233,12 +233,12 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	port != null
-	 * post	true				// no more postconditions.
+	 * pre	{@code port != null}
+	 * post	{@code true}	// no postconditions.
 	 * </pre>
 	 *
 	 * @param port			port to be published
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>todo</i>.
 	 */
 	public static void	publishPort(PortI port)
 	throws	Exception
@@ -304,12 +304,12 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	port != null
-	 * post	true				// no more postconditions.
+	 * pre	{@code port != null}
+	 * post	{@code true}	// no postconditions.
 	 * </pre>
 	 *
 	 * @param port			port to be unpublished.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>todo</i>.
 	 */
 	public static void	unpublishPort(PortI port)
 	throws	Exception
@@ -347,13 +347,13 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param remoteURI	uri identifying the port in the registry.
 	 * @return			reference to the component port.
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>todo</i>.
 	 */
 	public Remote		getRemoteReference(String remoteURI)
 	throws Exception
@@ -375,13 +375,13 @@ implements	DistributedComponentVirtualMachineI
 								"/" + remoteURI);
 			} catch (MalformedURLException e) {
 				System.out.println("MalformedURLException thrown when trying to get the remote reference of "+ remoteURI);
-				throw e ;
+				throw e;
 			} catch (RemoteException e) {
 				System.out.println("RemoteException thrown when trying to get the remote reference of "+ remoteURI);
-				throw e ;
+				throw e;
 			} catch (NotBoundException e) {
 				System.out.println("NotBoundException thrown when trying to get the remote reference of "+ remoteURI);
-				throw e ;
+				throw e;
 			}
 		} else {
 			// cd.getType() == ConnectionType.SOCKET -- NOT YET TERMINATED
@@ -413,15 +413,15 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception		<i>todo</i>.
 	 */
 	public void			waitOnCyclicBarrier() throws Exception
 	{
-		this.cyclicBarrierClient.waitBarrier() ;
+		this.cyclicBarrierClient.waitBarrier();
 	}
 
 	// -------------------------------------------------------------------------
@@ -443,53 +443,14 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	args.length &gt; 1
-	 * post	true			// TODO
+	 * pre	{@code args != null && args.length > 1}
+	 * post	{@code true}	// TODO
 	 * </pre>
 	 *
-	 * @param args	command line arguments from the main method.
-	 * @throws Exception 		<i>todo.</i>
+	 * @param args			command line arguments from the main method.
+	 * @throws Exception	<i>todo</i>.
 	 */
-	public				AbstractDistributedCVM(
-		String[] args
-		) throws Exception
-	{
-		this(args, 0, 0);
-	}
-
-	/**
-	 * instantiate the DCVM object redirecting the stdout and the stderr
-	 * to a window frame position at the coordinate
-	 * <code>(xLayout, yLayout)</code> among the similar frames created
-	 * by the same application  (e.g., xLayout = 1 and yLayout = 1 will
-	 * put the frame at the right and below the origin frame).
-	 * 
-	 * <p><strong>Description</strong></p>
-	 * 
-	 * The constructor gets from the command line arguments the logical
-	 * name of the current JVM in the assembly and the name of an XML
-	 * configuration file giving a mapping between the URI of hosts to their
-	 * IP addresses in the current deployment.  This JVM URI must be in the
-	 * static array JVM_URIs and all of the hosts URI in the array HOSTS_URIs
-	 * and only these ones must appear in the XML configuration file
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	args != null and args.length &gt; 1
-	 * post	true			// TODO
-	 * </pre>
-	 *
-	 * @param args		command line arguments from the main method.
-	 * @param xLayout	x coordinate of the relative position of the frame attached to the CVM.
-	 * @param yLayout	y coordinate of the relative position of the frame attached to the CVM.
-	 * @throws Exception <i>todo.</i>
-	 */
-	public				AbstractDistributedCVM(
-		String[] args,
-		int xLayout,
-		int yLayout
-		) throws Exception
+	public				AbstractDistributedCVM(String[] args) throws Exception
 	{
 		super(true, args[0]);
 
@@ -553,10 +514,10 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	!this.deploymentDone()
-	 * post	this.deploymentDone()
+	 * pre	{@code !deploymentDone()}
+	 * post	{@code deploymentDone()}
 	 * </pre>
-	 * @throws Exception 		<i>todo.</i>
+	 * @throws Exception 	<i>todo.</i>
 	 * 
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#deploy()
 	 */
@@ -596,9 +557,9 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	!this.isInitialised()
-	 * post	AbstractDistributedAssembly.theRMIRegistry != null
-	 * post	this.isInitialised()
+	 * pre	{@code !isInitialised()}
+	 * post	{@code AbstractDistributedAssembly.theRMIRegistry != null}
+	 * post	{@code isInitialised()}
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.cvm.DistributedComponentVirtualMachineI#initialise()
@@ -651,11 +612,11 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isInitialised()
-	 * post	this.isIntantiatedAndPublished()
+	 * pre	{@code isInitialised()}
+	 * post	{@code isIntantiatedAndPublished()}
 	 * </pre>
 	 * 
-	 * @throws Exception 			<i>todo.</i>
+	 * @throws Exception 	<i>todo</i>.
 	 * @see fr.sorbonne_u.components.cvm.DistributedComponentVirtualMachineI#instantiateAndPublish()
 	 */
 	@Override
@@ -694,11 +655,11 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isIntantiatedAndPublished()
-	 * post	this.isInterconnected()
+	 * pre	{@code isIntantiatedAndPublished()}
+	 * post	{@code isInterconnected()}
 	 * </pre>
 	 * 
-	 * @throws Exception 		<i>todo.</i>
+	 * @throws Exception 	<i>todo</i>.
 	 * @see fr.sorbonne_u.components.cvm.DistributedComponentVirtualMachineI#interconnect()
 	 */
 	@Override
@@ -724,11 +685,11 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.deploymentDone()
-	 * post	this.allStarted()
+	 * pre	{@code deploymentDone()}
+	 * post	{@code allStarted()}
 	 * </pre>
 
-	 * @throws Exception  <i>todo.</i>
+	 * @throws Exception  <i>todo</i>.
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#start()
 	 */
 	@Override
@@ -752,8 +713,8 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.allStarted()
-	 * post	true				// no more postconditions.
+	 * pre	{@code allStarted()}
+	 * post	{@code true}	// no postconditions.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#execute()
@@ -860,7 +821,7 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public String		logPrefix()
 	{
-		return AbstractCVM.getThisJVMURI() ;
+		return AbstractCVM.getThisJVMURI();
 	}	
 }
 // -----------------------------------------------------------------------------

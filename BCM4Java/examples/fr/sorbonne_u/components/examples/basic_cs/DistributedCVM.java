@@ -86,10 +86,10 @@ extends		AbstractDistributedCVM
 	 *  and shutdown.														*/
 	protected String	uriConsumerURI;
 
-	public				DistributedCVM(String[] args, int xLayout, int yLayout)
+	public				DistributedCVM(String[] args)
 	throws Exception
 	{
-		super(args, xLayout, yLayout);
+		super(args);
 	}
 
 	/**
@@ -245,7 +245,7 @@ extends		AbstractDistributedCVM
 
 		}
 
-		super.finalise() ;
+		super.finalise();
 	}
 
 	/**
@@ -276,7 +276,7 @@ extends		AbstractDistributedCVM
 	public static void	main(String[] args)
 	{
 		try {
-			DistributedCVM da  = new DistributedCVM(args, 2, 5);
+			DistributedCVM da  = new DistributedCVM(args);
 			da.startStandardLifeCycle(15000L);
 			Thread.sleep(10000L);
 			System.exit(0);

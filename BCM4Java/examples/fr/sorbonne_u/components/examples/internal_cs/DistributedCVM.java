@@ -69,26 +69,26 @@ import fr.sorbonne_u.components.helpers.CVMDebugModes;
 public class			DistributedCVM
 extends		AbstractDistributedCVM
 {
-	protected static final String	PROVIDER_COMPONENT_URI = "my-URI-provider" ;
-	protected static final String	CONSUMER_COMPONENT_URI = "my-URI-consumer" ;
+	protected static final String	PROVIDER_COMPONENT_URI = "my-URI-provider";
+	protected static final String	CONSUMER_COMPONENT_URI = "my-URI-consumer";
 
 	// URI of the CVM instances as defined in the config.xml file
-	protected static String			PROVIDER_JVM_URI = "provider" ;
-	protected static String			CONSUMER_JVM_URI = "consumer" ;
+	protected static String			PROVIDER_JVM_URI = "provider";
+	protected static String			CONSUMER_JVM_URI = "consumer";
 
-	protected static String			URIProviderInboundPortURI = "iport" ;
+	protected static String			URIProviderInboundPortURI = "iport";
 
 	/** Reference to the provider component to share between deploy
 	 *  and shutdown.													*/
-	protected String	uriProviderURI ;
+	protected String	uriProviderURI;
 	/** Reference to the consumer component to share between deploy
 	 *  and shutdown.													*/
-	protected String	uriConsumerURI ;
+	protected String	uriConsumerURI;
 
-	public				DistributedCVM(String[] args, int xLayout, int yLayout)
+	public				DistributedCVM(String[] args)
 	throws Exception
 	{
-		super(args, xLayout, yLayout);
+		super(args);
 	}
 
 	/**
@@ -119,7 +119,7 @@ extends		AbstractDistributedCVM
 		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.CALLING);
 		AbstractCVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
 
-		super.initialise() ;
+		super.initialise();
 		// any other application-specific initialisation must be put here
 
 	}
@@ -146,13 +146,13 @@ extends		AbstractDistributedCVM
 					AbstractComponent.createComponent(
 							URIProvider.class.getCanonicalName(),
 							new Object[]{PROVIDER_COMPONENT_URI,
-										 URIProviderInboundPortURI}) ;
-			assert	this.isDeployedComponent(this.uriProviderURI) ;
+										 URIProviderInboundPortURI});
+			assert	this.isDeployedComponent(this.uriProviderURI);
 			// make it trace its operations; comment and uncomment the line to see
 			// the difference
-			this.toggleTracing(this.uriProviderURI) ;
-			this.toggleLogging(this.uriProviderURI) ;
-			assert	this.uriConsumerURI == null && this.uriProviderURI != null ;
+			this.toggleTracing(this.uriProviderURI);
+			this.toggleLogging(this.uriProviderURI);
+			assert	this.uriConsumerURI == null && this.uriProviderURI != null;
 
 		} else if (thisJVMURI.equals(CONSUMER_JVM_URI)) {
 
@@ -161,17 +161,17 @@ extends		AbstractDistributedCVM
 					AbstractComponent.createComponent(
 							URIConsumer.class.getCanonicalName(),
 							new Object[]{CONSUMER_COMPONENT_URI,
-									URIProviderInboundPortURI}) ;
-			assert	this.isDeployedComponent(this.uriConsumerURI) ;
+									URIProviderInboundPortURI});
+			assert	this.isDeployedComponent(this.uriConsumerURI);
 			// make it trace its operations; comment and uncomment the line to see
 			// the difference
-			this.toggleTracing(this.uriConsumerURI) ;
-			this.toggleLogging(this.uriConsumerURI) ;
-			assert	this.uriConsumerURI != null && this.uriProviderURI == null ;
+			this.toggleTracing(this.uriConsumerURI);
+			this.toggleLogging(this.uriConsumerURI);
+			assert	this.uriConsumerURI != null && this.uriProviderURI == null;
 
 		} else {
 
-			System.out.println("Unknown JVM URI... " + thisJVMURI) ;
+			System.out.println("Unknown JVM URI... " + thisJVMURI);
 
 		}
 
@@ -181,10 +181,10 @@ extends		AbstractDistributedCVM
 	public static void	main(String[] args)
 	{
 		try {
-			DistributedCVM da  = new DistributedCVM(args, 2, 5) ;
-			da.startStandardLifeCycle(15000L) ;
-			Thread.sleep(10000L) ;
-			System.exit(0) ;
+			DistributedCVM da  = new DistributedCVM(args);
+			da.startStandardLifeCycle(15000L);
+			Thread.sleep(10000L);
+			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

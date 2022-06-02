@@ -1,8 +1,5 @@
 package fr.sorbonne_u.components.examples.pingpong;
 
-import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.cvm.AbstractCVM;
-
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -40,6 +37,8 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.pingpong.components.PingPongPlayer;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
+import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 
 //-----------------------------------------------------------------------------
 /**
@@ -99,45 +98,41 @@ public class				DistributedCVM
 extends		AbstractDistributedCVM
 {
 	/** URI of the player 1 JVM.											*/
-	public final static String	PLAYER1_JVM_URI = "player1jvm" ;
+	public final static String	PLAYER1_JVM_URI = "player1jvm";
 	/** URI of the player 2 JVM.											*/
-	public final static String	PLAYER2_JVM_URI = "player2jvm" ;
+	public final static String	PLAYER2_JVM_URI = "player2jvm";
 	/** URI of the two way port of the first player.						*/
-	public final static String	PING_PONG_URI_1 = "player1" ;
+	public final static String	PING_PONG_URI_1 = "player1";
 	/** URI of the two way port of the second player.						*/
-	public final static String	PING_PONG_URI_2 = "player2" ;
+	public final static String	PING_PONG_URI_2 = "player2";
 	/** URI of the inbound port of the first player.						*/
 	public final static String	PLAYER1_PING_PONG_INBOUND_PORT_URI =
-														"player1ibpURI" ;
+														"player1ibpURI";
 	/** URI of the inbound port of the second player.						*/
 	public final static String	PLAYER2_PING_PONG_INBOUND_PORT_URI =
-														"player2ibpURI" ;
+														"player2ibpURI";
 	/** URI of the outbound port of the first player.						*/
 	public final static String	PLAYER1_PING_PONG_DATA_OUTBOUND_PORT_URI =
-														"player1dobpURI" ;
+														"player1dobpURI";
 	/** URI of the inbound port of the first player.						*/
 	public final static String	PLAYER1_PING_PONG_DATA_INBOUND_PORT_URI =
-														"player1dibpURI" ;
+														"player1dibpURI";
 	/** URI of the outbound port of the second player.						*/
 	public final static String	PLAYER2_PING_PONG_DATA_OUTBOUND_PORT_URI =
-														"player2dobpURI" ;
+														"player2dobpURI";
 	/** URI of the inbound port of the second player.						*/
 	public final static String	PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI =
-														"player2dibpURI" ;
+														"player2dibpURI";
 	/** URI of the two way port of the first player.						*/
 	public final static String	PLAYER1_PING_PONG_TWOWAY_PORT_URI =
-														"player1twpURI" ;
+														"player1twpURI";
 	/** URI of the two way port of the second player.						*/
 	public final static String	PLAYER2_PING_PONG_TWOWAY_PORT_URI =
-														"player2twpURI" ;
+														"player2twpURI";
 
-	public				DistributedCVM(
-		String[] args,
-		int xLayout,
-		int yLayout
-		) throws Exception
+	public				DistributedCVM(String[] args) throws Exception
 	{
-		super(args, xLayout, yLayout) ;
+		super(args);
 	}
 
 	/**
@@ -177,8 +172,8 @@ extends		AbstractDistributedCVM
 									 PLAYER2_PING_PONG_DATA_OUTBOUND_PORT_URI,
 									 PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
 									 PLAYER1_PING_PONG_TWOWAY_PORT_URI,
-									 PLAYER2_PING_PONG_TWOWAY_PORT_URI}) ;
-				this.toggleTracing(pp1URI) ;
+									 PLAYER2_PING_PONG_TWOWAY_PORT_URI});
+				this.toggleTracing(pp1URI);
 		} else if (thisJVMURI.equals(PLAYER2_JVM_URI)) {
 			// A second player that is initially passive.
 			String pp2URI =
@@ -193,10 +188,10 @@ extends		AbstractDistributedCVM
 									 PLAYER2_PING_PONG_DATA_OUTBOUND_PORT_URI,
 									 PLAYER2_PING_PONG_DATA_INBOUND_PORT_URI,
 									 PLAYER2_PING_PONG_TWOWAY_PORT_URI,
-									 PLAYER1_PING_PONG_TWOWAY_PORT_URI}) ;
-				this.toggleTracing(pp2URI) ;
+									 PLAYER1_PING_PONG_TWOWAY_PORT_URI});
+				this.toggleTracing(pp2URI);
 		} else {
-			throw new Exception("Unknown JVM URI: " + thisJVMURI) ;
+			throw new Exception("Unknown JVM URI: " + thisJVMURI);
 		}
 		super.instantiateAndPublish();
 	}
@@ -204,10 +199,10 @@ extends		AbstractDistributedCVM
 	public static void		main(String[] args)
 	{
 		try {
-			DistributedCVM cvm = new DistributedCVM(args, 2, 5) ;
-			cvm.startStandardLifeCycle(60000L) ;
-			Thread.sleep(5000L) ;
-			System.exit(0) ;
+			DistributedCVM cvm = new DistributedCVM(args);
+			cvm.startStandardLifeCycle(60000L);
+			Thread.sleep(5000L);
+			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		

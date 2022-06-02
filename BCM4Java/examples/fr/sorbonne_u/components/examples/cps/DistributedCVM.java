@@ -1,8 +1,5 @@
 package fr.sorbonne_u.components.examples.cps;
 
-import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.cvm.AbstractCVM;
-
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -37,6 +34,8 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.cps.components.RandomValueProvider;
 import fr.sorbonne_u.components.examples.cps.components.ValueConsumer;
@@ -63,16 +62,16 @@ public class				DistributedCVM
 extends		AbstractDistributedCVM
 {
 	protected static final String	VALUE_PROVIDER_JVM_URI =
-														"ValueProvider" ;
+														"ValueProvider";
 	protected static final String	VALUE_CONSUMER_JVM_URI =
-														"ValueConsumer" ;
+														"ValueConsumer";
 	protected static final String	VALUE_PROVIDER_INBOUND_PORT_URI =
-												"value-provider-inbound-port" ;
+												"value-provider-inbound-port";
 
-	public				DistributedCVM(String[] args, int xLayout, int yLayout)
+	public				DistributedCVM(String[] args)
 	throws Exception
 	{
-		super(args, xLayout, yLayout) ;
+		super(args);
 	}
 
 	/**
@@ -102,16 +101,16 @@ extends		AbstractDistributedCVM
 			String vcURI =
 				AbstractComponent.createComponent(
 						ValueConsumer.class.getCanonicalName(),
-						new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI}) ;
-			this.toggleTracing(vcURI) ;
+						new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI});
+			this.toggleTracing(vcURI);
 		} else if (thisJVMURI.equals(VALUE_PROVIDER_JVM_URI)) {
 			String rvpURI =
 				AbstractComponent.createComponent(
 						RandomValueProvider.class.getCanonicalName(),
-						new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI}) ;
-			this.toggleTracing(rvpURI) ;
+						new Object[]{VALUE_PROVIDER_INBOUND_PORT_URI});
+			this.toggleTracing(rvpURI);
 		} else {
-			throw new Exception("Uknown JVM URI: " + thisJVMURI) ;
+			throw new Exception("Uknown JVM URI: " + thisJVMURI);
 		}
 		super.instantiateAndPublish();
 	}
@@ -119,10 +118,10 @@ extends		AbstractDistributedCVM
 	public static void	main(String[] args)
 	{
 		try {
-			DistributedCVM a = new DistributedCVM(args, 2, 5) ;
-			a.startStandardLifeCycle(5000L) ;
-			Thread.sleep(5000L) ;
-			System.exit(0) ;
+			DistributedCVM a = new DistributedCVM(args);
+			a.startStandardLifeCycle(5000L);
+			Thread.sleep(5000L);
+			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

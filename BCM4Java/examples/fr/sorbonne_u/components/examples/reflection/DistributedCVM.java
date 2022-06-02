@@ -1,7 +1,5 @@
 package fr.sorbonne_u.components.examples.reflection;
 
-import fr.sorbonne_u.components.AbstractComponent;
-
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
 //Jacques.Malenfant@lip6.fr
@@ -37,6 +35,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.examples.reflection.components.ReflectionClient;
 import fr.sorbonne_u.components.examples.reflection.components.ReflectionServer;
 
@@ -71,14 +70,14 @@ import fr.sorbonne_u.components.examples.reflection.components.ReflectionServer;
 public class				DistributedCVM
 extends		AbstractDistributedCVM
 {
-	protected static String		SERVER_JVM_URI = "server" ;
-	protected static String		CLIENT_JVM_URI = "client" ;
-	protected static String		SERVER_RIP_URI = "server-rip" ;
+	protected static String		SERVER_JVM_URI = "server";
+	protected static String		CLIENT_JVM_URI = "client";
+	protected static String		SERVER_RIP_URI = "server-rip";
 
-	public				DistributedCVM(String[] args, int xLayout, int yLayout)
+	public				DistributedCVM(String[] args)
 	throws Exception
 	{
-		super(args, xLayout, yLayout);
+		super(args);
 	}
 
 	/**
@@ -91,27 +90,27 @@ extends		AbstractDistributedCVM
 
 			AbstractComponent.createComponent(
 					ReflectionServer.class.getCanonicalName(),
-					new Object[]{SERVER_RIP_URI}) ;
+					new Object[]{SERVER_RIP_URI});
 
 		} else if (thisJVMURI.equals(CLIENT_JVM_URI)) {
 
 			AbstractComponent.createComponent(
 					ReflectionClient.class.getCanonicalName(),
-					new Object[]{SERVER_RIP_URI}) ;
+					new Object[]{SERVER_RIP_URI});
 
 		} else {
 
-			System.out.println("Unknown JVM URI... " + thisJVMURI) ;
+			System.out.println("Unknown JVM URI... " + thisJVMURI);
 		}
-		super.instantiateAndPublish() ;
+		super.instantiateAndPublish();
 	}
 
 	public static void	main(String[] args)
 	{
 		try {
-			DistributedCVM dcvm = new DistributedCVM(args, 2, 5) ;
-			dcvm.startStandardLifeCycle(1000L) ;
-			Thread.sleep(10000L) ;
+			DistributedCVM dcvm = new DistributedCVM(args);
+			dcvm.startStandardLifeCycle(1000L);
+			Thread.sleep(10000L);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
