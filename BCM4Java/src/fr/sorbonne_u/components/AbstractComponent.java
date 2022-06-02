@@ -2511,7 +2511,7 @@ implements	ComponentI
 						String uri = pluginAnnotations[i].pluginURI();
 						Class<? extends PluginI> pluginClass =
 								pluginAnnotations[i].pluginClass();
-						PluginI p = pluginClass.newInstance();
+						PluginI p = pluginClass.getConstructor().newInstance();
 						p.setPluginURI(uri);
 						this.installPlugin(p);
 					}
@@ -2523,7 +2523,7 @@ implements	ComponentI
 				String uri = pluginAnnotation.pluginURI();
 				Class<? extends PluginI> pluginClass =
 											pluginAnnotation.pluginClass();
-				PluginI p = pluginClass.newInstance();
+				PluginI p = pluginClass.getConstructor().newInstance();
 				p.setPluginURI(uri);
 				this.installPlugin(p);
 			}
