@@ -3982,7 +3982,7 @@ implements	ComponentI
 	 * @see fr.sorbonne_u.components.ComponentI#execute()
 	 */
 	@Override
-	public synchronized void	execute() throws Exception
+	public void				execute() throws Exception
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");	
 
