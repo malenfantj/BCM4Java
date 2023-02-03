@@ -1,0 +1,117 @@
+<!-- fr.sorbonne_u.utils.aclock -------------------------------------------- -->
+<html>
+<body>
+<p><b>Accelerated clocks for time-triggered test scenarios in BCM4Java.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide an extension
+of the BCM component model that aims to define a components tailored for
+cyber-physical control systems (CPCS) for Java.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+This package defines accelerated clocks and clocks server components which
+purpose is to simplify the implementation of time-triggered test scenarios for
+BCM4Java applications.
+</p>
+<p><i>Work in progress...</i></p>
+<p>
+Accelerated clocks are clock that can manage multiple time lines in synchrony.
+In the current implementations, the class <code>AcceleratedClock</code> maintains
+the time line of Unix epoch current time and a time line defined by the Java
+standard class <code>Instant</code>, with an acceleration factor that can shrink
+the <code>Instant</code> onto the Unix epoch time line so that a time-triggered
+test scenario can be defined in an <code>Instant</code> time line and executed
+in real time but in much less time than an actual real time execution would.
+For example, a scenario that would take a day to execute in actual real time
+can be accelerated to execute within minutes.
+</p>
+<p>
+The major issue when performing accelerated time-triggered test scenarios is to
+synchronise actions among multiple possibly distributed components. Real time
+executions can be accelerated to execute faster than actual real time yet
+maintaining a linear relationship with the actual real time. If the same
+acceleration factor used to map instants to Unix epoch time and a base start
+time by all components, be them distributed, it becomes possible to maintain
+the synchrony between scheduled actions in the program at given time instants.
+</p>
+<p>
+<code>AcceleratedClock</code> is therefore instantiated with a Unix epoch start
+time and a start <code>Instant</code> providing a first point of synchronisation
+between the two time lines. It is also given an acceleration factor. The class
+then provides methods to compute the instant corresponding to some (<i>e.g.</i>,
+current) Unix epoch time (happening after the start) and the Unix epoch time
+corresponding to some (<i>e.g.</i>, current) instant. It also provides methods
+to compute the delay in Unix epoch time until some instant so that this delay
+can be used with standard Java scheduling methods defined on Java standard
+scheduled executor services. Hence, if a scenario calls for the execution of an
+action in software at some instant I in the future, these methods returns a
+delay at which this action must be scheduled to occur at the right real time
+to synchronise with the simulation.
+</p>
+<p>
+The class <code>ClocksServer</code> implements a component that allows to share
+accelerated clocks among several components, even distributed. The component
+provides a service to create a new clock and a service to retrieve a
+previously created clock. As the accelerated clock time evolution is based on
+the hardware clock of the clock host, copies of the same clock (with the same
+start time, start instant and acceleration factor) will provide the same
+results to the same method calls. Indeed, when used in a distributed execution,
+this is true only to the extent at which the clocks of the different hosts are
+themselves kept in synchrony. The precision at which the synchronisation
+between the copies of a clock is maintained is therefore limited to the
+precision and synchronisation of their underlying hardware clocks.
+</p>
+
+</body>
+</html>
+<!-- ----------------------------------------------------------------------- -->
