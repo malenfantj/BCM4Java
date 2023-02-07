@@ -105,7 +105,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <li>{@code unixEpochTimeInNanosFromInstant} takes an accelerated instant
  *   and return the corresponding Unix epoch time in nanoseconds given the
  *   Unix epoch start time.</li>
- * <li>{@code delayToAcceleratedInstantInNanos} takes an accelerated instant
+ * <li>{@code nanoDelayUntilAcceleratedInstant} takes an accelerated instant
  *   return the delay in nanoseconds from the current system time to the moment
  *   in Unix epoch real time at which some computation must be scheduled on a
  *   thread to execute as if it happens at the provided instant in accelerated
@@ -113,21 +113,21 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  *   instant {@code I} and a Unix epoch system time T. Then, assume that the
  *   program wants to schedule some computation to be executed 10 minutes after
  *   {@code I} in accelerated time. In this situation, the call
- *   {@code delayToAcceleratedInstantInNanos(I.plusSeconds(600))} returns
+ *   {@code nanoDelayUntilAcceleratedInstant(I.plusSeconds(600))} returns
  *   the delay d in real time (and in nanoseconds) to be used immediately in
  *   order to schedule the computation so that it will execute at
  *   {@code I.plusSeconds(600)} in accelerated time.</li>
- * <li>{@code delayToAcceleratedInstantInNanosFrom} performs the same
- *   computation but with a delay from the given system time in milliseconds
- *   rather than from the current system time.</li>
+ * <li>{@code nanoDelayToAcceleratedInstantFromEpochTime} performs the same
+ *   computation but to give a delay from a given system epoch time in
+ *   milliseconds rather than from the current system time.</li>
  * </ul>
  * <p>
  * The computations of the delays are correct only after the start time has been
- * reached. When the start time in Unix epoch time is in the future, the method
- * {@code waitUntilStartInMillis} returns the time in milliseconds to wait until
- * the start time. Hence, the start of a scenario can be postponed by a
- * {@code Thread.sleep}, with the value returned by
- * {@code waitUntilStartInMillis}.
+ * reached. The method {@code startTimeNotReached} allows to test if the start
+ * has not been reached yet. When the start time is still in the future, the
+ * method {@code waitUntilStart} will block the calling thread until the start
+ * time is reached. The method {@code waitingDelayUntilStartInMillis} returns
+ * the remaining time in milliseconds until the start time.
  * </p>
  * 
  * <p><strong>White-box Invariant</strong></p>
@@ -155,17 +155,17 @@ implements	Serializable
 	// Constants and variables
 	// -------------------------------------------------------------------------
 
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID = 1L;
 	/** when true, trace actions.											*/
-	protected static final boolean		VERBOSE = false;
+	public static boolean		VERBOSE = false;
 
 	/** acceleration factor between durations in Unix epoch system time
 	 *  and durations between instants.										*/
-	protected final double				accelerationFactor;
+	protected final double		accelerationFactor;
 	/** start time in Unix epoch system time.								*/
-	protected final long				unixEpochStartTimeInNanos;
+	protected final long		unixEpochStartTimeInNanos;
 	/** start instant.														*/
-	protected final Instant				startInstant;
+	protected final Instant		startInstant;
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -188,8 +188,7 @@ implements	Serializable
 	public				AcceleratedClock(double accelerationFactor)
 	{
 		assert	accelerationFactor > 0.0 :
-				new AssertionError("Precondition error: "
-										+ "accelerationFactor > 0.0");
+				new PreconditionException("accelerationFactor > 0.0");
 
 		this.unixEpochStartTimeInNanos =
 				TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
@@ -404,6 +403,7 @@ implements	Serializable
 
 		if (VERBOSE) {
 			System.out.println(
+					"AcceleratedClock#currentInstant " +
 					Instant.now() + " -- " + elapsedInNanos + " -- "+ ret);
 		}
 
@@ -415,8 +415,7 @@ implements	Serializable
 	}
 
 	/**
-	 * return the time in milliseconds to wait until the start time defined for
-	 * this clock; if the result is less than 0, the start time is passed.
+	 * return	true if the start time of the clock has not been reached.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -425,12 +424,57 @@ implements	Serializable
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
+	 * @return	true if the start time of the clock has not been reached.
+	 */
+	public boolean		startTimeNotReached()
+	{
+		return TimeUnit.NANOSECONDS.toMillis(this.unixEpochStartTimeInNanos)
+												> System.currentTimeMillis();
+	}
+	/**
+	 * return the time in milliseconds to wait until the start time defined for
+	 * this clock; if the result is less than 0, the start time is passed.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code startTimeNotReached()}
+	 * post	{@code ret > 0}
+	 * </pre>
+	 *
 	 * @return	the time in milliseconds to wait until the start time defined for this clock.
 	 */
 	public long			waitingDelayUntilStartInMillis()
 	{
+		assert	this.startTimeNotReached() :
+				new PreconditionException("startTimeNotReached()");
+
 		return TimeUnit.NANOSECONDS.toMillis(this.unixEpochStartTimeInNanos)
 												- System.currentTimeMillis();
+	}
+
+	/**
+	 * block the calling thread until the start time of the clock has been
+	 * reached.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code startTimeNotReached()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @throws InterruptedException	<i>to do</i>.
+	 */
+	public void			waitUntilStart() throws InterruptedException
+	{
+		assert	this.startTimeNotReached() :
+				new PreconditionException("startTimeNotReached()");
+
+		long delay = this.waitingDelayUntilStartInMillis();
+		if (delay > 0) {
+			Thread.sleep(delay);
+		}
 	}
 
 	/**
@@ -527,7 +571,7 @@ implements	Serializable
 	{
 		assert	acceleratedInstant != null &&
 								acceleratedInstant.isAfter(currentInstant()) :
-				new PostconditionException(
+				new PreconditionException(
 							"acceleratedInstant != null && "
 							+ "acceleratedInstant.isAfter(currentInstant())");
 
@@ -546,8 +590,12 @@ implements	Serializable
 		long delayInNanos = forseenInNanos - currentInNanos;
 
 		if (VERBOSE) {
-			System.out.println(accElapsedInNanos + " ++ " + realElapsedInNanos);
-			System.out.println(this.unixEpochStartTimeInNanos + " ++ "
+			System.out.println(
+					"AcceleratedClock#nanoDelayUntilAcceleratedInstant 1 "
+					+ accElapsedInNanos + " ++ " + realElapsedInNanos);
+			System.out.println(
+					"AcceleratedClock#nanoDelayUntilAcceleratedInstant 2 "
+					+ this.unixEpochStartTimeInNanos + " ++ "
 								+ currentInNanos + " -- " + forseenInNanos);
 		}
 
@@ -610,9 +658,11 @@ implements	Serializable
 						TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis);
 
 		if (VERBOSE) {
-			System.out.println(this.unixEpochStartTimeInNanos + " ++ " +
-				TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis) + 
-				" -- " + forseenInNanos);
+			System.out.println(
+				"AcceleratedClock#nanoDelayToAcceleratedInstantFromEpochTime "
+				+ this.unixEpochStartTimeInNanos + " ++ "
+				+ TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)
+				+ " -- " + forseenInNanos);
 		}
 
 		assert	delayInNanos >= 0 : new PostconditionException("ret >= 0");
