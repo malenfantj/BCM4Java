@@ -89,9 +89,9 @@ implements	ProcessingI
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param transmissionInboundPortURI		URI of the inbound port of this component.
-	 * @param nextTransmissionInboundPortURI	URI of the inbound port of the next component in the data processing pipeline.
-	 * @throws Exception						<i>todo</i>.
+	 * @param transmissionInboundPortURI			URI of the inbound port of this component.
+	 * @param nextProcessingComponentInboundPortURI	URI of the inbound port of the next component in the data processing pipeline.
+	 * @throws Exception							<i>todo</i>.
 	 */
 	protected			Processor(
 		String transmissionInboundPortURI,
