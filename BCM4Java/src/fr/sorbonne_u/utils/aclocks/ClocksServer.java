@@ -149,8 +149,9 @@ extends		AbstractComponent
 	// -------------------------------------------------------------------------
 
 	/**
-	 * create the clock server component with an inbound port having as URI the
-	 * value of {@code STANDARD_INBOUNDPORT_URI}.
+	 * create the clock server component with an inbound port offering the
+	 * component interface {@code ClocksServerCI} with as URI the value of
+	 * {@code STANDARD_INBOUNDPORT_URI}.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -168,9 +169,10 @@ extends		AbstractComponent
 	}
 
 	/**
-	 * create the clock server component with a clock created from the given
-	 * parameters with an inbound port having as URI the value of
-	 * {@code STANDARD_INBOUNDPORT_URI}..
+	 * create the clock server component with an inbound port offering the
+	 * component interface {@code ClocksServerCI} with as URI the value of
+	 * {@code STANDARD_INBOUNDPORT_URI}; the created clock server component
+	 * will also have a first clock created from the given parameters.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -185,7 +187,7 @@ extends		AbstractComponent
 	 * post	{@code getClock(clockURI).getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
-	 * @param clockURI					URI designating the created clock.
+	 * @param clockURI					URI designating the first created clock.
 	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time expressed in nanoseconds.
 	 * @param startInstant				start instant to be aligned with the {@code unixEpochStartTimeInNanos}.
 	 * @param accelerationFactor		acceleration factor to be applied between elapsed time as {@code Instant} and elapsed time as Unix epoch time in nanoseconds.
@@ -205,8 +207,38 @@ extends		AbstractComponent
 	}
 
 	/**
+	 * create the clock server component with an inbound port offering the
+	 * component interface {@code ClocksServerCI} having the given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param inboundPortURI	URI of the inbound port offering the {@code ClockServerCI} component interface.
+	 * @throws Exception 		<i>to do</i>.
+	 */
+	protected			ClocksServer(
+		String inboundPortURI
+		) throws Exception
+	{
+		super(1, 0);
+
+		assert	inboundPortURI != null && !inboundPortURI.isEmpty() :
+				new PreconditionException(
+						"inboundPortURI != null && !inboundPortURI.isEmpty()");
+
+		this.inboundPortURI = inboundPortURI;
+		this.clocks = new HashMap<>();
+		this.initialise();
+	}
+
+	/**
 	 * create the clock server component with an inbound port having the
-	 * given URI.
+	 * given reflection inbound port URI and the given URI for the inbound
+	 * port offering the component interface {@code ClocksServerCI}.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -227,8 +259,8 @@ extends		AbstractComponent
 		super(reflectionInboundPortURI, 1, 0);
 
 		assert	inboundPortURI != null && !inboundPortURI.isEmpty() :
-			new PreconditionException(
-					"inboundPortURI != null && !inboundPortURI.isEmpty()");
+				new PreconditionException(
+						"inboundPortURI != null && !inboundPortURI.isEmpty()");
 
 		this.inboundPortURI = inboundPortURI;
 		this.clocks = new HashMap<>();
@@ -236,8 +268,52 @@ extends		AbstractComponent
 	}
 
 	/**
-	 * create the clock server component with the given parameters, and more
-	 * specifically the given inbound port URI.
+	 * create the clock server component with an inbound port having the given
+	 * URI for the inbound port offering the component interface
+	 * {@code ClocksServerCI}; the created clock server component will also have
+	 * a first clock created from the given parameters..
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
+	 * pre	{@code getClock(clockURI) == null}
+	 * pre	{@code unixEpochStartTimeInNanos > 0}
+	 * pre	{@code startInstant != null}
+	 * pre	{@code accelerationFactor > 0.0}
+	 * post	{@code getClock(clockURI) != null}
+	 * post	{@code getClock(clockURI).getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code getClock(clockURI).getStartInstant().equals(startInstant)}
+	 * post	{@code getClock(clockURI).getAccelerationFactor() == accelerationFactor}
+	 * </pre>
+	 *
+	 * @param inboundPortURI			URI of the inbound port offering the {@code ClockServerCI} component interface.
+	 * @param clockURI					URI designating the created clock.
+	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time expressed in nanoseconds.
+	 * @param startInstant				start instant to be aligned with the {@code unixEpochStartTimeInNanos}.
+	 * @param accelerationFactor		acceleration factor to be applied between elapsed time as {@code Instant} and elapsed time as Unix epoch time in nanoseconds.
+	 * @throws Exception 				<i>to do</i>.
+	 */
+	protected			ClocksServer(
+		String inboundPortURI,
+		String clockURI,
+		long unixEpochStartTimeInNanos,
+		Instant	startInstant,
+		double accelerationFactor
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(ReflectionCI.class),
+			 inboundPortURI, clockURI, unixEpochStartTimeInNanos,
+			 startInstant, accelerationFactor);
+	}
+
+	/**
+	 * create the clock server component with an inbound port having the
+	 * given reflection inbound port URI and the given URI for the inbound
+	 * port offering the component interface {@code ClocksServerCI}; the created
+	 * clock server component will also have a first clock created from the
+	 * given parameters..
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
