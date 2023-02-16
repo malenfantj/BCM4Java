@@ -37,6 +37,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+
+import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -149,7 +152,7 @@ public class			AbstractComponentHelper
 	 * 
 	 * <pre>
 	 * pre	{@code cl != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param cl	a class to be checked.
@@ -157,13 +160,33 @@ public class			AbstractComponentHelper
 	 */
 	public static boolean	isComponentClass(Class<?> cl)
 	{
-		assert	cl != null :
-					new PreconditionException("cl != null");
+		assert	cl != null : new PreconditionException("cl != null");
 
 		// All component classes must inherit from AbstractComponent
-		boolean ret = AbstractComponent.class.isAssignableFrom(cl) ;
+		boolean ret = AbstractComponent.class.isAssignableFrom(cl);
+		if (!ret) {
+			throw new RuntimeException(
+					new BCMException(
+							"The class " + cl.getSimpleName() + " must extend "
+							+ AbstractComponent.class.getSimpleName()
+							+ " to implement a BCM4Java component."));
+		}
+		// Component classes never implement a component interface
+		ret &= !ComponentInterface.class.isAssignableFrom(cl);
+		if (!ret) {
+			throw new RuntimeException(
+					new BCMException(
+							"The class " + cl.getSimpleName()
+							+ " must never implement a component interface!"));
+		}
 		// Component classes can only have protected constructors
-		ret &= protectedConstructorsOnly(cl) ;
+		ret &= protectedConstructorsOnly(cl);
+		if (!ret) {
+			throw new RuntimeException(
+					new BCMException(
+							"The class " + cl.getSimpleName()
+							+ " must not have public constructors!"));
+		}
 		return ret  ;
 	}
 
