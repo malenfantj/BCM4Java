@@ -1,0 +1,123 @@
+<!-- fr.sorbonne_u.components.plugins.asynccall ---------------------------- -->
+<html>
+<body>
+<p><b>Limited form of asynchronous calls with future for BCM.</b></p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<table border="2" width="100%">
+<tr><th align="left" colspan="1">Licence</th></tr>
+<tr>
+<td width="100%">
+<p>Copyright Jacques Malenfant, Sorbonne Universite.</p>
+<p>Jacques.Malenfant@lip6.fr</p>
+
+<p>
+This software is a computer program whose purpose is to provide an extension
+of the BCM component model that aims to define a real time components for Java.
+</p>
+<p>
+This software is governed by the
+<a href="../../../../images/Licence_CeCILL-C_V1-en.html">CeCILL-C</a>
+license under French law and
+abiding by the rules of distribution of free software.  You can use,
+modify and/ or redistribute the software under the terms of the
+CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+URL <a href="http://www.cecill.info">http://www.cecill.info</a>.
+</p>
+<p>
+As a counterpart to the access to the source code and  rights to copy,
+modify and redistribute granted by the license, users are provided only
+with a limited warranty  and the software's author,  the holder of the
+economic rights,  and the successive licensors  have only  limited
+liability. 
+</p>
+<p>
+In this respect, the user's attention is drawn to the risks associated
+with loading,  using,  modifying and/or developing or reproducing the
+software by the user in light of its specific status of free software,
+that may mean  that it is complicated to manipulate,  and  that  also
+therefore means  that it is reserved for developers  and  experienced
+professionals having in-depth computer knowledge. Users are therefore
+encouraged to load and test the software's suitability as regards their
+requirements in conditions enabling the security of their systems and/or 
+data to be ensured and,  more generally, to use and operate it in the 
+same conditions as regards security. 
+</p>
+<p>
+The fact that you are presently reading this means that you have had
+knowledge of the CeCILL-C license and that you accept its terms.
+</p>
+</td>
+</tr>
+</table>
+
+<p>
+This package provides a limited form of inter-component asynchronous calls with
+future for BCM. The salient characteristics of this plug-in are:
+</p>
+<ul>
+<li>calls themselves use a Command pattern where all calls are instances of
+  a class extending <code>AbstractAsyncCall</code>;</li>
+<li>calls as instances of <code>AbstractAsyncCall</code> subclasses are
+  passed to the server component through the <code>AsyncCallCI</code>
+  component interface and its <code>asyncCall</code> method;</li>
+<li>results are returned to the client component through the
+  <code>AsyncCallResultReceptionCI</code> component interface and its
+  <code>acceptResult</code> method;</li>
+<li>client and server components that wish to use asynchronous calls do
+  so by installing the <code>AsyncCallClientPlugin</code> and
+  <code>AsyncCallServerPlugin</code> respectively;</li>
+<li>when performing an asynchronous call with the <code>asyncCall</code>
+  method offered by <code>AsyncCallClientPlugin</code>, client components code
+  gets a local future variable to hold the result that can be used to
+  synchronise with its reception.</li>
+</ul>
+<p>
+Conceptually, in Java, an asynchronous call would return a future variable upon
+which the caller can synchronise over the return of the result of its call
+when necessary. It indeed allows the caller to perform some operations after
+the asynchronous call until it needs the result of this call, and therefore
+providing some parallelism between the caller and the callee.
+</p>
+<p>
+Calls between BCM components cannot directly use standard Java future objects
+because they may be done with RMI and Java future objects are not serialisable.
+Here, we use the following idea:.
+</p>
+<ol>
+<li>the caller performs the calls as an asynchronous one using a predefined
+  interface called <code>AsyncCallCI</code> that passes a representation of
+  the original call as a command;</li>
+<li>the command holds information to send the result back to the caller
+  component, namely the URI of an inbound port offering the
+  <code>AsyncCallResultReceptionCI</code>, through which it can send back the
+  result when available;</li>
+<li>when the call has finished on the server side, it sends the result using
+  again a standard asynchronous call <i>i.e.</i>, without future;</li>
+<li>the caller receives the result and sets a completable future that was
+  created (and immediately returned to the calling code) when the
+  asynchronous call was performed.</li>
+</ol>
+<p>
+In Java, completable future can be used to cancel an asynchronous computation.
+Here, as the call can be made on a distant server component, cancellation is
+not implemented. Hence, a specific <code>RemoteCompletableFuture</code> is
+provided which throws an exception if one tries to cancel a computation with
+it.
+</p>
+<p>
+This package defines the component interfaces, their ports and connectors, as
+well as two plug-ins for the client side and the server side respectively, and
+an abstract class for the Command pattern. A simple test of the plug-ins is
+provided as an example of its usage.
+</p>
+
+</body>
+</html>
+<!-- ----------------------------------------------------------------------- -->
