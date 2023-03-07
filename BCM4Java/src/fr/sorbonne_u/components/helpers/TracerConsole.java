@@ -12,7 +12,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no invariant.
  * </pre>
  * 
  * <p>Created on : 2020-06-24</p>
@@ -36,12 +36,12 @@ implements	TracerI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * 
+	 * create a tracer that outputs to the console.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	{@code true}	// no precondition.
 	 * post	{@code !this.isTracing()}
 	 * post	{@code !this.isSuspended()}
 	 * </pre>

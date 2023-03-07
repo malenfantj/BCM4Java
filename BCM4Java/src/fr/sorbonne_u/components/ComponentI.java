@@ -1,7 +1,5 @@
 package fr.sorbonne_u.components;
 
-import java.io.FileNotFoundException;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -44,12 +42,13 @@ import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerWindow;
+import fr.sorbonne_u.components.helpers.TracerI;
 import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
+import java.io.FileNotFoundException;
 
 // -----------------------------------------------------------------------------
 /**
@@ -800,7 +799,7 @@ public interface		ComponentI
 	 *
 	 * @param tracer	the tracer to be added.
 	 */
-	public void			setTracer(TracerWindow tracer);
+	public void			setTracer(TracerI tracer);
 
 	/**
 	 * return	true if a tracer is set on this component.

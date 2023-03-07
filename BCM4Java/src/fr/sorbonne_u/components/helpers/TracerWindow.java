@@ -60,7 +60,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// TODO
  * </pre>
  * 
  * <p>Created on : 2018-08-30</p>
@@ -118,7 +118,7 @@ implements	WindowListener,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
+	 * pre	{@code true}	// no precondition.
 	 * post	{@code !this.isTracing()}
 	 * post	{@code !this.isSuspended()}
 	 * </pre>
@@ -283,8 +283,8 @@ implements	WindowListener,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 */
@@ -316,72 +316,36 @@ implements	WindowListener,
 	// -------------------------------------------------------------------------
 
 	/**
-	 * return the screen width.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	the screen width.
+	 * @see fr.sorbonne_u.components.helpers.TracerI#getScreenWidth()
 	 */
+	@Override
 	public int			getScreenWidth()
 	{
 		return this.screenWidth ;
 	}
 
 	/**
-	 * return the screen height.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	the screen height.
+	 * @see fr.sorbonne_u.components.helpers.TracerI#getScreenHeight()
 	 */
+	@Override
 	public int			getScreenHeight()
 	{
 		return this.screenHeight;
 	}
 
 	/**
-	 * set the title of the tracer frame.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param title		title to be put on the frame.
+	 * @see fr.sorbonne_u.components.helpers.TracerI#setTitle(java.lang.String)
 	 */
+	@Override
 	public void			setTitle(String title)
 	{
 		this.title = WINDOW_TITLE_PREFIX + ":" + title;
 	}
 
 	/**
-	 * set the coordinate of the top left point in screen coordinates.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code xOrigin >= 0}
-	 * pre	{@code xOrigin < this.getScreenWidth()}
-	 * pre	{@code yOrigin >= 0}
-	 * pre	{@code yOrigin < this.getScreenHeight()}
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param xOrigin	x coordinate of the top left point in screen coordinates.
-	 * @param yOrigin	y coordinate of the top left point in screen coordinates.
+	 * @see fr.sorbonne_u.components.helpers.TracerI#setOrigin(int, int)
 	 */
+	@Override
 	public void			setOrigin(int xOrigin, int yOrigin)
 	{
 		assert	xOrigin >= 0 :
@@ -406,20 +370,9 @@ implements	WindowListener,
 	}
 
 	/**
-	 * set the tracer frame relative coordinates among the frames of the
-	 * application.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code x >= 0}
-	 * pre	{@code y >= 0}
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @param x	x relative coordinates among the frames of the application.
-	 * @param y	y relative coordinates among the frames of the application.
+	 * @see fr.sorbonne_u.components.helpers.TracerI#setRelativePosition(int, int)
 	 */
+	@Override
 	public void			setRelativePosition(int x, int y)
 	{
 		assert	x >= 0 : new PreconditionException(
@@ -434,33 +387,18 @@ implements	WindowListener,
 	}
 
 	/**
-	 * return the tracing console visibility status.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
-	 * </pre>
-	 *
-	 * @return	the tracing console visibility status.
+	 * @see fr.sorbonne_u.components.helpers.TracerI#isVisible()
 	 */
+	@Override
 	public boolean		isVisible()
 	{
 		return this.frame.isVisible();
 	}
 
 	/**
-	 * invert the visibility status of the tracing console.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	this.isTracing()
-	 * post	this.isVisible() == !this.isVisible()@pre
-	 * </pre>
-	 *
+	 * @see fr.sorbonne_u.components.helpers.TracerI#toggleVisible()
 	 */
+	@Override
 	public synchronized void		toggleVisible()
 	{
 		assert	this.isTracing();
@@ -473,12 +411,13 @@ implements	WindowListener,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true				// no more preconditions.
-	 * post	true				// no more postconditions.
+	 * pre	{@code true}	// no more preconditions.
+	 * post	{@code true}	// no more postconditions.
 	 * </pre>
 	 * 
 	 * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
 	 */
+	@Override
 	public synchronized void		windowClosing(WindowEvent evt)
 	{
 		if (this.frame != null) {

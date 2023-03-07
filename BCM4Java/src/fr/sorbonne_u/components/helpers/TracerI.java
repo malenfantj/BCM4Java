@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.helpers;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>TracerI</code> delcares the common behaviours of tracers
+ * The class <code>TracerI</code> declares the common behaviours of tracers
  * for BCM.
  *
  * <p><strong>Description</strong></p>
@@ -42,7 +42,7 @@ package fr.sorbonne_u.components.helpers;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no invariant
  * </pre>
  * 
  * <p>Created on : 2020-06-24</p>
@@ -52,14 +52,119 @@ package fr.sorbonne_u.components.helpers;
 public interface		TracerI
 {
 	/**
+	 * return the screen width; a zero-width means no access to the information.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code ret >= 0}
+	 * </pre>
+	 *
+	 * @return	the screen width.
+	 */
+	default int			getScreenWidth()	{ return 0; }
+
+	/**
+	 * return the screen height; a zero-width means no access to the information.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code ret >= 0}
+	 * </pre>
+	 *
+	 * @return	the screen height.
+	 */
+	default int			getScreenHeight()	{ return 0; }
+
+	/**
+	 * set the title of the tracer frame, if possible.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param title		title to be put on the frame.
+	 */
+	default void		setTitle(String title)	{ }
+
+	/**
+	 * set the coordinate of the top left point in screen coordinates, if
+	 * possible.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code xOrigin >= 0}
+	 * pre	{@code xOrigin < getScreenWidth()}
+	 * pre	{@code yOrigin >= 0}
+	 * pre	{@code yOrigin < getScreenHeight()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param xOrigin	x coordinate of the top left point in screen coordinates.
+	 * @param yOrigin	y coordinate of the top left point in screen coordinates.
+	 */
+	default void		setOrigin(int xOrigin, int yOrigin)	{ }
+
+	/**
+	 * set the tracer frame relative coordinates among the frames of the
+	 * application, if possible.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code x >= 0}
+	 * pre	{@code y >= 0}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param x	x relative coordinates among the frames of the application.
+	 * @param y	y relative coordinates among the frames of the application.
+	 */
+	default void		setRelativePosition(int x, int y)	{ }
+
+	/**
+	 * return the tracing console visibility status; true by default.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return	the tracing console visibility status.
+	 */
+	default boolean		isVisible() { return true; }
+
+	/**
+	 * invert the visibility status of the tracing console, if possible.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code isTracing()}
+	 * post	{@code isVisible() == !isVisible()@pre}
+	 * </pre>
+	 *
+	 */
+	default void		toggleVisible() { }
+
+	/**
 	 * toggle the tracing status.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	this.isTracing() == !this.isTracing()@pre
-	 * post	this.isTracing() == !this.isSuspended()
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code isTracing() == !isTracing()@pre}
+	 * post	{@code isTracing() == !isSuspended()}
 	 * </pre>
 	 *
 	 */
@@ -71,8 +176,8 @@ public interface		TracerI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isTracing()
-	 * post	this.isSuspended() == !this.isSuspended()@pre
+	 * pre	{@code isTracing()}
+	 * post	{@code isSuspended() == !isSuspended()@pre}
 	 * </pre>
 	 *
 	 */
@@ -84,8 +189,8 @@ public interface		TracerI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the tracing status.
@@ -98,8 +203,8 @@ public interface		TracerI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the trace suspension status.
@@ -113,11 +218,11 @@ public interface		TracerI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param message		trace message to be output.
+	 * @param message	trace message to be output.
 	 */
 	public void			traceMessage(String message);
 }

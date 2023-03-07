@@ -69,6 +69,7 @@ import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.ComponentExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.ComponentSchedulableExecutorServiceManager;
 import fr.sorbonne_u.components.helpers.Logger;
+import fr.sorbonne_u.components.helpers.TracerI;
 import fr.sorbonne_u.components.helpers.TracerWindow;
 import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
@@ -1809,9 +1810,9 @@ implements	ComponentI
 	// -------------------------------------------------------------------------
 
 	/**	The logger for this component.										*/
-	protected final AtomicReference<Logger>			executionLog;
+	protected final AtomicReference<Logger>		executionLog;
 	/** The tracer for this component.										*/
-	protected final AtomicReference<TracerWindow>	tracer;
+	protected final AtomicReference<TracerI>	tracer;
 
 	/**
 	 * return the current logger.
@@ -1938,16 +1939,16 @@ implements	ComponentI
 	 *
 	 * @return	the current tracer.
 	 */
-	protected TracerWindow	getTracer()
+	protected TracerI	getTracer()
 	{
 		return this.tracer.get();
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.ComponentI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
+	 * @see fr.sorbonne_u.components.ComponentI#setTracer(fr.sorbonne_u.components.helpers.TracerI)
 	 */
 	@Override
-	public void			setTracer(TracerWindow tracer)
+	public void			setTracer(TracerI tracer)
 	{
 		this.tracer.set(tracer);
 	}

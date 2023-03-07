@@ -38,7 +38,7 @@ import fr.sorbonne_u.components.ComponentStateI;
 import fr.sorbonne_u.components.PluginI;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.components.helpers.Logger;
-import fr.sorbonne_u.components.helpers.TracerWindow;
+import fr.sorbonne_u.components.helpers.TracerI;
 import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
@@ -203,10 +203,10 @@ implements	ReflectionCI
 		return ((ReflectionCI)this.offering).isLogging();
 	}
 	/**
-	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setTracer(fr.sorbonne_u.components.helpers.TracerWindow)
+	 * @see fr.sorbonne_u.components.reflection.interfaces.IntercessionCI#setTracer(fr.sorbonne_u.components.helpers.TracerI)
 	 */
 	@Override
-	public void			setTracer(TracerWindow tracer) throws Exception
+	public void			setTracer(TracerI tracer) throws Exception
 	{
 		((IntercessionCI)this.offering).setTracer(tracer);
 	}
