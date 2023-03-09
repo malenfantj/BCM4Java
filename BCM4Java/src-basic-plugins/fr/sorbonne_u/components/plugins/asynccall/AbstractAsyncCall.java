@@ -113,7 +113,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public abstract class	AbstractAsyncCall
-implements	Serializable
+implements	AsyncCallI
 {
 	// -------------------------------------------------------------------------
 	// Constants and variables
@@ -181,36 +181,18 @@ implements	Serializable
 	// -------------------------------------------------------------------------
 
 	/**
-	 * return	true if the call information are set.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true if the call information are set.
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#callInfoSet()
 	 */
+	@Override
 	public boolean		callInfoSet()
 	{
 		return this.callURI != null && this.receptionPortURI != null;
 	}
 
 	/**
-	 * set the client side information to be used to execute the call.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code callURI != null && callURI.length() > 0}
-	 * pre	{@code receptionPortURI != null && receptionPortURI.length() > 0}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param callURI			URI of this call.
-	 * @param receptionPortURI	URI of the result reception inbound port to which the result must be sent.
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#setCallInfo(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void			setCallInfo(String callURI, String receptionPortURI)
 	{
 		assert	!this.callInfoSet() : new PreconditionException("");
@@ -222,38 +204,18 @@ implements	Serializable
 	}
 
 	/**
-	 * return	true if the callee information are set.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @return	true if the callee information are set.
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#calleeInfoSet()
 	 */
+	@Override
 	public boolean		calleeInfoSet()
 	{
 		return this.receiver != null && this.plugin != null;
 	}
 
 	/**
-	 * set the server side references to be used to execute the call.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code calleeInfoSet()}
-	 * pre	{@code server != null && plugin != null}
-	 * pre	{@code server.isInstalled(plugin.getPluginURI())}
-	 * post	{@code plugin.receptionPortConnected(receptionPortURI)}
-	 * </pre>
-	 *
-	 * @param server		the server component.
-	 * @param plugin		the server side asynchronous call plug-in.
-	 * @throws Exception	<i>to do</i>.
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#setCalleeInfo(fr.sorbonne_u.components.AbstractComponent, fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerPlugin)
 	 */
+	@Override
 	public void			setCalleeInfo(
 		AbstractComponent server,
 		AsyncCallServerPlugin plugin
@@ -273,33 +235,9 @@ implements	Serializable
 	}
 
 	/**
-	 * execute the call on the runner, returning the result through the
-	 * plug-in by the method <code>sendResult</code>.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code callInfoSet() && callInfoSet()}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @throws Exception	<i>to do</i>.
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#sendResult(java.io.Serializable)
 	 */
-	public abstract void	execute() throws Exception;
-
-	/**
-	 * send the result to the caller through the plug-in.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code callInfoSet()}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param result		result to be returned to the caller.
-	 * @throws Exception	<i>to do</i>.
-	 */
+	@Override
 	public void			sendResult(Serializable result) throws Exception
 	{
 		assert	this.callInfoSet() : new PreconditionException("callInfoSet()");

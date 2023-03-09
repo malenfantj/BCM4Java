@@ -112,25 +112,6 @@ extends		AbstractPlugin
 													awaitingResults;
 
 	// -------------------------------------------------------------------------
-	// Constructors
-	// -------------------------------------------------------------------------
-
-	/**
-	 * create a plug-in instance.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 */
-	public				AsyncCallClientPlugin()
-	{
-	}
-
-	// -------------------------------------------------------------------------
 	// Plug-in life-cycle
 	// -------------------------------------------------------------------------
 
