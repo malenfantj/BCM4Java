@@ -74,11 +74,11 @@ extends		OfferedCI,
 	 * pre	{@code unixEpochStartTimeInNanos > 0}
 	 * pre	{@code startInstant != null}
 	 * pre	{@code accelerationFactor > 0.0}
-	 * post	{@code ret != null}
-	 * post	{@code ret.getStartEpochNanos() == unixEpochStartTimeInNanos}
-	 * post	{@code ret.getStartInstant().equals(startInstant)}
-	 * post	{@code ret.getAccelerationFactor() == accelerationFactor}
-	 * post	{@code getClock(clockURI).equals(ret)}
+	 * post	{@code return != null}
+	 * post	{@code return.getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code return.getStartInstant().equals(startInstant)}
+	 * post	{@code return.getAccelerationFactor() == accelerationFactor}
+	 * post	{@code getClock(clockURI).equals(return)}
 	 * </pre>
 	 *
 	 * @param clockURI					URI designating the created clock.

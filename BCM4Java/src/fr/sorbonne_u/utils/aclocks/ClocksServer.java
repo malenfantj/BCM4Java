@@ -224,6 +224,8 @@ extends		AbstractComponent
 		String inboundPortURI
 		) throws Exception
 	{
+		// access to this.clocks in mutual exclusion is ensured by having only
+		// one thread to execute the component services.
 		super(1, 0);
 
 		assert	inboundPortURI != null && !inboundPortURI.isEmpty() :
@@ -256,6 +258,8 @@ extends		AbstractComponent
 		String inboundPortURI
 		) throws Exception
 	{
+		// access to this.clocks in mutual exclusion is ensured by having only
+		// one thread to execute the component services.
 		super(reflectionInboundPortURI, 1, 0);
 
 		assert	inboundPortURI != null && !inboundPortURI.isEmpty() :
@@ -347,6 +351,8 @@ extends		AbstractComponent
 		double accelerationFactor
 		) throws Exception
 	{
+		// access to this.clocks in mutual exclusion is ensured by having only
+		// one thread to execute the component services.
 		super(reflectionInboundPortURI, 1, 0);
 
 		assert	inboundPortURI != null && !inboundPortURI.isEmpty() :
@@ -406,7 +412,8 @@ extends		AbstractComponent
 	 */
 	protected void		initialise() throws Exception
 	{
-		this.inboundPort = new ClocksServerInboundPort(this.inboundPortURI, this);
+		this.inboundPort =
+				new ClocksServerInboundPort(this.inboundPortURI, this);
 		this.inboundPort.publishPort();
 
 		if (VERBOSE) {
@@ -460,11 +467,11 @@ extends		AbstractComponent
 	 * pre	{@code unixEpochStartTimeInNanos > 0}
 	 * pre	{@code startInstant != null}
 	 * pre	{@code accelerationFactor > 0.0}
-	 * post	{@code ret != null}
-	 * post	{@code ret.getStartEpochNanos() == unixEpochStartTimeInNanos}
-	 * post	{@code ret.getStartInstant().equals(startInstant)}
-	 * post	{@code ret.getAccelerationFactor() == accelerationFactor}
-	 * post	{@code getClock(clockURI).equals(ret)}
+	 * post	{@code return != null}
+	 * post	{@code return.getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code return.getStartInstant().equals(startInstant)}
+	 * post	{@code return.getAccelerationFactor() == accelerationFactor}
+	 * post	{@code getClock(clockURI).equals(return)}
 	 * </pre>
 	 *
 	 * @param clockURI					URI designating the created clock.
@@ -505,15 +512,16 @@ extends		AbstractComponent
 
 		assert	ret.getStartEpochNanos() == unixEpochStartTimeInNanos :
 				new PostconditionException(
-						"ret.getStartEpochNanos() == unixEpochStartTimeInNanos");
+						"return.getStartEpochNanos() == "
+												+ "unixEpochStartTimeInNanos");
 		assert	ret.getStartInstant().equals(startInstant) :
 				new PostconditionException(
-						"ret.getStartInstant().equals(startInstant)");
+						"return.getStartInstant().equals(startInstant)");
 		assert	ret.getAccelerationFactor() == accelerationFactor :
 				new PostconditionException(
-						"ret.getAccelerationFactor() == accelerationFactor");
+						"return.getAccelerationFactor() == accelerationFactor");
 		assert	getClock(clockURI).equals(ret) :
-				new PostconditionException("getClock(clockURI).equals(ret)");
+				new PostconditionException("getClock(clockURI).equals(return)");
 
 		return ret;
 	}

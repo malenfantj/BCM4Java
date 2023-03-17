@@ -180,7 +180,8 @@ implements	Serializable
 	 * <pre>
 	 * pre	{@code accelerationFactor > 0.0}
 	 * post	{@code getStartEpochNanos() <= TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis())}
-	 * post	{@code getStartInstant().equals(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(unixEpochStartTimeInNanos)))}
+	 * post	{@code getStartInstant().equals(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(getStartEpochNanos())))}
+	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
 	 * @param accelerationFactor	acceleration factor to be applied.
@@ -190,9 +191,10 @@ implements	Serializable
 		assert	accelerationFactor > 0.0 :
 				new PreconditionException("accelerationFactor > 0.0");
 
+		long currentTime = System.currentTimeMillis();
 		this.unixEpochStartTimeInNanos =
-				TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
-		this.startInstant = Instant.now();
+								TimeUnit.MILLISECONDS.toNanos(currentTime);
+		this.startInstant = Instant.ofEpochMilli(currentTime);
 		this.accelerationFactor = accelerationFactor;
 
 		assert	getStartEpochNanos() <=
@@ -201,11 +203,11 @@ implements	Serializable
 						"getStartEpochNanos() <= TimeUnit.MILLISECONDS.toNanos("
 						+ "System.currentTimeMillis())");
 		assert	getStartInstant().equals(Instant.ofEpochMilli(
-					TimeUnit.NANOSECONDS.toMillis(unixEpochStartTimeInNanos))) :
+						TimeUnit.NANOSECONDS.toMillis(getStartEpochNanos()))) :
 				new PostconditionException(
 						"getStartInstant().equals(Instant.ofEpochMilli("
 						+ "TimeUnit.NANOSECONDS.toMillis("
-						+ "unixEpochStartTimeInNanos)))");
+						+ "getStartEpochNanos())))");
 	}
 
 	/**
@@ -218,7 +220,9 @@ implements	Serializable
 	 * <pre>
 	 * pre	{@code unixEpochStartTimeInNanos > 0}
 	 * pre	{@code accelerationFactor > 0.0}
-	 * post	{@code getStartInstant().equals(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(unixEpochStartTimeInNanos)))}
+	 * post	{@code getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code getStartInstant().equals(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(getStartEpochNanos())))}
+	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
 	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time in nanoseconds.
@@ -236,12 +240,12 @@ implements	Serializable
 
 		this.unixEpochStartTimeInNanos = unixEpochStartTimeInNanos;
 		this.startInstant =
-				Instant.ofEpochMilli(
-					TimeUnit.NANOSECONDS.toMillis(unixEpochStartTimeInNanos));
+			Instant.ofEpochMilli(
+				TimeUnit.NANOSECONDS.toMillis(this.unixEpochStartTimeInNanos));
 		this.accelerationFactor = accelerationFactor;
 
 		assert	getStartInstant().equals(Instant.ofEpochMilli(
-					TimeUnit.NANOSECONDS.toMillis(unixEpochStartTimeInNanos))) :
+					TimeUnit.NANOSECONDS.toMillis(getStartEpochNanos()))) :
 				new PostconditionException(
 						"getStartInstant().equals(Instant.ofEpochMilli("
 						+ "TimeUnit.NANOSECONDS.toMillis("
@@ -258,6 +262,8 @@ implements	Serializable
 	 * pre	{@code startInstant != null}
 	 * pre	{@code accelerationFactor > 0.0}
 	 * post	{@code getStartEpochNanos() <= TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis())}
+	 * post	{@code getStartInstant().equals(startInstant)}
+	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
 	 * @param startInstant			start time as {@code Instant}.
@@ -295,7 +301,9 @@ implements	Serializable
 	 * pre	{@code unixEpochStartTimeInNanos > 0}
 	 * pre	{@code startInstant != null}
 	 * pre	{@code accelerationFactor > 0.0}
-	 * post	{@code true}	// no postcondition.
+	 * post	{@code getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code getStartInstant().equals(startInstant)}
+	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
 	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time in nanoseconds.
@@ -376,45 +384,6 @@ implements	Serializable
 	}
 
 	/**
-	 * return the current accelerated instant computed from the current
-	 * system time and the acceleration factor.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code ret != null && ret.isAfter(getStartInstant())}
-	 * </pre>
-	 *
-	 * @return	the current accelerated instant.
-	 */
-	public Instant		currentInstant()
-	{
-		long currentInNanos =
-				TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
-		long elapsedInNanos = currentInNanos - this.unixEpochStartTimeInNanos;
-		long acceleratedElapsedInNanos =
-				(long) (elapsedInNanos * this.accelerationFactor);
-		long baseInNanos = 
-				TimeUnit.MILLISECONDS.toNanos(this.startInstant.toEpochMilli());
-
-		Instant ret = Instant.ofEpochMilli(
-						(baseInNanos + acceleratedElapsedInNanos)/1000000L);
-
-		if (VERBOSE) {
-			System.out.println(
-					"AcceleratedClock#currentInstant " +
-					Instant.now() + " -- " + elapsedInNanos + " -- "+ ret);
-		}
-
-		assert	ret != null && ret.isAfter(getStartInstant()) :
-				new PostconditionException("ret != null && "
-										+ "ret.isAfter(getStartInstant())");
-
-		return ret;
-	}
-
-	/**
 	 * return	true if the start time of the clock has not been reached.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -478,6 +447,49 @@ implements	Serializable
 	}
 
 	/**
+	 * return the current accelerated instant computed from the current
+	 * system time and the acceleration factor.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !startTimeNotReached()}
+	 * post	{@code return != null && return.isAfter(getStartInstant())}
+	 * </pre>
+	 *
+	 * @return	the current accelerated instant.
+	 */
+	public Instant		currentInstant()
+	{
+		assert	!startTimeNotReached() :
+				new PreconditionException("!startTimeNotReached()");
+
+		long currentInNanos =
+				TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
+		long elapsedInNanos = currentInNanos - this.getStartEpochNanos();
+		long acceleratedElapsedInNanos =
+				(long) (elapsedInNanos * this.getAccelerationFactor());
+		long baseInNanos = 
+				TimeUnit.MILLISECONDS.toNanos(this.startInstant.toEpochMilli());
+
+		Instant ret = Instant.ofEpochMilli(
+							TimeUnit.NANOSECONDS.toMillis(
+									baseInNanos + acceleratedElapsedInNanos));
+
+		if (VERBOSE) {
+			System.out.println(
+					"AcceleratedClock#currentInstant " +
+					Instant.now() + " -- " + elapsedInNanos + " -- "+ ret);
+		}
+
+		assert	ret != null && ret.isAfter(getStartInstant()) :
+				new PostconditionException(
+						"return != null && return.isAfter(getStartInstant())");
+
+		return ret;
+	}
+
+	/**
 	 * return the accelerated instant for the Unix epoch time
 	 * {@code epochInNanos} computed from the Unix epoch start time and the
 	 * acceleration factor.
@@ -486,7 +498,7 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code epochInNanos > getStartEpochNanos()}
-	 * post	{@code ret != null && ret.isAfter(getStartInstant())}
+	 * post	{@code return != null && return.isAfter(getStartInstant())}
 	 * </pre>
 	 *
 	 * @param epochTimeInNanos	Unix epoch time for which the accelerated instant must be computed.
@@ -508,8 +520,8 @@ implements	Serializable
 					(long) (baseInNanos + acceleratedElapsedInNanos)/1000000);
 
 		assert	ret != null && ret.isAfter(getStartInstant()) :
-				new PostconditionException("ret != null && "
-										+ "ret.isAfter(getStartInstant())");
+				new PostconditionException(
+						"return != null && return.isAfter(getStartInstant())");
 
 		return ret;
 	}
@@ -522,7 +534,7 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code i.isAfter(getStartInstant())}
-	 * post	{@code ret > getStartEpochNanos()}
+	 * post	{@code return > getStartEpochNanos()}
 	 * </pre>
 	 *
 	 * @param i	accelerated instant from which to compute a Unix epoch real time.
@@ -541,7 +553,7 @@ implements	Serializable
 		long ret = this.unixEpochStartTimeInNanos + elapsedInNanos;
 		
 		assert	ret > this.getStartEpochNanos() :
-				new PostconditionException("ret > getStartEpochNanos()");
+				new PostconditionException("return > getStartEpochNanos()");
 
 		return ret;
 	}
@@ -559,7 +571,7 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code acceleratedInstant != null && acceleratedInstant.isAfter(currentInstant())}
-	 * post	{@code ret >= 0}
+	 * post	{@code return >= 0}
 	 * </pre>
 	 *
 	 * @param acceleratedInstant	accelerated {@code Instant} at which to the execution must occur.
@@ -599,7 +611,7 @@ implements	Serializable
 								+ currentInNanos + " -- " + forseenInNanos);
 		}
 
-		assert	delayInNanos >= 0 : new PostconditionException("ret >= 0");
+		assert	delayInNanos >= 0 : new PostconditionException("return >= 0");
 
 		return delayInNanos;
 	}
@@ -618,7 +630,7 @@ implements	Serializable
 	 * <pre>
 	 * pre	{@code TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis) > getStartEpochNanos()}
 	 * pre	{@code acceleratedInstant != null && acceleratedInstant.isAfter(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis))}
-	 * post	{@code ret > 0}
+	 * post	{@code return > 0}
 	 * </pre>
 	 *
 	 * @param baseEpochTimeInMillis	base time from which the delay is computed as Unix epoch time in milliseconds.
@@ -630,13 +642,16 @@ implements	Serializable
 		Instant acceleratedInstant
 		)
 	{
-		assert	baseEpochTimeInMillis * 1000000 > getStartEpochNanos() :
+		assert	TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis) >
+														getStartEpochNanos() :
 				new PreconditionException(
 					"TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)"
 					+ " > getStartEpochNanos()");
 		assert	acceleratedInstant != null &&
 					acceleratedInstant.isAfter(
-						instantOfEpochTimeInNanos(baseEpochTimeInMillis * 1000000)) :
+						instantOfEpochTimeInNanos(
+								TimeUnit.MILLISECONDS.toNanos(
+													baseEpochTimeInMillis))) :
 				new PreconditionException(
 							"acceleratedInstant != null && "
 							+ "acceleratedInstant.isAfter("
@@ -665,7 +680,7 @@ implements	Serializable
 				+ " -- " + forseenInNanos);
 		}
 
-		assert	delayInNanos >= 0 : new PostconditionException("ret >= 0");
+		assert	delayInNanos > 0 : new PostconditionException("return > 0");
 
 		return delayInNanos;
 	}
