@@ -43,7 +43,7 @@ package fr.sorbonne_u.components.exceptions;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2020-06-29</p>
@@ -54,24 +54,44 @@ public class			BCMException
 extends		Exception
 {
 	private static final long serialVersionUID = 1L;
+	/** when true, print messages on sysout.								*/
+	public static boolean	VERBOSE = false;
 
 	public				BCMException()
 	{
+		if (VERBOSE) {
+			System.out.println(this.getClass().getSimpleName() + " raised!");
+		}
 	}
 
 	public				BCMException(String message)
 	{
 		super(message);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with message "
+					+ message + "!");
+		}
 	}
 
 	public				BCMException(Throwable cause)
 	{
 		super(cause);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with cause "
+					+ cause + "!");
+		}
 	}
 
 	public				BCMException(String message, Throwable cause)
 	{
 		super(message, cause);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with message "
+					+ message + " and cause " + cause + "!");
+		}
 	}
 
 	public				BCMException(
@@ -82,6 +102,11 @@ extends		Exception
 		)
 	{
 		super(message, cause, enableSuppression, writableStackTrace);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with message "
+					+ message + " and cause " + cause + "!");
+		}
 	}
 }
 // -----------------------------------------------------------------------------

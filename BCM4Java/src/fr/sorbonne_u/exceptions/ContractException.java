@@ -53,24 +53,44 @@ public class			ContractException
 extends		Exception
 {
 	private static final long serialVersionUID = 1L;
+	/** when true, print messages on sysout.								*/
+	public static boolean	VERBOSE = false;
 
 	public				ContractException()
 	{
+		if (VERBOSE) {
+			System.out.println(this.getClass().getSimpleName() + " raised!");
+		}
 	}
 
 	public				ContractException(String message)
 	{
 		super(message);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with message "
+					+ message + "!");
+		}
 	}
 
 	public				ContractException(Throwable cause)
 	{
 		super(cause);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with cause "
+					+ cause + "!");
+		}
 	}
 
 	public				ContractException(String message, Throwable cause)
 	{
 		super(message, cause);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with message "
+					+ message + " and cause " + cause + "!");
+		}
 	}
 
 	public				ContractException(
@@ -81,6 +101,11 @@ extends		Exception
 		)
 	{
 		super(message, cause, enableSuppression, writableStackTrace);
+		if (VERBOSE) {
+			System.out.println(
+					this.getClass().getSimpleName() + " raised with message "
+					+ message + " and cause " + cause + "!");
+		}
 	}
 }
 // -----------------------------------------------------------------------------
