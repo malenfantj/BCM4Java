@@ -1706,7 +1706,7 @@ implements	ComponentI
 	public boolean		isInstalled(String pluginURI)
 	{
 		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null");
+				new PreconditionException("pluginURI != null");
 
 		synchronized (this.installedPlugins) {
 			return this.hasInstalledPlugins() &&
@@ -1731,7 +1731,7 @@ implements	ComponentI
 	protected PluginI	getPlugin(String pluginURI)
 	{
 		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null");
+				new PreconditionException("pluginURI != null");
 
 		synchronized (this.installedPlugins) {
 			assert	this.isPluginFacilitiesConfigured() :
@@ -1740,6 +1740,41 @@ implements	ComponentI
 
 			return this.installedPlugins.get().get(pluginURI);
 		}
+	}
+
+	/**
+	 * return an array list of URI of all installed plug-ins which type is a
+	 * subclass of {@code pluginType}.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code pluginsType != null}	// no precondition.
+	 * post	{@code return != null}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param pluginsType	the {@code Class<? extends AbstractPlugin>} representation of a type of plug-ins.
+	 * @return				array list of URI of all installed plug-ins which type is a subclass of {@code pluginType}.
+	 */
+	protected ArrayList<String>	getPluginURIOfType(
+		Class<? extends AbstractPlugin> pluginsType
+		)
+	{
+		assert	this.isPluginFacilitiesConfigured() :
+				new PluginException("Can't access plug-in, "
+								+ "plug-in facilities are not configured!");
+
+		ArrayList<String> ret = new ArrayList<String>();
+		synchronized (this.installedPlugins) {
+			ConcurrentHashMap<String,PluginI> installed =
+												this.installedPlugins.get();
+			for (Entry<String,PluginI> e : installed.entrySet()) {
+				if (pluginsType.isAssignableFrom(e.getValue().getClass())) {
+					ret.add(e.getKey());
+				}
+			}
+		}
+		return ret;
 	}
 
 	/**
