@@ -130,6 +130,61 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * the remaining time in milliseconds until the start time.
  * </p>
  * 
+ * <p><i>Good practices</i></p>
+ * 
+ * <p>
+ * On standard (non real time) Unix systems, hardware clocks are in practice
+ * precise to the milliseconds and even to the tens of milliseconds. Therefore,
+ * care must be taken not to plan scenarios where the delays between scheduled
+ * actions are less than these values. And indeed, this is even more important
+ * when large acceleration factors are used as the acceleration factor equally
+ * applies to the precision (for example, on my Mac, the precision is usually
+ * around a few milliseconds; with an acceleration factor of 10, the useful
+ * precision (shortest accurate delays between scheduled actions before
+ * acceleration) is more a few tens of milliseconds, and with an acceleration
+ * factor 100, the precision is no more than a few hundreds of milliseconds,
+ * hence a few tenth of a second.
+ * </p>
+ * <p>
+ * The {@code Instant} class offers quite flexible ways to compute instants from
+ * other instants, such as adding some amount of seconds to an existing instant
+ * with the method {@code Instant.plusSeconds(long)}. This allows an
+ * {@code AcceleratedClock} user to build scenario patterns like:
+ * </p>
+ * <pre>
+ * AcceleratedClock ac =new AcceleratedClock(
+ *                              TimeUnit.MILLISECONDS.toNanos(
+ *                                      System.currentTimeMillis() + 5000L),
+ *                          Instant.parse("2022-11-07T06:00:00.000Z"),
+ *                          1.0);
+ *          ac.waitUntilStart();
+ *          Instant observed = ac.currentInstant();
+ *          Instant nextAction = observed.plusSeconds(5);
+ *          long delay = ac.nanoDelayUntilInstant(nextAction);
+ *          Thread.sleep(TimeUnit.NANOSECONDS.toMillis(delay));
+ *          // perform some action
+ * </pre>
+ * <p>
+ * This kind of scenarios tends to drift as the imprecision of the hardware
+ * clock and of the scheduling will accumulate over the computation of series
+ * of instants from imprecise observed instants.
+ * </p>
+ * <p>
+ * To avoid as much as possible imprecision in test scenarios executions, it
+ * is better to:
+ * </p>
+ * <ol>
+ * <li>Choose an acceleration factor such that when applied to the shortest
+ *   delay between two scheduled actions, it will not give a waiting time
+ *   that is under 10 milliseconds between two successive actions (to be adapted
+ *   to the precision of your operating system and hardware).</li>
+ * <li>Prepare test scenarios with absolute {@code Instant} only <i>i.e.</i>,
+ *   instants that are created from a string like
+ *   {@code Instant.parse("2022-11-07T06:00:00.000Z")}. With absolute instants,
+ *   the computation of delays tends to absorb the drift along the scenario
+ *   execution, hence leaving less imprecision over whole executions.
+ * </ol>
+ * 
  * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
@@ -384,7 +439,7 @@ implements	Serializable
 	}
 
 	/**
-	 * return	true if the start time of the clock has not been reached.
+	 * return true if the start time of the clock has not been reached.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -397,9 +452,31 @@ implements	Serializable
 	 */
 	public boolean		startTimeNotReached()
 	{
-		return TimeUnit.NANOSECONDS.toMillis(this.unixEpochStartTimeInNanos)
-												> System.currentTimeMillis();
+		return this.unixEpochStartTimeInNanos
+					> TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
 	}
+
+	/**
+	 * return true if the start time of the clock has not been reached at Unix
+	 * epoch time {@code current}.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param current	current Unix epoch time in milliseconds (as given by {@code System.currentTimeMillis()}).
+	 * @return			true if the start time of the clock has not been reached at Unix epoch time {@code current}.
+	 */
+	protected boolean	startTimeNotReached(long current)
+	{
+		assert	current > 0 : new PreconditionException("current > 0");
+		return this.unixEpochStartTimeInNanos
+									> TimeUnit.MILLISECONDS.toNanos(current);
+	}
+
 	/**
 	 * return the time in milliseconds to wait until the start time defined for
 	 * this clock; if the result is less than 0, the start time is passed.
@@ -415,11 +492,13 @@ implements	Serializable
 	 */
 	public long			waitingDelayUntilStartInMillis()
 	{
-		assert	this.startTimeNotReached() :
-				new PreconditionException("startTimeNotReached()");
+		long current = System.currentTimeMillis();
+		assert	startTimeNotReached(current) :
+				new PreconditionException("startTimeNotReached(current)");
 
-		return TimeUnit.NANOSECONDS.toMillis(this.unixEpochStartTimeInNanos)
-												- System.currentTimeMillis();
+		return TimeUnit.NANOSECONDS.toMillis(
+							this.unixEpochStartTimeInNanos
+									- TimeUnit.MILLISECONDS.toNanos(current));
 	}
 
 	/**
@@ -437,12 +516,19 @@ implements	Serializable
 	 */
 	public void			waitUntilStart() throws InterruptedException
 	{
-		assert	this.startTimeNotReached() :
-				new PreconditionException("startTimeNotReached()");
+		long current = System.currentTimeMillis();
+		assert	startTimeNotReached(current) :
+				new PreconditionException("startTimeNotReached(current)");
 
-		long delay = this.waitingDelayUntilStartInMillis();
+		long delay = TimeUnit.NANOSECONDS.toMillis(
+							this.unixEpochStartTimeInNanos
+									- TimeUnit.MILLISECONDS.toNanos(current));
 		if (delay > 0) {
 			Thread.sleep(delay);
+		} else {
+			throw new RuntimeException(
+							"AcceleratedClock#waitUntilStart " +
+							" negative delay until start, no waiting.");
 		}
 	}
 
@@ -454,18 +540,19 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code !startTimeNotReached()}
-	 * post	{@code return != null && return.isAfter(getStartInstant())}
+	 * post	{@code return != null}
+	 * post	{@code return.equals(getStartInstant()) || return.isAfter(getStartInstant())}
 	 * </pre>
 	 *
 	 * @return	the current accelerated instant.
 	 */
-	public Instant		currentInstant()
+	protected Instant		currentInstant()
 	{
-		assert	!startTimeNotReached() :
-				new PreconditionException("!startTimeNotReached()");
+		long current = System.currentTimeMillis();
+		assert	!startTimeNotReached(current) :
+				new PreconditionException("!startTimeNotReached(current)");
 
-		long currentInNanos =
-				TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
+		long currentInNanos = TimeUnit.MILLISECONDS.toNanos(current);
 		long elapsedInNanos = currentInNanos - this.getStartEpochNanos();
 		long acceleratedElapsedInNanos =
 				(long) (elapsedInNanos * this.getAccelerationFactor());
@@ -478,13 +565,17 @@ implements	Serializable
 
 		if (VERBOSE) {
 			System.out.println(
-					"AcceleratedClock#currentInstant " +
-					Instant.now() + " -- " + elapsedInNanos + " -- "+ ret);
+					"AcceleratedClock#currentInstant startInstant "
+													+ this.getStartInstant());
+			System.out.println(
+					"AcceleratedClock#currentInstant returns " + ret);
 		}
 
-		assert	ret != null && ret.isAfter(getStartInstant()) :
+		assert	ret != null : new PostconditionException("return != null");
+		assert	ret.equals(getStartInstant()) || ret.isAfter(getStartInstant()) :
 				new PostconditionException(
-						"return != null && return.isAfter(getStartInstant())");
+						"return.equals(getStartInstant()) || "
+						+ "return.isAfter(getStartInstant())");
 
 		return ret;
 	}
@@ -498,13 +589,14 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code epochInNanos > getStartEpochNanos()}
-	 * post	{@code return != null && return.isAfter(getStartInstant())}
+	 * post	{@code return != null}
+	 * post	{@code return.equals(getStartInstant()) || return.isAfter(getStartInstant())}
 	 * </pre>
 	 *
 	 * @param epochTimeInNanos	Unix epoch time for which the accelerated instant must be computed.
 	 * @return					the accelerated instant corresponding to {@code epochInNanos}.
 	 */
-	public Instant		instantOfEpochTimeInNanos(long epochTimeInNanos)
+	protected Instant	instantOfEpochTimeInNanos(long epochTimeInNanos)
 	{
 		assert	epochTimeInNanos > this.getStartEpochNanos() :
 				new PreconditionException("epochInNanos > getStartEpochNanos()");
@@ -517,11 +609,14 @@ implements	Serializable
 
 		Instant ret =
 			Instant.ofEpochMilli(
-					(long) (baseInNanos + acceleratedElapsedInNanos)/1000000);
+					TimeUnit.NANOSECONDS.toMillis(
+									baseInNanos + acceleratedElapsedInNanos));
 
-		assert	ret != null && ret.isAfter(getStartInstant()) :
+		assert	ret != null : new PostconditionException("return != null");
+		assert	ret.equals(getStartInstant()) || ret.isAfter(getStartInstant()) :
 				new PostconditionException(
-						"return != null && return.isAfter(getStartInstant())");
+						"return.equals(getStartInstant()) || "
+						+ "return.isAfter(getStartInstant())");
 
 		return ret;
 	}
@@ -574,23 +669,19 @@ implements	Serializable
 	 * post	{@code return >= 0}
 	 * </pre>
 	 *
-	 * @param acceleratedInstant	accelerated {@code Instant} at which to the execution must occur.
+	 * @param i	accelerated {@code Instant} at which to the execution must occur.
 	 * @return						real time delay from now to the real time at which to schedule immediately the execution.
 	 */
-	public long			nanoDelayUntilAcceleratedInstant(
-		Instant acceleratedInstant
-		)
+	public long			nanoDelayUntilInstant(Instant i)
 	{
-		assert	acceleratedInstant != null &&
-								acceleratedInstant.isAfter(currentInstant()) :
+		assert	i != null && i.isAfter(currentInstant()) :
 				new PreconditionException(
-							"acceleratedInstant != null && "
-							+ "acceleratedInstant.isAfter(currentInstant())");
+								"i != null && i.isAfter(currentInstant())");
 
 		long baseInNanos =
 				TimeUnit.MILLISECONDS.toNanos(this.startInstant.toEpochMilli());
 		long epochOfInstantInNanos =
-				TimeUnit.MILLISECONDS.toNanos(acceleratedInstant.toEpochMilli());
+				TimeUnit.MILLISECONDS.toNanos(i.toEpochMilli());
 		long accElapsedInNanos = epochOfInstantInNanos - baseInNanos;
 
 		long realElapsedInNanos =
@@ -685,6 +776,10 @@ implements	Serializable
 		return delayInNanos;
 	}
 
+	// -------------------------------------------------------------------------
+	// Tests
+	// -------------------------------------------------------------------------
+
 	/**
 	 * perform some tests.
 	 * 
@@ -700,64 +795,170 @@ implements	Serializable
 	public static void	main(String[] args)
 	{
 		try {
-			// sets the start time now
-			// captures the current Instant, equivalent to the start time
-			Instant s1 = Instant.now();
-			Instant s2 = Instant.parse("2022-11-07T06:00:00.00Z");
+			Instant start = Instant.parse("2022-11-07T06:00:00.000Z");
+			Instant[] actions = new Instant[10];
+			actions[0] = Instant.parse("2022-11-07T06:00:05.000Z");
+			actions[1] = Instant.parse("2022-11-07T06:00:10.000Z");
+			actions[2] = Instant.parse("2022-11-07T06:00:15.000Z");
+			actions[3] = Instant.parse("2022-11-07T06:00:20.000Z");
+			actions[4] = Instant.parse("2022-11-07T06:00:25.000Z");
+			actions[5] = Instant.parse("2022-11-07T06:00:30.000Z");
+			actions[6] = Instant.parse("2022-11-07T06:00:35.000Z");
+			actions[7] = Instant.parse("2022-11-07T06:00:40.000Z");
+			actions[8] = Instant.parse("2022-11-07T06:00:45.000Z");
+			actions[9] = Instant.parse("2022-11-07T06:00:50.000Z");
 
-			AcceleratedClock clock1 = new AcceleratedClock(10.0);
-			AcceleratedClock clock2 = new AcceleratedClock(s2, 10.0);
-
-			if (VERBOSE) {
-				// should print the same value, but in different representations
-				System.out.println(clock1.getStartInstant() + " -- " + s1);
+			double accFactor = 1.0;
+			StringBuffer logs = new StringBuffer("Run with acceleration factor: ");
+			logs.append(accFactor);
+			logs.append('\n');
+			long realStartTime = System.currentTimeMillis();
+			AcceleratedClock clock =
+					new AcceleratedClock(
+							TimeUnit.MILLISECONDS.toNanos(
+									System.currentTimeMillis() + 5000L),
+							start,
+							accFactor);
+			long waitingTime = clock.waitingDelayUntilStartInMillis();
+			clock.waitUntilStart();
+			Instant observedStart = clock.currentInstant();
+			logs.append("starting at ");
+			logs.append(clock.getStartInstant());
+			logs.append('\n');
+			logs.append("waiting time until start ");
+			logs.append(waitingTime);
+			logs.append('\n');
+			logs.append("observedStart: ");
+			logs.append(observedStart);
+			logs.append('\n');
+			for (int j = 0 ; j < actions.length ; j++) {
+				long d = clock.nanoDelayUntilInstant(actions[j]);
+				Thread.sleep(TimeUnit.NANOSECONDS.toMillis(d));
+				Instant observedAction = clock.currentInstant();
+				logs.append("action");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(actions[j]);
+				logs.append('\n');
+				logs.append("delay to ");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(d);
+				logs.append('\n');
+				logs.append("observedAction");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(observedAction);
+				logs.append('\n');
 			}
-
-			Thread.sleep(6000L);
-			// 6 real seconds elapsed gives 60 seconds in accelerated time,
-			// hence is i + 50 seconds
-			Instant i1 = clock1.currentInstant();
-			Instant i2 = clock2.currentInstant();
-			// i now represents the start time + 600 seconds in accelerated
-			// time
-			Instant i11 = s1.plusSeconds(600);
-			Instant i21 = s2.plusSeconds(600);
-			// as the current real time is start time + 6 seconds, hence 60
-			// seconds in accelerated time, the delay in accelerated time is
-			// 540 seconds hence 54 seconds in real time
-			long d1 = clock1.nanoDelayUntilAcceleratedInstant(i11);
-			long d2 = clock2.nanoDelayUntilAcceleratedInstant(i21);
-			// take a real time as current i.e., start time + 6 seconds, and
-			// add 45 real seconds, so c is start time + 51 seconds in real time
-			// but start time + 510 seconds in accelerated time
-			long c = System.currentTimeMillis() + 45000L;
-			// i is start time + 600 seconds in accelerated
-			// time) is therefore 90 seconds in accelerated time but 9 seconds
-			// in real time
-			long d11 = clock1.nanoDelayToAcceleratedInstantFromEpochTime(c, i11);
-			long d21 = clock2.nanoDelayToAcceleratedInstantFromEpochTime(c, i21);
-
+			long realEndTime = System.currentTimeMillis();
+			logs.append("duration (in millis): ");
+			logs.append((realEndTime - realStartTime));
+			logs.append('\n');
 			// printing is done at the end to avoid perturbing the timing too
 			// much, yet small discrepancies are expected
-			System.out.println("starting at " + clock1.getStartInstant());
-			System.out.println("after 6 real seconds (60 accelerated): " + i1);
-			System.out.println("delay to execute at " + i11 + " is " + d1
-								+ " (nanos) -- " + d1/1000000000.0 + " (sec) "
-								+ "[expected = 54 seconds]");
-			System.out.println("delay to execute at " + i11 + " from " + c
-								+ " (millis) is " + d11 + " (nanos) -- "
-								+ d11/1000000000.0 + " (sec) "
-								+ "[expected = 9 seconds]");
+			System.out.println(logs.toString());
 
-			System.out.println("starting at " + clock2.getStartInstant());
-			System.out.println("after 6 real seconds (60 accelerated): " + i2);
-			System.out.println("delay to execute at " + i21 + " is " + d2
-								+ " (nanos) -- " + d2/1000000000.0 + " (sec) "
-								+ "[expected = 54 seconds]");
-			System.out.println("delay to execute at " + i21 + " from " + c
-								+ " (millis) is " + d21 + " (nanos) -- "
-								+ d21/1000000000.0 + " (sec) "
-								+ "[expected = 9 seconds]");
+			accFactor = 10.0;
+			logs = new StringBuffer("\nRun with acceleration factor: ");
+			logs.append(accFactor);
+			logs.append('\n');
+			realStartTime = System.currentTimeMillis();
+			clock = new AcceleratedClock(
+							TimeUnit.MILLISECONDS.toNanos(
+									System.currentTimeMillis() + 5000L),
+							start,
+							accFactor);
+			waitingTime = clock.waitingDelayUntilStartInMillis();
+			clock.waitUntilStart();
+			observedStart = clock.currentInstant();
+			logs.append("starting at ");
+			logs.append(clock.getStartInstant());
+			logs.append('\n');
+			logs.append("waiting time until start ");
+			logs.append(waitingTime);
+			logs.append('\n');
+			logs.append("observedStart: ");
+			logs.append(observedStart);
+			logs.append('\n');
+			for (int j = 0 ; j < actions.length ; j++) {
+				long d = clock.nanoDelayUntilInstant(actions[j]);
+				Thread.sleep(TimeUnit.NANOSECONDS.toMillis(d));
+				Instant observedAction = clock.currentInstant();
+				logs.append("action");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(actions[j]);
+				logs.append('\n');
+				logs.append("delay to ");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(d);
+				logs.append('\n');
+				logs.append("observedAction");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(observedAction);
+				logs.append('\n');
+			}
+			realEndTime = System.currentTimeMillis();
+			logs.append("duration (in millis): ");
+			logs.append((realEndTime - realStartTime));
+			logs.append('\n');
+			// printing is done at the end to avoid perturbing the timing too
+			// much, yet small discrepancies are expected
+			System.out.println(logs.toString());
+
+			accFactor = 100.0;
+			logs = new StringBuffer("\nRun with acceleration factor: ");
+			logs.append(accFactor);
+			logs.append('\n');
+			realStartTime = System.currentTimeMillis();
+			clock = new AcceleratedClock(
+							TimeUnit.MILLISECONDS.toNanos(
+									System.currentTimeMillis() + 5000L),
+							start,
+							accFactor);
+			waitingTime = clock.waitingDelayUntilStartInMillis();
+			clock.waitUntilStart();
+			observedStart = clock.currentInstant();
+			logs.append("starting at ");
+			logs.append(clock.getStartInstant());
+			logs.append('\n');
+			logs.append("waiting time until start ");
+			logs.append(waitingTime);
+			logs.append('\n');
+			logs.append("observedStart: ");
+			logs.append(observedStart);
+			logs.append('\n');
+			for (int j = 0 ; j < actions.length ; j++) {
+				long d = clock.nanoDelayUntilInstant(actions[j]);
+				Thread.sleep(TimeUnit.NANOSECONDS.toMillis(d));
+				Instant observedAction = clock.currentInstant();
+				logs.append("action");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(actions[j]);
+				logs.append('\n');
+				logs.append("delay to ");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(d);
+				logs.append('\n');
+				logs.append("observedAction");
+				logs.append(j);
+				logs.append(": ");
+				logs.append(observedAction);
+				logs.append('\n');
+			}
+			realEndTime = System.currentTimeMillis();
+			logs.append("duration (in millis): ");
+			logs.append((realEndTime - realStartTime));
+			logs.append('\n');
+			// printing is done at the end to avoid perturbing the timing too
+			// much, yet small discrepancies are expected
+			System.out.println(logs.toString());
+
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e) ;
 		}
