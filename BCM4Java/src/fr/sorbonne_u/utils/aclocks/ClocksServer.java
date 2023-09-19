@@ -41,8 +41,10 @@ import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 // -----------------------------------------------------------------------------
 /**
@@ -135,8 +137,9 @@ extends		AbstractComponent
 	/** when true, methods trace their actions.								*/
 	public static boolean		VERBOSE = false;
 
-	/** map that contains the clocks previously created.					*/
-	protected final Map<String,AcceleratedClock>	clocks;
+	/** map that contains the clocks previously created; must be
+	 *  synchronised.														*/
+	protected final Map<String,CompletableFuture<AcceleratedClock>>	clocks;
 	/** URI of the inbound port offering the {@code ClockServerCI} component
 	 *  interface.															*/
 	protected final String							inboundPortURI;
@@ -233,7 +236,7 @@ extends		AbstractComponent
 						"inboundPortURI != null && !inboundPortURI.isEmpty()");
 
 		this.inboundPortURI = inboundPortURI;
-		this.clocks = new HashMap<>();
+		this.clocks = Collections.synchronizedMap(new HashMap<>());
 		this.initialise();
 	}
 
@@ -267,7 +270,7 @@ extends		AbstractComponent
 						"inboundPortURI != null && !inboundPortURI.isEmpty()");
 
 		this.inboundPortURI = inboundPortURI;
-		this.clocks = new HashMap<>();
+		this.clocks = Collections.synchronizedMap(new HashMap<>());
 		this.initialise();
 	}
 
@@ -369,10 +372,9 @@ extends		AbstractComponent
 				new PreconditionException("accelerationFactor > 0.0");
 
 		this.inboundPortURI = inboundPortURI;
-		this.clocks = new HashMap<>();
-		this.clocks.put(clockURI,
-						this.createClock(clockURI, unixEpochStartTimeInNanos,
-										 startInstant, accelerationFactor));
+		this.clocks = Collections.synchronizedMap(new HashMap<>());
+		this.createClock(clockURI, unixEpochStartTimeInNanos,
+										 startInstant, accelerationFactor);
 
 		this.initialise();
 
@@ -508,7 +510,13 @@ extends		AbstractComponent
 				new AcceleratedClock(unixEpochStartTimeInNanos,
 									 startInstant,
 									 accelerationFactor);
-		this.clocks.put(clockURI, ret);
+
+		CompletableFuture<AcceleratedClock> f = this.clocks.get(clockURI);
+		if (f == null)  {
+			f = new CompletableFuture<AcceleratedClock>();
+			this.clocks.put(clockURI, f);
+		}
+		f.complete(ret);
 
 		assert	ret.getStartEpochNanos() == unixEpochStartTimeInNanos :
 				new PostconditionException(
@@ -531,7 +539,8 @@ extends		AbstractComponent
 	 * result will be serialised and deserialised if the call is made among
 	 * distributed components, hence creating a copy of the clock local to the
 	 * receiver process using the physical clock of the receiver host as time
-	 * base for evolution.
+	 * base for evolution; the call will block and wait if the clock of the
+	 * given URI has not been created yet.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -549,7 +558,17 @@ extends		AbstractComponent
 		if (VERBOSE) {
 			this.traceMessage("Getting the clock " + clockURI + ".\n");
 		}
-		return this.clocks.get(clockURI);
+
+		CompletableFuture<AcceleratedClock> f = this.clocks.get(clockURI);
+		if (f == null)  {
+			f = new CompletableFuture<AcceleratedClock>();
+			this.clocks.put(clockURI, f);
+		}
+		// As getClock may block if the clock has not been created yet, the
+		// call is made using the caller thread hence avoiding the need for
+		// an unbounded number of internal threads in the component to take
+		// care of an unlimited number of callers.
+		return this.clocks.get(clockURI).get();
 	}
 }
 // -----------------------------------------------------------------------------

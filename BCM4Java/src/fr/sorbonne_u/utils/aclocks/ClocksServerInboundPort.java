@@ -138,10 +138,12 @@ implements	ClocksServerCI
 		) throws Exception
 	{
 		return this.getOwner().handleRequest(
-				o -> ((ClocksServer)o).createClock(clockURI,
-												  unixEpochStartTimeInNanos,
-												  startInstant,
-												  accelerationFactor));
+									o -> ((ClocksServer)o).
+											createClock(
+													clockURI,
+													unixEpochStartTimeInNanos,
+													startInstant,
+													accelerationFactor));
 	}
 
 	/**
@@ -150,8 +152,11 @@ implements	ClocksServerCI
 	@Override
 	public AcceleratedClock	getClock(String clockURI) throws Exception
 	{
-		return this.getOwner().handleRequest(
-								o -> ((ClocksServer)o).getClock(clockURI));
+		// As getClock may block if the clock has not been created yet, the
+		// call is made using the caller thread hence avoiding the need for
+		// an unbounded number of internal threads in the component to take
+		// care of an unlimited number of callers.
+		return ((ClocksServer)this.getOwner()).getClock(clockURI);
 	}
 }
 // -----------------------------------------------------------------------------
