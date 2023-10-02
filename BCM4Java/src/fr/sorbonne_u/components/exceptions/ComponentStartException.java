@@ -54,21 +54,22 @@ package fr.sorbonne_u.components.exceptions;
 public class			ComponentStartException
 extends		BCMException
 {
-	private static final long serialVersionUID = 1L ;
+	private static final int	LEVEL = 3;
+	private static final long	serialVersionUID = 1L ;
 
 	public				ComponentStartException()
 	{
-		super() ;
+		super(LEVEL) ;
 	}
 
 	public				ComponentStartException(String message)
 	{
-		super(message) ;
+		super(LEVEL, message) ;
 	}
 
 	public				ComponentStartException(Throwable cause)
 	{
-		super(cause) ;
+		super(LEVEL, cause) ;
 	}
 
 	public				ComponentStartException(
@@ -76,7 +77,7 @@ extends		BCMException
 		Throwable cause
 		)
 	{
-		super(message, cause) ;
+		super(LEVEL, message, cause) ;
 	}
 
 	public				ComponentStartException(
@@ -86,7 +87,42 @@ extends		BCMException
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				ComponentStartException(int level)
+	{
+		super(level) ;
+	}
+
+	public				ComponentStartException(int level, String message)
+	{
+		super(level, message) ;
+	}
+
+	public				ComponentStartException(int level, Throwable cause)
+	{
+		super(level, cause) ;
+	}
+
+	public				ComponentStartException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause) ;
+	}
+
+	public				ComponentStartException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

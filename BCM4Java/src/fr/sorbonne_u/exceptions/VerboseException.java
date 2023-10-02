@@ -34,66 +34,76 @@ package fr.sorbonne_u.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ContractException</code> defines the most general exception
- * thrown when a contract violation occurs.
+ * The class <code>ContractException</code> defines exceptions which leaves a
+ * trace on the out stream when raised.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}
  * </pre>
  * 
  * <p>Created on : 2020-06-29</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ContractException
+public class			VerboseException
 extends		Exception
 {
 	private static final long serialVersionUID = 1L;
 	/** when true, print messages on sysout.								*/
 	public static boolean	VERBOSE = false;
 
-	public				ContractException()
+	public				VerboseException(int level)
 	{
 		if (VERBOSE) {
-			System.out.println(this.getClass().getSimpleName() + " raised!");
+			StackTraceElement ste = new Throwable().getStackTrace()[level];
+			System.out.println(this.getClass().getSimpleName() + " raised at "
+							   + ste.toString() + "!");
 		}
 	}
 
-	public				ContractException(String message)
+	public				VerboseException(int level, String message)
 	{
 		super(message);
 		if (VERBOSE) {
+			StackTraceElement ste = new Throwable().getStackTrace()[level];
 			System.out.println(
 					this.getClass().getSimpleName() + " raised with message "
-					+ message + "!");
+					+ message + " at " + ste.toString() + "!");
 		}
 	}
 
-	public				ContractException(Throwable cause)
+	public				VerboseException(int level, Throwable cause)
 	{
 		super(cause);
 		if (VERBOSE) {
+			StackTraceElement ste = new Throwable().getStackTrace()[level];
 			System.out.println(
 					this.getClass().getSimpleName() + " raised with cause "
-					+ cause + "!");
+					+ cause + " at " + ste.toString() + "!");
 		}
 	}
 
-	public				ContractException(String message, Throwable cause)
+	public				VerboseException(
+		int level,
+		String message,
+		Throwable cause)
 	{
 		super(message, cause);
 		if (VERBOSE) {
+			StackTraceElement ste = new Throwable().getStackTrace()[level];
 			System.out.println(
 					this.getClass().getSimpleName() + " raised with message "
-					+ message + " and cause " + cause + "!");
+					+ message + " and cause " + cause + " at "
+					+ ste.toString() + "!");
 		}
 	}
 
-	public				ContractException(
+	public				VerboseException(
+		int level,
 		String message,
 		Throwable cause,
 		boolean enableSuppression,
@@ -102,9 +112,11 @@ extends		Exception
 	{
 		super(message, cause, enableSuppression, writableStackTrace);
 		if (VERBOSE) {
+			StackTraceElement ste = new Throwable().getStackTrace()[level];
 			System.out.println(
 					this.getClass().getSimpleName() + " raised with message "
-					+ message + " and cause " + cause + "!");
+					+ message + " and cause " + cause + " at "
+					+ ste.toString() + "!");
 		}
 	}
 }

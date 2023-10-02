@@ -53,20 +53,22 @@ package fr.sorbonne_u.components.exceptions;
 public class			ExecutorServicesManagementException
 extends		BCMException
 {
-	private static final long serialVersionUID = 1L;
+	private static final int	LEVEL = 3;
+	private static final long	serialVersionUID = 1L;
 
 	public				ExecutorServicesManagementException()
 	{
+		super(LEVEL);
 	}
 
 	public				ExecutorServicesManagementException(String message)
 	{
-		super(message);
+		super(LEVEL, message);
 	}
 
 	public				ExecutorServicesManagementException(Throwable cause)
 	{
-		super(cause);
+		super(LEVEL, cause);
 	}
 
 	public				ExecutorServicesManagementException(
@@ -74,7 +76,7 @@ extends		BCMException
 		Throwable cause
 		)
 	{
-		super(message, cause);
+		super(LEVEL, message, cause);
 	}
 
 	public				ExecutorServicesManagementException(
@@ -84,7 +86,48 @@ extends		BCMException
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				ExecutorServicesManagementException(int level)
+	{
+		super(level);
+	}
+
+	public				ExecutorServicesManagementException(
+		int level,
+		String message
+		)
+	{
+		super(level, message);
+	}
+
+	public				ExecutorServicesManagementException(
+		int level,
+		Throwable cause
+		)
+	{
+		super(level, cause);
+	}
+
+	public				ExecutorServicesManagementException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause);
+	}
+
+	public				ExecutorServicesManagementException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

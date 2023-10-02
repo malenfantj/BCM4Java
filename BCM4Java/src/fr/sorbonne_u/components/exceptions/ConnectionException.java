@@ -52,25 +52,27 @@ package fr.sorbonne_u.components.exceptions;
 public class			ConnectionException
 extends		BCMException
 {
-	private static final long serialVersionUID = 1L;
+	private static final int	LEVEL = 3;
+	private static final long	serialVersionUID = 1L;
 
 	public				ConnectionException()
 	{
+		super(LEVEL);
 	}
 
 	public				ConnectionException(String message)
 	{
-		super(message);
+		super(LEVEL, message);
 	}
 
 	public				ConnectionException(Throwable cause)
 	{
-		super(cause);
+		super(LEVEL, cause);
 	}
 
 	public				ConnectionException(String message, Throwable cause)
 	{
-		super(message, cause);
+		super(LEVEL, message, cause);
 	}
 
 	public				ConnectionException(
@@ -80,7 +82,42 @@ extends		BCMException
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				ConnectionException(int level)
+	{
+		super(level);
+	}
+
+	public				ConnectionException(int level, String message)
+	{
+		super(level, message);
+	}
+
+	public				ConnectionException(int level, Throwable cause)
+	{
+		super(level, cause);
+	}
+
+	public				ConnectionException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause);
+	}
+
+	public				ConnectionException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

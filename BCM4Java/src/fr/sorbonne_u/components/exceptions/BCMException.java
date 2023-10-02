@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.exceptions;
 
+import fr.sorbonne_u.exceptions.VerboseException;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -51,47 +53,29 @@ package fr.sorbonne_u.components.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			BCMException
-extends		Exception
+extends		VerboseException
 {
-	private static final long serialVersionUID = 1L;
-	/** when true, print messages on sysout.								*/
-	public static boolean	VERBOSE = false;
+	private static final int	LEVEL = 2;
+	private static final long	serialVersionUID = 1L;
 
 	public				BCMException()
 	{
-		if (VERBOSE) {
-			System.out.println(this.getClass().getSimpleName() + " raised!");
-		}
+		super(LEVEL);
 	}
 
 	public				BCMException(String message)
 	{
-		super(message);
-		if (VERBOSE) {
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with message "
-					+ message + "!");
-		}
+		super(LEVEL, message);
 	}
 
 	public				BCMException(Throwable cause)
 	{
-		super(cause);
-		if (VERBOSE) {
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with cause "
-					+ cause + "!");
-		}
+		super(LEVEL, cause);
 	}
 
 	public				BCMException(String message, Throwable cause)
 	{
-		super(message, cause);
-		if (VERBOSE) {
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with message "
-					+ message + " and cause " + cause + "!");
-		}
+		super(LEVEL, message, cause);
 	}
 
 	public				BCMException(
@@ -101,12 +85,38 @@ extends		Exception
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
-		if (VERBOSE) {
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with message "
-					+ message + " and cause " + cause + "!");
-		}
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				BCMException(int level)
+	{
+		super(level);
+	}
+
+	public				BCMException(int level, String message)
+	{
+		super(level, message);
+	}
+
+	public				BCMException(int level, Throwable cause)
+	{
+		super(level, cause);
+	}
+
+	public				BCMException(int level, String message, Throwable cause)
+	{
+		super(level, message, cause);
+	}
+
+	public				BCMException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

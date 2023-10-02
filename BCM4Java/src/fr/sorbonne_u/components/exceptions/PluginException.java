@@ -52,25 +52,27 @@ package fr.sorbonne_u.components.exceptions;
 public class			PluginException
 extends		BCMException
 {
-	private static final long serialVersionUID = 1L;
+	private static final int	LEVEL = 3;
+	private static final long	serialVersionUID = 1L;
 
 	public				PluginException()
 	{
+		super(LEVEL);
 	}
 
 	public				PluginException(String message)
 	{
-		super(message);
+		super(LEVEL, message);
 	}
 
 	public				PluginException(Throwable cause)
 	{
-		super(cause);
+		super(LEVEL, cause);
 	}
 
 	public				PluginException(String message, Throwable cause)
 	{
-		super(message, cause);
+		super(LEVEL, message, cause);
 	}
 
 	public				PluginException(
@@ -80,7 +82,42 @@ extends		BCMException
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				PluginException(int level)
+	{
+		super(level);
+	}
+
+	public				PluginException(int level, String message)
+	{
+		super(level, message);
+	}
+
+	public				PluginException(int level, Throwable cause)
+	{
+		super(level, cause);
+	}
+
+	public				PluginException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause);
+	}
+
+	public				PluginException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

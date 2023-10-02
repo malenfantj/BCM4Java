@@ -35,7 +35,6 @@ package fr.sorbonne_u.components.examples.basic_cs.components;
 //knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.util.concurrent.TimeUnit;
-
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;

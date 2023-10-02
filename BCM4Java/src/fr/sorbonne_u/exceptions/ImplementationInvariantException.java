@@ -52,22 +52,24 @@ package fr.sorbonne_u.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			ImplementationInvariantException
-extends		ContractException
+extends		VerboseException
 {
-	private static final long serialVersionUID = 1L;
+	private static final int	LEVEL = 2;
+	private static final long	serialVersionUID = 1L;
 
 	public				ImplementationInvariantException()
 	{
+		super(LEVEL);
 	}
 
 	public				ImplementationInvariantException(String message)
 	{
-		super(message);
+		super(LEVEL, message);
 	}
 
 	public				ImplementationInvariantException(Throwable cause)
 	{
-		super(cause);
+		super(LEVEL, cause);
 	}
 
 	public				ImplementationInvariantException(
@@ -75,7 +77,7 @@ extends		ContractException
 		Throwable cause
 		)
 	{
-		super(message, cause);
+		super(LEVEL, message, cause);
 	}
 
 	public				ImplementationInvariantException(
@@ -85,7 +87,7 @@ extends		ContractException
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

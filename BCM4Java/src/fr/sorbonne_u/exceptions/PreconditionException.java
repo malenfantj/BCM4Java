@@ -52,28 +52,29 @@ package fr.sorbonne_u.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			PreconditionException
-extends		ContractException
+extends		VerboseException
 {
-	private static final long serialVersionUID = 1L;
+	private static final int	LEVEL = 2;
+	private static final long	serialVersionUID = 1L;
 
 	public				PreconditionException()
 	{
-		super();
+		super(LEVEL);
 	}
 
 	public				PreconditionException(String message)
 	{
-		super(message);
+		super(LEVEL, message);
 	}
 
 	public				PreconditionException(Throwable cause)
 	{
-		super(cause);
+		super(LEVEL, cause);
 	}
 
 	public				PreconditionException(String message, Throwable cause)
 	{
-		super(message, cause);
+		super(LEVEL, message, cause);
 	}
 
 	public				PreconditionException(
@@ -83,7 +84,7 @@ extends		ContractException
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------
