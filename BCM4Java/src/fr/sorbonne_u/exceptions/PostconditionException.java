@@ -41,10 +41,16 @@ package fr.sorbonne_u.exceptions;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2018-02-23</p>
@@ -52,9 +58,9 @@ package fr.sorbonne_u.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			PostconditionException
-extends		VerboseException
+extends		ContractException
 {
-	private static final int	LEVEL = 2;
+	private static final int	LEVEL = 3;
 	private static final long	serialVersionUID = 1L;
 
 	public				PostconditionException()
@@ -85,6 +91,41 @@ extends		VerboseException
 		)
 	{
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				PostconditionException(int level)
+	{
+		super(level);
+	}
+
+	public				PostconditionException(int level, String message)
+	{
+		super(level, message);
+	}
+
+	public				PostconditionException(int level, Throwable cause)
+	{
+		super(level, cause);
+	}
+
+	public				PostconditionException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause);
+	}
+
+	public				PostconditionException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

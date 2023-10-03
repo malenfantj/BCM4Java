@@ -1,12 +1,11 @@
 package fr.sorbonne_u.components.exceptions;
 
-import fr.sorbonne_u.exceptions.VerboseException;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// new implementation of the DEVS simulation standard for Java.
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -34,6 +33,8 @@ import fr.sorbonne_u.exceptions.VerboseException;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.exceptions.VerboseException;
+
 // -----------------------------------------------------------------------------
 /**
  * The class <code>BCMException</code> defines the most general exception
@@ -42,7 +43,13 @@ import fr.sorbonne_u.exceptions.VerboseException;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant

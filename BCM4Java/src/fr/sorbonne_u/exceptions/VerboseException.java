@@ -4,7 +4,8 @@ package fr.sorbonne_u.exceptions;
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// new implementation of the DEVS simulation standard for Java.
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -39,10 +40,16 @@ package fr.sorbonne_u.exceptions;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant	{@code true}
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2020-06-29</p>
@@ -52,9 +59,40 @@ package fr.sorbonne_u.exceptions;
 public class			VerboseException
 extends		Exception
 {
-	private static final long serialVersionUID = 1L;
+	private static final int	LEVEL = 2;
+	private static final long	serialVersionUID = 1L;
 	/** when true, print messages on sysout.								*/
-	public static boolean	VERBOSE = false;
+	public static boolean		VERBOSE = false;
+
+	public				VerboseException()
+	{
+		this(LEVEL);
+	}
+
+	public				VerboseException(String message)
+	{
+		this(LEVEL, message);
+	}
+
+	public				VerboseException(Throwable cause)
+	{
+		this(LEVEL, cause);
+	}
+
+	public				VerboseException(String message, Throwable cause)
+	{
+		this(LEVEL, message, cause);
+	}
+
+	public				VerboseException(
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		this(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
 
 	public				VerboseException(int level)
 	{
@@ -71,8 +109,8 @@ extends		Exception
 		if (VERBOSE) {
 			StackTraceElement ste = new Throwable().getStackTrace()[level];
 			System.out.println(
-					this.getClass().getSimpleName() + " raised with message "
-					+ message + " at " + ste.toString() + "!");
+					this.getClass().getSimpleName() + " raised with message \""
+					+ message + "\" at " + ste.toString() + "!");
 		}
 	}
 
@@ -96,8 +134,8 @@ extends		Exception
 		if (VERBOSE) {
 			StackTraceElement ste = new Throwable().getStackTrace()[level];
 			System.out.println(
-					this.getClass().getSimpleName() + " raised with message "
-					+ message + " and cause " + cause + " at "
+					this.getClass().getSimpleName() + " raised with message \""
+					+ message + "\" and cause " + cause + " at "
 					+ ste.toString() + "!");
 		}
 	}
@@ -114,8 +152,8 @@ extends		Exception
 		if (VERBOSE) {
 			StackTraceElement ste = new Throwable().getStackTrace()[level];
 			System.out.println(
-					this.getClass().getSimpleName() + " raised with message "
-					+ message + " and cause " + cause + " at "
+					this.getClass().getSimpleName() + " raised with message \""
+					+ message + "\" and cause " + cause + " at "
 					+ ste.toString() + "!");
 		}
 	}

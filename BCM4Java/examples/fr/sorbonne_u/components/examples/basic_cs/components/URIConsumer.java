@@ -64,10 +64,16 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
  * components following one of the vision of the concept of component assembly.
  * </p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2014-01-22</p>

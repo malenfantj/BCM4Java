@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.exceptions;
+package fr.sorbonne_u.exceptions;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -35,9 +35,9 @@ package fr.sorbonne_u.components.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ComponentDidNotStartException</code> defines the
- * exception type which instances are thrown when an error occurs
- * during the starting of a component.
+ * The class <code>ContractException</code> defines the most general exception
+ * related to software contracts (in the sense of Eiffel): preconditions,
+ * postconditions, invariants, etc.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -53,40 +53,40 @@ package fr.sorbonne_u.components.exceptions;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2014-03-18</p>
+ * <p>Created on : 2023-10-03</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ComponentStartException
-extends		BCMException
+public class			ContractException
+extends		VerboseException
 {
-	private static final int	LEVEL = 3;
-	private static final long	serialVersionUID = 1L ;
+	private static final int	LEVEL = 2;
+	private static final long	serialVersionUID = 1L;
 
-	public				ComponentStartException()
+	public			ContractException()
 	{
-		super(LEVEL) ;
+		super(LEVEL);
 	}
 
-	public				ComponentStartException(String message)
+	public			ContractException(String message)
 	{
-		super(LEVEL, message) ;
+		super(LEVEL, message);
 	}
 
-	public				ComponentStartException(Throwable cause)
+	public			ContractException(Throwable cause)
 	{
-		super(LEVEL, cause) ;
+		super(LEVEL, cause);
 	}
 
-	public				ComponentStartException(
+	public			ContractException(
 		String message,
 		Throwable cause
 		)
 	{
-		super(LEVEL, message, cause) ;
+		super(LEVEL, message, cause);
 	}
 
-	public				ComponentStartException(
+	public			ContractException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,
@@ -96,31 +96,31 @@ extends		BCMException
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public				ComponentStartException(int level)
+	public			ContractException(int level)
 	{
-		super(level) ;
+		super(level);
 	}
 
-	public				ComponentStartException(int level, String message)
+	public			ContractException(int level, String message)
 	{
-		super(level, message) ;
+		super(level, message);
 	}
 
-	public				ComponentStartException(int level, Throwable cause)
+	public			ContractException(int level, Throwable cause)
 	{
-		super(level, cause) ;
+		super(level, cause);
 	}
 
-	public				ComponentStartException(
+	public			ContractException(
 		int level,
 		String message,
 		Throwable cause
 		)
 	{
-		super(level, message, cause) ;
+		super(level, message, cause);
 	}
 
-	public				ComponentStartException(
+	public			ContractException(
 		int level,
 		String message,
 		Throwable cause,
