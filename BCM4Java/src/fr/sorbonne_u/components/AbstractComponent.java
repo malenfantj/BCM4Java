@@ -90,7 +90,6 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 import javassist.util.HotSwapAgent;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.annotation.Annotation;
@@ -3356,7 +3355,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
 	 * pre	{@code inter != null}
-	 * post	{@code ret == null || forall(PortI p : ret) { inter.equals(p.getImplementedInterface()) }}
+	 * post	{@code ret == null || Stream.of(ret).allMatch(p -> inter.isAssignableFrom(p.getImplementedInterface()))}
 	 * </pre>
 	 *
 	 * @param inter	interface for which ports are sought.
@@ -3374,11 +3373,41 @@ implements	ComponentI
 		assert	inter != null :
 					new PreconditionException("Interface is null!");		
 
-		Vector<PortI> temp;
+		ArrayList<PortI> temp = new ArrayList<>();
+		Class<? extends ComponentInterface>[] inters = null;
+		boolean isAnInterface = false;
+		this.interfaceManagementLock.readLock().lock();
+		try {
+			inters = this.getInterfaces();
+			isAnInterface = this.isInterface(inter);
+		} finally {
+			this.interfaceManagementLock.readLock().unlock();
+		}
 
 		this.portManagementLock.readLock().lock();
 		try {
-			temp = this.interfaces2ports.get(inter);
+			if (isAnInterface) {
+				for (int i = 0 ; i < inters.length ; i++) {
+					if (inter.isAssignableFrom(inters[i])) {
+						Vector<PortI> t = this.interfaces2ports.get(inters[i]);
+						if (t != null) {
+							temp.addAll(t);
+						}
+					}
+				}
+			}
+			assert	temp.stream().allMatch(
+						p -> { try {
+								 return inter.isAssignableFrom(
+												p.getImplementedInterface());
+							   } catch (Exception e) {
+								 throw new RuntimeException(e) ;
+							   }
+							 }) :
+					new PostconditionException(
+							"Stream.of(ret).allMatch("
+							+ "p -> inter.isAssignableFrom("
+							+ "p.getImplementedInterface()))");
 		} finally {
 			this.portManagementLock.readLock().unlock();
 		}
@@ -3405,7 +3434,7 @@ implements	ComponentI
 							)).append("] ...done.").toString());
 		}
 
-		return temp != null ? temp.toArray(new PortI[]{}) : null;
+		return temp.size() > 0 ? temp.toArray(new PortI[]{}) : null;
 	}
 
 	/**
