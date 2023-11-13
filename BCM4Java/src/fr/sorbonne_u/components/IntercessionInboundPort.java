@@ -63,6 +63,10 @@ implements	IntercessionCI
 {
 	private static final long serialVersionUID = 1L;
 
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
+
 	public				IntercessionInboundPort(
 		String uri,
 		ComponentI owner
@@ -76,6 +80,23 @@ implements	IntercessionCI
 		) throws Exception
 	{
 		super(IntercessionCI.class, owner) ;
+	}
+
+	public				IntercessionInboundPort(
+		Class<? extends IntercessionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(implementedInterface, owner);
+	}
+
+	public				IntercessionInboundPort(
+		String uri,
+		Class<? extends IntercessionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner);
 	}
 
 	// -------------------------------------------------------------------------

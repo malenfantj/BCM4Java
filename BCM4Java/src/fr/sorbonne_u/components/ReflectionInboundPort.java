@@ -86,6 +86,23 @@ implements	ReflectionCI
 		super(ReflectionCI.class, owner);
 	}
 
+	public				ReflectionInboundPort(
+		Class<? extends ReflectionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(implementedInterface, owner);
+	}
+
+	public				ReflectionInboundPort(
+		String uri,
+		Class<? extends ReflectionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner);
+	}
+
 	// -------------------------------------------------------------------------
 	// Plug-ins facilities
 	// -------------------------------------------------------------------------

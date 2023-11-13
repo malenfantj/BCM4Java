@@ -87,6 +87,22 @@ implements	IntrospectionCI
 		super(IntrospectionCI.class, owner);
 	}
 
+	public				IntrospectionOutboundPort(
+		Class<? extends IntrospectionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception 
+	{	
+		super(implementedInterface, owner);
+	}
+
+	public				IntrospectionOutboundPort(
+		String uri,
+		Class<? extends IntrospectionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner);
+	}
 
 	// -------------------------------------------------------------------------
 	// Plug-ins facilities

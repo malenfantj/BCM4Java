@@ -84,6 +84,22 @@ implements	IntercessionCI
 		super(IntercessionCI.class, owner) ;
 	}
 
+	public				IntercessionOutboundPort(
+		Class<? extends IntercessionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(implementedInterface, owner);
+	}
+
+	public				IntercessionOutboundPort(
+		String uri,
+		Class<? extends IntercessionCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner);
+	}
 
 	// -------------------------------------------------------------------------
 	// Plug-ins facilities
