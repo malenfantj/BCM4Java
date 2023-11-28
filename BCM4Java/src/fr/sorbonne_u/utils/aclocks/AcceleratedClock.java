@@ -215,6 +215,8 @@ implements	Serializable
 	/** when true, trace actions.											*/
 	public static boolean		VERBOSE = false;
 
+	/** the URI of this clock.												*/
+	protected final String		clockURI;
 	/** acceleration factor between durations in Unix epoch system time
 	 *  and durations between instants.										*/
 	protected final double		accelerationFactor;
@@ -234,16 +236,25 @@ implements	Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
 	 * pre	{@code accelerationFactor > 0.0}
 	 * post	{@code getStartEpochNanos() <= TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis())}
 	 * post	{@code getStartInstant().equals(Instant.ofEpochMilli(TimeUnit.NANOSECONDS.toMillis(getStartEpochNanos())))}
 	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
+	 * @param clockURI				URI attributed to the clock.
 	 * @param accelerationFactor	acceleration factor to be applied.
 	 */
-	public				AcceleratedClock(double accelerationFactor)
+	public				AcceleratedClock(
+		String clockURI,
+		double accelerationFactor)
 	{
+		super();
+
+		assert	clockURI != null && !clockURI.isEmpty() :
+				new PreconditionException(
+						"clockURI != null && !clockURI.isEmpty()");
 		assert	accelerationFactor > 0.0 :
 				new PreconditionException("accelerationFactor > 0.0");
 
@@ -252,6 +263,7 @@ implements	Serializable
 								TimeUnit.MILLISECONDS.toNanos(currentTime);
 		this.startInstant = Instant.ofEpochMilli(currentTime);
 		this.accelerationFactor = accelerationFactor;
+		this.clockURI = clockURI;
 
 		assert	getStartEpochNanos() <=
 					TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis()) :
@@ -274,6 +286,7 @@ implements	Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
 	 * pre	{@code unixEpochStartTimeInNanos > 0}
 	 * pre	{@code accelerationFactor > 0.0}
 	 * post	{@code getStartEpochNanos() == unixEpochStartTimeInNanos}
@@ -281,14 +294,19 @@ implements	Serializable
 	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
+	 * @param clockURI				URI attributed to the clock.
 	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time in nanoseconds.
 	 * @param accelerationFactor		acceleration factor to be applied.
 	 */
 	public				AcceleratedClock(
+		String clockURI,
 		long unixEpochStartTimeInNanos,
 		double accelerationFactor
 		)
 	{
+		assert	clockURI != null && !clockURI.isEmpty() :
+				new PreconditionException(
+						"clockURI != null && !clockURI.isEmpty()");
 		assert	unixEpochStartTimeInNanos > 0 :
 				new PreconditionException("unixEpochStartTimeInNanos > 0");
 		assert	accelerationFactor > 0.0 :
@@ -299,6 +317,7 @@ implements	Serializable
 			Instant.ofEpochMilli(
 				TimeUnit.NANOSECONDS.toMillis(this.unixEpochStartTimeInNanos));
 		this.accelerationFactor = accelerationFactor;
+		this.clockURI = clockURI;
 
 		assert	getStartInstant().equals(Instant.ofEpochMilli(
 					TimeUnit.NANOSECONDS.toMillis(getStartEpochNanos()))) :
@@ -315,6 +334,7 @@ implements	Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
 	 * pre	{@code startInstant != null}
 	 * pre	{@code accelerationFactor > 0.0}
 	 * post	{@code getStartEpochNanos() <= TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis())}
@@ -322,14 +342,19 @@ implements	Serializable
 	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
+	 * @param clockURI				URI attributed to the clock.
 	 * @param startInstant			start time as {@code Instant}.
 	 * @param accelerationFactor	acceleration factor to be applied.
 	 */
 	public				AcceleratedClock(
+		String clockURI,
 		Instant	startInstant,
 		double accelerationFactor
 		)
 	{
+		assert	clockURI != null && !clockURI.isEmpty() :
+				new PreconditionException(
+						"clockURI != null && !clockURI.isEmpty()");
 		assert	startInstant != null :
 				new PreconditionException("startInstant != null");
 		assert	accelerationFactor > 0.0 :
@@ -339,6 +364,7 @@ implements	Serializable
 					TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
 		this.startInstant = startInstant;
 		this.accelerationFactor = accelerationFactor;
+		this.clockURI = clockURI;
 
 		assert	getStartEpochNanos() <=
 					TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis()) :
@@ -354,6 +380,7 @@ implements	Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
 	 * pre	{@code unixEpochStartTimeInNanos > 0}
 	 * pre	{@code startInstant != null}
 	 * pre	{@code accelerationFactor > 0.0}
@@ -362,16 +389,21 @@ implements	Serializable
 	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
+	 * @param clockURI				URI attributed to the clock.
 	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time in nanoseconds.
 	 * @param startInstant				start time as {@code Instant}.
 	 * @param accelerationFactor		acceleration factor to be applied.
 	 */
 	public				AcceleratedClock(
+		String clockURI,
 		long unixEpochStartTimeInNanos,
 		Instant	startInstant,
 		double accelerationFactor
 		)
 	{
+		assert	clockURI != null && !clockURI.isEmpty() :
+				new PreconditionException(
+						"clockURI != null && !clockURI.isEmpty()");
 		assert	unixEpochStartTimeInNanos > 0 :
 				new PreconditionException("unixEpochStartTimeInNanos > 0");
 		assert	startInstant != null :
@@ -382,11 +414,29 @@ implements	Serializable
 		this.unixEpochStartTimeInNanos = unixEpochStartTimeInNanos;
 		this.startInstant = startInstant;
 		this.accelerationFactor = accelerationFactor;
+		this.clockURI = clockURI;
 	}
 
 	// -------------------------------------------------------------------------
 	// Methods
 	// -------------------------------------------------------------------------
+
+	/**
+	 * return the URI of the clock when it is set or null.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null && !return.isEmpty()}
+	 * </pre>
+	 *
+	 * @return	the URI of the clock.
+	 */
+	public String		getClockURI()
+	{
+		return this.clockURI;
+	}
 
 	/**
 	 * return an identity of the time reference <i>e.g.</i>, the IP address of
@@ -828,6 +878,7 @@ implements	Serializable
 			actions[8] = Instant.parse("2022-11-07T06:00:45.000Z");
 			actions[9] = Instant.parse("2022-11-07T06:00:50.000Z");
 
+			System.out.print('.');
 			double accFactor = 1.0;
 			StringBuffer logs = new StringBuffer("Run with acceleration factor: ");
 			logs.append(accFactor);
@@ -835,10 +886,12 @@ implements	Serializable
 			long realStartTime = System.currentTimeMillis();
 			AcceleratedClock clock =
 					new AcceleratedClock(
+							"testURI1",
 							TimeUnit.MILLISECONDS.toNanos(
 									System.currentTimeMillis() + 5000L),
 							start,
 							accFactor);
+			System.out.print('.');
 			long waitingTime = clock.waitingDelayUntilStartInMillis();
 			clock.waitUntilStart();
 			Instant observedStart = clock.currentInstant();
@@ -851,6 +904,7 @@ implements	Serializable
 			logs.append("observedStart: ");
 			logs.append(observedStart);
 			logs.append('\n');
+			System.out.print('.');
 			for (int j = 0 ; j < actions.length ; j++) {
 				long d = clock.nanoDelayUntilInstant(actions[j]);
 				Thread.sleep(TimeUnit.NANOSECONDS.toMillis(d));
@@ -871,6 +925,7 @@ implements	Serializable
 				logs.append(observedAction);
 				logs.append('\n');
 			}
+			System.out.println('.');
 			long realEndTime = System.currentTimeMillis();
 			logs.append("duration (in millis): ");
 			logs.append((realEndTime - realStartTime));
@@ -879,16 +934,19 @@ implements	Serializable
 			// much, yet small discrepancies are expected
 			System.out.println(logs.toString());
 
+			System.out.print('.');
 			accFactor = 10.0;
 			logs = new StringBuffer("\nRun with acceleration factor: ");
 			logs.append(accFactor);
 			logs.append('\n');
 			realStartTime = System.currentTimeMillis();
 			clock = new AcceleratedClock(
+							"testURI2",
 							TimeUnit.MILLISECONDS.toNanos(
 									System.currentTimeMillis() + 5000L),
 							start,
 							accFactor);
+			System.out.print('.');
 			waitingTime = clock.waitingDelayUntilStartInMillis();
 			clock.waitUntilStart();
 			observedStart = clock.currentInstant();
@@ -901,6 +959,7 @@ implements	Serializable
 			logs.append("observedStart: ");
 			logs.append(observedStart);
 			logs.append('\n');
+			System.out.print('.');
 			for (int j = 0 ; j < actions.length ; j++) {
 				long d = clock.nanoDelayUntilInstant(actions[j]);
 				Thread.sleep(TimeUnit.NANOSECONDS.toMillis(d));
@@ -921,6 +980,7 @@ implements	Serializable
 				logs.append(observedAction);
 				logs.append('\n');
 			}
+			System.out.println('.');
 			realEndTime = System.currentTimeMillis();
 			logs.append("duration (in millis): ");
 			logs.append((realEndTime - realStartTime));
@@ -929,16 +989,20 @@ implements	Serializable
 			// much, yet small discrepancies are expected
 			System.out.println(logs.toString());
 
+			System.out.print('.');
 			accFactor = 100.0;
 			logs = new StringBuffer("\nRun with acceleration factor: ");
 			logs.append(accFactor);
 			logs.append('\n');
 			realStartTime = System.currentTimeMillis();
+			System.out.print('.');
 			clock = new AcceleratedClock(
+							"testURI3",
 							TimeUnit.MILLISECONDS.toNanos(
 									System.currentTimeMillis() + 5000L),
 							start,
 							accFactor);
+			System.out.print('.');
 			waitingTime = clock.waitingDelayUntilStartInMillis();
 			clock.waitUntilStart();
 			observedStart = clock.currentInstant();
@@ -951,6 +1015,7 @@ implements	Serializable
 			logs.append("observedStart: ");
 			logs.append(observedStart);
 			logs.append('\n');
+			System.out.print('.');
 			for (int j = 0 ; j < actions.length ; j++) {
 				long d = clock.nanoDelayUntilInstant(actions[j]);
 				Thread.sleep(TimeUnit.NANOSECONDS.toMillis(d));
@@ -971,6 +1036,7 @@ implements	Serializable
 				logs.append(observedAction);
 				logs.append('\n');
 			}
+			System.out.println('.');
 			realEndTime = System.currentTimeMillis();
 			logs.append("duration (in millis): ");
 			logs.append((realEndTime - realStartTime));

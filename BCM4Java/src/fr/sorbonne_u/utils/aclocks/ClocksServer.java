@@ -488,11 +488,11 @@ extends		AbstractComponent
 	 * @throws Exception				<i>to do</i>.
 	 */
 	public AcceleratedClock		createClock(
-			String clockURI,
-			long unixEpochStartTimeInNanos,
-			Instant	startInstant,
-			double accelerationFactor
-			) throws Exception
+		String clockURI,
+		long unixEpochStartTimeInNanos,
+		Instant	startInstant,
+		double accelerationFactor
+		) throws Exception
 	{
 		if (VERBOSE) {
 			this.traceMessage(
@@ -514,7 +514,8 @@ extends		AbstractComponent
 		}
 
 		AcceleratedClock ret =
-				new AcceleratedClock(unixEpochStartTimeInNanos,
+				new AcceleratedClock(clockURI,
+									 unixEpochStartTimeInNanos,
 									 startInstant,
 									 accelerationFactor);
 
