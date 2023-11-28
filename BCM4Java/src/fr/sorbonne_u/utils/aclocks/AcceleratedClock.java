@@ -566,7 +566,7 @@ implements	Serializable
 	 *
 	 * @return	the current accelerated instant.
 	 */
-	protected Instant		currentInstant()
+	public Instant		currentInstant()
 	{
 		long current = System.currentTimeMillis();
 		assert	!startTimeNotReached(current) :
