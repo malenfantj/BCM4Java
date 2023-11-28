@@ -33,6 +33,7 @@ package fr.sorbonne_u.utils.aclocks;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.io.Serializable;
+import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
@@ -386,6 +387,25 @@ implements	Serializable
 	// -------------------------------------------------------------------------
 	// Methods
 	// -------------------------------------------------------------------------
+
+	/**
+	 * return an identity of the time reference <i>e.g.</i>, the IP address of
+	 * the host which hardware clock serves as reference.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return						an identity of the time reference <i>e.g.</i>, the IP address of the host which hardware clock serves as reference.
+	 * @throws UnknownHostException	<i>to do </i>.
+	 */
+	public String		getTimeReferenceIdentity() throws UnknownHostException
+	{
+		return java.net.Inet4Address.getLocalHost().getHostAddress();
+	}
 
 	/**
 	 * return the acceleration factor associated to this clock.
