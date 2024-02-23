@@ -1,7 +1,5 @@
 package fr.sorbonne_u.components.examples.chm.components;
 
-import java.util.concurrent.TimeUnit;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
 //
 // Jacques.Malenfant@lip6.fr
@@ -41,7 +39,6 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.examples.chm.connectors.MapReadingConnector;
 import fr.sorbonne_u.components.examples.chm.connectors.MapWritingConnector;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
 import fr.sorbonne_u.components.examples.chm.ports.MapReadingOutboundPort;
 import fr.sorbonne_u.components.examples.chm.ports.MapWritingOutboundPort;
@@ -49,6 +46,7 @@ import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
+import java.util.concurrent.TimeUnit;
 
 //------------------------------------------------------------------------------
 /**
@@ -58,10 +56,16 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-02-11</p>
@@ -71,9 +75,8 @@ import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 //-----------------------------------------------------------------------------
 @RequiredInterfaces(required = {ReflectionCI.class,
 								MapReadingCI.class,
-								MapTestingCI.class,
 								MapWritingCI.class})
-public class				TesterComponent
+public class			TesterComponent
 extends		AbstractComponent
 //-----------------------------------------------------------------------------
 {
@@ -102,12 +105,12 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	chmReflectionIBPUri != null
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no more precondition.
+	 * post	{@code true}	// no more postcondition.
 	 * </pre>
 	 *
 	 * @param chmReflectionIBPUri	URI of the concurrent map reflection inbound port.
-	 * @throws Exception				<i>to do.</i>
+	 * @throws Exception			<i>to do</i>.
 	 */
 	protected			TesterComponent(String chmReflectionIBPUri)
 	throws Exception
@@ -182,12 +185,12 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key			prefix of the keys to be used.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected synchronized void	add(String key) throws Exception
 	{
@@ -233,13 +236,13 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	key != null and value != null
-	 * post	true			// no postcondition.
+	 * pre	{@code key != null and value != null}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param key		key under which the value has been put in the hash map.
-	 * @param value		value that must be associated with the key.
-	 * @throws Exception	<i>to do.</i>
+	 * @param key			key under which the value has been put in the hash map.
+	 * @param value			value that must be associated with the key.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected synchronized void	remove(String key, int value) throws Exception
 	{
@@ -265,13 +268,13 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	key != null and value != null
-	 * post	true			// no postcondition.
+	 * pre	{@code key != null and value != null}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param key		key under which the value has been put in the hash map.
-	 * @param value		value that must be associated with the key.
-	 * @throws Exception	<i>to do.</i>
+	 * @param key			key under which the value has been put in the hash map.
+	 * @param value			value that must be associated with the key.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	protected synchronized void	verifyPresence(
 		String key,

@@ -43,10 +43,10 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>Black-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-01-22</p>
@@ -64,14 +64,14 @@ extends		RequiredCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	key != null
-	 * post	true			// no postcondition.
+	 * pre	{@code key != null}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key			the key to be associated to the given value.
 	 * @param value			the value to be associated to the given key.
 	 * @return				the value previously associated to the key or null if none.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public V			put(K key, V value) throws Exception ;
 
@@ -82,13 +82,13 @@ extends		RequiredCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	key != null
-	 * post	true			// no postcondition.
+	 * pre	{@code key != null}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key			key which association must be removed.
 	 * @return				the value previously associated to the key or null if none.
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public V			remove(K key) throws Exception ;
 }

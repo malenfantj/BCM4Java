@@ -36,43 +36,40 @@ package fr.sorbonne_u.components.examples.chm.connectors;
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
 
 //------------------------------------------------------------------------------
 /**
  * The class <code>MapReadingConnector</code> implements the connector on the
- * <code>MapReading</code> and <code>MapTesting</code> interfaces.
+ * <code>MapReadingCI</code> component interface.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-02-11</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapReadingConnector<K, V>
+public class			MapReadingConnector<K, V>
 extends		AbstractConnector
-implements	MapReadingCI<K, V>,
-			MapTestingCI<K, V>
+implements	MapReadingCI<K, V>
 {
-
-	public				MapReadingConnector()
-	{
-		super() ;
-	}
-
-
 	/**
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#get(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public V				get(K key) throws Exception
+	public V			get(K key) throws Exception
 	{
 		return ((MapReadingCI<K, V>)this.offering).get(key) ;
 	}
@@ -88,33 +85,33 @@ implements	MapReadingCI<K, V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsValue(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#containsValue(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean		containsValue(V value) throws Exception
 	{
-		return ((MapTestingCI<K, V>)this.offering).containsValue(value) ;
+		return ((MapReadingCI<K, V>)this.offering).containsValue(value) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsKey(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#containsKey(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean		containsKey(K key) throws Exception
 	{
-		return ((MapTestingCI<K, V>)this.offering).containsKey(key) ;
+		return ((MapReadingCI<K, V>)this.offering).containsKey(key) ;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#isEmpty()
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#isEmpty()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean		isEmpty() throws Exception
 	{
-		return ((MapTestingCI<K, V>)this.offering).isEmpty() ;
+		return ((MapReadingCI<K, V>)this.offering).isEmpty() ;
 	}
 }
 //------------------------------------------------------------------------------

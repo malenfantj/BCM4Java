@@ -38,36 +38,40 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.examples.chm.components.ConcurrentMapComponent;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 
 //------------------------------------------------------------------------------
 /**
- * The class <code>MapReadingInboundPort</code> implements the inbound for
- * map services that are not changing the state of the map.
+ * The class <code>MapReadingInboundPort</code> implements the inbound port
+ * on the <code>MapReadingCI</code> component interface.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-01-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapReadingInboundPort<K,V>
+public class			MapReadingInboundPort<K,V>
 extends		AbstractInboundPort
-implements	MapReadingCI<K,V>,
-			MapTestingCI<K,V>
+implements	MapReadingCI<K,V>
 {
 	private static final long serialVersionUID = 1L ;
 	protected final int	executorIndex ;
 
 	/**
-	 * create a map reading inbound port.
+	 * create a map testing inbound port.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -79,7 +83,7 @@ implements	MapReadingCI<K,V>,
 	 * @param uri			the URI to be attributed to the port.
 	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
 	 * @param owner			the owner component.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public				MapReadingInboundPort(
 		String uri,
@@ -95,7 +99,7 @@ implements	MapReadingCI<K,V>,
 	}
 
 	/**
-	 * create a map reading inbound port.
+	 * create a map testing inbound port.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -106,7 +110,7 @@ implements	MapReadingCI<K,V>,
 	 *
 	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
 	 * @param owner			the owner component.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public				MapReadingInboundPort(
 		int executorIndex,
@@ -124,7 +128,7 @@ implements	MapReadingCI<K,V>,
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#get(java.lang.Object)
 	 */
 	@Override
-	public V				get(K key) throws Exception
+	public V			get(K key) throws Exception
 	{
 		assert	key != null ;
 
@@ -159,7 +163,7 @@ implements	MapReadingCI<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsValue(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#containsValue(java.lang.Object)
 	 */
 	@Override
 	public boolean		containsValue(V value) throws Exception
@@ -177,7 +181,7 @@ implements	MapReadingCI<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#containsKey(java.lang.Object)
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#containsKey(java.lang.Object)
 	 */
 	@Override
 	public boolean		containsKey(K key) throws Exception
@@ -197,7 +201,7 @@ implements	MapReadingCI<K,V>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI#isEmpty()
+	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI#isEmpty()
 	 */
 	@Override
 	public boolean		isEmpty() throws Exception

@@ -44,31 +44,32 @@ import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-02-11</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapWritingConnector<K, V>
+public class			MapWritingConnector<K, V>
 extends		AbstractConnector
 implements	MapWritingCI<K, V>
 {
-	public				MapWritingConnector()
-	{
-		super() ;
-	}
-
 	/**
 	 * @see fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI#put(java.lang.Object, java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public V				put(K key, V value) throws Exception
+	public V			put(K key, V value) throws Exception
 	{
 		return ((MapWritingCI<K, V>)this.offering).put(key, value) ;
 	}
@@ -78,7 +79,7 @@ implements	MapWritingCI<K, V>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public V				remove(K key) throws Exception
+	public V			remove(K key) throws Exception
 	{
 		return ((MapWritingCI<K, V>)this.offering).remove(key) ;
 	}

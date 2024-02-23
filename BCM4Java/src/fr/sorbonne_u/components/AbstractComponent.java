@@ -2507,6 +2507,7 @@ implements	ComponentI
 				}
 			}
 		}
+
 		OfferedInterfaces offeredAnnotation =
 					this.getClass().getAnnotation(OfferedInterfaces.class);
 		if (offeredAnnotation != null) {
@@ -3391,7 +3392,11 @@ implements	ComponentI
 					if (inter.isAssignableFrom(inters[i])) {
 						Vector<PortI> t = this.interfaces2ports.get(inters[i]);
 						if (t != null) {
-							temp.addAll(t);
+							for (PortI p : t) {
+								if (!temp.contains(p)) {
+									temp.add(p);
+								}
+							}
 						}
 					}
 				}

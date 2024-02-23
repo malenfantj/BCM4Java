@@ -37,7 +37,6 @@ package fr.sorbonne_u.components.examples.chm.components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapReadingCI;
-import fr.sorbonne_u.components.examples.chm.interfaces.MapTestingCI;
 import fr.sorbonne_u.components.examples.chm.interfaces.MapWritingCI;
 import fr.sorbonne_u.components.examples.chm.ports.MapReadingInboundPort;
 import fr.sorbonne_u.components.examples.chm.ports.MapWritingInboundPort;
@@ -82,10 +81,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * ports.
  * </p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-01-22</p>
@@ -94,7 +99,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 //-----------------------------------------------------------------------------
 @OfferedInterfaces(offered = {MapReadingCI.class,
-							  MapTestingCI.class,
 							  MapWritingCI.class})
 public class			ConcurrentMapComponent<K,V>
 extends		AbstractComponent
@@ -138,14 +142,13 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	reflectionInboundPortURI != null
-	 * pre	nbReadingThreads &gt; 0
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no more precondition.
+	 * post	{@code true}	// no more postcondition.
 	 * </pre>
 	 *
 	 * @param reflectionInboundPortURI	URI of this component reflection inbound port.
 	 * @param nbReadingThreads			number of threads in the readers' pool.
-	 * @throws Exception					<i>to do.</i>
+	 * @throws Exception				<i>to do</i>.
 	 */
 	protected			ConcurrentMapComponent(
 		String reflectionInboundPortURI,
@@ -194,8 +197,8 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param value		value to be tested.
@@ -233,8 +236,8 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key		key to be tested.
@@ -272,14 +275,14 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key		key to be accessed.
 	 * @return			the value associated to the given key in the map of null if none.
 	 */
-	public V				get(K key)
+	public V			get(K key)
 	{
 		V res ;
 		int c ;
@@ -311,8 +314,8 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return			true if the map is empty, false otherwise.
@@ -350,15 +353,15 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key	the key to which the given value must be associated.
 	 * @param value	the new value to associated to the given key.
 	 * @return		the value previously associated to the given key or null if none.
 	 */
-	public V				put(K key, V value)
+	public V			put(K key, V value)
 	{
 		V res ;
 		int c ;
@@ -391,14 +394,14 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key	the key which association must be removed.
 	 * @return		the value that was associated to the given key or null if none.
 	 */
-	public V				remove(K key)
+	public V			remove(K key)
 	{
 		V res ;
 		int c ;
@@ -430,8 +433,8 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the number of associations kept in the map.

@@ -54,10 +54,16 @@ import fr.sorbonne_u.components.helpers.CVMDebugModes;
  * scenario is implemented in the two components.
  * </p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-02-11</p>
@@ -119,7 +125,6 @@ extends		AbstractCVM
 		try {
 			// Create an instance of the defined component virtual machine.
 			CVM a = new CVM() ;
-			CVM.DEBUG_MODE.add(CVMDebugModes.EXECUTOR_SERVICES);
 			// Execute the application.
 			a.startStandardLifeCycle(5000L) ;
 			// Give some time to see the traces (convenience).

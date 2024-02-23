@@ -39,21 +39,21 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 // -----------------------------------------------------------------------------
 /**
  * The interface <code>MapReadingCI</code> defines services that access the
- * values in the map without changing its state.
+ * state of the map without changing it.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>Black-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-01-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			MapReadingCI<K,V>
+public interface		MapReadingCI<K,V>
 extends		RequiredCI,
 			OfferedCI
 {
@@ -64,15 +64,15 @@ extends		RequiredCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	key != null
-	 * post	true			// no postcondition.
+	 * pre	{@code key != null}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key			the key which value must be returned.
 	 * @return				the value associated with the given key or null if none.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public V				get(K key) throws Exception ;
+	public V			get(K key) throws Exception ;
 
 	/**
 	 * return the number of key/value pairs kept in the map.
@@ -80,13 +80,60 @@ extends		RequiredCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return				the number of key/value pairs kept in the map.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public int			size() throws Exception ;
+
+	/**
+	 * return true if the map contains the given value.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param value			value to be tested.
+	 * @return				true if the map contains the given value.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	public boolean		containsValue(V value) throws Exception ;
+
+	/**
+	 * return true if the map contains the given key.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code key != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param key			key to be tested.
+	 * @return				true if the map contains the given key.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	public boolean		containsKey(K key) throws Exception ;
+
+	/**
+	 * return true if the map is empty.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return				true if the map is empty.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	public boolean		isEmpty() throws Exception ;
 }
 // -----------------------------------------------------------------------------

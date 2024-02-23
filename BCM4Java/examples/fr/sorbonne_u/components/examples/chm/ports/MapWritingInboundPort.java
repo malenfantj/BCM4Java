@@ -47,17 +47,23 @@ import fr.sorbonne_u.components.ports.AbstractInboundPort;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2019-01-22</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class				MapWritingInboundPort<K,V>
+public class			MapWritingInboundPort<K,V>
 extends		AbstractInboundPort
 implements	MapWritingCI<K,V>
 {
@@ -70,14 +76,14 @@ implements	MapWritingCI<K,V>
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner.validExecutorServiceIndex(executorIndex)
-	 * post	true			// no postcondition.
+	 * pre	{@code owner.validExecutorServiceIndex(executorIndex)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param uri			the URI to be attributed to the port.
 	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
 	 * @param owner			the owner component.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public				MapWritingInboundPort(
 		String uri,
@@ -98,13 +104,13 @@ implements	MapWritingCI<K,V>
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	owner.validExecutorServiceIndex(executorIndex)
-	 * post	true			// no postcondition.
+	 * pre	{@code owner.validExecutorServiceIndex(executorIndex)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorIndex	the index of the thread pool to be used to execute the services in the owner component.
 	 * @param owner			the owner component.
-	 * @throws Exception		<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public				MapWritingInboundPort(
 		int executorIndex,
