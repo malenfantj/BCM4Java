@@ -57,6 +57,7 @@ import fr.sorbonne_u.components.registry.GlobalRegistry;
 import fr.sorbonne_u.components.registry.GlobalRegistryClient;
 import fr.sorbonne_u.components.registry.protocol.LookupResponse;
 import fr.sorbonne_u.components.registry.protocol.Response;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**
@@ -159,10 +160,16 @@ import fr.sorbonne_u.components.registry.protocol.Response;
  *   created on that JVM.</li>
  * </ol>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant	{@code true}			// no invariant yet, TODO
+ * invariant	{@code true}	// TODO
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// TODO
  * </pre>
  * 
  * <p>Created on : 2012-05-22</p>
@@ -205,7 +212,7 @@ implements	DistributedComponentVirtualMachineI
 	 * 
 	 * <pre>
 	 * pre	{@code true}	// no precondition.
-	 * post	{@code ret != null}
+	 * post	{@code return != null}
 	 * </pre>
 	 *
 	 * @return	a reference on the component distributed virtual machine instance running on this Java virtual machine.
@@ -238,12 +245,12 @@ implements	DistributedComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @param port			port to be published
-	 * @throws Exception	<i>todo</i>.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public static void	publishPort(PortI port)
 	throws	Exception
 	{
-		assert	port != null;
+		assert	port != null : new PreconditionException("port != null");
 		//	TODO not already published in the global registry
 		//	TODO not already published in the RMI registry of the current host
 		//	!LOCAL_REGISTRY.containsKey(port.getPortURI())
@@ -309,12 +316,12 @@ implements	DistributedComponentVirtualMachineI
 	 * </pre>
 	 *
 	 * @param port			port to be unpublished.
-	 * @throws Exception	<i>todo</i>.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public static void	unpublishPort(PortI port)
 	throws	Exception
 	{
-		assert	port != null;
+		assert	port != null : new PreconditionException("port != null");
 		//	TODO published in the global registry
 		//	TODO published in the RMI registry of the current host
 		//	LOCAL_REGISTRY.containsKey(port.getPortURI())
@@ -347,18 +354,18 @@ implements	DistributedComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code remoteURI != null && !remoteURI.isEmpty()}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param remoteURI	uri identifying the port in the registry.
-	 * @return			reference to the component port.
-	 * @throws Exception	<i>todo</i>.
+	 * @param remoteURI		URI identifying the port in the registry.
+	 * @return				reference to the component port.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public Remote		getRemoteReference(String remoteURI)
 	throws Exception
 	{
-		assert	remoteURI != null;
+		assert	remoteURI != null && !remoteURI.isEmpty() : new PreconditionException("remoteURI != null");
 
 		Remote reference = null;
 		String response =
@@ -417,7 +424,7 @@ implements	DistributedComponentVirtualMachineI
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception		<i>todo</i>.
+	 * @throws Exception		<i>to do</i>.
 	 */
 	public void			waitOnCyclicBarrier() throws Exception
 	{
@@ -517,7 +524,7 @@ implements	DistributedComponentVirtualMachineI
 	 * pre	{@code !deploymentDone()}
 	 * post	{@code deploymentDone()}
 	 * </pre>
-	 * @throws Exception 	<i>todo.</i>
+	 * @throws Exception 	<i>to do</i>.
 	 * 
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#deploy()
 	 */

@@ -44,6 +44,8 @@ import fr.sorbonne_u.components.helpers.CVMDebugModesI;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 //-----------------------------------------------------------------------------
 /**
@@ -71,10 +73,16 @@ import fr.sorbonne_u.components.pre.dcc.DynamicComponentCreator;
  * the local registry by calling the method <code>localPublishPort</code> and
  * it can be unpublished by calling the method <code>localUnpublishPort</code>.
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		AbstractCVM.getCVM() != null
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2011-11-18</p>
@@ -106,6 +114,7 @@ implements	ComponentVirtualMachineI
 												new HashSet<CVMDebugModesI>();
 	/** suffix for the dynamic component creator component inbound port URI.*/
 	public static final String				DCC_INBOUNDPORT_URI_SUFFIX = "-dcc";
+
 	// ------------------------------------------------------------------------
 	// Assertions status checking
 	// ------------------------------------------------------------------------
@@ -117,8 +126,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 */
@@ -151,8 +160,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	ret != null
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
 	 * </pre>
 	 *
 	 * @return	a reference on the component virtual machine instance running on this Java virtual machine.
@@ -168,8 +177,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
 	 * </pre>
 	 *
 	 * @return	the URI of the JVM running this component virtual machine.
@@ -185,8 +194,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
 	 * </pre>
 	 *
 	 * @return	the name of the host running this component virtual machine.
@@ -200,11 +209,11 @@ implements	ComponentVirtualMachineI
 	// Local registry
 	// ------------------------------------------------------------------------
 
-	/** initial number of potential entries in the local registry.		*/
+	/** initial number of potential entries in the local registry.			*/
 	protected static int					LOCAL_REGISTRY_INIT_SIZE = 1000;
-	/** local registry linking port URI to local port objects.			*/
+	/** local registry linking port URI to local port objects.				*/
 	protected static final
-		ConcurrentHashMap<String,PortI> LOCAL_REGISTRY =
+		ConcurrentHashMap<String,PortI>		LOCAL_REGISTRY =
 				new ConcurrentHashMap<String,PortI>(LOCAL_REGISTRY_INIT_SIZE);
 
 	/**
@@ -213,13 +222,13 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the local registry has been initialised.
 	 */
-	protected static boolean		localRegistryInitialised()
+	protected static boolean	localRegistryInitialised()
 	{
 		return AbstractCVM.LOCAL_REGISTRY != null;
 	}
@@ -233,11 +242,11 @@ implements	ComponentVirtualMachineI
 	 * <pre>
 	 * pre	{@code AbstractCVM.localRegistryInitialised()}
 	 * pre	{@code key != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key	key to be tested.
-	 * @return	true if the <code>key</code> correspond to a publication in the local registry.
+	 * @return		true if the <code>key</code> correspond to a publication in the local registry.
 	 */
 	public static boolean	isPublishedInLocalRegistry(String key)
 	{
@@ -246,11 +255,11 @@ implements	ComponentVirtualMachineI
 
 		boolean ret = AbstractCVM.LOCAL_REGISTRY.containsKey(key);
 
-//		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
-//			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
-//					"called isPublishedInLocalRegistry(" + key + ")" +
-//					" returning " + ret);
-//		}
+		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
+					"called isPublishedInLocalRegistry(" + key + ")" +
+					" returning " + ret);
+		}
 
 		return ret;
 	}
@@ -270,9 +279,9 @@ implements	ComponentVirtualMachineI
 	 *
 	 * @param key		key under which the publication is done.
 	 * @param p			the port to be published.
-	 * @throws Exception <i>TODO.</i>
+	 * @throws Exception <i>to do</i>.
 	 */
-	protected static void		publishInLocalRegistry(String key, PortI p)
+	protected static void	publishInLocalRegistry(String key, PortI p)
 	throws Exception
 	{
 		assert	AbstractCVM.localRegistryInitialised();
@@ -300,12 +309,12 @@ implements	ComponentVirtualMachineI
 	 * <pre>
 	 * pre	{@code AbstractCVM.localRegistryInitialised()}
 	 * pre	{@code key != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param key		the key under which the publication has been done.
 	 * @return			the port published under the given key.
-	 * @throws Exception <i>TODO.</i>
+	 * @throws Exception <i>to do</i>.
 	 */
 	public static PortI		getFromLocalRegistry(String key) throws Exception
 	{
@@ -314,11 +323,11 @@ implements	ComponentVirtualMachineI
 
 		PortI p = AbstractCVM.LOCAL_REGISTRY.get(key);
 
-//		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
-//			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
-//					"called getFromLocalRegistry(" + key + ")"
-//					+ " returning "	+ (p == null ? p : p.getPortURI()) + ")");
-//		}
+		if (DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
+			AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
+					"called getFromLocalRegistry(" + key + ")"
+					+ " returning "	+ (p == null ? p : p.getPortURI()) + ")");
+		}
 
 		return p;
 	}
@@ -378,8 +387,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 * 
 	 * @throws Exception <i>to do.</i>
@@ -400,12 +409,12 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	AbstractCVM.localRegistryInitialised()
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code AbstractCVM.localRegistryInitialised()}
 	 * </pre>
 	 *
 	 * @param isDistributed	true if the CVM is distributed, false otherwise.
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public				AbstractCVM(
 		boolean isDistributed
@@ -420,8 +429,8 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code thisJVMURI != null && thisHostName != null}
-	 * post	true			// no postcondition.
+	 * pre	{@code thisJVMURI != null && !thisJVMURI.isEmpty()}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param isDistributed	true if the CVM is distributed, false otherwise.
@@ -434,6 +443,10 @@ implements	ComponentVirtualMachineI
 		) throws Exception
 	{
 		super();
+
+		assert	thisJVMURI != null && !thisJVMURI.isEmpty() :
+				new PreconditionException(
+						"thisJVMURI != null && !thisJVMURI.isEmpty()");
 
 		AbstractCVM.theCVM = this;
 		this.thisJVMURI = thisJVMURI;
@@ -477,23 +490,32 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	port != null
-	 * pre	AbstractCVM.localRegistryInitialised()
-	 * pre	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())
-	 * post AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())
-	 * post	AbstractCVM.getFromLocalRegistry(port.getPortURI()) != null
-	 * post port == AbstractCVM.getFromLocalRegistry(port.getPortURI())
+	 * pre	{@code port != null}
+	 * pre	{@code port.getPortURI() != null && !port.getPortURI().isEmpty()}
+	 * pre	{@code AbstractCVM.localRegistryInitialised()}
+	 * pre	{@code !AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())}
+	 * post {@code AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())}
+	 * post	{@code AbstractCVM.getFromLocalRegistry(port.getPortURI()) != null}
+	 * post {@code port == AbstractCVM.getFromLocalRegistry(port.getPortURI())}
 	 * </pre>
 	 * 
-	 * @param port		port to be published
-	 * @throws Exception <i>to do.</i>
+	 * @param port			port to be published
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public synchronized static void	localPublishPort(PortI port)
 	throws	Exception
 	{
-		assert	port != null;
-		assert	AbstractCVM.localRegistryInitialised() ;
-		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
+		assert	port != null : new PreconditionException("port != null");
+		assert	port.getPortURI() != null && !port.getPortURI().isEmpty() :
+				new PreconditionException(
+						"port.getPortURI() != null && "
+						+ "!port.getPortURI().isEmpty()");
+		assert	AbstractCVM.localRegistryInitialised() :
+				new PreconditionException("AbstractCVM.localRegistryInitialised()");
+		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) :
+				new PreconditionException(
+						"!AbstractCVM.isPublishedInLocalRegistry(port."
+						+ "getPortURI())");
 
 		AbstractCVM.publishInLocalRegistry(port.getPortURI(), port);
 
@@ -502,9 +524,17 @@ implements	ComponentVirtualMachineI
 				"called localPublishPort(" + port.getPortURI() + ") ...done.");
 		}
 
-		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
+		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) :
+				new PostconditionException(
+						"AbstractCVM.isPublishedInLocalRegistry(port."
+						+ "getPortURI())");
 		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI());
-		assert	p != null && port == p;
+		assert	p != null && port == p :
+				new PostconditionException(
+						"AbstractCVM.getFromLocalRegistry(port.getPortURI()) "
+						+ "!= null && "
+						+ "AbstractCVM.getFromLocalRegistry(port.getPortURI())"
+						+ " == port");
 	}
 
 	/**
@@ -513,25 +543,39 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	port != null
-	 * pre	AbstractCVM.localRegistryInitialised()
-	 * pre	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) != null
-	 * pre	port == AbstractCVM.getFromLocalRegistry(port.getPortURI())
-	 * pre	port == AbstractCVM.getFromLocalRegistry(port.getPortURI())
-	 * post	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())
+	 * pre	{@code port != null}
+	 * pre	{@code port.getPortURI() != null && !port.getPortURI().isEmpty()}
+	 * pre	{@code AbstractCVM.localRegistryInitialised()}
+	 * pre	{@code AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) != null}
+	 * pre	{@code port == AbstractCVM.getFromLocalRegistry(port.getPortURI())}
+	 * pre	{@code port == AbstractCVM.getFromLocalRegistry(port.getPortURI())}
+	 * post	{@code !AbstractCVM.isPublishedInLocalRegistry(port.getPortURI())}
 	 * </pre>
 	 *
-	 * @param port		port to be unpublished.
-	 * @throws Exception <i>to do.</i>
+	 * @param port			port to be unpublished.
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public synchronized static void	localUnpublishPort(PortI port)
 	throws	Exception
 	{
-		assert	port != null;
-		assert	AbstractCVM.localRegistryInitialised();
-		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
+		assert	port != null : new PreconditionException("port != null");
+		assert	port.getPortURI() != null && !port.getPortURI().isEmpty() :
+				new PreconditionException(
+						"port.getPortURI() != null && "
+						+ "!port.getPortURI().isEmpty()");
+		assert	AbstractCVM.localRegistryInitialised() :
+				new PreconditionException("AbstractCVM.localRegistryInitialised()");
+		assert	AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) :
+				new PreconditionException(
+						"AbstractCVM.isPublishedInLocalRegistry(port."
+						+ "getPortURI())");
 		PortI p = AbstractCVM.getFromLocalRegistry(port.getPortURI());
-		assert	p != null && port == p;
+		assert	p != null && port == p :
+				new PreconditionException(
+						"AbstractCVM.getFromLocalRegistry(port.getPortURI()) "
+						+ "!= null && "
+						+ "port == AbstractCVM.getFromLocalRegistry(port."
+						+ "getPortURI())");
 
 		AbstractCVM.unpublishFromLocalRegistry(port.getPortURI());
 
@@ -540,7 +584,10 @@ implements	ComponentVirtualMachineI
 				"called localUnpublishPort(" + port.getPortURI() + ") ...done.");
 		}
 
-		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI());
+		assert	!AbstractCVM.isPublishedInLocalRegistry(port.getPortURI()) :
+				new PostconditionException(
+						"!AbstractCVM.isPublishedInLocalRegistry("
+						+ "port.getPortURI())");
 	}
 
 	// ------------------------------------------------------------------------
@@ -554,17 +601,18 @@ implements	ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	!this.deploymentDone()
-	 * post	this.deploymentDone()
+	 * pre	{@code !deploymentDone()}
+	 * post	{@code deploymentDone()}
 	 * </pre>
 	 * 
-	 * @throws Exception  <i>to do.</i>
+	 * @throws Exception  <i>to do</i>.
 	 * @see fr.sorbonne_u.components.cvm.ComponentVirtualMachineI#deploy()
 	 */
 	@Override
 	public void			deploy() throws Exception
 	{
-		assert	!this.deploymentDone();
+		assert	!this.deploymentDone() :
+				new PreconditionException("!deploymentDone()");
 
 		if (DEBUG_MODE.contains(CVMDebugModes.LIFE_CYCLE)) {
 			this.logDebug(CVMDebugModes.LIFE_CYCLE, "called deploy() ...done.");
@@ -579,7 +627,9 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isDeployedComponent(String componentURI)
 	{
-		assert	componentURI != null;
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
 
 		boolean ret = this.uri2component.containsKey(componentURI);
 
@@ -601,8 +651,11 @@ implements	ComponentVirtualMachineI
 		ComponentI component
 		)
 	{
-		assert	componentURI != null && component != null;
-		assert	!this.isDeployedComponent(componentURI);
+		assert	componentURI != null && component != null :
+				new PreconditionException(
+						"componentURI != null && component != null");
+		assert	!this.isDeployedComponent(componentURI) :
+				new PreconditionException("!isDeployedComponent(componentURI)");
 
 		this.uri2component.put(componentURI, component);
 
@@ -619,8 +672,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			removeDeployedComponent(String componentURI)
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && componentURI != null :
+				new PreconditionException(
+						"componentURI != null && component != null");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		this.uri2component.remove(componentURI);
 
@@ -637,7 +693,8 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			start() throws Exception
 	{
-		assert	this.deploymentDone();
+		assert	this.deploymentDone() :
+				new PreconditionException("deploymentDone()");
 
 		for(ComponentI c : this.uri2component.values()) {
 			if (!c.isStarted()) {
@@ -658,8 +715,11 @@ implements	ComponentVirtualMachineI
 	public void			startComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).start();
 
@@ -675,7 +735,7 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			execute() throws Exception
 	{
-		assert	this.allStarted();
+		assert	this.allStarted() : new PreconditionException("allStarted()");
 
 		for(ComponentI c : this.uri2component.values()) {
 			if (c.hasItsOwnThreads()) {
@@ -704,8 +764,11 @@ implements	ComponentVirtualMachineI
 	public void			executeComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null;
-		assert	this.isStartedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isStartedComponent(componentURI) :
+				new PreconditionException("isStartedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).runTask(
 				new AbstractComponent.AbstractTask() {
@@ -731,7 +794,7 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			finalise() throws Exception
 	{
-		assert	this.allStarted();
+		assert	this.allStarted() : new PreconditionException("allStarted()");
 
 		for(ComponentI c : this.uri2component.values()) {
 			c.finalise();
@@ -751,8 +814,11 @@ implements	ComponentVirtualMachineI
 	public void			finaliseComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null;
-		assert	this.isStartedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isStartedComponent(componentURI) :
+				new PreconditionException("isStartedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).finalise();
 
@@ -768,7 +834,8 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			shutdown() throws Exception
 	{
-		assert	this.allFinalised();
+		assert	this.allFinalised() :
+				new PreconditionException("allFinalised()");
 
 		for(ComponentI c : this.uri2component.values()) {
 			c.shutdown();
@@ -789,8 +856,11 @@ implements	ComponentVirtualMachineI
 	public void			shutdownComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null;
-		assert	this.isFinalisedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isFinalisedComponent(componentURI) :
+				new PreconditionException("isFinalisedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).shutdown();
 
@@ -806,7 +876,8 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			shutdownNow() throws Exception
 	{
-		assert	this.allFinalised();
+		assert	this.allFinalised() :
+				new PreconditionException("allFinalised()");
 
 		for(ComponentI c : this.uri2component.values()) {
 			c.shutdownNow();
@@ -827,8 +898,11 @@ implements	ComponentVirtualMachineI
 	public void			shutdownNowComponent(String componentURI)
 	throws Exception
 	{
-		assert	componentURI != null;
-		assert	this.isFinalisedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isFinalisedComponent(componentURI) :
+				new PreconditionException("isFinalisedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).shutdown();
 
@@ -901,8 +975,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isStartedComponent(String componentURI)
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		return this.uri2component.get(componentURI).isStarted();
 	}
@@ -922,8 +999,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isFinalisedComponent(String componentURI)
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		return this.uri2component.get(componentURI).isFinalised();
 	}
@@ -947,8 +1027,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isShutdownComponent(String componentURI)
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		return this.uri2component.get(componentURI).isShutdown();
 	}
@@ -972,8 +1055,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public boolean		isTerminatedComponent(String componentURI)
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		return this.uri2component.get(componentURI).isTerminated();
 	}
@@ -985,7 +1071,8 @@ implements	ComponentVirtualMachineI
 	public boolean		startStandardLifeCycle(long duration)
 	{
 		try {
-			assert	duration > 0;
+			assert	duration > 0 : new PreconditionException("duration > 0");
+
 			this.deploy();
 			System.out.println("starting...");
 			this.start();
@@ -1031,9 +1118,21 @@ implements	ComponentVirtualMachineI
 		String connectorClassname
 		) throws Exception
 	{
-		assert	componentURI != null && outboundPortURI != null &&
-					inboundPortURI != null && connectorClassname != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	outboundPortURI != null && !outboundPortURI.isEmpty() :
+				new PreconditionException(
+						"outboundPortURI != null && !outboundPortURI.isEmpty()");
+		assert	inboundPortURI != null && !inboundPortURI.isEmpty() :
+				new PreconditionException(
+						"inboundPortURI != null && !inboundPortURI.isEmpty()");
+		assert	connectorClassname != null && !connectorClassname.isEmpty() :
+				new PreconditionException(
+						"connectorClassname != null && "
+						+ "!connectorClassname.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).doPortConnection(
 					outboundPortURI, inboundPortURI, connectorClassname);
@@ -1048,8 +1147,14 @@ implements	ComponentVirtualMachineI
 		String outboundPortURI
 		) throws Exception
 	{
-		assert	componentURI != null && outboundPortURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	outboundPortURI != null && !outboundPortURI.isEmpty() :
+				new PreconditionException(
+						"outboundPortURI != null && !outboundPortURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).
 								doPortDisconnection(outboundPortURI);
@@ -1072,6 +1177,8 @@ implements	ComponentVirtualMachineI
 	 */
 	public void			logDebug(CVMDebugModesI dm, String message)
 	{
+		assert	dm != null : new PreconditionException("dm != null");
+
 		StringBuffer logEntry =
 			new StringBuffer().append(System.currentTimeMillis()).append("|").
 					append(this.logPrefix()).append("|").append(dm).
@@ -1086,8 +1193,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			toggleTracing(String componentURI)
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).toggleTracing();
 	}
@@ -1098,8 +1208,11 @@ implements	ComponentVirtualMachineI
 	@Override
 	public void			toggleLogging(String componentURI)
 	{
-		assert	componentURI != null;
-		assert	this.isDeployedComponent(componentURI);
+		assert	componentURI != null && !componentURI.isEmpty() :
+				new PreconditionException(
+						"componentURI != null && !componentURI.isEmpty()");
+		assert	this.isDeployedComponent(componentURI) :
+				new PreconditionException("isDeployedComponent(componentURI)");
 
 		this.uri2component.get(componentURI).toggleLogging();
 	}

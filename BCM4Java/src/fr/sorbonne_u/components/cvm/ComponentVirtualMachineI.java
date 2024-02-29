@@ -1,38 +1,38 @@
 package fr.sorbonne_u.components.cvm;
 
-//Copyright Jacques Malenfant, Sorbonne Universite.
+// Copyright Jacques Malenfant, Sorbonne Universite.
 //
-//Jacques.Malenfant@lip6.fr
+// Jacques.Malenfant@lip6.fr
 //
-//This software is a computer program whose purpose is to provide a
-//basic component programming model to program with components
-//distributed applications in the Java programming language.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
-//This software is governed by the CeCILL-C license under French law and
-//abiding by the rules of distribution of free software.  You can use,
-//modify and/ or redistribute the software under the terms of the
-//CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
-//URL "http://www.cecill.info".
+// This software is governed by the CeCILL-C license under French law and
+// abiding by the rules of distribution of free software.  You can use,
+// modify and/ or redistribute the software under the terms of the
+// CeCILL-C license as circulated by CEA, CNRS and INRIA at the following
+// URL "http://www.cecill.info".
 //
-//As a counterpart to the access to the source code and  rights to copy,
-//modify and redistribute granted by the license, users are provided only
-//with a limited warranty  and the software's author,  the holder of the
-//economic rights,  and the successive licensors  have only  limited
-//liability. 
+// As a counterpart to the access to the source code and  rights to copy,
+// modify and redistribute granted by the license, users are provided only
+// with a limited warranty  and the software's author,  the holder of the
+// economic rights,  and the successive licensors  have only  limited
+// liability. 
 //
-//In this respect, the user's attention is drawn to the risks associated
-//with loading,  using,  modifying and/or developing or reproducing the
-//software by the user in light of its specific status of free software,
-//that may mean  that it is complicated to manipulate,  and  that  also
-//therefore means  that it is reserved for developers  and  experienced
-//professionals having in-depth computer knowledge. Users are therefore
-//encouraged to load and test the software's suitability as regards their
-//requirements in conditions enabling the security of their systems and/or 
-//data to be ensured and,  more generally, to use and operate it in the 
-//same conditions as regards security. 
+// In this respect, the user's attention is drawn to the risks associated
+// with loading,  using,  modifying and/or developing or reproducing the
+// software by the user in light of its specific status of free software,
+// that may mean  that it is complicated to manipulate,  and  that  also
+// therefore means  that it is reserved for developers  and  experienced
+// professionals having in-depth computer knowledge. Users are therefore
+// encouraged to load and test the software's suitability as regards their
+// requirements in conditions enabling the security of their systems and/or 
+// data to be ensured and,  more generally, to use and operate it in the 
+// same conditions as regards security. 
 //
-//The fact that you are presently reading this means that you have had
-//knowledge of the CeCILL-C license and that you accept its terms.
+// The fact that you are presently reading this means that you have had
+// knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.util.concurrent.TimeUnit;
 
@@ -54,17 +54,17 @@ import fr.sorbonne_u.components.helpers.CVMDebugModesI;
  * Hence, CVM also expose part of the <code>ExecutorService</code> interface
  * regarding the life cycle of components and therefore their own life cycle.
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>Black-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true		// TODO
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2011-11-18</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface			ComponentVirtualMachineI
+public interface		ComponentVirtualMachineI
 {
 	// ------------------------------------------------------------------------
 	// Methods
@@ -76,8 +76,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the host name of this component virtual machine.
@@ -90,11 +90,11 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	!this.deploymentDone()
-	 * post	this.deploymentDone()
+	 * pre	{@code !deploymentDone()}
+	 * post	{@code deploymentDone()}
 	 * </pre>
 	 * 
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			deploy() throws Exception ;
 
@@ -104,8 +104,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be tested.
@@ -119,10 +119,10 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	component != null
-	 * pre	!this.isDeployedComponent(componentURI)
-	 * post	this.isDeployedComponent(componentURI)
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code component != null}
+	 * pre	{@code !isDeployedComponent(componentURI)}
+	 * post	{@code isDeployedComponent(componentURI)}
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be added.
@@ -138,9 +138,9 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	!this.isDeployedComponent(componentURI)
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code !isDeployedComponent(componentURI)}
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be removed.
@@ -152,10 +152,10 @@ public interface			ComponentVirtualMachineI
 	 * the deployed components.
 	 * 
 	 * <pre>
-	 * pre	this.deploymentDone()
-	 * post	this.allStarted()
+	 * pre	{@code deploymentDone()}
+	 * post	{@code allStarted()}
 	 * </pre>
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			start() throws Exception ;
 
@@ -165,13 +165,13 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	this.componentStarted(componentURI)
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code componentStarted(componentURI)}
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be started.
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			startComponent(String componentURI) throws Exception ;
 
@@ -183,11 +183,11 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.allStarted()
-	 * post	true				// no postcondition.
+	 * pre	{@code allStarted()}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			execute() throws Exception ;
 
@@ -197,9 +197,9 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.componentStarted(componentURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code componentStarted(componentURI)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be executed.
@@ -214,8 +214,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.allStarted()
-	 * post	this.allFinalised()
+	 * pre	{@code allStarted()}
+	 * post	{@code allFinalised()}
 	 * </pre>
 	 *
 	 * @throws Exception	<i>to do.</i>
@@ -228,13 +228,13 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.componentStarted(componentURI)
-	 * post	this.componentFinalised(componentURI)
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code componentStarted(componentURI)}
+	 * post	{@code componentFinalised(componentURI)}
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be finalised.
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			finaliseComponent(String componentURI)
 	throws Exception ;
@@ -247,12 +247,11 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.allFinalised()
-	 * post	this.isShutdown()	// The shutting down state has still to be
-	 *                           // correctly implemented
+	 * pre	{@code allFinalised()}
+	 * post	{@code isShutdown()}
 	 * </pre>
 	 * 
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			shutdown() throws Exception ;
 
@@ -262,13 +261,13 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.componentFinalised(componentURI)
-	 * post	this.componentShutdown(componentURI)
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code componentFinalised(componentURI)}
+	 * post	{@code componentShutdown(componentURI)}
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be shutdown.
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			shutdownComponent(String componentURI)
 	throws Exception ;
@@ -281,10 +280,10 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.allFinalised()
-	 * post	this.isShutdown()
+	 * pre	{@code allFinalised()}
+	 * post	{@code isShutdown()}
 	 * </pre>
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			shutdownNow() throws Exception ;
 
@@ -294,13 +293,13 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.componentFinalised(componentURI)
-	 * post	this.componentShutdown(componentURI)
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code componentFinalised(componentURI)}
+	 * post	{@code componentShutdown(componentURI)}
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be shutdown now.
-	 * @throws Exception	<i>to do.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			shutdownNowComponent(String componentURI)
 	throws Exception ;
@@ -311,11 +310,11 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @return				true if the initialisation has been done.
+	 * @return	true if the initialisation has been done.
 	 */
 	public boolean		isInitialised() ;
 
@@ -326,8 +325,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if all of the static components have been instantiated and their ports published when necessary.
@@ -341,8 +340,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if all of the static components have their ports connected when necessary.
@@ -355,8 +354,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the deployment has been done.
@@ -370,8 +369,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the CVM has been started.
@@ -384,9 +383,9 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be tested.
@@ -401,8 +400,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return				true if the CVM has been finalised.
@@ -416,9 +415,9 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be tested.
@@ -433,8 +432,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the component has been shut down.
@@ -447,9 +446,9 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be tested.
@@ -464,8 +463,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the CVM has terminated.
@@ -478,9 +477,9 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component to be tested.
@@ -495,8 +494,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	duration &gt; 0
-	 * post	true			// no postcondition.
+	 * pre	{@code duration > 0}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 *@param	 duration	duration of the execution before the cutoff in ms.
@@ -511,8 +510,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param timeout	the maximum time to wait.
@@ -535,12 +534,12 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	outboundPortURI != null
-	 * pre	inboundPortURI != null
-	 * pre	connectorClassname != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code outboundPortURI != null && !outboundPortURI.isEmpty()}
+	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
+	 * pre	{@code connectorClassname != null && !connectorClassname.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI			URI of the component reflection inbound port.
@@ -562,10 +561,10 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
-	 * pre	outboundPortURI != null
-	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
+	 * pre	{@code outboundPortURI != null && !outboundPortURI.isEmpty()}
+	 * pre	{@code isDeployedComponent(componentURI)}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI		URI of the component reflection inbound port.
@@ -587,8 +586,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	ret != null
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
 	 * </pre>
 	 *
 	 * @return	the string that will be used to tag log entries for this CVM.
@@ -601,8 +600,8 @@ public interface			ComponentVirtualMachineI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code dm != null}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param dm		the debug mode triggering this entry.
@@ -611,14 +610,14 @@ public interface			ComponentVirtualMachineI
 	public void			logDebug(CVMDebugModesI dm, String message) ;
 
 	/**
-	 * 
+	 * toggle tracing on and off.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
 	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component
@@ -626,14 +625,14 @@ public interface			ComponentVirtualMachineI
 	public void			toggleTracing(String componentURI) ;
 
 	/**
-	 * 
+	 * toggle logging on and off.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	componentURI != null
+	 * pre	{@code componentURI != null && !componentURI.isEmpty()}
 	 * pre	this.isDeployedComponent(componentURI)
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param componentURI	URI of the component
