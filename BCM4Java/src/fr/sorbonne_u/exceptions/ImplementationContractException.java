@@ -35,8 +35,8 @@ package fr.sorbonne_u.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ImplementationInvariantException</code> defines the exception
- * type which instances are thrown when an implementation invariant violation
+ * The class <code>ImplementationContractException</code> defines the exception
+ * type which instances are thrown when an implementation condition violation
  * occurs about the internal implementation of a component.
  *
  * <p><strong>Description</strong></p>
@@ -65,40 +65,37 @@ package fr.sorbonne_u.exceptions;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2020-06-26</p>
+ * <p>Created on : 2024-03-26</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ImplementationInvariantException
-extends		ImplementationContractException
+public class			ImplementationContractException
+extends		ContractException
 {
-	private static final long	serialVersionUID = 1L;
-	private static final int	LEVEL = 4;
+	private static final long serialVersionUID = 1L;
+	private static final int	LEVEL = 3;
 
-	public				ImplementationInvariantException()
+	public				ImplementationContractException()
 	{
 		super(LEVEL);
 	}
 
-	public				ImplementationInvariantException(String message)
+	public				ImplementationContractException(String message)
 	{
 		super(LEVEL, message);
 	}
 
-	public				ImplementationInvariantException(Throwable cause)
+	public				ImplementationContractException(Throwable cause)
 	{
 		super(LEVEL, cause);
 	}
 
-	public				ImplementationInvariantException(
-		String message,
-		Throwable cause
-		)
+	public				ImplementationContractException(String message, Throwable cause)
 	{
 		super(LEVEL, message, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationContractException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,
@@ -108,28 +105,22 @@ extends		ImplementationContractException
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public				ImplementationInvariantException(int level)
+	public				ImplementationContractException(int level)
 	{
 		super(level);
 	}
 
-	public				ImplementationInvariantException(
-		int level,
-		String message
-		)
+	public				ImplementationContractException(int level, String message)
 	{
 		super(level, message);
 	}
 
-	public				ImplementationInvariantException(
-		int level,
-		Throwable cause
-		)
+	public				ImplementationContractException(int level, Throwable cause)
 	{
 		super(level, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationContractException(
 		int level,
 		String message,
 		Throwable cause
@@ -138,7 +129,7 @@ extends		ImplementationContractException
 		super(level, message, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationContractException(
 		int level,
 		String message,
 		Throwable cause,

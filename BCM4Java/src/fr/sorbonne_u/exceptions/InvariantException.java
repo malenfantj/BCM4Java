@@ -35,7 +35,7 @@ package fr.sorbonne_u.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>InvariantError</code> defines the exception type which
+ * The class <code>InvariantException</code> defines the exception type which
  * instances are thrown when an invariant violation occurs in a component.
  *
  * <p><strong>Description</strong></p>

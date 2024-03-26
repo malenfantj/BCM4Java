@@ -60,8 +60,8 @@ package fr.sorbonne_u.exceptions;
 public class			ContractException
 extends		VerboseException
 {
-	private static final int	LEVEL = 2;
 	private static final long	serialVersionUID = 1L;
+	private static final int	LEVEL = 2;
 
 	public			ContractException()
 	{
@@ -78,10 +78,7 @@ extends		VerboseException
 		super(LEVEL, cause);
 	}
 
-	public			ContractException(
-		String message,
-		Throwable cause
-		)
+	public			ContractException(String message, Throwable cause)
 	{
 		super(LEVEL, message, cause);
 	}

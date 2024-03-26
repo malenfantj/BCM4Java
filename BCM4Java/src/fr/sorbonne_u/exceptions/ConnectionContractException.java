@@ -35,22 +35,20 @@ package fr.sorbonne_u.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ImplementationInvariantException</code> defines the exception
- * type which instances are thrown when an implementation invariant violation
- * occurs about the internal implementation of a component.
+ * The class <code>ConnectionContractException</code> defines the exception
+ * type which instances are thrown when a condition violation occurs between a
+ * required component interface and an offered one.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * In traditional contract-based programming, assertions are defined as
- * black-box expressions <i>i.e.</i>, using only publicly visible information
- * about the stakeholders. However, from the implementation point of view and
- * to enhance the quality of the software, it is also important to be able to
- * state assertions about the implementation of a piece of software <i>i.e.</i>,
- * assertions that use internal information about the stakeholders in a
- * white-box way and that deal with the implementation choices. When such an
- * assertion fails, an exception descendant of
- * <code>ImplementationContractException</code> is thrown.
+ * When connecting two components, the required component interface must conform
+ * to the offered one. The conformity is defined as the preconditions of the
+ * required interface must imply the preconditions of the offered interface as
+ * well as the postconditions of the offered interface must imply the
+ * postconditions must imply the postconditions of the required interface.
+ * When the implication fails, an exception descendant of
+ * <code>ConnectionContractException</code> is thrown.
  * </p>
  * 
  * <p><strong>White-box Invariant</strong></p>
@@ -65,40 +63,37 @@ package fr.sorbonne_u.exceptions;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2020-06-26</p>
+ * <p>Created on : 2024-03-26</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ImplementationInvariantException
-extends		ImplementationContractException
+public class			ConnectionContractException
+extends		ContractException
 {
 	private static final long	serialVersionUID = 1L;
-	private static final int	LEVEL = 4;
+	private static final int	LEVEL = 3;
 
-	public				ImplementationInvariantException()
+	public				ConnectionContractException()
 	{
 		super(LEVEL);
 	}
 
-	public				ImplementationInvariantException(String message)
+	public				ConnectionContractException(String message)
 	{
 		super(LEVEL, message);
 	}
 
-	public				ImplementationInvariantException(Throwable cause)
+	public				ConnectionContractException(Throwable cause)
 	{
 		super(LEVEL, cause);
 	}
 
-	public				ImplementationInvariantException(
-		String message,
-		Throwable cause
-		)
+	public				ConnectionContractException(String message, Throwable cause)
 	{
 		super(LEVEL, message, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ConnectionContractException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,
@@ -108,28 +103,22 @@ extends		ImplementationContractException
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public				ImplementationInvariantException(int level)
+	public				ConnectionContractException(int level)
 	{
 		super(level);
 	}
 
-	public				ImplementationInvariantException(
-		int level,
-		String message
-		)
+	public				ConnectionContractException(int level, String message)
 	{
 		super(level, message);
 	}
 
-	public				ImplementationInvariantException(
-		int level,
-		Throwable cause
-		)
+	public				ConnectionContractException(int level, Throwable cause)
 	{
 		super(level, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ConnectionContractException(
 		int level,
 		String message,
 		Throwable cause
@@ -138,7 +127,7 @@ extends		ImplementationContractException
 		super(level, message, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ConnectionContractException(
 		int level,
 		String message,
 		Throwable cause,

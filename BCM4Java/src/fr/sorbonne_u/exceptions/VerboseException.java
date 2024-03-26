@@ -59,10 +59,14 @@ package fr.sorbonne_u.exceptions;
 public class			VerboseException
 extends		Exception
 {
-	private static final int	LEVEL = 2;
 	private static final long	serialVersionUID = 1L;
+	/** level in the stack trace (from the top) of the instruction that
+	 *  hs thrown the exception and is meaningful to the programmer.		*/
+	private static final int	LEVEL = 2;
 	/** when true, print messages on sysout.								*/
 	public static boolean		VERBOSE = false;
+	/** when true, print the stack trace on sysout.							*/
+	public static boolean		PRINT_STACK_TRACE = false;
 
 	public				VerboseException()
 	{
@@ -97,9 +101,23 @@ extends		Exception
 	public				VerboseException(int level)
 	{
 		if (VERBOSE) {
-			StackTraceElement ste = new Throwable().getStackTrace()[level];
-			System.out.println(this.getClass().getSimpleName() + " raised at "
-							   + ste.toString() + "!");
+			StringBuffer sb = new StringBuffer();
+			if (PRINT_STACK_TRACE) {
+				sb.append("----------\n");
+			}
+			StackTraceElement[] st = new Throwable().getStackTrace();
+			StackTraceElement ste = st[level];
+			sb.append(this.getClass().getSimpleName());
+			sb.append(" raised at ");
+			sb.append(ste.toString());
+			sb.append("!");
+			if (PRINT_STACK_TRACE) {
+				for (int i = level ; i < st.length ; i++) {
+					sb.append(st[i].toString());
+				}
+				sb.append("----------");
+			}
+			System.out.println(sb.toString());
 		}
 	}
 
@@ -107,10 +125,25 @@ extends		Exception
 	{
 		super(message);
 		if (VERBOSE) {
-			StackTraceElement ste = new Throwable().getStackTrace()[level];
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with message \""
-					+ message + "\" at " + ste.toString() + "!");
+			StringBuffer sb = new StringBuffer();
+			if (PRINT_STACK_TRACE) {
+				sb.append("----------\n");
+			}
+			StackTraceElement[] st = new Throwable().getStackTrace();
+			StackTraceElement ste = st[level];
+			sb.append(this.getClass().getSimpleName());
+			sb.append(" raised with message \"");
+			sb.append(message);
+			sb.append("\" at ");
+			sb.append(ste.toString());
+			sb.append("!");
+			if (PRINT_STACK_TRACE) {
+				for (int i = level ; i < st.length ; i++) {
+					sb.append(st[i].toString());
+				}
+				sb.append("----------");
+			}
+			System.out.println(sb.toString());
 		}
 	}
 
@@ -118,10 +151,25 @@ extends		Exception
 	{
 		super(cause);
 		if (VERBOSE) {
-			StackTraceElement ste = new Throwable().getStackTrace()[level];
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with cause "
-					+ cause + " at " + ste.toString() + "!");
+			StringBuffer sb = new StringBuffer();
+			if (PRINT_STACK_TRACE) {
+				sb.append("----------\n");
+			}
+			StackTraceElement[] st = new Throwable().getStackTrace();
+			StackTraceElement ste = st[level];
+			sb.append(this.getClass().getSimpleName());
+			sb.append(" raised with cause ");
+			sb.append(cause);
+			sb.append("\" at ");
+			sb.append(ste.toString());
+			sb.append("!");
+			if (PRINT_STACK_TRACE) {
+				for (int i = level ; i < st.length ; i++) {
+					sb.append(st[i].toString());
+				}
+				sb.append("----------");
+			}
+			System.out.println(sb.toString());
 		}
 	}
 
@@ -132,11 +180,27 @@ extends		Exception
 	{
 		super(message, cause);
 		if (VERBOSE) {
-			StackTraceElement ste = new Throwable().getStackTrace()[level];
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with message \""
-					+ message + "\" and cause " + cause + " at "
-					+ ste.toString() + "!");
+			StringBuffer sb = new StringBuffer();
+			if (PRINT_STACK_TRACE) {
+				sb.append("----------\n");
+			}
+			StackTraceElement[] st = new Throwable().getStackTrace();
+			StackTraceElement ste = st[level];
+			sb.append(this.getClass().getSimpleName());
+			sb.append(" raised with message \"");
+			sb.append(message);
+			sb.append("\" and cause ");
+			sb.append(cause);
+			sb.append("\" at ");
+			sb.append(ste.toString());
+			sb.append("!");
+			if (PRINT_STACK_TRACE) {
+				for (int i = level ; i < st.length ; i++) {
+					sb.append(st[i].toString());
+				}
+				sb.append("----------");
+			}
+			System.out.println(sb.toString());
 		}
 	}
 
@@ -148,14 +212,7 @@ extends		Exception
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
-		if (VERBOSE) {
-			StackTraceElement ste = new Throwable().getStackTrace()[level];
-			System.out.println(
-					this.getClass().getSimpleName() + " raised with message \""
-					+ message + "\" and cause " + cause + " at "
-					+ ste.toString() + "!");
-		}
+		this(level, message, cause);
 	}
 }
 // -----------------------------------------------------------------------------

@@ -35,9 +35,10 @@ package fr.sorbonne_u.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ImplementationInvariantException</code> defines the exception
- * type which instances are thrown when an implementation invariant violation
- * occurs about the internal implementation of a component.
+ * The class <code>ImplementationPostconditionException</code> defines the
+ * exception type which instances are thrown when an implementation
+ * postcondition violation occurs about the internal implementation of a
+ * component.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -65,32 +66,32 @@ package fr.sorbonne_u.exceptions;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2020-06-26</p>
+ * <p>Created on : 2024-03-26</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			ImplementationInvariantException
+public class			ImplementationPostconditionException
 extends		ImplementationContractException
 {
-	private static final long	serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 	private static final int	LEVEL = 4;
 
-	public				ImplementationInvariantException()
+	public				ImplementationPostconditionException()
 	{
 		super(LEVEL);
 	}
 
-	public				ImplementationInvariantException(String message)
+	public				ImplementationPostconditionException(String message)
 	{
 		super(LEVEL, message);
 	}
 
-	public				ImplementationInvariantException(Throwable cause)
+	public				ImplementationPostconditionException(Throwable cause)
 	{
 		super(LEVEL, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationPostconditionException(
 		String message,
 		Throwable cause
 		)
@@ -98,7 +99,7 @@ extends		ImplementationContractException
 		super(LEVEL, message, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationPostconditionException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,
@@ -108,12 +109,12 @@ extends		ImplementationContractException
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public				ImplementationInvariantException(int level)
+	public				ImplementationPostconditionException(int level)
 	{
 		super(level);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationPostconditionException(
 		int level,
 		String message
 		)
@@ -121,7 +122,7 @@ extends		ImplementationContractException
 		super(level, message);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationPostconditionException(
 		int level,
 		Throwable cause
 		)
@@ -129,7 +130,7 @@ extends		ImplementationContractException
 		super(level, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationPostconditionException(
 		int level,
 		String message,
 		Throwable cause
@@ -138,7 +139,7 @@ extends		ImplementationContractException
 		super(level, message, cause);
 	}
 
-	public				ImplementationInvariantException(
+	public				ImplementationPostconditionException(
 		int level,
 		String message,
 		Throwable cause,
