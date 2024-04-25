@@ -43,8 +43,13 @@ import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.utils.Pair;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -100,14 +105,29 @@ import fr.sorbonne_u.components.ComponentI.ComponentTask;
  * plug-in owner component without resorting to a public method to do so.
  * </p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant	{@code getPreferredExecutionServiceURI() != null && return >= 0 || getPreferredExecutionServiceURI() == null && return < 0}
- * invariant	true		// TODO: complete
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2016-02-03</p>
+ * 
+ * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
+ */
+/**
+ * The class <code>AbstractPlugin</code>
+ *
+ * <p><strong>Description</strong></p>
+ * 
+ * 
+ * <p>Created on : 2024-04-25</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
@@ -130,7 +150,7 @@ implements	PluginI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant	true
+	 * invariant	{@code true}	// no more invariant
 	 * </pre>
 	 * 
 	 * <p>Created on : 2017-01-10</p>
@@ -152,8 +172,8 @@ implements	PluginI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true	// no precondition.
-		 * post	true	// no postcondition.
+		 * pre	{@code true}	// no precondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @throws Exception	<i>to do</i>.
@@ -189,7 +209,7 @@ implements	PluginI
 		 * 
 		 * <pre>
 		 * pre	{@code plugin != null && pluginInboundPortURI != null}
-		 * post	true	// no postcondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @param plugin				plug-in to be installed.
@@ -223,7 +243,7 @@ implements	PluginI
 		 * 
 		 * <pre>
 		 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
-		 * post	true	// no postcondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @param pluginInboundPortURI	URI of the reflection inbound port of the component holding the plug-in to be finalised.
@@ -258,7 +278,7 @@ implements	PluginI
 		 * 
 		 * <pre>
 		 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
-		 * post	true	// no postcondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @param pluginInboundPortURI	URI of the reflection inbound port of the component holding the plug-in to be finalised.
@@ -298,7 +318,7 @@ implements	PluginI
 	 * <pre>
 	 * pre	{@code pluginInboundPortURI != null && pluginToInstall != null}
 	 * pre	{@code pluginToInstall.getPluginURI() != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginInboundPortURI	URI of the plug-in management inbound port of the component.
@@ -340,12 +360,12 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginInboundPortURI	URI of the plug-in management inbound port of the component.
 	 * @param pluginURI				URI of the plug-in.
-	 * @throws Exception		<i>todo.</i>
+	 * @throws Exception			<i>to do</i>.
 	 */
 	public static void		finalisePluginOn(
 		final String pluginInboundPortURI,
@@ -380,7 +400,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre	{@code pluginInboundPortURI != null && pluginURI != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginInboundPortURI	URI of the plug-in management inbound port of the component.
@@ -458,8 +478,8 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the component owner of this plug-in.
@@ -601,8 +621,8 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param p	plug-in to be tested.
@@ -639,7 +659,7 @@ implements	PluginI
 	 * <pre>
 	 * pre	{@code portURI != null}
 	 * pre	{@code getOwner() != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param portURI	the URI a the sought port.
@@ -761,7 +781,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre	{@code getOwner() != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param message	string to be logged.
@@ -836,13 +856,182 @@ implements	PluginI
 		)
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	!this.getOwner().validExecutorServiceURI(uri) :
-					new PreconditionException(
+				new PreconditionException(
 									"getOwner().validExecutorServiceURI(uri)");
 
 		return ((AbstractComponent)this.getOwner()).
 							createNewExecutorService(uri, nbThreads, factory);
+	}
+
+	/**
+	 * get the index of the executor service with the given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code validExecutorServiceURI(uri)}
+	 * post	{@code validExecutorServiceIndex(ret)}
+	 * </pre>
+	 *
+	 * @param uri	URI of the sought executor service.
+	 * @return		the index of the executor service with the given URI.
+	 */
+	protected int		getExecutorServiceIndex(String uri)
+	{
+		assert	this.getOwner() != null :
+				new PreconditionException("getOwner() != null");
+
+		return ((AbstractComponent)this.getOwner()).getExecutorServiceIndex(uri);
+	}
+
+	/**
+	 * get the executor service at the given index.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code validExecutorServiceIndex(index)}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param index	index of the sought executor service.
+	 * @return		the executor service at the given index.
+	 */
+	protected ExecutorService	getExecutorService(int index)
+	{
+		assert	this.getOwner() != null :
+				new PreconditionException("getOwner() != null");
+
+		return ((AbstractComponent)this.getOwner()).getExecutorService(index);
+	}
+
+	/**
+	 * get the executor service at the given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code validExecutorServiceURI(uri)}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri	URI of the sought executor service.
+	 * @return		the executor service at the given URI.
+	 */
+	protected ExecutorService	getExecutorService(String uri)
+	{
+		assert	this.getOwner() != null :
+				new PreconditionException("getOwner() != null");
+
+		return ((AbstractComponent)this.getOwner()).getExecutorService(uri);
+	}
+
+	/**
+	 * get the schedulable executor service at the given index.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code validExecutorServiceIndex(index)}
+	 * pre	{@code isSchedulable(index)}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param index	index of the sought executor service.
+	 * @return		the executor service at the given index.
+	 */
+	protected ScheduledExecutorService	getSchedulableExecutorService(
+		int index
+		)
+	{
+		assert	this.getOwner() != null :
+				new PreconditionException("getOwner() != null");
+
+		return ((AbstractComponent)this.getOwner()).
+										getSchedulableExecutorService(index);
+	}
+
+	/**
+	 * get the schedulable executor service at the given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code validExecutorServiceURI(uri)}
+	 * pre	{@code isSchedulable(uri)}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri	URI of the sought schedulable executor service.
+	 * @return		the schedulable executor service at the given URI.
+	 */
+	protected ScheduledExecutorService	getSchedulableExecutorService(
+		String uri
+		)
+	{
+		assert	this.getOwner() != null :
+				new PreconditionException("getOwner() != null");
+
+		return ((AbstractComponent)this.getOwner()).
+										getSchedulableExecutorService(uri);
+	}
+
+	/**
+	 * shutdown the executor service with the given URI and remove it from the
+	 * executor services of the component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code validExecutorServiceURI(uri)}
+	 * post	{@code ret.isShutdown()}
+	 * post	{@code !validExecutorServiceURI(uri)}
+	 * </pre>
+	 *
+	 * @param uri	URI of a valid executor service on this component.
+	 * @return		the Java executor service after being shutdown.
+	 */
+	protected ExecutorService	shutdownExecutorService(String uri)
+	{
+		assert	this.getOwner() != null :
+				new PreconditionException("getOwner() != null");
+
+		return ((AbstractComponent)this.getOwner()).shutdownExecutorService(uri);
+	}
+
+	/**
+	 * shutdown immediately the executor service with the given URI and remove
+	 * it from the executor services of the component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code validExecutorServiceURI(uri)}
+	 * post	{@code ret.isShutdown()}
+	 * post	{@code !validExecutorServiceURI(uri)}
+	 * </pre>
+	 *
+	 * @param uri	URI of a valid executor service on this component.
+	 * @return		a pair containing the Java executor service after being shutdown and the list of tasks that were waiting to be executed when shutting down.
+	 */
+	protected Pair<ExecutorService,List<Runnable>> shutdownNowExecutorService(
+		String uri
+		)
+	{
+		assert	this.getOwner() != null :
+			new PreconditionException("getOwner() != null");
+
+		return ((AbstractComponent)this.getOwner()).
+											shutdownNowExecutorService(uri);
 	}
 
 	/**
@@ -853,7 +1042,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceIndex(executorServiceIndex)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -887,7 +1076,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceURI(executorServiceURI)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -920,7 +1109,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								component task to be executed as main task.
@@ -952,7 +1141,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceIndex(executorServiceIndex)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -992,7 +1181,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceURI(executorServiceURI)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1031,7 +1220,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1079,7 +1268,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceIndex(executorServiceIndex)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex	index of the executor service that will run the task.
@@ -1127,7 +1316,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceURI(executorServiceURI)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1176,7 +1365,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1223,7 +1412,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceIndex(executorServiceIndex)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -1269,7 +1458,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceURI(executorServiceURI)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -1314,7 +1503,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -1359,7 +1548,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceIndex(executorServiceIndex)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -1397,7 +1586,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceURI(executorServiceURI)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>					the type of the value returned by the request.
@@ -1441,7 +1630,7 @@ implements	PluginI
 	 * 
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -1475,7 +1664,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceIndex(executorServiceIndex)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -1515,7 +1704,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getOwner().validExecutorServiceURI(executorServiceURI)}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -1555,7 +1744,7 @@ implements	PluginI
 	 * <pre>
 	 * pre 	{@code getOwner() != null}
 	 * pre	{@code getPreferredExecutionServiceURI() != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.

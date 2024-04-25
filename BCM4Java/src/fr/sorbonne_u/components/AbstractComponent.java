@@ -307,10 +307,16 @@ import java.lang.reflect.Modifier;
  * <code>CVMDebugModes</code> for more information.
  * </p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant	
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2012-11-06</p>
@@ -446,8 +452,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if this component is a subcomponent of some composite.
@@ -464,7 +470,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code composite != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param composite	the reference to the composite component containing immediately this component.
@@ -486,8 +492,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param reflectionInboundPortURI	URI of the reflection inbound port of the sought subcomponent.
@@ -530,7 +536,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code subcomponentURI != null && portURI != null}
 	 * pre	{@code hasSubcomponent(subcomponentURI)}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param subcomponentURI	the URI of the reflection inbound port of the subcomponent.
@@ -634,7 +640,7 @@ implements	ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant	true
+	 * invariant	{@code true}
 	 * </pre>
 	 * 
 	 * <p>Created on : 2020-03-18</p>
@@ -670,7 +676,7 @@ implements	ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant	true
+	 * invariant	{@code true}
 	 * </pre>
 	 * 
 	 * <p>Created on : 2020-03-18</p>
@@ -704,7 +710,7 @@ implements	ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant	true
+	 * invariant	{@code true}
 	 * </pre>
 	 * 
 	 * <p>Created on : 2020-03-18</p>
@@ -758,10 +764,10 @@ implements	ComponentI
 
 	/** URI of the standard request handler pool of threads.				*/
 	public static final String			STANDARD_REQUEST_HANDLER_URI =
-											"STANDARD_REQUEST_H_URI";
+													"STANDARD_REQUEST_H_URI";
 	/** URI of the standard schedulable tasks handler pool of threads.		*/
 	public static final String			STANDARD_SCHEDULABLE_HANDLER_URI =
-											"STANDARD_SCHEDULABLE_H_URI";
+													"STANDARD_SCHEDULABLE_H_URI";
 
 	/** lock protecting the concurrent accesses to executorServices and
 	 *  executorServicesIndexes.											*/
@@ -904,8 +910,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return the first index at which no executor service reference exists in the array of executor services.
@@ -942,8 +948,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the number of executor services in use in this component.
@@ -1157,7 +1163,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI) || }
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return		the standard executor service.
@@ -1193,7 +1199,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code validExecutorServiceIndex(index)}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param index	index of the sought executor service.
@@ -1220,7 +1226,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code validExecutorServiceURI(uri)}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param uri	URI of the sought executor service.
@@ -1247,7 +1253,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code validExecutorServiceURI(STANDARD_SCHEDULABLE_HANDLER_URI)}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return		the standard schedulable executor service.
@@ -1279,7 +1285,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code validExecutorServiceIndex(index)}
 	 * pre	{@code isSchedulable(index)}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param index	index of the sought executor service.
@@ -1314,7 +1320,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code validExecutorServiceURI(uri)}
 	 * pre	{@code isSchedulable(uri)}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param uri	URI of the sought schedulable executor service.
@@ -1486,8 +1492,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	true if the plug-in facilities have been configured.
@@ -1721,7 +1727,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code isPluginFacilitiesConfigured()}
 	 * pre	{@code pluginURI != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param pluginURI	unique plug-in identifier.
@@ -1854,8 +1860,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the current logger.
@@ -1967,8 +1973,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @return	the current tracer.
@@ -2073,7 +2079,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code !(this instanceof ComponentInterface)}
 	 * pre	{@code nbThreads >= 0 && nbSchedulableThreads >= 0}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param nbThreads				number of threads to be created in the component pool.
@@ -2111,7 +2117,7 @@ implements	ComponentI
 	 * pre	{@code reflectionInboundPortURI != null}
 	 * pre	{@code nbThreads >= 0}
 	 * pre	{@code nbSchedulableThreads >= 0}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param reflectionInboundPortURI	URI of the inbound port offering the <code>ReflectionI</code> interface.
@@ -2197,7 +2203,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code ac != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param ac	component to be checked.
@@ -2388,7 +2394,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code ac != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param ac	component object on which the invariant is checked.
@@ -2462,7 +2468,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code array != null}
 	 * pre	{@code length >= 0}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param value		value to be checked.
@@ -2489,8 +2495,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 */
@@ -2527,8 +2533,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 */
 	protected void		addPluginsFromAnnotations()
@@ -2655,7 +2661,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code classname != null && constructorParams != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param classname						name of the class from which the component is created.
@@ -2711,7 +2717,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code classname != null && constructorParams != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param classname						name of the class from which the component is created.
@@ -2781,7 +2787,7 @@ implements	ComponentI
 	 * 
 	 * <pre>
 	 * pre	{@code classname != null && constructorParams != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param classname						name of the class from which the component is created.
@@ -3023,9 +3029,9 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	!isRequiredInterface(inter)
-	 * post	isRequiredInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code !isRequiredInterface(inter)}
+	 * post	{@code isRequiredInterface(inter)}
 	 * </pre>
 	 *
 	 * @param inter	required interface to be added.
@@ -3070,10 +3076,10 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	isRequiredInterface(inter)
-	 * pre	findPortsFromInterface(inter) == null || findPortsFromInterface(inter).isEmpty()
-	 * post	!isRequiredInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code isRequiredInterface(inter)}
+	 * pre	{@code findPortsFromInterface(inter) == null || findPortsFromInterface(inter).isEmpty()}
+	 * post	{@code !isRequiredInterface(inter)}
 	 * </pre>
 	 *
 	 * @param inter required interface to be removed.
@@ -3119,9 +3125,9 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	!this.isOfferedInterface(inter)
-	 * post	this.isOfferedInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code !isOfferedInterface(inter)}
+	 * post	{@code isOfferedInterface(inter)}
 	 * </pre>
 	 *
 	 * @param inter offered interface to be added.
@@ -3166,10 +3172,10 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})
-	 * pre	this.isOfferedInterface(inter)
-	 * pre	this.findPortsFromInterface(inter) == null || this.findPortsFromInterface(inter).isEmpty()
-	 * post	!this.isOfferedInterface(inter)
+	 * pre	{@code notInStateAmong(new ComponentStateI[]{ComponentState.TERMINATED})}
+	 * pre	{@code isOfferedInterface(inter)}
+	 * pre	{@code findPortsFromInterface(inter) == null || findPortsFromInterface(inter).isEmpty()}
+	 * post	{@code !isOfferedInterface(inter)}
 	 * </pre>
 	 *
 	 * @param inter	offered interface to be removed
@@ -4386,7 +4392,7 @@ implements	ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant		true
+	 * invariant	{@code true}
 	 * </pre>
 	 * 
 	 * <p>Created on : 2018-09-18</p>
@@ -4406,8 +4412,8 @@ implements	ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true	// no precondition.
-		 * post	true	// no postcondition.
+		 * pre	{@code true}	// no precondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 */
@@ -4426,7 +4432,7 @@ implements	ComponentI
 		 * 
 		 * <pre>
 		 * pre	{@code pluginURI != null}
-		 * post	true	// no postcondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @param pluginURI	URI of a plug-in installed on the owner.
@@ -4499,7 +4505,7 @@ implements	ComponentI
 		 * 
 		 * <pre>
 		 * pre	{@code t != null}
-		 * post	true	// no postcondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @param t		lambda defining the task to be executed.
@@ -4521,7 +4527,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code isStarted()}
 	 * pre	{@code t != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -4602,7 +4608,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
 	 * pre	{@code t != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -4633,7 +4639,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code isStarted()}
 	 * pre	{@code t != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								component task to be executed as main task.
@@ -4758,7 +4764,7 @@ implements	ComponentI
 	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
 	 * pre	{@code isSchedulable(executorServiceIndex)}
 	 * pre	{@code t != null && delay > 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -4815,7 +4821,7 @@ implements	ComponentI
 	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
 	 * pre	{@code isSchedulable(executorServiceURI)}
 	 * pre	{@code t != null && delay > 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -4855,7 +4861,7 @@ implements	ComponentI
 	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code validExecutorServiceIndex(this.standardSchedulableHandlerIndex)}
 	 * pre	{@code t != null && delay > 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -5008,7 +5014,7 @@ implements	ComponentI
 	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
 	 * pre	{@code isSchedulable(executorServiceIndex)}
 	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
-	 * post	true			// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -5073,11 +5079,11 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	this.isStarted()
+	 * pre	{@code this.isStarted()}
 	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
 	 * pre	{@code isSchedulable(executorServiceURI)}
-	 * pre	t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null
-	 * post	true		// no postcondition.
+	 * pre	{@code t != null and initialDelay &gt;= 0 and period &gt; 0 and u != null}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -5127,7 +5133,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code t != null && initialDelay >= 0 && period > 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -5289,7 +5295,7 @@ implements	ComponentI
 	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
 	 * pre	{@code isSchedulable(executorServiceIndex)}
 	 * pre	{@code t != null && initialDelay >= 0 && delay >= 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceIndex			index of the executor service that will run the task.
@@ -5354,7 +5360,7 @@ implements	ComponentI
 	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
 	 * pre	{@code isSchedulable(executorServiceURI)}
 	 * pre	{@code t != null && initialDelay >= 0 && delay >= 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param executorServiceURI			URI of the executor service that will run the task.
@@ -5400,7 +5406,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code t != null && initialDelay >= 0 && delay >= 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param t								task to be scheduled.
@@ -5561,7 +5567,7 @@ implements	ComponentI
 	 * <p><strong>Invariant</strong></p>
 	 * 
 	 * <pre>
-	 * invariant	true
+	 * invariant	{@code true}
 	 * </pre>
 	 * 
 	 * <p>Created on : 2018-09-18</p>
@@ -5582,8 +5588,8 @@ implements	ComponentI
 		 * <p><strong>Contract</strong></p>
 		 * 
 		 * <pre>
-		 * pre	true	// no precondition.
-		 * post	true	// no postcondition.
+		 * pre	{@code true}	// no precondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 */
@@ -5600,7 +5606,7 @@ implements	ComponentI
 		 * 
 		 * <pre>
 		 * pre	{@code pluginURI != null}
-		 * post	true	// no postcondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @param pluginURI	URI of a plug-in installed on the component.
@@ -5671,7 +5677,7 @@ implements	ComponentI
 		 * 
 		 * <pre>
 		 * pre	{@code sl != null}
-		 * post	true	// no postcondition.
+		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
 		 * @param sl			lambda expression representing a service execution.
@@ -5708,7 +5714,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code isStarted()}
 	 * pre	{@code request != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -5809,7 +5815,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
 	 * pre	{@code request != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>					the type of the value returned by the request.
@@ -5849,7 +5855,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code isStarted()}
 	 * pre	{@code request != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -5996,7 +6002,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code s != null && delay > 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -6051,7 +6057,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code s != null && delay > 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -6089,7 +6095,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code s != null && delay > 0 && u != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param <T>							the type of the value returned by the request.
@@ -6411,8 +6417,8 @@ implements	ComponentI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true		// no precondition.
-	 * post	true		// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @throws NotFoundException	<i>to do</i>.
@@ -6441,7 +6447,7 @@ implements	ComponentI
 	 * <pre>
 	 * pre	{@code methodName != null}
 	 * pre	{@code parametersCanonicalClassNames != null}
-	 * post	true		// no postcondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param methodName					name of the method to be retrieved.
