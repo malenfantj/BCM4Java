@@ -32,6 +32,8 @@ package fr.sorbonne_u.components.cvm.config.exceptions;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.exceptions.VerboseException;
+
 // -----------------------------------------------------------------------------
 /**
  * The class <code>ConfigurationException</code> defines the inheritance root
@@ -43,7 +45,7 @@ package fr.sorbonne_u.components.cvm.config.exceptions;
  * <p><strong>Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}
  * </pre>
  * 
  * <p>Created on : 2020-06-24</p>
@@ -51,23 +53,24 @@ package fr.sorbonne_u.components.cvm.config.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			ConfigurationException
-extends		Exception
+extends		VerboseException
 {
+	private static final int	LEVEL = 3;
 	private static final long serialVersionUID = 1L;
 
 	public				ConfigurationException()
 	{
-		super();
+		super(LEVEL);
 	}
 
 	public				ConfigurationException(String message)
 	{
-		super(message);
+		super(LEVEL, message);
 	}
 
 	public				ConfigurationException(Throwable cause)
 	{
-		super(cause);
+		super(LEVEL, cause);
 	}
 
 	public				ConfigurationException(String message, Throwable cause)
@@ -82,9 +85,42 @@ extends		Exception
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-}
+	public				ConfigurationException(int level)
+	{
+		super(level);
+	}
 
+	public				ConfigurationException(int level, String message)
+	{
+		super(level, message);
+	}
+
+	public				ConfigurationException(int level, Throwable cause)
+	{
+		super(level, cause);
+	}
+
+	public				ConfigurationException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause);
+	}
+
+	public				ConfigurationException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
+	}
+}
 // -----------------------------------------------------------------------------

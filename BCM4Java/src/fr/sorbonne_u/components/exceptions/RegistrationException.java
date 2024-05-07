@@ -1,10 +1,11 @@
-package fr.sorbonne_u.components.cvm.config.exceptions;
+package fr.sorbonne_u.components.exceptions;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
 // This software is a computer program whose purpose is to provide a
-// new implementation of the DEVS simulation standard for Java.
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -34,29 +35,35 @@ package fr.sorbonne_u.components.cvm.config.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The exception <code>InvalidConfigurationFileFormatException</code> is thrown
- * when the configuration XML file does not obey its prescribed format. 
+ * The class <code>RegistrationException</code> covers errors during or using
+ * registers.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant	{@code true}
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2020-06-16</p>
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p>Created on : 2024-05-07</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			InvalidConfigurationFileFormatException
-extends		ConfigurationException
+public class			RegistrationException
+extends		BCMException
 {
-	private static final int	LEVEL = 4;
+	private static final int	LEVEL = 3;
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * creating an invalid configuration file format exception.
+	 * 
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -66,13 +73,13 @@ extends		ConfigurationException
 	 * </pre>
 	 *
 	 */
-	public				InvalidConfigurationFileFormatException()
+	public				RegistrationException()
 	{
 		super(LEVEL);
 	}
 
 	/**
-	 * creating an invalid configuration file format exception.
+	 * 
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -81,15 +88,15 @@ extends		ConfigurationException
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param message	the error message.
+	 * @param message
 	 */
-	public				InvalidConfigurationFileFormatException(String message)
+	public				RegistrationException(String message)
 	{
 		super(LEVEL, message);
 	}
 
 	/**
-	 * creating an invalid configuration file format exception.
+	 * 
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -98,15 +105,15 @@ extends		ConfigurationException
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param cause		cause of the exception.
+	 * @param cause
 	 */
-	public				InvalidConfigurationFileFormatException(Throwable cause)
+	public				RegistrationException(Throwable cause)
 	{
 		super(LEVEL, cause);
 	}
 
 	/**
-	 * creating an invalid configuration file format exception.
+	 * 
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -115,19 +122,16 @@ extends		ConfigurationException
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param message	the error message.
-	 * @param cause		cause of the exception.
+	 * @param message
+	 * @param cause
 	 */
-	public				InvalidConfigurationFileFormatException(
-		String message,
-		Throwable cause
-		)
+	public				RegistrationException(String message, Throwable cause)
 	{
 		super(LEVEL, message, cause);
 	}
 
 	/**
-	 * creating an invalid configuration file format exception.
+	 * 
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -136,12 +140,12 @@ extends		ConfigurationException
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param message				the error message.
-	 * @param cause					cause of the exception.
-     * @param enableSuppression 	whether or not suppression is enabled or disabled
-     * @param writableStackTrace	whether or not the stack trace should be writable
+	 * @param message
+	 * @param cause
+	 * @param enableSuppression
+	 * @param writableStackTrace
 	 */
-	public				InvalidConfigurationFileFormatException(
+	public				RegistrationException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,
@@ -149,6 +153,109 @@ extends		ConfigurationException
 		)
 	{
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param level
+	 */
+	public				RegistrationException(int level)
+	{
+		super(level);
+	}
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param level
+	 * @param message
+	 */
+	public				RegistrationException(int level, String message)
+	{
+		super(level, message);
+	}
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param level
+	 * @param cause
+	 */
+	public				RegistrationException(int level, Throwable cause)
+	{
+		super(level, cause);
+	}
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param level
+	 * @param message
+	 * @param cause
+	 */
+	public				RegistrationException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause);
+	}
+
+	/**
+	 * 
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param level
+	 * @param message
+	 * @param cause
+	 * @param enableSuppression
+	 * @param writableStackTrace
+	 */
+	public				RegistrationException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
 	}
 }
 // -----------------------------------------------------------------------------

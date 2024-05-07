@@ -47,6 +47,8 @@ import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
 import fr.sorbonne_u.components.cvm.config.exceptions.ConfigurationException;
 import fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrierClient;
+import fr.sorbonne_u.components.exceptions.DistributedExecutionException;
+import fr.sorbonne_u.components.exceptions.RegistrationException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.helpers.Logger;
 import fr.sorbonne_u.components.ports.PortI;
@@ -57,6 +59,7 @@ import fr.sorbonne_u.components.registry.GlobalRegistry;
 import fr.sorbonne_u.components.registry.GlobalRegistryClient;
 import fr.sorbonne_u.components.registry.protocol.LookupResponse;
 import fr.sorbonne_u.components.registry.protocol.Response;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
@@ -265,10 +268,13 @@ implements	DistributedComponentVirtualMachineI
 
 		AbstractCVM.localPublishPort(port);
 		if (AbstractCVM.isDistributed) {
-			assert	AbstractDistributedCVM.theRMIRegistry != null;
+			assert	AbstractDistributedCVM.theRMIRegistry != null :
+					new RegistrationException(
+							"AbstractDistributedCVM.theRMIRegistry != null");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
-				AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
+				AbstractCVM.getCVM().logDebug(
+						CVMDebugModes.PORTS,
 						"publishPort calls RMIRegistry on " +
 								((PortI)port).getPortURI() + " ...");
 			}
@@ -278,7 +284,8 @@ implements	DistributedComponentVirtualMachineI
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
 				AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
 											 "... done");
-				AbstractCVM.getCVM().logDebug(CVMDebugModes.PORTS,
+				AbstractCVM.getCVM().logDebug(
+						CVMDebugModes.PORTS,
 						"publishPort calls GlobalRegistry on " +
 													portURI + " ...");
 			}
@@ -338,7 +345,10 @@ implements	DistributedComponentVirtualMachineI
 
 		AbstractCVM.localUnpublishPort(port);
 		if (AbstractCVM.isDistributed) {
-			assert	AbstractDistributedCVM.theRMIRegistry != null;
+			assert	AbstractDistributedCVM.theRMIRegistry != null :
+					new RegistrationException(
+							"AbstractDistributedCVM.theRMIRegistry != null");
+
 			AbstractDistributedCVM.theRMIRegistry.unbind(portURI);
 			AbstractDistributedCVM.GLOBAL_REGISTRY_CLIENT.remove(portURI);
 		}
@@ -461,12 +471,14 @@ implements	DistributedComponentVirtualMachineI
 	{
 		super(true, args[0]);
 
-		assert	args != null && args.length > 1;
+		assert	args != null && args.length > 1 :
+				new PreconditionException("args != null && args.length > 1");
 
 		File configFile = new File(args[1]);
 		ConfigurationFileParser cfp = new ConfigurationFileParser();
 		if (!cfp.validateConfigurationFile(configFile)) {
-			throw new Exception("invalid configuration file " + args[1]);
+			throw new ConfigurationException(
+									"invalid configuration file " + args[1]);
 		}
 		this.configurationParameters = cfp.parseConfigurationFile(configFile);
 		this.thisHostname =
@@ -574,7 +586,8 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			initialise() throws Exception
 	{
-		assert	!this.isInitialised();
+		assert	!isInitialised() :
+				new PreconditionException("!isInitialised()");
 
 		// RMI registry reference
 		if (AbstractDistributedCVM.theRMIRegistry == null) {
@@ -607,8 +620,11 @@ implements	DistributedComponentVirtualMachineI
 											"called initialise() ...done.");
 		}
 
-		assert	AbstractDistributedCVM.theRMIRegistry != null;
-		assert	this.isInitialised();
+		assert	AbstractDistributedCVM.theRMIRegistry != null :
+				new PostconditionException(
+						"AbstractDistributedCVM.theRMIRegistry != null");
+		assert	isInitialised() :
+				new PostconditionException("isInitialised()");
 	}
 
 	/**
@@ -629,7 +645,8 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			instantiateAndPublish() throws Exception
 	{
-		assert	this.isInitialised();
+		assert	isInitialised() :
+				new PreconditionException("isInitialised()");
 
 		try {
 			String dccURI =
@@ -637,7 +654,9 @@ implements	DistributedComponentVirtualMachineI
 					DynamicComponentCreator.class.getCanonicalName(),
 					new Object[]{AbstractCVM.getThisJVMURI() +
 									DCC_INBOUNDPORT_URI_SUFFIX});
-			assert	this.isDeployedComponent(dccURI);
+			assert	this.isDeployedComponent(dccURI) :
+					new DistributedExecutionException(
+							"isDeployedComponent(dccURI)");
 		} catch (Exception e) {
 			System.out.println("The dynamic component creator has not been "
 											+ "successfully deployed!");
@@ -651,7 +670,8 @@ implements	DistributedComponentVirtualMachineI
 								"called instantiateAndPublish() ...done.");
 		}
 
-		assert	this.isIntantiatedAndPublished();
+		assert	this.isIntantiatedAndPublished() :
+				new PostconditionException("isIntantiatedAndPublished()");
 	}
 
 	/**
@@ -672,7 +692,8 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			interconnect() throws Exception
 	{
-		assert	this.isIntantiatedAndPublished();
+		assert	this.isIntantiatedAndPublished() :
+				new PreconditionException("isIntantiatedAndPublished()");
 
 		this.state = CVMState.INTERCONNECTED;
 
@@ -681,7 +702,8 @@ implements	DistributedComponentVirtualMachineI
 									"called interconnect() ...done.");
 		}
 
-		assert	this.isInterconnected();
+		assert	this.isInterconnected() :
+				new PostconditionException("isInterconnected()");
 	}
 
 	/**
@@ -702,13 +724,15 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			start() throws Exception
 	{
-		assert	this.deploymentDone();
+		assert	this.deploymentDone() :
+				new PreconditionException("deploymentDone()");
 
 		// Start all of the components that are running within the current
 		// virtual machine
 		super.start();
 
-		assert	this.allStarted();
+		assert	this.allStarted() :
+				new PostconditionException("allStarted()");
 	}
 
 	/**
@@ -729,7 +753,8 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			execute() throws Exception
 	{
-		assert	this.allStarted();
+		assert	this.allStarted() :
+				new PreconditionException("allStarted()");
 
 		this.waitOnCyclicBarrier();
 		super.execute();
@@ -742,7 +767,8 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			finalise() throws Exception
 	{
-		assert	this.allStarted();
+		assert	this.allStarted() :
+				new PreconditionException("allStarted()");
 
 		this.waitOnCyclicBarrier();
 		super.finalise();
@@ -754,7 +780,8 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			shutdown() throws Exception
 	{
-		assert	this.allFinalised();
+		assert	this.allFinalised() :
+				new PreconditionException("allFinalised()");
 
 		this.waitOnCyclicBarrier();
 		super.shutdown();
@@ -762,7 +789,8 @@ implements	DistributedComponentVirtualMachineI
 		this.cyclicBarrierClient.closeBarrier();
 		AbstractDistributedCVM.GLOBAL_REGISTRY_CLIENT.shutdown();
 
-		assert	this.isShutdown();
+		assert	this.isShutdown() :
+				new PostconditionException("isShutdown()");
 	}
 
 	/**
@@ -771,7 +799,8 @@ implements	DistributedComponentVirtualMachineI
 	@Override
 	public void			shutdownNow() throws Exception
 	{
-		assert	this.allFinalised();
+		assert	this.allFinalised() :
+				new PreconditionException("allFinalised()");
 
 		this.waitOnCyclicBarrier();
 		super.shutdownNow();
@@ -779,7 +808,8 @@ implements	DistributedComponentVirtualMachineI
 		this.cyclicBarrierClient.closeBarrier();
 		AbstractDistributedCVM.GLOBAL_REGISTRY_CLIENT.shutdown();
 
-		assert	this.isShutdown();
+		assert	this.isShutdown() :
+				new PostconditionException("isShutdown()");
 	}
 
 	/**
