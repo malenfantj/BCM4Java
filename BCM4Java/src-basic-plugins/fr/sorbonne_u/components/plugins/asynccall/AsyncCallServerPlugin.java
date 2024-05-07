@@ -211,7 +211,9 @@ extends		AbstractPlugin
 	throws Exception
 	{
 		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :
-				new PreconditionException("receptionPortURI != null && !receptionPortURI.isEmpty()");
+				new PreconditionException(
+					"receptionPortURI != null && !receptionPortURI.isEmpty()");
+
 		if (!this.resultReceptionOutboundPorts.containsKey(receptionPortURI)) {
 			return false;
 		} else {
@@ -235,13 +237,15 @@ extends		AbstractPlugin
 	 * post	{@code receptionPortConnected(receptionPortURI)}
 	 * </pre>
 	 *
-	 * @param receptionPortURI	URI of the port waiting for the result of a call.
+	 * @param receptionPortURI	URI of the inbound port waiting for the result of a call.
 	 * @throws Exception		<i>to do</i>.
 	 */
 	public void			connectReceptionPort(String receptionPortURI)
 	throws Exception
 	{
-		assert	receptionPortURI != null && receptionPortURI.length() != 0;
+		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :
+				new PreconditionException(
+				"receptionPortURI != null && !receptionPortURI.isEmpty()");
 
 		try {
 			AsyncCallResultReceptionOutboundPort p =
@@ -260,6 +264,39 @@ extends		AbstractPlugin
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
+		}
+	}
+
+	/**
+	 * disconnect the result reception outbound port on the server side at the
+	 * end of a series of calls from the client that owns the result reception
+	 * inbound port having {@code receptionPortURI} as its URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code receptionPortURI != null && receptionPortURI.length() != 0}
+	 * post	{@code !receptionPortConnected(receptionPortURI)}
+	 * </pre>
+	 *
+	 * @param receptionPortURI	URI of the inbound port waiting for the result of a call.
+	 */
+	public void			disconnectClient(String receptionPortURI)
+	{
+		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :
+				new PreconditionException(
+					"receptionPortURI != null && !receptionPortURI.isEmpty()");
+
+		AsyncCallResultReceptionOutboundPort p =
+				this.resultReceptionOutboundPorts.remove(receptionPortURI);
+		if (p != null) {
+			try {
+				this.getOwner().doPortDisconnection(p.getPortURI());
+				p.unpublishPort();
+				p.destroyPort();
+			} catch (Exception e) {
+				throw new RuntimeException(e) ;
+			}
 		}
 	}
 

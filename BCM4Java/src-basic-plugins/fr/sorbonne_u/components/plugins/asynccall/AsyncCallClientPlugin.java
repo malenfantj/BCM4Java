@@ -276,6 +276,7 @@ extends		AbstractPlugin
 	 */
 	public void			disconnectFromServer() throws Exception
 	{
+		this.outPort.disconnectClient(this.inPort.getPortURI());
 		this.getOwner().doPortDisconnection(this.outPort.getPortURI());
 		this.outPort.unpublishPort();
 		this.outPort.destroyPort();

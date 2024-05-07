@@ -79,6 +79,16 @@ implements	AsyncCallCI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallCI#disconnectClient(java.lang.String)
+	 */
+	@Override
+	public void			disconnectClient(String receptionPortURI)
+	throws Exception
+	{
+		((AsyncCallCI)this.getConnector()).disconnectClient(receptionPortURI);
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallCI#asyncCall(fr.sorbonne_u.components.plugins.asynccall.AbstractAsyncCall)
 	 */
 	@Override

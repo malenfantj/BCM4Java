@@ -72,6 +72,24 @@ extends		OfferedCI,
 			RequiredCI
 {
 	/**
+	 * disconnect the result reception outbound port on the server side at the
+	 * end of a series of calls from the client that owns the result reception
+	 * inbound port having {@code receptionPortURI} as its URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code receptionPortURI != null && receptionPortURI.length() != 0}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param receptionPortURI	URI of the inbound port waiting for the result of a call.
+	 * @throws Exception		<i>to do</i>.
+	 */
+	public void			disconnectClient(String receptionPortURI)
+	throws Exception;
+
+	/**
 	 * pass the command representing the call to the server to be executed
 	 * asynchronously.
 	 * 
