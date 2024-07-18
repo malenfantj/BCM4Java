@@ -61,69 +61,21 @@ extends		BCMException
 	private static final int	LEVEL = 3;
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 */
 	public				DistributedExecutionException()
 	{
 		super(LEVEL);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param message
-	 */
 	public				DistributedExecutionException(String message)
 	{
 		super(LEVEL, message);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param cause
-	 */
 	public				DistributedExecutionException(Throwable cause)
 	{
 		super(LEVEL, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param message
-	 * @param cause
-	 */
 	public				DistributedExecutionException(
 		String message,
 		Throwable cause
@@ -132,21 +84,6 @@ extends		BCMException
 		super(LEVEL, message, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param message
-	 * @param cause
-	 * @param enableSuppression
-	 * @param writableStackTrace
-	 */
 	public				DistributedExecutionException(
 		String message,
 		Throwable cause,
@@ -157,54 +94,16 @@ extends		BCMException
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 */
 	public				DistributedExecutionException(int level)
 	{
 		super(level);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param message
-	 */
 	public				DistributedExecutionException(int level, String message)
 	{
 		super(level, message);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param cause
-	 */
 	public				DistributedExecutionException(
 		int level,
 		Throwable cause
@@ -213,20 +112,6 @@ extends		BCMException
 		super(level, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param message
-	 * @param cause
-	 */
 	public				DistributedExecutionException(
 		int level,
 		String message,
@@ -236,22 +121,6 @@ extends		BCMException
 		super(level, message, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param message
-	 * @param cause
-	 * @param enableSuppression
-	 * @param writableStackTrace
-	 */
 	public				DistributedExecutionException(
 		int level,
 		String message,

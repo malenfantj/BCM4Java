@@ -62,89 +62,26 @@ extends		BCMException
 	private static final int	LEVEL = 3;
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 */
 	public				RegistrationException()
 	{
 		super(LEVEL);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param message
-	 */
 	public				RegistrationException(String message)
 	{
 		super(LEVEL, message);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param cause
-	 */
 	public				RegistrationException(Throwable cause)
 	{
 		super(LEVEL, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param message
-	 * @param cause
-	 */
 	public				RegistrationException(String message, Throwable cause)
 	{
 		super(LEVEL, message, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param message
-	 * @param cause
-	 * @param enableSuppression
-	 * @param writableStackTrace
-	 */
 	public				RegistrationException(
 		String message,
 		Throwable cause,
@@ -155,73 +92,21 @@ extends		BCMException
 		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 */
 	public				RegistrationException(int level)
 	{
 		super(level);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param message
-	 */
 	public				RegistrationException(int level, String message)
 	{
 		super(level, message);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param cause
-	 */
 	public				RegistrationException(int level, Throwable cause)
 	{
 		super(level, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param message
-	 * @param cause
-	 */
 	public				RegistrationException(
 		int level,
 		String message,
@@ -231,22 +116,6 @@ extends		BCMException
 		super(level, message, cause);
 	}
 
-	/**
-	 * 
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param level
-	 * @param message
-	 * @param cause
-	 * @param enableSuppression
-	 * @param writableStackTrace
-	 */
 	public				RegistrationException(
 		int level,
 		String message,
