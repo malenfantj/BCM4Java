@@ -136,12 +136,16 @@ extends		AbstractComponent
 	public static final String	STANDARD_INBOUNDPORT_URI = "clock-server-101";
 	/** when true, methods trace their actions.								*/
 	public static boolean		VERBOSE = false;
+	/** when tracing, x coordinate of the window relative position.			*/
+	public static int			X_RELATIVE_POSITION = 0;
+	/** when tracing, y coordinate of the window relative position.			*/
+	public static int			Y_RELATIVE_POSITION = 0;
 
 	/** map that contains the clocks previously created; must be
 	 *  synchronised.														*/
 	protected final Map<String,CompletableFuture<AcceleratedClock>>	clocks;
 	/** lock protecting accesses to the clocks map.							*/
-	protected final ReentrantLock	clocksLock;
+	protected final ReentrantLock					clocksLock;
 	/** URI of the inbound port offering the {@code ClockServerCI} component
 	 *  interface.															*/
 	protected final String							inboundPortURI;
@@ -425,7 +429,8 @@ extends		AbstractComponent
 
 		if (VERBOSE) {
 			this.tracer.get().setTitle("Clock Server component");
-			this.tracer.get().setRelativePosition(2, 0);
+			this.tracer.get().setRelativePosition(X_RELATIVE_POSITION,
+												  Y_RELATIVE_POSITION);
 			this.toggleTracing();		
 		}
 	}
