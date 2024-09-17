@@ -138,6 +138,14 @@ implements	ClocksServerCI
 		double accelerationFactor
 		) throws Exception
 	{
+		if (VERBOSE) {
+			this.getOwner().traceMessage(
+								"ClocksServerInboundPort#createClock("
+								+ clockURI + ") to "
+								+ this.getOwner().getClass().getCanonicalName()
+								+ "\n");
+		}
+
 		return this.getOwner().handleRequest(
 									o -> ((ClocksServer)o).
 											createClock(
@@ -156,8 +164,11 @@ implements	ClocksServerCI
 		if (VERBOSE) {
 			this.getOwner().traceMessage(
 								"ClocksServerInboundPort#getClock("
-								+ clockURI + ") to " + this.getOwner());
+								+ clockURI + ") to "
+								+ this.getOwner().getClass().getCanonicalName()
+								+ "\n");
 		}
+
 		// As getClock may block if the clock has not been created yet, the
 		// call is made using the caller thread hence avoiding the need for
 		// an unbounded number of internal threads in the component to take

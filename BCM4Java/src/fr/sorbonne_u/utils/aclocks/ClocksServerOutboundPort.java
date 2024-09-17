@@ -129,6 +129,14 @@ implements	ClocksServerCI
 		double accelerationFactor
 		) throws Exception
 	{
+		if (VERBOSE) {
+			this.getOwner().traceMessage(
+								"ClocksServerOutboundPort#createClock("
+								+ clockURI + ") from "
+								+ this.getOwner().getClass().getCanonicalName()
+								+ "\n");
+		}
+
 		return ((ClocksServerCI)this.getConnector()).createClock(
 									clockURI, unixEpochStartTimeInNanos,
 									startInstant, accelerationFactor);
@@ -143,8 +151,11 @@ implements	ClocksServerCI
 		if (VERBOSE) {
 			this.getOwner().traceMessage(
 								"ClocksServerOutboundPort#getClock("
-								+ clockURI + ") from " + this.getOwner());
+								+ clockURI + ") from "
+								+ this.getOwner().getClass().getCanonicalName()
+								+ "\n");
 		}
+
 		return ((ClocksServerCI)this.getConnector()).getClock(clockURI);
 	}
 }
