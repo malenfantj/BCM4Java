@@ -67,6 +67,7 @@ implements	ClocksServerCI
 	// -------------------------------------------------------------------------
 
 	private static final long serialVersionUID = 1L;
+	public static boolean	VERBOSE = false;
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -139,6 +140,11 @@ implements	ClocksServerCI
 	@Override
 	public AcceleratedClock	getClock(String clockURI) throws Exception
 	{
+		if (VERBOSE) {
+			this.getOwner().traceMessage(
+								"ClocksServerOutboundPort#getClock("
+								+ clockURI + ") from " + this.getOwner());
+		}
 		return ((ClocksServerCI)this.getConnector()).getClock(clockURI);
 	}
 }

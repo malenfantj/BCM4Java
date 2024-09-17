@@ -135,7 +135,7 @@ extends		AbstractComponent
 	/** standard URI of the inbound port if no other is supplied.			*/
 	public static final String	STANDARD_INBOUNDPORT_URI = "clock-server-101";
 	/** when true, methods trace their actions.								*/
-	public static boolean		VERBOSE = false;
+	public static boolean		VERBOSE = true;
 	/** when tracing, x coordinate of the window relative position.			*/
 	public static int			X_RELATIVE_POSITION = 0;
 	/** when tracing, y coordinate of the window relative position.			*/
