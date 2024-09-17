@@ -382,14 +382,14 @@ extends		AbstractComponent
 		this.inboundPortURI = inboundPortURI;
 		this.clocksLock = new ReentrantLock();
 		this.clocks = new HashMap<>();
-		this.createClock(clockURI, unixEpochStartTimeInNanos,
-										 startInstant, accelerationFactor);
 
 		this.initialise();
 
 		if (VERBOSE) {
 			this.traceMessage("Creating the clock " + clockURI + ".\n");
 		}
+		this.createClock(clockURI, unixEpochStartTimeInNanos,
+						 startInstant, accelerationFactor);
 
 		assert	getClock(clockURI) != null :
 				new PostconditionException("getClock(clockURI) != null");
