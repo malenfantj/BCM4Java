@@ -1,7 +1,5 @@
 package fr.sorbonne_u.exceptions;
 
-import fr.sorbonne_u.components.AbstractComponent;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -35,13 +33,16 @@ import fr.sorbonne_u.components.AbstractComponent;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.AbstractComponent;
+
 // -----------------------------------------------------------------------------
 /**
- * The class <code>InvariantChecking</code>
+ * The class <code>InvariantChecking</code> implements helper methods to check
+ * invariants in objects and components.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Glass-box Invariant</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -60,63 +61,87 @@ import fr.sorbonne_u.components.AbstractComponent;
 public abstract class	InvariantChecking
 {
 	/**
-	 * check a white-box invariant expression and print a message if the
+	 * check a glass-box invariant expression and print a message if the
 	 * expression evaluates to false.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code definingClass != null}
+	 * pre	{@code instance == null || definingClass.isAssignableFrom(instance.getClass())}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param invariantExpression	result of the invariant expression.
 	 * @param definingClass			class defining the invariant expression.
+	 * @param instance				instance on which the invariant is checked.
 	 * @param message				message to be printed on stdout if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
-	public static boolean	checkWhiteBoxInvariant(
+	public static boolean	checkGlassBoxInvariant(
 		boolean invariantExpression,
 		Class<?> definingClass,
+		Object instance,
 		String message
 		)
 	{
+		assert	definingClass != null :
+				new PreconditionException("definingClass != null");
+		assert	instance == null ||
+						definingClass.isAssignableFrom(instance.getClass()) :
+				new PreconditionException(
+						"instance == null || "
+						+ "definingClass.isAssignableFrom(instance.getClass())");
+
 		if (!invariantExpression) {
 			System.out.println(
-					"White-box invariant violation in class "
-					+ definingClass.getSimpleName()
-					+ ": " + message);
+				"Glass-box invariant violation in class "
+				+ definingClass.getSimpleName()
+				+ " for the object "
+				+ (instance != null ? instance.toString() : "unknown instance")
+				+ ": " + message);
 		}
 		return invariantExpression;
 	}
 	/**
-	 * check a white-box invariant expression for a component and print a
+	 * check a glass-box invariant expression for a component and print a
 	 * message if the expression evaluates to false.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code definingClass != null}
+	 * pre	{@code component == null || definingClass.isAssignableFrom(component.getClass())}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param invariantExpression	result of the invariant expression.
 	 * @param definingClass			component class defining the invariant expression.
-	 * @param instance				component on which the invariant is checked.
-	 * @param message				message to be printed on the trace window if {@code invariantExpression} is false.
+	 * @param component				component on which the invariant is checked.
+	 * @param message				message to be printed on the trace window of {@code instance} if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
-	public static boolean	checkWhiteBoxInvariant(
+	public static boolean	checkGlassBoxInvariant(
 		boolean invariantExpression,
 		Class<? extends AbstractComponent> definingClass,
-		AbstractComponent instance,
+		AbstractComponent component,
 		String message
 		)
 	{
+		assert	definingClass != null :
+				new PreconditionException("definingClass != null");
+		assert	component == null ||
+						definingClass.isAssignableFrom(component.getClass()) :
+				new PreconditionException(
+						"component == null || "
+						+ "definingClass.isAssignableFrom(component.getClass())");
+
 		if (!invariantExpression) {
-			instance.traceMessage(
-					"White-box invariant violation in class "
+			component.traceMessage(
+					"Glass-box invariant violation in class "
 					+ definingClass.getSimpleName()
+					+ " for the component "
+					+ component
 					+ ": " + message + "\n");
 		}
 		return invariantExpression;
@@ -129,26 +154,38 @@ public abstract class	InvariantChecking
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code definingClass != null}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param invariantExpression	result of the invariant expression.
 	 * @param definingClass			class defining the invariant expression.
+	 * @param instance				instance on which the invariant is checked.
 	 * @param message				message to be printed on stdout if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
 	public static boolean	checkBlackBoxInvariant(
 		boolean invariantExpression,
 		Class<?> definingClass,
+		Object instance,
 		String message
 		)
 	{
+		assert	definingClass != null :
+				new PreconditionException("definingClass != null");
+		assert	instance == null ||
+						definingClass.isAssignableFrom(instance.getClass()) :
+				new PreconditionException(
+						"instance == null || "
+						+ "definingClass.isAssignableFrom(instance.getClass())");
+
 		if (!invariantExpression) {
 			System.out.println(
-					"Black-box invariant violation in class "
-					+ definingClass.getSimpleName()
-					+ ": " + message);
+				"Black-box invariant violation in class "
+				+ definingClass.getSimpleName()
+				+ " for the object "
+				+ (instance != null ? instance.toString() : "unknown instance")
+				+ ": " + message);
 		}
 		return invariantExpression;
 	}
@@ -160,27 +197,38 @@ public abstract class	InvariantChecking
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code definingClass != null}
+	 * pre	{@code component == null || definingClass.isAssignableFrom(component.getClass())}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param invariantExpression	result of the invariant expression.
 	 * @param definingClass			class defining the invariant expression.
-	 * @param instance				component on which the invariant is checked.
-	 * @param message				message to be printed on stdout if {@code invariantExpression} is false.
+	 * @param component				component on which the invariant is checked.
+	 * @param message				message to be printed on the trace window of {@code instance} if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
 	public static boolean	checkBlackBoxInvariant(
 		boolean invariantExpression,
 		Class<? extends AbstractComponent> definingClass,
-		AbstractComponent instance,
+		AbstractComponent component,
 		String message
 		)
 	{
+		assert	definingClass != null :
+				new PreconditionException("definingClass != null");
+		assert	component == null ||
+						definingClass.isAssignableFrom(component.getClass()) :
+				new PreconditionException(
+						"component != null || "
+						+ "definingClass.isAssignableFrom(component.getClass())");
+
 		if (!invariantExpression) {
-			instance.traceMessage(
+			component.traceMessage(
 					"Black-box invariant violation in class "
 					+ definingClass.getSimpleName()
+					+ " for the component "
+					+ component
 					+ ": " + message + "\n");
 		}
 		return invariantExpression;
