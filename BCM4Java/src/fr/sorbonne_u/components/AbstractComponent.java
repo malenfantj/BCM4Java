@@ -60,6 +60,7 @@ import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.exceptions.ComponentTaskExecutionException;
@@ -341,8 +342,7 @@ implements	ComponentI
 	public boolean		isInStateAmong(ComponentStateI[] states)
 	{
 		assert	states != null :
-					new PreconditionException(
-							"State array parameter can't be null!");
+				new PreconditionException("State array parameter can't be null!");
 
 		synchronized (this.state) {
 			boolean ret = false;
@@ -360,8 +360,7 @@ implements	ComponentI
 	public boolean		notInStateAmong(ComponentStateI[] states)
 	{
 		assert	states != null :
-					new PreconditionException(
-							"State array parameter can't be null!");
+				new PreconditionException("State array parameter can't be null!");
 
 		synchronized (this.state) {
 			boolean ret = true;
@@ -412,22 +411,22 @@ implements	ComponentI
 		)
 	{
 		assert	composite != null :
-						new PreconditionException("composite != null");
+				new PreconditionException("composite != null");
 
 		synchronized (this.composite) {
 			boolean isFirstAssignment =
 							this.composite.compareAndSet(null, composite);
 
 			assert	isFirstAssignment :
-						new PreconditionException(
-								"The composite component of a subcomponent can "
-										+ "only be set once.");
+					new PreconditionException(
+							"The composite component of a subcomponent can "
+							+ "only be set once.");
 
 			assert	this.isSubcomponentOf(composite) :
-						new PostconditionException("isSubcomponent()");
+					new PostconditionException("isSubcomponent()");
 			assert	this.getCompositeComponentReference() == composite :
-						new PostconditionException(
-								"getCompositeComponentReference() == composite");
+					new PostconditionException(
+							"getCompositeComponentReference() == composite");
 		}
 		
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.INNER_COMPONENTS)) {
@@ -479,7 +478,7 @@ implements	ComponentI
 	protected boolean	isSubcomponentOf(ComponentI composite)
 	{
 		assert	composite != null :
-					new PreconditionException("composite != null");
+				new PreconditionException("composite != null");
 
 		AbstractComponent c = this.composite.get();
 		return c != null && c == composite;
@@ -549,14 +548,13 @@ implements	ComponentI
 		)
 	{
 		assert	subcomponentURI != null && portURI != null :
-					new PreconditionException(
-							"subcomponentURI != null && portURI != null");
+				new PreconditionException(
+						"subcomponentURI != null && portURI != null");
 
 		ComponentI subcomponent = this.innerComponents.get(subcomponentURI);
 
 		assert	subcomponent != null :
-						new PreconditionException(
-								"hasSubcomponent(subcomponentURI)");
+				new PreconditionException("hasSubcomponent(subcomponentURI)");
 
 		// WARNING: this implementation assumes that inner components are
 		// located in the same JVM as their composite component.
@@ -587,11 +585,11 @@ implements	ComponentI
 		)
 	{
 		assert	composite != null :
-					new PreconditionException("composite must not be null!");
+				new PreconditionException("composite must not be null!");
 		assert	portURI != null :
-					new PreconditionException("Port URI can't be null!");
+				new PreconditionException("Port URI can't be null!");
 		assert	this.isSubcomponentOf(composite) :
-					new PreconditionException("isSubcomponentOf(composite)");
+				new PreconditionException("isSubcomponentOf(composite)");
 
 		// WARNING: this implementation assumes that inner components are
 		// located in the same JVM as their composite component.
@@ -1000,8 +998,8 @@ implements	ComponentI
 		this.executorServicesLock.writeLock().lock();
 		try {
 			assert	!this.validExecutorServiceURI(uri) :
-						new PreconditionException(
-								"!this.validExecutorServiceURI(uri)");
+					new PreconditionException(
+							"!this.validExecutorServiceURI(uri)");
 			int numberOfES_pre = this.countExecutorServices();
 
 			index = this.nextExecutorServicesIndex();
@@ -1019,26 +1017,25 @@ implements	ComponentI
 			this.executorServices.get()[index] = cesm;
 
 			assert	this.executorServicesIndexes.get(uri) == index :
-						new ExecutorServicesManagementException(
-								"executor service with URI " + uri +
-								" does not have index " + index);
+					new ExecutorServicesManagementException(
+							"executor service with URI " + uri +
+							" does not have index " + index);
 			assert	this.executorServices.get()[index] != null :
-						new ExecutorServicesManagementException(
-								"no executor service at index " + index);
+					new ExecutorServicesManagementException(
+							"no executor service at index " + index);
 			assert	uri.equals(this.executorServices.get()[index].getURI()) :
-						new ExecutorServicesManagementException(
-								"the executor serviec at index " + index +
-								" does not have URI " + uri + " but rather " +
-								this.executorServices.get()[index].getURI());
+					new ExecutorServicesManagementException(
+							"the executor serviec at index " + index +
+							" does not have URI " + uri + " but rather " +
+							this.executorServices.get()[index].getURI());
 			assert	this.countExecutorServices() == numberOfES_pre + 1 :
-						new ExecutorServicesManagementException(
-								"the executor services pool did not increase "
-								+ "in size after creating the new one with URI "
-								+ uri);
+					new ExecutorServicesManagementException(
+							"the executor services pool did not increase "
+							+ "in size after creating the new one with URI "
+							+ uri);
 
 			assert	this.validExecutorServiceURI(uri) :
-						new PostconditionException(
-										"validExecutorServiceURI(uri)");
+					new PostconditionException("validExecutorServiceURI(uri)");
 		} finally {
 			this.executorServicesLock.writeLock().unlock();
 		}
@@ -1095,8 +1092,8 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceURI(uri) :
-						new PreconditionException(
-								"validExecutorServiceURI(uri) " + uri);
+					new PreconditionException(
+							"validExecutorServiceURI(uri) " + uri);
 
 			return this.isSchedulable(this.getExecutorServiceIndex(uri));
 		} finally {
@@ -1113,8 +1110,8 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceIndex(index) :
-						new PreconditionException(
-								"validExecutorServiceIndex(index) " + index);
+					new PreconditionException(
+							"validExecutorServiceIndex(index) " + index);
 
 			return this.executorServices.get()[index].isSchedulable();
 		} finally {
@@ -1140,14 +1137,14 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceURI(uri) :
-						new PreconditionException(
-								"validExecutorServiceURI(uri) " + uri);
+					new PreconditionException(
+							"validExecutorServiceURI(uri) " + uri);
 
 			int ret = this.executorServicesIndexes.get(uri);
 
 			assert	this.validExecutorServiceIndex(ret) :
-						new PostconditionException(
-								"validExecutorServiceIndex(ret) " + ret);
+					new PostconditionException(
+							"validExecutorServiceIndex(ret) " + ret);
 
 			return ret;
 		} finally {
@@ -1173,10 +1170,10 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)
-					|| this.validExecutorServiceURI(
+						|| this.validExecutorServiceURI(
 											STANDARD_SCHEDULABLE_HANDLER_URI) :
-						new PreconditionException(
-								"invalid standard executor service!");
+				new PreconditionException(
+						"invalid standard executor service!");
 
 			int index = -1;
 			if (this.validExecutorServiceURI(STANDARD_REQUEST_HANDLER_URI)) {
@@ -1210,8 +1207,8 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceIndex(index) :
-						new PreconditionException(
-								"validExecutorServiceIndex(index) " + index);
+					new PreconditionException(
+							"validExecutorServiceIndex(index) " + index);
 
 			return this.executorServices.get()[index].getExecutorService();
 		} finally {
@@ -1237,8 +1234,8 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceURI(uri) :
-						new PreconditionException(
-								"validExecutorServiceURI(uri) " + uri);
+					new PreconditionException(
+							"validExecutorServiceURI(uri) " + uri);
 
 			return this.getExecutorService(this.getExecutorServiceIndex(uri));
 		} finally {
@@ -1264,7 +1261,7 @@ implements	ComponentI
 		try {
 			assert	this.validExecutorServiceURI(
 										STANDARD_SCHEDULABLE_HANDLER_URI) :
-						new PreconditionException(
+					new PreconditionException(
 							"invalid standard schedulable executor service!");
 
 			int index =
@@ -1298,11 +1295,10 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceIndex(index) :
-						new PreconditionException(
-								"validExecutorServiceIndex(index) " + index);
+					new PreconditionException(
+							"validExecutorServiceIndex(index) " + index);
 			assert	this.isSchedulable(index) :
-						new PreconditionException(
-								"isSchedulable(index) " + index);
+					new PreconditionException("isSchedulable(index) " + index);
 
 			return ((ComponentSchedulableExecutorServiceManager) 
 									this.executorServices.get()[index]).
@@ -1333,10 +1329,10 @@ implements	ComponentI
 		this.executorServicesLock.readLock().lock();
 		try {
 			assert	this.validExecutorServiceURI(uri) :
-						new PreconditionException(
-								"validExecutorServiceURI(" + uri + ")");
+					new PreconditionException(
+							"validExecutorServiceURI(" + uri + ")");
 			assert	this.isSchedulable(uri) :
-						new PreconditionException("isSchedulable(" + uri + ")");
+					new PreconditionException("isSchedulable(" + uri + ")");
 
 			return this.getSchedulableExecutorService(
 											this.getExecutorServiceIndex(uri));
@@ -1417,8 +1413,8 @@ implements	ComponentI
 		this.executorServicesLock.writeLock().lock();
 		try {
 			assert	this.validExecutorServiceURI(uri) :
-						new PreconditionException(
-								"validExecutorServiceURI(" + uri + ")");
+					new PreconditionException(
+							"validExecutorServiceURI(" + uri + ")");
 
 			int index = this.getExecutorServiceIndex(uri);
 			es = this.executorServices.get()[index].getExecutorService();
@@ -1466,16 +1462,16 @@ implements	ComponentI
 	{
 		synchronized (this.installedPlugins) {
 			assert	!this.isPluginFacilitiesConfigured() :
-						new PreconditionException(
-								"Can't configure plug-in "
-										+ "facilities, already done!");
+					new PreconditionException(
+							"Can't configure plug-in "
+							+ "facilities, already done!");
 
 			this.installedPlugins.set(new ConcurrentHashMap<String,PluginI>());
 
 			assert	this.isPluginFacilitiesConfigured() :
-						new PostconditionException(
-								"Plug-in facilities configuration "
-										+ "not achieved correctly!");
+					new PostconditionException(
+							"Plug-in facilities configuration "
+							+ "not achieved correctly!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PLUGIN)) {
 				AbstractCVM.getCVM().logDebug(
@@ -1520,9 +1516,9 @@ implements	ComponentI
 	{
 		synchronized (this.installedPlugins) {
 			assert	this.isPluginFacilitiesConfigured() :
-						new PreconditionException(
-								"Can't unconfigure plug-in "
-									+ "facilities, they are not configured!");
+					new PreconditionException(
+							"Can't unconfigure plug-in "
+							+ "facilities, they are not configured!");
 
 			for (Entry<String,PluginI> e :
 									this.installedPlugins.get().entrySet()) {
@@ -1532,9 +1528,9 @@ implements	ComponentI
 			this.installedPlugins.set(null);
 
 			assert	!this.isPluginFacilitiesConfigured() :
-						new PostconditionException(
-								"Plug-in facilities unconfiguration "
-										+ "not achieved correctly!");
+					new PostconditionException(
+							"Plug-in facilities unconfiguration "
+							+ "not achieved correctly!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PLUGIN)) {
 				AbstractCVM.getCVM().logDebug(
@@ -1569,31 +1565,30 @@ implements	ComponentI
 	{
 		assert	plugin != null : new PreconditionException("plugin != null");
 		assert	plugin.getPluginURI() != null :
-					new PreconditionException("plugin.getPluginURI() != null");
-		assert	!this.isInstalled(plugin.getPluginURI());
+				new PreconditionException("plugin.getPluginURI() != null");
+		assert	!this.isInstalled(plugin.getPluginURI()) :
+				new PreconditionException("!isInstalled(plugin.getPluginURI())");
 		assert	!plugin.isInitialised() :
-					new PreconditionException("plugin.isInitialised()");
+				new PreconditionException("plugin.isInitialised()");
 
 		synchronized (this.installedPlugins) {
 			assert	this.isPluginFacilitiesConfigured() :
-						new PluginException(
-								"Can't install plug-in, plug-in facilities "
-										+ "are not configured!");
+					new PluginException(
+							"Can't install plug-in, plug-in facilities "
+							+ "are not configured!");
 			assert	!this.isInstalled(plugin.getPluginURI()) :
-						new PreconditionException(
-								"Can't install plug-in, "
-								+ plugin.getPluginURI()
-								+ " already installed!");
+					new PreconditionException(
+							"Can't install plug-in, " + plugin.getPluginURI()
+							+ " already installed!");
 
 			((AbstractPlugin)plugin).installOn(this);
 			this.installedPlugins.get().put(plugin.getPluginURI(), plugin);
 			((AbstractPlugin)plugin).initialise();
 
 			assert	this.isInstalled(plugin.getPluginURI()) :
-						new PostconditionException(
-								"Plug-in "
-								+ plugin.getPluginURI()
-								+ " not installed correctly!");
+					new PostconditionException(
+							"Plug-in " + plugin.getPluginURI()
+							+ " not installed correctly!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PLUGIN)) {
 				AbstractCVM.getCVM().logDebug(
@@ -1605,7 +1600,7 @@ implements	ComponentI
 		}
 
 		assert	plugin.isInitialised() :
-					new PostconditionException("plugin.isInitialised()");
+				new PostconditionException("plugin.isInitialised()");
 	}
 
 	/**
@@ -1637,16 +1632,18 @@ implements	ComponentI
 	protected void		finalisePlugin(String pluginURI) throws Exception
 	{
 		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null");
+				new PreconditionException("pluginURI != null");
 
 		synchronized (this.installedPlugins) {
 
 			assert	this.isPluginFacilitiesConfigured()  :
-						new PluginException("Can't uninstall plug-in, "
-								+ "plug-in facilities are not configured!");
+					new PluginException(
+							"Can't uninstall plug-in, "
+							+ "plug-in facilities are not configured!");
 			assert	this.isInstalled(pluginURI) :
-						new PreconditionException("Can't uninstall plug-in, "
-								+ pluginURI + " not installed!");
+					new PreconditionException(
+							"Can't uninstall plug-in, "
+							+ pluginURI + " not installed!");
 
 			PluginI plugin = this.installedPlugins.get().get(pluginURI);
 			plugin.finalise();
@@ -1677,23 +1674,23 @@ implements	ComponentI
 	protected void		uninstallPlugin(String pluginURI) throws Exception
 	{
 		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null");
+				new PreconditionException("pluginURI != null");
 
 		synchronized (this.installedPlugins) {
 			assert	this.isPluginFacilitiesConfigured()  :
-						new PluginException("Can't uninstall plug-in, "
-								+ "plug-in facilities are not configured!");
+					new PluginException("Can't uninstall plug-in, "
+							+ "plug-in facilities are not configured!");
 			assert	this.isInstalled(pluginURI) :
-						new PreconditionException("Can't uninstall plug-in, "
-									+ pluginURI + " not installed!");
+					new PreconditionException("Can't uninstall plug-in, "
+							+ pluginURI + " not installed!");
 
 			PluginI plugin = this.installedPlugins.get().get(pluginURI);
 			plugin.uninstall();
 			this.installedPlugins.get().remove(pluginURI);
 
 			assert	!this.isInstalled(pluginURI) :
-						new PostconditionException("Plug-in " + pluginURI
-								+ " still installed after uninstalling!");
+					new PostconditionException("Plug-in " + pluginURI
+							+ " still installed after uninstalling!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PLUGIN)) {
 				AbstractCVM.getCVM().logDebug(
@@ -1740,8 +1737,8 @@ implements	ComponentI
 
 		synchronized (this.installedPlugins) {
 			assert	this.isPluginFacilitiesConfigured() :
-						new PluginException("Can't access plug-in, "
-								+ "plug-in facilities are not configured!");
+					new PluginException("Can't access plug-in, "
+							+ "plug-in facilities are not configured!");
 
 			return this.installedPlugins.get().get(pluginURI);
 		}
@@ -1801,20 +1798,20 @@ implements	ComponentI
 	throws Exception
 	{
 		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null");
+				new PreconditionException("pluginURI != null");
 
 		synchronized (this.installedPlugins) {
 			assert	this.isPluginFacilitiesConfigured() :
-						new PluginException("Can't access plug-in, "
-								+ "plug-in facilities are not configured!");
+					new PluginException("Can't access plug-in, "
+							+ "plug-in facilities are not configured!");
 			assert	!this.isInitialised(pluginURI) :
-						new PreconditionException("Can't initialise plug-in "
-								+ pluginURI + ", already initialised!");
+					new PreconditionException("Can't initialise plug-in "
+							+ pluginURI + ", already initialised!");
 
 			this.installedPlugins.get().get(pluginURI).initialise();
 
 			assert	this.isInitialised(pluginURI) :
-						new PostconditionException("Plug-in " + pluginURI +
+					new PostconditionException("Plug-in " + pluginURI +
 													" not initialised!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PLUGIN)) {
@@ -1834,12 +1831,12 @@ implements	ComponentI
 	throws Exception
 	{
 		assert	pluginURI != null :
-					new PreconditionException("pluginURI != null");
+				new PreconditionException("pluginURI != null");
 
 		synchronized (this.installedPlugins) {
 			assert	this.isPluginFacilitiesConfigured() :
-						new PluginException("Can't test, "
-								+ "plug-in facilities are not configured!");
+					new PluginException("Can't test, "
+							+ "plug-in facilities are not configured!");
 
 			return this.installedPlugins.get().get(pluginURI).isInitialised();
 		}
@@ -1911,14 +1908,15 @@ implements	ComponentI
 	public void			toggleLogging()
 	{
 		synchronized (this.executionLog) {
-			assert	this.isLoggerSet() : new PreconditionException("isLoggerSet()");
+			assert	this.isLoggerSet() :
+					new PreconditionException("isLoggerSet()");
 			boolean	logging_at_pre = this.isLogging();
 
 			this.getLogger().toggleLogging();
 
 			assert	this.isLogging() == !logging_at_pre :
-						new PostconditionException(
-								"isLogging() == !isLogging()@pre");
+					new PostconditionException(
+							"isLogging() == !isLogging()@pre");
 		}
 	}
 
@@ -1962,7 +1960,7 @@ implements	ComponentI
 	{
 		assert	this.isLoggerSet() : new PreconditionException("isLoggerSet()");
 		assert	fileName != null :
-					new PreconditionException("fileName != null");
+				new PreconditionException("fileName != null");
 
 		this.getLogger().printExecutionLogOnFile(fileName);
 	}
@@ -2010,15 +2008,15 @@ implements	ComponentI
 	{
 		synchronized (this.tracer) {
 			assert	this.isTracerSet() :
-						new PreconditionException("isTracerSet()");
+					new PreconditionException("isTracerSet()");
 
 			boolean tracing_at_pre = this.isTracing();
 
 			this.getTracer().toggleTracing();
 
 			assert	this.isTracing() == !tracing_at_pre :
-						new PostconditionException(
-								"isTracing() == ! isTracing()@pre");
+					new PostconditionException(
+							"isTracing() == ! isTracing()@pre");
 		}
 	}
 
@@ -2133,16 +2131,16 @@ implements	ComponentI
 		super();
 
 		assert	!(this instanceof ComponentInterface) :
-					new PreconditionException(
-							"The new component implements (in the Java sense) a"
-							+ " component interface; this is forbidden by BCM!");
+				new PreconditionException(
+						"The new component implements (in the Java sense) a"
+						+ " component interface; this is forbidden by BCM!");
 		assert	reflectionInboundPortURI != null :
-					new PreconditionException("Reflection inbound port URI is"
-																+ " null!");
+				new PreconditionException("Reflection inbound port URI is"
+						+ " null!");
 		assert	nbThreads >= 0 :
-					new PreconditionException("Number of threads is negative!");
+				new PreconditionException("Number of threads is negative!");
 		assert	nbSchedulableThreads >= 0 :
-					new PreconditionException("Number of schedulable threads"
+				new PreconditionException("Number of schedulable threads"
 														+ " is negative!");
 
 		this.reflectionInboundPortURI = reflectionInboundPortURI;
@@ -2216,22 +2214,21 @@ implements	ComponentI
 		synchronized (ac.composite) {
 			assert	(ac.composite.get() == null) ||
 									ac.isSubcomponentOf(ac.composite.get()) :
-						new ImplementationInvariantException(
-								"(composite.get() == null) || " + 
-								"isSubcomponentOf(composite.get())");
+					new ImplementationInvariantException(
+							"(composite.get() == null) || " + 
+							"isSubcomponentOf(composite.get())");
 		}
 
 		assert	ac.innerComponents != null :
-					new ImplementationInvariantException(
-							"innerComponents != null");
+				new ImplementationInvariantException("innerComponents != null");
 
 		synchronized (ac.innerComponents) {
 			for (String uri : ac.innerComponents.keySet()) {
 				assert	ac.hasSubcomponent(uri) &&
 										ac.innerComponents.get(uri) != null :
-							new ImplementationInvariantException(
-									"hasSubcomponent(uri) && " + 
-									"innerComponents.get(uri) != null");
+						new ImplementationInvariantException(
+								"hasSubcomponent(uri) && " + 
+								"innerComponents.get(uri) != null");
 			}
 		}
 
@@ -2239,9 +2236,9 @@ implements	ComponentI
 		ac.executorServicesLock.readLock().lock();
 		try {
 			assert	ac.hasItsOwnThreads() == (ac.getTotalNumberOfThreads() > 0) :
-						new ImplementationInvariantException(
-								"hasItsOwnThreads() == "
-								+ "(getTotalNumberOfThreads() > 0)");
+					new ImplementationInvariantException(
+							"hasItsOwnThreads() == "
+							+ "(getTotalNumberOfThreads() > 0)");
 
 			boolean uri2index = true;
 			for (Entry<String,Integer> entry :
@@ -2252,21 +2249,21 @@ implements	ComponentI
 						ac.executorServices.get()[index].getURI().equals(uri);
 			}
 			assert	uri2index :
-						new ImplementationInvariantException(
-								"executorServices and executorServicesIndexes"
-								+ " not in synchrony!");
+					new ImplementationInvariantException(
+							"executorServices and executorServicesIndexes"
+							+ " not in synchrony!");
 
 			if (ac.executorServices.get() != null) {
 				for (int i = 0 ; i < ac.executorServices.get().length ; i++) {
 					if (ac.executorServices.get()[i] != null) {
 						assert	ac.executorServicesIndexes.containsValue(i) :
-									new ImplementationInvariantException(
+								new ImplementationInvariantException(
 										i + " is a valid executor service "
 										+ "index but is not in "
 										+ "executorServicesIndexes");
 					} else {
 						assert	!ac.executorServicesIndexes.containsValue(i) :
-									new ImplementationInvariantException(
+								new ImplementationInvariantException(
 										i + " is not  a valid executor service "
 										+ "index but is in "
 										+ "executorServicesIndexes");
@@ -2279,51 +2276,51 @@ implements	ComponentI
 
 		// For plug-in management
 		assert	ac.installedPlugins.get() != null :
-					new ImplementationInvariantException(
-							"installedPlugins.get() != null");
+				new ImplementationInvariantException(
+						"installedPlugins.get() != null");
 
 		// For component interfaces and ports management
 		ac.interfaceManagementLock.readLock().lock();
 		ac.portManagementLock.readLock().lock();
 		try {
 			assert	ac.requiredInterfaces != null :
-						new ImplementationInvariantException(
-								"requiredInterfaces != null");
+					new ImplementationInvariantException(
+							"requiredInterfaces != null");
 			assert	ac.offeredInterfaces != null :
-						new ImplementationInvariantException(
-								"offeredInterfaces != null");
+					new ImplementationInvariantException(
+							"offeredInterfaces != null");
 			assert	ac.interfaces2ports != null :
-						new ImplementationInvariantException(
-								"interfaces2ports != null");
+					new ImplementationInvariantException(
+							"interfaces2ports != null");
 			assert	ac.portURIs2ports != null :
-						new ImplementationInvariantException(
-								"portURIs2ports != null");
+					new ImplementationInvariantException(
+							"portURIs2ports != null");
 
 			for (Class<? extends ComponentInterface> inter :
 												ac.interfaces2ports.keySet()) {
 				assert	ac.isInterface(inter) :
-							new ImplementationInvariantException(
-									"component interface " + inter +
-									" is implemented by a port but not "
-									+ "declared by the component!");
+						new ImplementationInvariantException(
+								"component interface " + inter +
+								" is implemented by a port but not "
+								+ "declared by the component!");
 			}
 
 			for (PortI p : ac.portURIs2ports.values()) {
 				try {
 					assert	ac.isInterface(p.getImplementedInterface()) :
-								new ImplementationInvariantException(
-										"port " + p.getPortURI() +
-										" is in the component but its " +
-										"interface is not declared by the " +
-										"latter!");
+							new ImplementationInvariantException(
+									"port " + p.getPortURI() +
+									" is in the component but its " +
+									"interface is not declared by the " +
+									"latter!");
 					assert	ac.interfaces2ports.get(
 									p.getImplementedInterface()).contains(p) :
-								new ImplementationInvariantException(
-										"port " + p.getPortURI() +
-										" is in the component but not " +
-										"associated to its implemented " +
-										"interface " +
-										p.getImplementedInterface() + "!");
+							new ImplementationInvariantException(
+									"port " + p.getPortURI() +
+									" is in the component but not " +
+									"associated to its implemented " +
+									"interface " +
+									p.getImplementedInterface() + "!");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -2336,24 +2333,24 @@ implements	ComponentI
 				for (PortI p : ps) {
 					try {
 						assert	p.getImplementedInterface() == ci :
-									new ImplementationInvariantException(
-											"port " + p.getPortURI() +
-											" is not registered under its "
-											+ "implemented interface " +
-											p.getImplementedInterface()
-											+ " but under " + ci + "!");
+								new ImplementationInvariantException(
+										"port " + p.getPortURI() +
+										" is not registered under its "
+										+ "implemented interface " +
+										p.getImplementedInterface()
+										+ " but under " + ci + "!");
 						assert	ac.portURIs2ports.containsKey(p.getPortURI()) :
-									new ImplementationInvariantException(
-											"port " +p.getPortURI() +
-											" is registered under its implement"
-											+ " interface " + ci + " but its" +
-											" URI is unknown to the component!");
+								new ImplementationInvariantException(
+										"port " +p.getPortURI() +
+										" is registered under its implement"
+										+ " interface " + ci + " but its" +
+										" URI is unknown to the component!");
 						assert	ac.portURIs2ports.get(p.getPortURI()) == p :
-									new ImplementationInvariantException(
-											"port " +p.getPortURI() +
-											" is registered under its implement"
-											+ " interface " + ci + " but not" +
-											" under its URI!");
+								new ImplementationInvariantException(
+										"port " +p.getPortURI() +
+										" is registered under its implement"
+										+ " interface " + ci + " but not" +
+										" under its URI!");
 					} catch (Exception e) {
 						throw new RuntimeException(e) ;
 					}
@@ -2365,17 +2362,17 @@ implements	ComponentI
 				PortI p = entry.getValue();
 				try {
 					assert	uri.equals(p.getPortURI()) :
-								new ImplementationInvariantException(
-										"port " + p.getPortURI() + " is not " +
-										"registered under its URI but under "
-										+ uri + "!");
+							new ImplementationInvariantException(
+									"port " + p.getPortURI() + " is not " +
+									"registered under its URI but under "
+									+ uri + "!");
 					assert	ac.interfaces2ports.get(
 									p.getImplementedInterface()).contains(p) :
-								new ImplementationInvariantException(
-										"port " + p.getPortURI() +
-										" is registered under its URI but not "
-										+ "under its implemented interface " +
-										p.getImplementedInterface() + "!");
+							new ImplementationInvariantException(
+									"port " + p.getPortURI() +
+									" is registered under its URI but not "
+									+ "under its implemented interface " +
+									p.getImplementedInterface() + "!");
 				} catch (Exception e) {
 					throw new RuntimeException(e) ;
 				}
@@ -2401,7 +2398,7 @@ implements	ComponentI
 	 */
 	protected static void	checkInvariant(AbstractComponent ac)
 	{
-		assert	ac != null;
+		assert	ac != null : new PreconditionException("ac != null");
 
 		// Component class properties
 		assert	AbstractComponentHelper.isComponentClass(ac.getClass()) :
@@ -2415,20 +2412,20 @@ implements	ComponentI
 			assert	ac.hasItsOwnThreads() == ac.getTotalNumberOfThreads() > 0 :
 					new InvariantException(
 							"hasItsOwnThreads() == "
-									+ "getTotalNumberOfThreads() > 0");
+							+ "getTotalNumberOfThreads() > 0");
 		} finally {
 			ac.executorServicesLock.readLock().unlock();
 		}
 
 		// Logger and tracer management
 		assert	ac.getLogger() != null || !ac.isLogging() :
-					new InvariantException(
-							"getLogger() != null || !isLogging()");
+				new InvariantException(
+						"getLogger() != null || !isLogging()");
 		assert	ac.getLogger() == null ||
 								(ac.isLogging() == ac.getLogger().isLogging()) :
-					new InvariantException(
-							"getLogger() == null || " + 
-							"(ac.isLogging() == ac.getLogger().isLogging())");
+				new InvariantException(
+						"getLogger() == null || " + 
+						"(ac.isLogging() == ac.getLogger().isLogging())");
 
 		// For component interfaces management
 		ac.interfaceManagementLock.readLock().lock();
@@ -2438,22 +2435,22 @@ implements	ComponentI
 			Class<? extends OfferedCI>[] ocis = ac.getOfferedInterfaces();
 			for (Class<? extends RequiredCI> rci : rcis) {
 				assert	appearsIn(rci, dis, dis.length) :
-							new InvariantException(
-									rci + " is a required component interface "
-									+ "but not an interface of the component!");
+						new InvariantException(
+								rci + " is a required component interface "
+								+ "but not an interface of the component!");
 			for (Class<? extends OfferedCI> oci : ocis) {
 				assert	appearsIn(oci, dis, dis.length) :
-							new InvariantException(
-									oci + " is an offered component interface "
-									+ "but not an interface of the component!");
+						new InvariantException(
+								oci + " is an offered component interface "
+								+ "but not an interface of the component!");
 				}
 			}
 			for (Class<? extends ComponentInterface> di : dis) {
 				assert	appearsIn(di, rcis, rcis.length) ||
 											appearsIn(di, ocis, ocis.length) :
-							new InvariantException(
-									di + " is a component interface but neither"
-									+ " a required nor an offered one!");
+						new InvariantException(
+								di + " is a component interface but neither"
+								+ " a required nor an offered one!");
 			}
 		} finally {
 			ac.interfaceManagementLock.readLock().unlock();
@@ -2540,8 +2537,8 @@ implements	ComponentI
 	protected void		addPluginsFromAnnotations()
 	{
 		assert	this.isPluginFacilitiesConfigured() :
-					new PreconditionException("Can't install plug-ins, "
-							+ "plug-in facilities are not configured!");
+				new PreconditionException("Can't install plug-ins, "
+						+ "plug-in facilities are not configured!");
 
 		try {
 			AddPlugins pluginsAnnotation =
@@ -2598,8 +2595,7 @@ implements	ComponentI
 	throws Exception
 	{
 		assert	reflectionInboundPortURI != null :
-					new PreconditionException(
-							"reflectionInboundPortURI != null");
+				new PreconditionException("reflectionInboundPortURI != null");
 
 		this.addOfferedInterface(ReflectionCI.class);
 		
@@ -2612,24 +2608,24 @@ implements	ComponentI
 		}
 
 		assert	this.isOfferedInterface(ReflectionCI.class) :
-					new PostconditionException(
-							"isOfferedInterface(ReflectionI.class)");
+				new PostconditionException(
+						"isOfferedInterface(ReflectionI.class)");
 		assert	this.findInboundPortURIsFromInterface(ReflectionCI.class)
 																	!= null :
-					new PostconditionException(
-							"findInboundPortURIsFromInterface("
-									+ "ReflectionI.class) != null");
+				new PostconditionException(
+						"findInboundPortURIsFromInterface("
+						+ "ReflectionI.class) != null");
 		assert	this.findInboundPortURIsFromInterface(ReflectionCI.class).length
 																		== 1 :
-					new PostconditionException(
-							"findInboundPortURIsFromInterface("
-									+ "ReflectionI.class).length == 1");
+				new PostconditionException(
+						"findInboundPortURIsFromInterface("
+						+ "ReflectionI.class).length == 1");
 		assert	this.findInboundPortURIsFromInterface(
 						ReflectionCI.class)[0].equals(reflectionInboundPortURI) :
-					new PostconditionException(
-							"findInboundPortURIsFromInterface("
-									+ "ReflectionI.class)[0].equals("
-									+ "reflectionInboundPortURI)");
+				new PostconditionException(
+						"findInboundPortURIsFromInterface("
+						+ "ReflectionI.class)[0].equals("
+						+ "reflectionInboundPortURI)");
 	}
 
 	/**
@@ -2689,8 +2685,8 @@ implements	ComponentI
 					Exception
 	{
 		assert	classname != null && constructorParams != null :
-					new PreconditionException(
-							"classname != null && constructorParams != null");
+				new PreconditionException(
+						"classname != null && constructorParams != null");
 
 		ComponentI component =
 				instantiateComponent(classname, constructorParams);
@@ -2743,14 +2739,16 @@ implements	ComponentI
 					InvocationTargetException
 	{
 		assert	classname != null && constructorParams != null :
-			new PreconditionException(
-					"classname != null && constructorParams != null");
+				new PreconditionException(
+						"classname != null && constructorParams != null");
 
 		Class<?> cl = Class.forName(classname);
-		assert	cl != null && AbstractComponentHelper.isComponentClass(cl);
+		assert	cl != null && AbstractComponentHelper.isComponentClass(cl) :
+				new BCMException(
+						"cl != null && AbstractComponentHelper.isComponentClass(cl)");
 		Constructor<?> cons =
 			AbstractComponentHelper.getConstructor(cl, constructorParams);
-		assert	cons != null;
+		assert	cons != null : new BCMException("cons != null");
 		cons.setAccessible(true);
 		AbstractComponent component =
 			(AbstractComponent)cons.newInstance(constructorParams);
@@ -2815,8 +2813,8 @@ implements	ComponentI
 					Exception
 	{
 		assert	classname != null && constructorParams != null :
-					new PreconditionException(
-							"classname != null && constructorParams != null");
+				new PreconditionException(
+						"classname != null && constructorParams != null");
 
 		ComponentI component =
 				instantiateComponent(classname, constructorParams);
@@ -2868,8 +2866,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 
 		this.interfaceManagementLock.readLock().lock();
 		try {
@@ -2895,8 +2893,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.readLock().lock();
@@ -2923,8 +2921,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 
 		this.interfaceManagementLock.readLock().lock();
 		try {
@@ -2948,8 +2946,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.readLock().lock();
@@ -2978,8 +2976,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 
 		this.interfaceManagementLock.readLock().lock();
 		try {
@@ -3003,8 +3001,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.readLock().lock();
@@ -3041,22 +3039,22 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.writeLock().lock();
 		try {
 			assert	!this.isRequiredInterface(inter) :
-						new PreconditionException(
-								inter + " is already a required interface!");
+					new PreconditionException(
+							inter + " is already a required interface!");
 
 			this.requiredInterfaces.add(inter);
 
 			assert	this.isRequiredInterface(inter) :
-						new PostconditionException(
-								inter + " has not been correctly added "
-										+ "as a required interface!");
+					new PostconditionException(
+							inter + " has not been correctly added "
+							+ "as a required interface!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.INTERFACES)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3091,21 +3089,21 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.writeLock().lock();
 		try {
 			assert	this.isRequiredInterface(inter) :
-						new PreconditionException(
-								inter + " is not a required interface!");
+					new PreconditionException(
+							inter + " is not a required interface!");
 
 			this.requiredInterfaces.remove(inter);
 
 			assert	!this.isRequiredInterface(inter) :
-						new PostconditionException(inter + " has not been "
-								+ "correctly removed as a required interface!");
+					new PostconditionException(inter + " has not been "
+							+ "correctly removed as a required interface!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.INTERFACES)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3137,22 +3135,22 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.writeLock().lock();
 		try {
 			assert	!this.isOfferedInterface(inter) :
-						new PreconditionException(
-								inter + " must not be an offered interface!");
+					new PreconditionException(
+							inter + " must not be an offered interface!");
 
 			this.offeredInterfaces.add(inter);
 
 			assert	this.isOfferedInterface(inter) :
-						new PostconditionException(
-								inter + " has not been correctly added "
-										+ "as an offered interface!");
+					new PostconditionException(
+							inter + " has not been correctly added "
+							+ "as an offered interface!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.INTERFACES)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3187,22 +3185,22 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.writeLock().lock();
 		try {
 			assert	this.isOfferedInterface(inter) :
-						new PreconditionException(
-								inter + " is not an offered interface!");
+					new PreconditionException(
+							inter + " is not an offered interface!");
 
 			this.offeredInterfaces.remove(inter);
 
 			assert	!this.isOfferedInterface(inter) :
-						new PostconditionException(
-								inter + " has not been correctly removed "
-										+ "as an offered interface!");
+					new PostconditionException(
+							inter + " has not been correctly removed "
+							+ "as an offered interface!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.INTERFACES)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3226,8 +3224,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.readLock().lock();
@@ -3256,8 +3254,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.readLock().lock();
@@ -3283,8 +3281,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		this.interfaceManagementLock.readLock().lock();
@@ -3375,10 +3373,10 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException("Component must not be"
-												+ " in Terminated state!");
+				new PreconditionException("Component must not be"
+						+ " in Terminated state!");
 		assert	inter != null :
-					new PreconditionException("Interface is null!");		
+				new PreconditionException("Interface is null!");		
 
 		ArrayList<PortI> temp = new ArrayList<>();
 		Class<? extends ComponentInterface>[] inters = null;
@@ -3459,15 +3457,15 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException("Component must not be"
-												+ " in Terminated state!");
+				new PreconditionException("Component must not be"
+						+ " in Terminated state!");
 		assert	portURI != null : new PreconditionException("portURI != null");
 		
 		this.portManagementLock.readLock().lock();
 		try {
 			assert	this.isPortExisting(portURI) :
-						new PreconditionException(
-								"isPortExisting(" + portURI + ")");
+					new PreconditionException(
+							"isPortExisting(" + portURI + ")");
 
 			return this.findPortFromURI(portURI).getImplementedInterface();
 		} finally {
@@ -3486,8 +3484,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		String[] ret = null;
@@ -3537,8 +3535,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		String[] ret = null;
@@ -3592,8 +3590,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	inter != null : new PreconditionException("inter != null");
 
 		String[] ret = null;
@@ -3655,10 +3653,10 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	portURI != null :
-					new PreconditionException("Port URI is null!");
+				new PreconditionException("Port URI is null!");
 
 		this.portManagementLock.readLock().lock();
 		try {
@@ -3703,23 +3701,23 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	p != null : new PreconditionException("p != null");
 		assert	this.equals(p.getOwner()) :
-					new PreconditionException(
-							"This component is not the owner of this port!");
+				new PreconditionException(
+						"This component is not the owner of this port!");
 
 		this.portManagementLock.writeLock().lock();
 		try {
 			assert	this.isInterface(p.getImplementedInterface()) :
-						new PreconditionException(
-								"The port doesn't implement an interface"
-										+ " declared by this component!");
+					new PreconditionException(
+							"The port doesn't implement an interface"
+							+ " declared by this component!");
 			assert	this.findPortFromURI(p.getPortURI()) == null :
-						new PreconditionException(
-								"A port with the same URI is already registered"
-										+ " in this component!");
+					new PreconditionException(
+							"A port with the same URI is already registered"
+							+ " in this component!");
 
 			Vector<PortI> vps =
 					this.interfaces2ports.get(p.getImplementedInterface());
@@ -3737,14 +3735,14 @@ implements	ComponentI
 
 			assert	this.interfaces2ports.containsKey(
 											p.getImplementedInterface()) :
-						new PostconditionException(
-								"Port not correctly registered!");
+					new PostconditionException(
+							"Port not correctly registered!");
 			assert	this.portURIs2ports.containsKey(p.getPortURI()) :
-						new PostconditionException(
-								"Port not correctly registered!");
+					new PostconditionException(
+							"Port not correctly registered!");
 			assert	p.equals(this.findPortFromURI(p.getPortURI())) :
-						new PostconditionException(
-								"Port not correctly registered!");
+					new PostconditionException(
+							"Port not correctly registered!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3781,22 +3779,22 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	p != null : new PreconditionException("p != null");
 		assert	this.equals(p.getOwner()) :
-					new PreconditionException(
-							"This component is not the owner of this port!");
+				new PreconditionException(
+						"This component is not the owner of this port!");
 
 		this.portManagementLock.writeLock().lock();
 		try {
 			assert	this.interfaces2ports.containsKey(
 												p.getImplementedInterface()) :
-						new PreconditionException(
-								"Port is not registered in this component!");
+					new PreconditionException(
+							"Port is not registered in this component!");
 			assert	this.portURIs2ports.containsKey(p.getPortURI()) :
-						new PreconditionException(
-								"Port is not registered in this component!");
+					new PreconditionException(
+							"Port is not registered in this component!");
 
 			Vector<PortI> vps =
 						this.interfaces2ports.get(p.getImplementedInterface());
@@ -3809,8 +3807,8 @@ implements	ComponentI
 			this.portURIs2ports.remove(p.getPortURI());
 
 			assert	!this.portURIs2ports.containsKey(p.getPortURI()) :
-						new PostconditionException(
-								"Port not correctly removed from component!");
+					new PostconditionException(
+							"Port not correctly removed from component!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3835,22 +3833,22 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	portURI != null : new PreconditionException("portURI != null");
 
 		this.portManagementLock.writeLock().lock();
 		try {
 			assert	this.isPortExisting(portURI) :
-						new PreconditionException(
-								"Can't remove non existing port : " + portURI);
+					new PreconditionException(
+							"Can't remove non existing port : " + portURI);
 
 			PortI p = this.findPortFromURI(portURI);
 			this.removePort(p);
 
 			assert	!this.isPortExisting(portURI) :
-						new PostconditionException(
-								"Port has not been correctly removed!");
+					new PostconditionException(
+							"Port has not been correctly removed!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.PORTS)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3875,8 +3873,8 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	portURI != null : new PreconditionException("portURI != null");
 
 		this.portManagementLock.readLock().lock();
@@ -3897,14 +3895,14 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	portURI != null : new PreconditionException("portURI != null");
 
 		this.portManagementLock.readLock().lock();
 		try {
 			assert	this.isPortExisting(portURI) :
-						new PreconditionException(portURI + " is not a port!");
+					new PreconditionException(portURI + " is not a port!");
 
 			PortI p = this.findPortFromURI(portURI);
 			return p.connected();
@@ -3943,26 +3941,27 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	portURI != null : new PreconditionException("portURI != null");
 		assert	otherPortURI != null :
-					new PreconditionException("otherPortURI != null");
+				new PreconditionException("otherPortURI != null");
 		assert	connector != null :
-					new PreconditionException("connector != null");
+				new PreconditionException("connector != null");
 
 		this.portManagementLock.readLock().lock();
 		try {
 			assert	this.isPortExisting(portURI) :
-						new PreconditionException(portURI + " is not a port!");
+					new PreconditionException(portURI + " is not a port!");
 			assert	!this.isPortConnected(portURI) :
-						new PreconditionException(
-								portURI + " is already connected!");
+					new PreconditionException(
+							portURI + " is already connected!");
 
 			PortI p = this.findPortFromURI(portURI);
 			p.doConnection(otherPortURI, connector);
 
-			assert	this.isPortConnected(portURI);
+			assert	this.isPortConnected(portURI) :
+					new BCMException("isPortConnected(portURI)");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CONNECTING)) {
 				AbstractCVM.getCVM().logDebug(
@@ -3987,27 +3986,25 @@ implements	ComponentI
 		assert	this.notInStateAmong(new ComponentStateI[]{
 							ComponentState.TERMINATED
 							}) :
-					new PreconditionException(
-							"Component must not be in Terminated state!");
+				new PreconditionException(
+						"Component must not be in Terminated state!");
 		assert	portURI != null : new PreconditionException("portURI != null");
 
 		this.portManagementLock.readLock().lock();
 		try {
 			assert	this.isPortExisting(portURI) :
-						new PreconditionException(
-								"Can't disconnect non existing port : "
-										+ portURI);
+					new PreconditionException(
+							"Can't disconnect non existing port : " + portURI);
 			assert	this.isPortConnected(portURI) :
-						new PreconditionException(
-								"Can't disconnect not connected port : "
-										+ portURI);
+					new PreconditionException(
+							"Can't disconnect not connected port : " + portURI);
 	
 			PortI p = this.findPortFromURI(portURI);
 			p.doDisconnection();
 
 			assert	!this.isPortConnected(portURI) :
-						new PostconditionException(
-								"Port has not been correctly disconnected!");
+					new PostconditionException(
+							"Port has not been correctly disconnected!");
 
 			if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CONNECTING)) {
 				AbstractCVM.getCVM().logDebug(
@@ -4034,7 +4031,7 @@ implements	ComponentI
 	public synchronized void	start() throws ComponentStartException
 	{
 		assert	this.isInitialised() :
-					new PreconditionException("isInitialised()");
+				new PreconditionException("isInitialised()");
 
 		// Start inner components
 		// assumes that the creation and publication are done
@@ -4441,7 +4438,7 @@ implements	ComponentI
 		{
 			super();
 			assert	pluginURI != null :
-						new PreconditionException("pluginURI != null");
+					new PreconditionException("pluginURI != null");
 
 			this.taskPluginURI = pluginURI;
 			this.taskPlugin = null;
@@ -4454,12 +4451,16 @@ implements	ComponentI
 		public void		setOwnerReference(ComponentI owner)
 		{
 			assert	owner != null : new PreconditionException("owner != null");
-			assert	owner instanceof AbstractComponent;
+			assert	owner instanceof AbstractComponent :
+					new PreconditionException(
+							"owner instanceof AbstractComponent");
 
 			try {
 				assert this.taskPluginURI == null ||
-										owner.isInstalled(this.taskPluginURI) 
-							;
+										owner.isInstalled(this.taskPluginURI) :
+						new BCMException(
+								"taskPluginURI == null || "
+								+ "owner.isInstalled(this.taskPluginURI)");
 			} catch (Exception e) {
 				throw new RuntimeException(
 							new ComponentTaskExecutionException(
@@ -4513,7 +4514,7 @@ implements	ComponentI
 		protected void	runTaskLambda(FComponentTask t)
 		{
 			assert	t != null :
-						new PreconditionException("trying to run a null task!");
+					new PreconditionException("trying to run a null task!");
 
 			t.run(this.getTaskOwner());
 		}
@@ -4544,7 +4545,7 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null :
-					new PreconditionException("trying to run a null task!");
+				new PreconditionException("trying to run a null task!");
 
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
 			AbstractCVM.getCVM().logDebug(
@@ -4625,7 +4626,7 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null :
-					new PreconditionException("trying to run a null task!");
+				new PreconditionException("trying to run a null task!");
 
 		t.setOwnerReference(this);
 		return this.getExecutorService(executorServiceURI).submit(t);
@@ -4653,7 +4654,7 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null :
-					new PreconditionException("trying to run a null task!");
+				new PreconditionException("trying to run a null task!");
 
 		if (this.hasItsOwnThreads()) {
 			t.setOwnerReference(this);
@@ -4785,8 +4786,7 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
+				new PreconditionException("t != null && delay > 0 && u != null");
 
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
 			AbstractCVM.getCVM().logDebug(
@@ -4842,8 +4842,7 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
+				new PreconditionException("t != null && delay > 0 && u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService(executorServiceURI).
@@ -4880,8 +4879,7 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && delay > 0 && u != null");
+				new PreconditionException("t != null && delay > 0 && u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService().schedule(t, delay, u);
@@ -5037,9 +5035,9 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+				new PreconditionException(
+						"t != null && initialDelay >= 0  && period > 0 "
+						+ "&& u != null");
 
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
 			AbstractCVM.getCVM().logDebug(
@@ -5106,9 +5104,9 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+				new PreconditionException(
+						"t != null && initialDelay >= 0  && period > 0 "
+						+ "&& u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService(executorServiceURI).
@@ -5154,9 +5152,9 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && initialDelay >= 0  && period > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+				new PreconditionException(
+						"t != null && initialDelay >= 0  && period > 0 "
+						+ "&& u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService().
@@ -5318,9 +5316,9 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && initialDelay >= 0 && delay > 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0  && period > 0 "
-									+ "&& u != null");
+				new PreconditionException(
+						"t != null && initialDelay >= 0  && period > 0 "
+						+ "&& u != null");
 
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
 			AbstractCVM.getCVM().logDebug(
@@ -5383,9 +5381,9 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0 && delay >= 0 "
-									+ "&& u != null");
+				new PreconditionException(
+						"t != null && initialDelay >= 0 && delay >= 0 "
+						+ "&& u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService(executorServiceURI).
@@ -5427,11 +5425,11 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	this.canScheduleTasks() :
-					new PreconditionException("canScheduleTasks()");
+				new PreconditionException("canScheduleTasks()");
 		assert	t != null && initialDelay >= 0 && delay >= 0 && u != null :
-					new PreconditionException(
-							"t != null && initialDelay >= 0 && delay >= 0 "
-									+ "&& u != null");
+				new PreconditionException(
+						"t != null && initialDelay >= 0 && delay >= 0 "
+						+ "&& u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService().
@@ -5614,7 +5612,7 @@ implements	ComponentI
 		public			AbstractService(String pluginURI)
 		{
 			assert	pluginURI != null :
-						new PreconditionException("pluginURI != null");
+					new PreconditionException("pluginURI != null");
 
 			this.servicePluginURI = pluginURI;
 		}
@@ -5627,12 +5625,15 @@ implements	ComponentI
 		{
 			assert	owner != null : new PreconditionException("owner != null");
 			assert	owner instanceof AbstractComponent :
-						new PreconditionException(
-								"owner instanceof AbstractComponent");
+					new PreconditionException(
+							"owner instanceof AbstractComponent");
 
 			try {
 				assert	this.servicePluginURI == null ||
-										owner.isInstalled(servicePluginURI);
+										owner.isInstalled(servicePluginURI) :
+						new BCMException(
+								"servicePluginURI == null || "
+								+ "owner.isInstalled(servicePluginURI)");
 			} catch (Exception e) {
 				throw new RuntimeException(
 							new ComponentTaskExecutionException(
@@ -5688,8 +5689,7 @@ implements	ComponentI
 		throws Exception
 		{
 			assert	sl != null :
-						new PreconditionException(
-								"trying to run a null request!");
+					new PreconditionException("trying to run a null request!");
 
 			return sl.apply(this.getServiceOwner());
 		}
@@ -6024,7 +6024,8 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
-		assert	delay >= 0 && u != null;
+		assert	delay >= 0 && u != null :
+				new PreconditionException("delay >= 0 && u != null");
 
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
 			AbstractCVM.getCVM().logDebug(
@@ -6079,7 +6080,8 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
-		assert	delay >= 0 && u != null;
+		assert	delay >= 0 && u != null :
+				new PreconditionException("delay >= 0 && u != null");
 
 		request.setOwnerReference(this);
 		return this.getSchedulableExecutorService(executorServiceURI).
@@ -6115,7 +6117,8 @@ implements	ComponentI
 	{
 		assert	this.isStarted() : new PreconditionException("isStarted()");
 		assert	request != null : new PreconditionException("request != null");
-		assert	delay >= 0 && u != null;
+		assert	delay >= 0 && u != null :
+				new PreconditionException("delay >= 0 && u != null");
 
 		request.setOwnerReference(this);
 		return this.getSchedulableExecutorService().schedule(request, delay, u);
@@ -6168,7 +6171,9 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	request != null && delay >= 0 && u != null;
+		assert	request != null && delay >= 0 && u != null :
+				new PreconditionException(
+						"request != null && delay >= 0 && u != null");
 
 		return this.scheduleRequest(
 								new AbstractService<T>() {
@@ -6211,7 +6216,9 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	request != null && delay >= 0 && u != null;
+		assert	request != null && delay >= 0 && u != null :
+				new PreconditionException(
+						"request != null && delay >= 0 && u != null");
 
 		return this.scheduleRequest(
 								executorServiceURI,
@@ -6237,7 +6244,9 @@ implements	ComponentI
 					InterruptedException,
 					ExecutionException
 	{
-		assert	request != null && delay >= 0 && u != null;
+		assert	request != null && delay >= 0 && u != null :
+				new PreconditionException(
+						"request != null && delay >= 0 && u != null");
 
 		return this.scheduleRequest(
 								executorServiceIndex,
@@ -6333,8 +6342,9 @@ implements	ComponentI
 	public Object		invokeService(String name, Object[] params)
 	throws Exception
 	{
-		assert	this.isStarted();
-		assert	name != null && params != null;
+		assert	this.isStarted() : new PreconditionException("isStarted()");
+		assert	name != null && params != null :
+				new PreconditionException("name != null && params != null");
 
 		Class<?>[] pTypes = new Class<?>[params.length];
 		for (int i = 0; i < params.length; i++) {
@@ -6461,10 +6471,10 @@ implements	ComponentI
 		) throws NotFoundException
 	{
 		assert	methodName != null :
-					new PreconditionException("Method name is null!");
+				new PreconditionException("Method name is null!");
 		assert	parametersCanonicalClassNames != null :
-					new PreconditionException("Parameter type names array"
-													+ " can't be null!");
+				new PreconditionException(
+						"Parameter type names array can't be null!");
 
 		CtClass[] paramCtClass =
 						new CtClass[parametersCanonicalClassNames.length];
@@ -6489,12 +6499,12 @@ implements	ComponentI
 		) throws Exception
 	{
 		assert	methodName != null :
-					new PreconditionException("Service name is null!");
+				new PreconditionException("Service name is null!");
 		assert	parametersCanonicalClassNames != null :
-					new PreconditionException("Parameter type names array"
-														+ " is null!");
+				new PreconditionException(
+						"Parameter type names array is null!");
 		assert	code != null :
-					new PreconditionException("Code to be added is null!");
+				new PreconditionException("Code to be added is null!");
 
 		this.ensureLoaded();
 		CtMethod m = this.getDeclaredMethod(methodName,
@@ -6516,12 +6526,12 @@ implements	ComponentI
 		) throws Exception
 	{
 		assert	methodName != null :
-					new PreconditionException("Service name is null!");
+				new PreconditionException("Service name is null!");
 		assert	parametersCanonicalClassNames != null :
-					new PreconditionException("Parameter type names array"
-														+ " is null!");
+				new PreconditionException(
+						"Parameter type names array is null!");
 		assert	code != null :
-					new PreconditionException("Code to be added is null!");
+				new PreconditionException("Code to be added is null!");
 
 		this.ensureLoaded();
 		CtMethod m = this.getDeclaredMethod(methodName,
