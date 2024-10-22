@@ -114,6 +114,7 @@ extends		Exception
 			if (PRINT_STACK_TRACE) {
 				for (int i = level ; i < st.length ; i++) {
 					sb.append(st[i].toString());
+					sb.append('\n');
 				}
 				sb.append("----------");
 			}
@@ -140,6 +141,7 @@ extends		Exception
 			if (PRINT_STACK_TRACE) {
 				for (int i = level ; i < st.length ; i++) {
 					sb.append(st[i].toString());
+					sb.append('\n');
 				}
 				sb.append("----------");
 			}
@@ -166,6 +168,7 @@ extends		Exception
 			if (PRINT_STACK_TRACE) {
 				for (int i = level ; i < st.length ; i++) {
 					sb.append(st[i].toString());
+					sb.append('\n');
 				}
 				sb.append("----------");
 			}
@@ -197,6 +200,7 @@ extends		Exception
 			if (PRINT_STACK_TRACE) {
 				for (int i = level ; i < st.length ; i++) {
 					sb.append(st[i].toString());
+					sb.append('\n');
 				}
 				sb.append("----------");
 			}
