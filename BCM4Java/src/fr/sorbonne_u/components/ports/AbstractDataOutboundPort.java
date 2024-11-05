@@ -274,27 +274,17 @@ implements	DataOutboundPortI
 		super(uri, implementedPullInterface, owner) ;
 
 		assert	implementedPushInterface != null :
-					new PreconditionException(
-							"implementedPushInterface != null");
-		assert	DataRequiredCI.PullCI.class.
-								isAssignableFrom(implementedPullInterface);
-					new PreconditionException(
-							"DataRequiredCI.PullCI.class." + 
-							"isAssignableFrom(implementedPullInterface)");
-		assert	DataRequiredCI.PushCI.class.
-								isAssignableFrom(implementedPushInterface);
-					new PreconditionException(
-							"DataRequiredCI.PushCI.class." + 
-							"isAssignableFrom(implementedPushInterface)");
+				new PreconditionException(
+						"implementedPushInterface != null");
 		assert	pluginURI == null || owner.isInstalled(pluginURI) :
-					new PreconditionException(
-							"owner component does not have an installed "
-							+ "plug-in with URI: " + pluginURI);
+				new PreconditionException(
+						"owner component does not have an installed "
+						+ "plug-in with URI: " + pluginURI);
 		assert	executorServiceURI == null ||
 						owner.validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"owner component does not have an executor "
-							+ "service with URI: " + executorServiceURI);
+				new PreconditionException(
+						"owner component does not have an executor "
+						+ "service with URI: " + executorServiceURI);
 
 		this.implementedPushInterface = implementedPushInterface;
 		this.pluginURI = pluginURI;

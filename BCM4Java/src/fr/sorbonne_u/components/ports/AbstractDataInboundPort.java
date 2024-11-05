@@ -252,11 +252,9 @@ implements	DataInboundPortI
 			  executorServiceURI);
 
 		assert	implementedPullInterface != null :
-					new PreconditionException(
-							"implementedPullInterface != null");
+				new PreconditionException("implementedPullInterface != null");
 		assert	implementedPushInterface != null :
-					new PreconditionException(
-							"implementedPushInterface != null");
+				new PreconditionException("implementedPushInterface != null");
 
 		this.implementedPushInterface = implementedPushInterface;
 		this.clientPortURI = new AtomicReference<String>(null);
