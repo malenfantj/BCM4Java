@@ -120,6 +120,56 @@ implements	ClocksServerCI
 				new PreconditionException("owner instanceof ClocksServer");
 	}
 
+	/**
+	 * create the inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component owning the port.
+	 * @throws Exception			<i>to do</i>.
+	 */
+	public				ClocksServerInboundPort(
+		Class<? extends ClocksServerCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(implementedInterface, owner);
+		assert	owner instanceof ClocksServer :
+				new PreconditionException("owner instanceof ClocksServer");
+	}
+
+	/**
+	 * create the inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri					URI of the port.
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component owning the port.
+	 * @throws Exception			<i>to do</i>.
+	 */
+	public				ClocksServerInboundPort(
+		String uri,
+		Class<? extends ClocksServerCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner);
+		assert	owner instanceof ClocksServer :
+				new PreconditionException("owner instanceof ClocksServer");
+	}
+
 	// -------------------------------------------------------------------------
 	// Methods
 	// -------------------------------------------------------------------------

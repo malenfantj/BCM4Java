@@ -145,13 +145,13 @@ extends		AbstractComponent
 	 *  synchronised.														*/
 	protected final Map<String,CompletableFuture<AcceleratedClock>>	clocks;
 	/** lock protecting accesses to the clocks map.							*/
-	protected final ReentrantLock					clocksLock;
+	protected final ReentrantLock		clocksLock;
 	/** URI of the inbound port offering the {@code ClockServerCI} component
 	 *  interface.															*/
-	protected final String							inboundPortURI;
+	protected final String				inboundPortURI;
 	/** inbound port through which the component offers the component
 	 *  interface {@code ClockServerCI}.									*/
-	protected ClocksServerInboundPort				inboundPort;
+	protected ClocksServerInboundPort	inboundPort;
 	
 	// -------------------------------------------------------------------------
 	// Constructors

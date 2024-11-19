@@ -114,6 +114,52 @@ implements	ClocksServerCI
 		super(uri, ClocksServerCI.class, owner);
 	}
 
+	/**
+	 * create the outbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component owning the port.
+	 * @throws Exception			<i>to do</i>.
+	 */
+	public				ClocksServerOutboundPort(
+		Class<? extends ClocksServerCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(implementedInterface, owner);
+	}
+
+	/**
+	 * create the outbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param uri					URI of the port.
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component owning the port.
+	 * @throws Exception			<i>to do</i>.
+	 */
+	public				ClocksServerOutboundPort(
+		String uri,
+		Class<? extends ClocksServerCI> implementedInterface,
+		ComponentI owner
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner);
+	}
+
 	// -------------------------------------------------------------------------
 	// Methods
 	// -------------------------------------------------------------------------

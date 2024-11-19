@@ -389,7 +389,7 @@ implements	Serializable
 	 * post	{@code getAccelerationFactor() == accelerationFactor}
 	 * </pre>
 	 *
-	 * @param clockURI				URI attributed to the clock.
+	 * @param clockURI					URI attributed to the clock.
 	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time in nanoseconds.
 	 * @param startInstant				start time as {@code Instant}.
 	 * @param accelerationFactor		acceleration factor to be applied.
@@ -449,7 +449,7 @@ implements	Serializable
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @return						an identity of the time reference <i>e.g.</i>, the IP address of the host which hardware clock serves as reference.
+	 * @return	an identity of the time reference <i>e.g.</i>, the IP address of the host which hardware clock serves as reference.
 	 * @throws UnknownHostException	<i>to do </i>.
 	 */
 	public String		getTimeReferenceIdentity() throws UnknownHostException
