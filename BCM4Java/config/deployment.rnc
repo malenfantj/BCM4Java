@@ -1,4 +1,4 @@
-# Copyright Jacques Malenfant, Université Pierre et Marie Curie.
+# Copyright Jacques Malenfant, Universitï¿½ Pierre et Marie Curie.
 # 
 # Jacques.Malenfant@lip6.fr
 # 
@@ -53,7 +53,7 @@ start = deployment
 
 deployment = element deployment {
   codebase?,             # localisation of the code base of the application
-  hosts,		 # description of the hosts
+  hosts,                 # description of the hosts
   cyclicBarrier,         # configuration of the cyclic barrier
   globalRegistry,        # configuration of the global registry
   rmiRegistryPort,       # configuration of the RMI registry

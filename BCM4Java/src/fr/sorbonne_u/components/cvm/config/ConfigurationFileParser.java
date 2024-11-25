@@ -91,6 +91,75 @@ public class			ConfigurationFileParser
 	 *  XML configuration file.												*/
 	public static String	SCHEMA_FILENAME = "config" + File.separatorChar +
 															"deployment.rnc" ;
+
+	// Schema definitions
+
+	/** schema factor class name.											*/
+	protected static final String	SCHEMA_FACTORY =
+										"com.thaiopensource.relaxng.jaxp.CompactSyntaxSchemaFactory";
+
+	/** {@code /deployment/codebase} XPath.									*/
+	protected static final String	CODEBASE_XPATH =
+										"/deployment/codebase";
+	/** {@code /deployment/codebase/@hostname} XPath relative to
+	 *  {@code CODEBASE_XPATH}.												*/
+	protected static final String	HOSTS_HOSTNAME_XSUBPATH = "@hostname";
+	/** {@code /deployment/codebase/@directory} XPath relative to
+	 *  {@code CODEBASE_XPATH}.												*/
+	protected static final String	HOSTS_DIRECTORY_XSUBPATH = "@directory";
+
+	/** {@code /deployment/hosts/host} XPath.								*/
+	protected static final String	HOST_XPATH = "/deployment/hosts/host";
+	/** {@code /deployment/hosts/host/@name} XPath relative to
+	 *  {@code /deployment/hosts/host} XPath.								*/
+	protected static final String	HOST_NAME_XSUBPATH = "@name";
+	/** {@code /deployment/hosts/host/@dir} XPath relative to
+	 *  {@code /deployment/hosts/host} XPath.								*/
+	protected static final String	HOST_DIR_XSUBPATH = "@dir";
+
+	/** {@code /deployment/cyclicBarrier/@hostname} XPath.					*/
+	protected static final String	CYCLIC_BARRIER_HOSTNAME_XPATH =
+										"/deployment/cyclicBarrier/@hostname";
+	/** {@code /deployment/cyclicBarrier/@port} XPath.						*/
+	protected static final String	CYCLIC_BARRIER_PORT_XPATH =
+										"/deployment/cyclicBarrier/@port";
+
+	/** {@code /deployment/globalRegistry/@hostname} XPath.					*/
+	protected static final String	GLOBAL_REGISTRY_HOSTNAME_XPATH =
+										"/deployment/globalRegistry/@hostname";
+	/** {@code /deployment/globalRegistry/@port} XPath.						*/
+	protected static final String	GLOBAL_REGISTRY_PORT_XPATH =
+										"/deployment/globalRegistry/@port";
+
+	/** {@code /deployment/rmiRegistryPort/@no} XPath.						*/
+	protected static final String	RMI_REGISTRY_PORT_XPATH =
+										"/deployment/rmiRegistryPort/@no";
+
+	/** {@code /deployment/jvms2hostnames/jvm2hostname/@jvmuri} XPath.		*/
+	protected static final String	JVMURI_XPATH =
+										"/deployment/jvms2hostnames/jvm2hostname/@jvmuri";
+
+	/** {@code /deployment/jvms2hostnames/jvm2hostname} XPath.				*/
+	protected static final String	JVM2HOSTNAME_XPATH =
+										"/deployment/jvms2hostnames/jvm2hostname";
+	/** {@code /deployment/jvms2hostnames/jvm2hostname/@jvmuri} XPath
+	 *  relative to{@code /deployment/jvms2hostnames/jvm2hostname}.			*/
+	protected static final String	JVM2HOSTNAME_JVMURI_XSUBPATH ="@jvmuri";
+	/** {@code /deployment/jvms2hostnames/jvm2hostname/@hostname} XPath
+	 *  relative to {@code /deployment/jvms2hostnames/jvm2hostname}.		*/
+	protected static final String	JVM2HOSTNAME_HOSTNAME_XSUBPATH = "@hostname";
+	/** {@code /deployment/jvms2hostnames/jvm2hostname/@mainclass} XPath
+	 *  relative to {@code /deployment/jvms2hostnames/jvm2hostname}.		*/
+	protected static final String	JVM2HOSTNAME_MAINCLASS_XSUBPATH = "@mainclass";
+	/** {@code /deployment/jvms2hostnames/jvm2hostname/@reflective} XPath
+	 *  relative to {@code /deployment/jvms2hostnames/jvm2hostname}.		*/
+	protected static final String	JVM2HOSTNAME_REFLECTIVE_XSUBPATH = "@reflective";
+	/** {@code /deployment/jvms2hostnames/jvm2hostname/@rmiRegistryCreator}
+	 *  XPath relative to {@code /deployment/jvms2hostnames/jvm2hostname}.	*/
+	protected static final String	JVM2HOSTNAME_RMIREGISTRYCREATOR_XSUBPATH = 
+										"@rmiRegistryCreator";
+
+	// instance variables
 	/** the XML document builder used to parse the configuration file.		*/
 	protected DocumentBuilder db ;
 
@@ -143,7 +212,7 @@ public class			ConfigurationFileParser
 		// Specify you want a factory for RELAX NG
 		System.setProperty(
 			SchemaFactory.class.getName() + ":" + XMLConstants.RELAXNG_NS_URI,
-			"com.thaiopensource.relaxng.jaxp.CompactSyntaxSchemaFactory");
+			SCHEMA_FACTORY);
 		SchemaFactory factory =
 			SchemaFactory.newInstance(XMLConstants.RELAXNG_NS_URI);
 
@@ -224,7 +293,7 @@ public class			ConfigurationFileParser
 		Node codebaseNode;
 		try {
 			codebaseNode = ((Node)xpathEvaluator.evaluate(
-											"/deployment/codebase",
+											CODEBASE_XPATH,
 											doc,
 											XPathConstants.NODE));
 		} catch (XPathExpressionException e) {
@@ -235,7 +304,7 @@ public class			ConfigurationFileParser
 			try {
 				codebaseHostname =
 						((Node)xpathEvaluator.evaluate(
-								"@hostname",
+								HOSTS_HOSTNAME_XSUBPATH,
 								codebaseNode,
 								XPathConstants.NODE)).getNodeValue() ;
 			} catch (DOMException e) {
@@ -248,7 +317,7 @@ public class			ConfigurationFileParser
 			}
 			try {
 				codebaseDirectory = ((Node)xpathEvaluator.evaluate(
-											"@directory",
+											HOSTS_DIRECTORY_XSUBPATH,
 											codebaseNode,
 											XPathConstants.NODE)).getNodeValue() ;
 			} catch (DOMException e) {
@@ -264,7 +333,7 @@ public class			ConfigurationFileParser
 		NodeList hs;
 		try {
 			hs = (NodeList)xpathEvaluator.evaluate(
-											"/deployment/hosts/host",
+											HOST_XPATH,
 											doc,
 											XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
@@ -275,8 +344,8 @@ public class			ConfigurationFileParser
 			String name;
 			try {
 				name = ((Node)xpathEvaluator.evaluate(
-									"@name", hs.item(i), XPathConstants.NODE)).
-																getNodeValue();
+										HOST_NAME_XSUBPATH, hs.item(i),
+										XPathConstants.NODE)).getNodeValue();
 			} catch (DOMException e) {
 				throw new ConfigurationException(
 							"node access error for the name attribute of a "
@@ -289,8 +358,8 @@ public class			ConfigurationFileParser
 			String dir;
 			try {
 				dir = ((Node)xpathEvaluator.evaluate(
-									"@dir", hs.item(i), XPathConstants.NODE)).
-																getNodeValue();
+										HOST_DIR_XSUBPATH, hs.item(i),
+										XPathConstants.NODE)).getNodeValue();
 			} catch (DOMException e) {
 				throw new ConfigurationException(
 							"node access error for the dir attribute of the "
@@ -306,7 +375,7 @@ public class			ConfigurationFileParser
 		try {
 			cyclicBarrierHostname =
 					((Node)xpathEvaluator.evaluate(
-							"/deployment/cyclicBarrier/@hostname",
+							CYCLIC_BARRIER_HOSTNAME_XPATH,
 							doc,
 							XPathConstants.NODE)).getNodeValue() ;
 		} catch (DOMException e) {
@@ -325,7 +394,7 @@ public class			ConfigurationFileParser
 			cyclicBarrierPort =
 					Integer.parseInt(
 						((Node)xpathEvaluator.evaluate(
-								"/deployment/cyclicBarrier/@port",
+								CYCLIC_BARRIER_PORT_XPATH,
 								doc,
 								XPathConstants.NODE)).getNodeValue()) ;
 		} catch (NumberFormatException e) {
@@ -348,7 +417,7 @@ public class			ConfigurationFileParser
 		try {
 			globalRegistryHostname =
 					((Node)xpathEvaluator.evaluate(
-							"/deployment/globalRegistry/@hostname",
+							GLOBAL_REGISTRY_HOSTNAME_XPATH,
 							doc,
 							XPathConstants.NODE)).getNodeValue() ;
 		} catch (DOMException e) {
@@ -367,7 +436,7 @@ public class			ConfigurationFileParser
 			globalRegistryPort =
 					Integer.parseInt(
 							((Node)xpathEvaluator.evaluate(
-									"/deployment/globalRegistry/@port",
+									GLOBAL_REGISTRY_PORT_XPATH,
 									doc,
 									XPathConstants.NODE)).getNodeValue()) ;
 		} catch (NumberFormatException e) {
@@ -391,7 +460,7 @@ public class			ConfigurationFileParser
 			rmiRegistryPort =
 					Integer.parseInt(
 							((Node)xpathEvaluator.evaluate(
-									"/deployment/rmiRegistryPort/@no",
+									RMI_REGISTRY_PORT_XPATH,
 									doc,
 									XPathConstants.NODE)).getNodeValue()) ;
 		} catch (NumberFormatException e) {
@@ -414,9 +483,9 @@ public class			ConfigurationFileParser
 		NodeList ns;
 		try {
 			ns = (NodeList)xpathEvaluator.evaluate(
-						"/deployment/jvms2hostnames/jvm2hostname/@jvmuri",
-						doc,
-						XPathConstants.NODESET);
+									JVMURI_XPATH,
+									doc,
+									XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			throw new ConfigurationException(
 						"error fetching the list of jvmuri attributes of "
@@ -430,9 +499,9 @@ public class			ConfigurationFileParser
 		}
 		try {
 			ns = (NodeList)xpathEvaluator.evaluate(
-						"/deployment/jvms2hostnames/jvm2hostname",
-						doc,
-						XPathConstants.NODESET) ;
+									JVM2HOSTNAME_XPATH,
+									doc,
+									XPathConstants.NODESET) ;
 		} catch (XPathExpressionException e) {
 			throw new ConfigurationException(
 						"error fetching the list of jvm2hostname nodes", e) ;
@@ -443,8 +512,8 @@ public class			ConfigurationFileParser
 			String uri;
 			try {
 				uri = ((Node)xpathEvaluator.evaluate(
-								"@jvmuri", ns.item(i), XPathConstants.NODE)).
-																getNodeValue();
+							JVM2HOSTNAME_JVMURI_XSUBPATH,
+							ns.item(i), XPathConstants.NODE)).getNodeValue();
 			} catch (DOMException e) {
 				throw new ConfigurationException(
 							"node access error for the jvmuri attribute of a "
@@ -459,8 +528,8 @@ public class			ConfigurationFileParser
 			String hostname;
 			try {
 				hostname = ((Node)xpathEvaluator.evaluate(
-								"@hostname", ns.item(i), XPathConstants.NODE)).
-																getNodeValue();
+							JVM2HOSTNAME_HOSTNAME_XSUBPATH,
+							ns.item(i), XPathConstants.NODE)).getNodeValue();
 			} catch (DOMException e) {
 				throw new ConfigurationException(
 							"node access error for the hostname attribute of "
@@ -479,8 +548,8 @@ public class			ConfigurationFileParser
 			String mainclass;
 			try {
 				mainclass = ((Node)xpathEvaluator.evaluate(
-									"@mainclass", ns.item(i),
-										XPathConstants.NODE)).getNodeValue();
+							JVM2HOSTNAME_MAINCLASS_XSUBPATH,
+							ns.item(i), XPathConstants.NODE)).getNodeValue();
 			} catch (DOMException e) {
 				throw new ConfigurationException(
 							"node access error for the mainclass attribute of "
@@ -500,7 +569,8 @@ public class			ConfigurationFileParser
 			try {
 				reflectiveNode =
 						((Node)xpathEvaluator.evaluate(
-							"@reflective", ns.item(i), XPathConstants.NODE));
+								JVM2HOSTNAME_REFLECTIVE_XSUBPATH,
+								ns.item(i), XPathConstants.NODE));
 			} catch (XPathExpressionException e) {
 				throw new ConfigurationException(
 							"error fetching the reflective attribute of "
@@ -517,9 +587,9 @@ public class			ConfigurationFileParser
 			String rmiRegistryCreator;
 			try {
 				rmiRegistryCreator =
-						((Node)xpathEvaluator.evaluate(
-								"@rmiRegistryCreator", ns.item(i),
-										XPathConstants.NODE)).getNodeValue();
+					((Node)xpathEvaluator.evaluate(
+							JVM2HOSTNAME_RMIREGISTRYCREATOR_XSUBPATH,
+							ns.item(i), XPathConstants.NODE)).getNodeValue();
 			} catch (DOMException e) {
 				throw new ConfigurationException(
 							"node access error for the rmiRegistryCreator "
