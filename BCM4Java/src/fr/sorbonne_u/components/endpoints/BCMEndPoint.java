@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -38,6 +39,7 @@ import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
 /**
@@ -48,14 +50,32 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p>
+ * This class implement the BCM4Java protocol for connecting components through
+ * outbound ports, connectors and inbound ports. It is an abstract class because
+ * it requires subclasses to provide a way to create the outbound and inbound
+ * ports as well as the connector used to connect them. The user of this class
+ * must first define the classes implementing the ports and the connector. Then,
+ * he/she must define a subclass implementing the
+ * {@code makeOutboundPort(AbstractComponent,String)} and
+ * {@code makeInboundPort(AbstractComponent,String)} methods.
+ * In the BCM4Java approach, {@code makeInboundPort()} creates the inbound port
+ * with the provided URI on the given server component and publishes the port
+ * in the registry.
+ * {@code makeOutboundPort(AbstractComponent,String)} creates the outbound
+ * port on the given client component and then connect this port to the
+ * server component with the given inbound port URI using the appropriate
+ * connector.
+ * </p>
+ * 
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code serverSideOfferedInterface != null}
  * invariant	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -67,7 +87,8 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  */
 public abstract class	BCMEndPoint<CI extends RequiredCI>
 extends		EndPoint<CI>
-implements	BCMEndPointI<CI>
+implements	BCMEndPointI<CI>,
+			Cloneable
 {
 	// -------------------------------------------------------------------------
 	// Constants and variables
@@ -174,25 +195,6 @@ implements	BCMEndPointI<CI>
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getInboundPortURI()
-	 */
-	@Override
-	public String		getInboundPortURI()
-	{
-		return this.inboundPortURI;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getOfferedComponentInterface()
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <OCI extends OfferedCI> Class<OCI>	getOfferedComponentInterface()
-	{
-		return (Class<OCI>) this.serverSideOfferedInterface;
-	}
-
-	/**
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#serverSideInitialised()
 	 */
 	@Override
@@ -209,6 +211,8 @@ implements	BCMEndPointI<CI>
 	{
 		assert	!serverSideInitialised() :
 				new PreconditionException("!serverSideInitialised()");
+		assert	!clientSideInitialised() :
+				new PreconditionException("!clientSideInitialised()");
 		assert	serverSideEndPointOwner instanceof AbstractComponent :
 				new PreconditionException(
 						"serverSideEndPointOwner instanceof "
@@ -266,6 +270,8 @@ implements	BCMEndPointI<CI>
 	{
 		assert	!clientSideInitialised() :
 				new PreconditionException("!clientSideInitialised()");
+		assert	!serverSideInitialised() :
+				new PreconditionException("!serverSideInitialised()");
 		assert	clientSideEndPointOwner instanceof AbstractComponent :
 				new PreconditionException(
 						"clientSideEndPointOwner instanceof "
@@ -318,18 +324,6 @@ implements	BCMEndPointI<CI>
 		) throws Exception;
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getReference()
-	 */
-	@Override
-	public CI			getReference()
-	{
-		assert	clientSideInitialised() :
-				new PreconditionException("clientSideInitialised()");
-
-		return this.outboundPort;
-	}
-
-	/**
 	 * unpublish and destroy the inbound port.
 	 * 
 	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#cleanUpServerSide()
@@ -378,22 +372,96 @@ implements	BCMEndPointI<CI>
 	}
 
 	/**
-	 * append to the string buffer a description of this object.
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getReference()
+	 */
+	@Override
+	public CI			getReference()
+	{
+		assert	clientSideInitialised() :
+				new PreconditionException("clientSideInitialised()");
+
+		return this.outboundPort;
+	}
+
+	/**
+	 * return a copy of this BCM end point with only the sharable information.
+	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p>
+	 * In a {@code BCMEndPoint}, the following elements are considered as
+	 * sharable:
+	 * </p>
+	 * <ul>
+	 * <li>the inherited sharable elements;</li>
+	 * <li>the component interface offered by the server side of the end
+	 *     point;</li>
+	 * <li>the URI of the inbound port offering the above component
+	 *     interface.</li>
+	 * </ul>
+	 * <p>
+	 * By default, this implementation clone  (<i>i.e.</i>, shallow copy) the
+	 * end point and nullify the non sharable elements. If a subclass introduces
+	 * more non sharable elements, it will have to redefine the method to avoid
+	 * copying these.
+	 * </p>
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code sb != null}	// no precondition.
-	 * post	{@code true}	// no postcondition.
+	 * pre	{@code true}	// no more preconditions.
+	 * post	{@code true}	// no more postconditions.
 	 * </pre>
-	 *
-	 * @param sb	a string buffer to add to.
+	 * 
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#copyWithSharable()
 	 */
-	public void			toStringBuffer(StringBuffer sb)
+	@Override
+	public EndPointI<CI>	copyWithSharable()
 	{
-		sb.append(this.getClass().getSimpleName());
-		sb.append('[');
-		sb.append(']');
+		try {
+			@SuppressWarnings("unchecked")
+			BCMEndPoint<CI> ret = (BCMEndPoint<CI>) this.clone();
+			ret.server = null;
+			ret.inboundPort = null;
+			ret.client = null;
+			ret.outboundPort = null;
+			assert	ret.getImplementedInterface().
+									equals(this.getImplementedInterface()) :
+					new PostconditionException(
+							"return.getImplementedInterface().equals("
+							+ "getImplementedInterface())");
+			assert	ret.getInboundPortURI().equals(this.getInboundPortURI()) :
+					new PostconditionException(
+							"return.getInboundPortURI().equals("
+							+ "getInboundPortURI())");
+			assert	ret.getOfferedComponentInterface().
+								equals(this.getOfferedComponentInterface()) :
+					new PostconditionException(
+							"return.getOfferedComponentInterface().equals("
+							+ "getOfferedComponentInterface())");
+			return ret;
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e) ;
+		}
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getInboundPortURI()
+	 */
+	@Override
+	public String		getInboundPortURI()
+	{
+		return this.inboundPortURI;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getOfferedComponentInterface()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <OCI extends OfferedCI> Class<OCI>	getOfferedComponentInterface()
+	{
+		return (Class<OCI>) this.serverSideOfferedInterface;
 	}
 
 	/**

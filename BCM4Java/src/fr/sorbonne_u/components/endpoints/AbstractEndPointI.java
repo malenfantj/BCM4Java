@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -40,7 +41,12 @@ package fr.sorbonne_u.components.endpoints;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p>
+ * The signatures declared in this interface apply to all end points. They
+ * are meant to allow the initialisation and the clean up of the end points.
+ * </p>
+ * 
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no invariant

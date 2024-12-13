@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -35,15 +36,16 @@ package fr.sorbonne_u.components.endpoints;
 /**
  * The interface <code>EndPointI</code> defines an end point connecting two
  * software entities through an interface {@code I} in an
- * implementation-agnostic manner.
+ * "implementation-agnostic" manner.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * An end point embed a reference to be used to connect two entities, a caller
- * and a callee. The protocol is to create the end point (with appropriate
- * implementation-dependent information that is shared among the caller and
- * the callee). The protocol is then:
+ * An end point embed a reference connecting two entities to be used by a
+ * client entity to call a server entity, a caller. The protocol is to create
+ * the end point (with appropriate implementation-dependent information that is
+ * shared among the caller and the callee). The protocol is the following,
+ * actions being performed in the presented order:
  * <ol>
  * <li>Create the end point, providing the implementation-dependent information
  *   required by its actual implementation.</li>
@@ -58,9 +60,9 @@ package fr.sorbonne_u.components.endpoints;
  *   {@code initialiseClientSide} passing it a reference to the client side
  *   software entity; this will perform whatever implementation-dependent
  *   actions required to establish the connection from the client side.</li>
- * <li>On the client side: call {@code getReference} to get the reference
- *   implementing the interface {@code I} through which the server side
- *   methods can be called as long as needed.</li>
+ * <li>On the client side: call {@code getReference()} to get the reference
+ *   implementing the interface {@code I} through which the cleint can call
+ *   server side methods as long as needed.</li>
  * <li>On the client side: when the end point is no longer needed, call
  *   {@code cleanUpClientSide}; this will perform whatever
  *   implementation-dependent actions required to cut the connection
@@ -71,7 +73,7 @@ package fr.sorbonne_u.components.endpoints;
  *   on the server side.</li>
  * </ol>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant

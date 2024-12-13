@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -35,12 +36,18 @@ package fr.sorbonne_u.components.endpoints;
 import java.io.Serializable;
 
 /**
- * The interface <code>BCMMultiEndPointsI</code> declares the methods that
- * a BCM multi end points must offer.
+ * The interface <code>BCMCompositeEndPointI</code> declares the methods that
+ * a BCM composite end point must offer.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p>
+ * The redefinitions of the methods in this interface simply makes some typing
+ * constraints as well as pre- and postconditions more precise for BCM end
+ * points compared to generic end points.
+ * </p>
+ * 
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -50,8 +57,8 @@ import java.io.Serializable;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		BCMMultiEndPointsI
-extends		MultiEndPointsI,
+public interface		BCMCompositeEndPointI
+extends		CompositeEndPointI,
 			Serializable
 {
 	// -------------------------------------------------------------------------
@@ -67,8 +74,8 @@ extends		MultiEndPointsI,
 	 * post	{@code BCMEndPoint.class.isAssignableFrom(res.getClass())}
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.endpoints.MultiEndPointsI#getEndPoint(java.lang.Class)
+	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPointI#getEndPoint(java.lang.Class)
 	 */
 	@Override
-	public <I> EndPointI<I>	getEndPoint(Class<I> inter);
+	public <I, J extends I> EndPointI<J>	getEndPoint(Class<I> inter);
 }

@@ -33,8 +33,11 @@ package fr.sorbonne_u.components.endpoints;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.interfaces.DataRequiredCI;
+
+// -----------------------------------------------------------------------------
 /**
- * The class <code>RESTEndPoint</code>
+ * The class <code>BCMDataEndPointI</code>
  *
  * <p><strong>Description</strong></p>
  * 
@@ -54,17 +57,29 @@ package fr.sorbonne_u.components.endpoints;
  * invariant	{@code true}	// TODO	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2024-07-15</p>
+ * <p>Created on : 2024-12-12</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class	RESTEndPoint<I>
-extends EndPoint<I>
+public interface		BCMDataEndPointI<CI extends DataRequiredCI>
+extends BCMEndPointI<CI>
 {
+	// -------------------------------------------------------------------------
+	// Inner types and classes
+	// -------------------------------------------------------------------------
 
-	public				RESTEndPoint(Class<I> implementedInterface)
-	{
-		super(implementedInterface);
-	}
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+
+	// -------------------------------------------------------------------------
+	// Invariants
+	// -------------------------------------------------------------------------
+
+	// -------------------------------------------------------------------------
+	// Signature and default methods
+	// -------------------------------------------------------------------------
 
 }
+
+// -----------------------------------------------------------------------------

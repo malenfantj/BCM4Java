@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -39,15 +40,13 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * implementation of an end point, to be extended to fully implement actual
  * implementation-dependent end points.
  *
- * <p><strong>Description</strong></p>
- * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code implementedInterface != null}
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no invariant
@@ -152,7 +151,7 @@ implements	EndPointI<I>
 	 */
 	protected void		addLocalContentToStringBuffer(StringBuffer sb)
 	{
-		assert	sb != null;
+		assert	sb != null : new PreconditionException("sb != null");
 
 		sb.append(this.implementedInterface.getSimpleName());
 	}

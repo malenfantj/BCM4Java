@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -48,13 +49,19 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * <p>
  * The BCM4Java end point follows the protocol defined by {@code EndPointI},
  * embedding in the different steps the BCM dependent actions needed to
- * establish the connection. The redefinition of the methods in this
- * interface simply makes some typing constraints as well as pre- and
- * postconditions more precise for BCM end points compared to generic end
- * points.
+ * establish the connection. In BCM, an end point is used both on the client
+ * and the server side where, after their initialisation, they hold the outbound
+ * port for the former and the inbound port for the latter. Hence, on the
+ * client side, they cannot be "client side initialised" and on the server side,
+ * they cannot be "client side initialised".
+ * </p>
+ * <p>
+ * The redefinitions of the methods in this interface simply makes some typing
+ * constraints as well as pre- and postconditions more precise for BCM end
+ * points compared to generic end points.
  * </p>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -75,9 +82,16 @@ extends		EndPointI<CI>,
 	/**
 	 * create and publish the inbound port on the client component.
 	 * 
+	 * <p><strong>Description</strong></p>
+	 * 
+	 * <p>
+	 * In BCM end points, the end points is used both by the client and the 
+	 * </p>
+	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code !clientSideInitialised()}
 	 * pre	{@code serverSideEndPointOwner instanceof AbstractComponent}
 	 * post	{@code true}	// no more postconditions.
 	 * </pre>
@@ -94,6 +108,7 @@ extends		EndPointI<CI>,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code !serverSideInitialised()}
 	 * pre	{@code clientSideEndPointOwner instanceof AbstractComponent}
 	 * post	{@code true}	// no more postconditions.
 	 * </pre>
@@ -179,6 +194,7 @@ extends		EndPointI<CI>,
 	 * post	{@code return != null}
 	 * post	{@code return.getInboundPortURI().equals(getInboundPortURI())}
 	 * post	{@code return.getOfferedComponentInterface().equals(getOfferedComponentInterface())}
+	 * post	{@code }
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#copyWithSharable()

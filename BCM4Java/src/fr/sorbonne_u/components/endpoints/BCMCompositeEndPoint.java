@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -38,18 +39,24 @@ import fr.sorbonne_u.exceptions.PreconditionException;
 import java.util.ArrayList;
 
 /**
- * The class <code>BCMMultiEndPoints</code> partially implements BCM multiple
- * end points.
+ * The class <code>BCMCompositeEndPoint</code> implements specialisation of
+ * generic composite end points to the BCM4Java case.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p>
+ * The only addition to the implementation of generic composite end point
+ * is the type verification made as pre- and postconditions in the redefinition
+ * of the {@code getEndPoint(Class<I>)} method.
+ * </p>
+ * 
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -59,9 +66,9 @@ import java.util.ArrayList;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class	BCMMultiEndPoints
-extends		MultiEndPoints
-implements	BCMMultiEndPointsI
+public abstract class	BCMCompositeEndPoint
+extends		CompositeEndPoint
+implements	BCMCompositeEndPointI
 {
 	// -------------------------------------------------------------------------
 	// Constants and variables
@@ -86,7 +93,7 @@ implements	BCMMultiEndPointsI
 	 *
 	 * @param numberOfEndPoints	number of expected end points in this multiple end point.
 	 */
-	public				BCMMultiEndPoints(int numberOfEndPoints)
+	public				BCMCompositeEndPoint(int numberOfEndPoints)
 	{
 		super(numberOfEndPoints);
 	}
@@ -105,7 +112,7 @@ implements	BCMMultiEndPointsI
 	 *
 	 * @param initialEndPoints	end points to be put in the multiple end points.
 	 */
-	protected			BCMMultiEndPoints(
+	protected			BCMCompositeEndPoint(
 		ArrayList<EndPointI<?>> initialEndPoints
 		)
 	{
@@ -123,16 +130,16 @@ implements	BCMMultiEndPointsI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.MultiEndPoints#getEndPoint(java.lang.Class)
+	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPoint#getEndPoint(java.lang.Class)
 	 */
 	@Override
-	public <I> EndPointI<I>	getEndPoint(Class<I> inter)
+	public <I, J extends I> EndPointI<J>	getEndPoint(Class<I> inter)
 	{
 		assert	RequiredCI.class.isAssignableFrom(inter) :
 				new PreconditionException(
 						"RequiredCI.class.isAssignableFrom(inter)");
 
-		EndPointI<I> res = super.getEndPoint(inter);
+		EndPointI<J> res = super.getEndPoint(inter);
 
 		assert	BCMEndPoint.class.isAssignableFrom(res.getClass()) :
 				new PostconditionException(

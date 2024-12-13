@@ -3,8 +3,9 @@ package fr.sorbonne_u.components.endpoints;
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to implement
-// a simulation of a map-reduce kind of system in BCM4Java.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -33,25 +34,25 @@ package fr.sorbonne_u.components.endpoints;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 /**
- * The interface <code>MultiEndPointsI</code> defines the signatures of methods
- * that a multiple end points implementation must provide; a multiple end points
- * provides a way to group together many end points defined for distinct
- * implemented interfaces connecting a single client software entity to a
- * single server software entity.
+ * The interface <code>CompositeEndPointI</code> defines the signatures of
+ * methods that a composite of several end points connecting a client to a
+ * server implementation must provide; a composite end point provides a way
+ * to group together many end points defined for distinct implemented interfaces
+ * connecting a single client software entity to a single server software entity.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * The multiple end points is meant to ease the passage of information among a
+ * The composite end point is meant to ease the passage of information among a
  * caller and a callee when the caller use many distinct interfaces to call the
  * callee. Compared to a single end point, it reuses all of the signatures
  * defined in {@code AbstractEndPointI} to perform the corresponding actions
  * on all of its embedded end points at once, and it provides a method
- * {@code getEndPoint} to retrieve a single end point from its implemented
+ * {@code getEndPoint} to retrieve each single end point from its implemented
  * interface.
  * </p>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -61,7 +62,7 @@ package fr.sorbonne_u.components.endpoints;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		MultiEndPointsI
+public interface		CompositeEndPointI
 extends		AbstractEndPointI
 {
 	// -------------------------------------------------------------------------
@@ -101,39 +102,6 @@ extends		AbstractEndPointI
 	@Override
 	public void			initialiseClientSide(Object clientSideEndPointOwner);
 
-	/**
-	 * return the end point on {@code inter}.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code inter != null}
-	 * pre	{@code clientSideInitialised()}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param <I>	type of interface proposed by the end point.
-	 * @param inter	interface required by the end point.
-	 * @return		the end point proposing {@code inter}.
-	 */
-	public <I> EndPointI<I>	getEndPoint(Class<I> inter);
-
-	/**
-	 * duplicate this multi end points except its transient information
-	 * <i>i.e.</i>, keeping only the information that is shared among copies of
-	 * the multi end point.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code return != null}
-	 * </pre>
-	 *
-	 * @return	a duplicate of this end point except its transient information.
-	 */
-	public MultiEndPointsI	copyWithSharable();
-
 	// -------------------------------------------------------------------------
 	// Local signatures
 	// -------------------------------------------------------------------------
@@ -152,4 +120,39 @@ extends		AbstractEndPointI
 	 * @return	true if all expected end points are defined in this multiple end points and false otherwise.
 	 */
 	public boolean		complete();
+
+	/**
+	 * return the end point proposing {@code inter} or the closest subclass of
+	 * it.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code inter != null}
+	 * pre	{@code clientSideInitialised()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param <I>	type of requested interface.
+	 * @param <J>	type of interface proposed by the end point.
+	 * @param inter	interface required by the end point.
+	 * @return		the end point proposing {@code inter} or the closest subclass of it.
+	 */
+	public <I, J extends I> EndPointI<J>	getEndPoint(Class<I> inter);
+
+	/**
+	 * duplicate this composite end points except its transient information
+	 * <i>i.e.</i>, keeping only the information that is shared among copies of
+	 * the multi end point.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
+	 * </pre>
+	 *
+	 * @return	a duplicate of this end point except its transient information.
+	 */
+	public CompositeEndPointI	copyWithSharable();
 }
