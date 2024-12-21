@@ -81,9 +81,9 @@ implements	CompositeEndPointI,
 	// Sharable information
 
 	/** number of expected end points in this multiple end point.			*/
-	protected final int							numberOfEndPoints;
+	protected final int					numberOfEndPoints;
 	/** map from implemented interfaces to single end points.				*/
-	private final Map<Class<?>,EndPointI<?>>	endPointsMap;
+	private Map<Class<?>,EndPointI<?>>	endPointsMap;
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -290,7 +290,7 @@ implements	CompositeEndPointI,
 	{
 		try {
 			CompositeEndPoint ret = (CompositeEndPoint) this.clone();
-			ret.endPointsMap.clear();
+			ret.endPointsMap = new HashMap<>();
 			for (Entry<Class<?>,EndPointI<?>> e : this.endPointsMap.entrySet()) {
 				ret.endPointsMap.put(e.getKey(),
 									 e.getValue().copyWithSharable());
