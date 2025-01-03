@@ -240,7 +240,7 @@ implements	Cloneable
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#copyWithSharable()
 	 */
 	@Override
-	public EndPointI<I>	copyWithSharable()
+	public POJOEndPoint<I>	copyWithSharable()
 	{
 		try {
 			@SuppressWarnings("unchecked")

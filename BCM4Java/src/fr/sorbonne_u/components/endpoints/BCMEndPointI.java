@@ -200,7 +200,7 @@ extends		EndPointI<CI>,
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#copyWithSharable()
 	 */
 	@Override
-	public EndPointI<CI> copyWithSharable();
+	public BCMEndPointI<CI> copyWithSharable();
 
 	// -------------------------------------------------------------------------
 	// Local signatures

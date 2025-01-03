@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.endpoints;
 
+import fr.sorbonne_u.components.interfaces.RequiredCI;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -58,11 +60,11 @@ package fr.sorbonne_u.components.endpoints;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class	RESTEndPoint<I>
-extends EndPoint<I>
+public abstract class	RESTEndPoint<CI extends RequiredCI>
+extends EndPoint<CI>
 {
 
-	public				RESTEndPoint(Class<I> implementedInterface)
+	public				RESTEndPoint(Class<CI> implementedInterface)
 	{
 		super(implementedInterface);
 	}

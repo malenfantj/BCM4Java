@@ -416,7 +416,7 @@ implements	BCMEndPointI<CI>,
 	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#copyWithSharable()
 	 */
 	@Override
-	public EndPointI<CI>	copyWithSharable()
+	public BCMEndPointI<CI>	copyWithSharable()
 	{
 		try {
 			@SuppressWarnings("unchecked")

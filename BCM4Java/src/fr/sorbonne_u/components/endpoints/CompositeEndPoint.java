@@ -36,7 +36,6 @@ package fr.sorbonne_u.components.endpoints;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import java.util.ArrayList;
 
@@ -452,7 +451,7 @@ implements	CompositeEndPointI,
 	 *
 	 * @param inter	interface implemented by the sought end point. 
 	 */
-	protected void		removeEndPoint(Class<? extends RequiredCI> inter)
+	protected void		removeEndPoint(Class<?> inter)
 	{
 		assert	inter != null : new PreconditionException("inter != null");
 
