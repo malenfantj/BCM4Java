@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.internal_cs.components;
+package fr.sorbonne_u.components.examples.edp_cs.components;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -38,9 +38,8 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.connections.URIConsumerOutboundPort;
-import fr.sorbonne_u.components.examples.basic_cs.connections.URIServiceConnector;
 import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
+import fr.sorbonne_u.components.examples.edp_cs.connections.URIServiceEndPoint;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 
 //-----------------------------------------------------------------------------
@@ -61,21 +60,20 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
  * </p>
  * <p>
  * In this version, the connection between this component and the URI provider
- * one is done in the start method of this component, in a form of internal
- * assembly of components, hiding the component architecture through connections
- * made inside the components. This way of assembling has the advantage of
- * encapsulating the details of the interconnection, but the disadvantage of
- * making the architecture hidden. To understand the architecture, one must
- * examine the code of the components. Obviously, for static architectures,
- * this choice is a compromise between encapsulation and information hiding.
- * For dynamic architectures, encapsulation of the connections will prove
- * simpler in many cases.
+ * one is done in the virtual machine code, in a form of external assembly of
+ * components following one of the vision of the concept of component assembly.
  * </p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>White-box Invariant</strong></p>
  * 
  * <pre>
- * invariant		true
+ * invariant	{@code true}	// no more invariant
+ * </pre>
+ * 
+ * <p><strong>Black-box Invariant</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
  * </pre>
  * 
  * <p>Created on : 2014-01-22</p>
@@ -88,29 +86,31 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
 public class			URIConsumer
 extends		AbstractComponent
 {
-	// ------------------------------------------------------------------------
-	// Constructors and instance variables
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
 
 	/** number of URIs that will be required by the consumer when calling
 	 *  for several URIs at the same time.									*/
-	protected final static int	N = 2 ;
+	protected final static int			N = 2 ;
 
-	/** URI of the server-side inbound port for the connection.				*/
-	protected String					serverInboundPortURI ;
-	/**	the outbound port used to call the service.							*/
-	protected URIConsumerOutboundPort	uriGetterPort ;
+	/** the endpoint of the URI service consumed by this component.			*/
+	protected final URIServiceEndPoint uriServiceEndPoint;
 	/**	counting service invocations.										*/
 	protected int						counter ;
 
+	// ------------------------------------------------------------------------
+	// Constructors
+	// ------------------------------------------------------------------------
+
 	/**
 	 * @param uri					URI of the component
-	 * @param serverInboundPortURI	URI of the URI provider inbound port.
-	 * @throws Exception			<i>todo.</i>
+	 * @param uriServiceEndPoint	service endpoint for the URI provider.
+	 * @throws Exception			<i>todo</i>.
 	 */
 	protected				URIConsumer(
 		String uri,
-		String serverInboundPortURI
+		URIServiceEndPoint uriServiceEndPoint
 		) throws Exception
 	{
 		// the reflection inbound port URI is the URI of the component
@@ -121,12 +121,7 @@ extends		AbstractComponent
 		// following instruction:
 		//this.addRequiredInterface(URIConsumerI.class) ;
 
-		// store the URI inbound port of the server.
-		this.serverInboundPortURI = serverInboundPortURI ;
-		// create the port that exposes the required interface
-		this.uriGetterPort = new URIConsumerOutboundPort(this) ;
-		// publish the port (an outbound port is always local)
-		this.uriGetterPort.localPublishPort() ;
+		this.uriServiceEndPoint = uriServiceEndPoint;
 		this.counter = 0 ;
 
 		if (AbstractCVM.isDistributed) {
@@ -164,21 +159,22 @@ extends		AbstractComponent
 		this.counter++ ;
 		if (this.counter <= 10) {
 			// Get the next URI and print it
-			String uri = this.uriGetterPort.getURI() ;
+			String uri = this.uriServiceEndPoint.getClientSideReference().getURI();
 			this.logMessage("consumer getting a new URI no "
-							+ this.counter + ": " + uri + ".") ;
+							+ this.counter + ": " + uri + ".");
 
 			// Get a set of new URIs and print them
-			String[] uris = this.uriGetterPort.getURIs(URIConsumer.N) ;
-			StringBuffer mes = new StringBuffer() ;
+			String[] uris = this.uriServiceEndPoint.getClientSideReference().
+													getURIs(URIConsumer.N);
+			StringBuffer mes = new StringBuffer();
 			for (int i = 0 ; i < URIConsumer.N ; i++) {
-				mes.append(uris[i]) ;
+				mes.append(uris[i]);
 				if (i < URIConsumer.N - 1) {
-					mes.append(", ") ;
+					mes.append(", ");
 				}
 			}
 			this.logMessage("consumer getting a new set of URIs no "
-							+ this.counter + " [" + mes + "].") ;
+							+ this.counter + " [" + mes + "].");
 
 			// Schedule the next service method invocation in one second.
 			// All tasks and services of a component must be called through
@@ -192,7 +188,7 @@ extends		AbstractComponent
 						public void run() {
 							try {
 								((URIConsumer)this.getTaskOwner()).
-													getURIandPrint() ;
+													getURIandPrint();
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -224,19 +220,12 @@ extends		AbstractComponent
 	{
 		this.logMessage("starting consumer component.") ;
 		super.start() ;
-
-		// connect to the URI provider server component.
-		this.logMessage("connecting consumer component to the provider.") ;
-		try {
-			this.doPortConnection(this.uriGetterPort.getPortURI(),
-								  this.serverInboundPortURI,
-								  URIServiceConnector.class.getCanonicalName());
-		} catch (Exception e) {
-			throw new ComponentStartException(e) ;
-		}
 		// initialisation code can be put here; do not however call any
 		// services of this component or of another component as they will
 		// not have started yet, hence not able to execute any incoming calls.
+
+		// connect to the server side
+		this.uriServiceEndPoint.initialiseClientSide(this);
 	}
 
 	/**
@@ -274,13 +263,14 @@ extends		AbstractComponent
 	public void			finalise() throws Exception
 	{
 		this.logMessage("stopping consumer component.") ;
-
 		this.printExecutionLogOnFile("consumer");
 		// This is the place where to clean up resources, such as
 		// disconnecting ports and unpublishing outbound ports that
 		// will be destroyed when shutting down.
-		this.doPortDisconnection(this.uriGetterPort.getPortURI()) ;
-		this.uriGetterPort.unpublishPort() ;
+		// In static architectures like in this example, endpoints can also
+		// be disconnected by the finalise method of the component
+		// virtual machine.
+		this.uriServiceEndPoint.cleanUpClientSide();
 
 		// This called at the end to make the component internal
 		// state move to the finalised state.

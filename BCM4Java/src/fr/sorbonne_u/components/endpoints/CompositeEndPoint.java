@@ -133,7 +133,7 @@ implements	CompositeEndPointI,
 		this.numberOfEndPoints = initialEndPoints.size();
 		this.endPointsMap = new HashMap<>();
 		for (EndPointI<?> e : initialEndPoints) {
-			this.endPointsMap.put(e.getImplementedInterface(), e);
+			this.endPointsMap.put(e.getClientSideInterface(), e);
 		}
 	}
 
@@ -364,12 +364,12 @@ implements	CompositeEndPointI,
 	{
 		assert	endPoint != null : new PreconditionException("endPoint != null");
 		assert	!complete() : new PreconditionException("!complete()");
-		assert	!hasImplementedInterface(endPoint.getImplementedInterface()) :
+		assert	!hasImplementedInterface(endPoint.getClientSideInterface()) :
 				new PreconditionException(
 						"!hasImplementedInterface("
 						+ "endPoint.getImplementedInterface())");
 
-		this.endPointsMap.put(endPoint.getImplementedInterface(), endPoint);
+		this.endPointsMap.put(endPoint.getClientSideInterface(), endPoint);
 	}
 
 	/**

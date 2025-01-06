@@ -38,7 +38,7 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.components.examples.basic_cs.components.URIConsumer;
 import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
-import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector;
+import fr.sorbonne_u.components.examples.basic_cs.connections.URIServiceConnector;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 
 // -----------------------------------------------------------------------------

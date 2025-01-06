@@ -61,7 +61,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 public abstract class	InvariantChecking
 {
 	/**
-	 * check a glass-box invariant expression and print a message if the
+	 * check an implementation invariant expression and print a message if the
 	 * expression evaluates to false.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -78,7 +78,7 @@ public abstract class	InvariantChecking
 	 * @param message				message to be printed on stdout if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
-	public static boolean	checkGlassBoxInvariant(
+	public static boolean	checkImplementationInvariant(
 		boolean invariantExpression,
 		Class<?> definingClass,
 		Object instance,
@@ -95,7 +95,7 @@ public abstract class	InvariantChecking
 
 		if (!invariantExpression) {
 			System.out.println(
-				"Glass-box invariant violation in class "
+				"Implementation invariant violation in class "
 				+ definingClass.getSimpleName()
 				+ " for the object "
 				+ (instance != null ? instance.toString() : "unknown instance")
@@ -104,7 +104,7 @@ public abstract class	InvariantChecking
 		return invariantExpression;
 	}
 	/**
-	 * check a glass-box invariant expression for a component and print a
+	 * check an implementation invariant expression for a component and print a
 	 * message if the expression evaluates to false.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -121,7 +121,7 @@ public abstract class	InvariantChecking
 	 * @param message				message to be printed on the trace window of {@code instance} if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
-	public static boolean	checkGlassBoxInvariant(
+	public static boolean	checkImplementationInvariant(
 		boolean invariantExpression,
 		Class<? extends AbstractComponent> definingClass,
 		AbstractComponent component,
@@ -138,7 +138,7 @@ public abstract class	InvariantChecking
 
 		if (!invariantExpression) {
 			component.traceMessage(
-					"Glass-box invariant violation in class "
+					"Implementation invariant violation in class "
 					+ definingClass.getSimpleName()
 					+ " for the component "
 					+ component
@@ -148,8 +148,8 @@ public abstract class	InvariantChecking
 	}
 
 	/**
-	 * check a black-box invariant expression and print a message if the
-	 * expression evaluates to false.
+	 * check an invariant expression and print a message if the expression
+	 * evaluates to false.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -164,7 +164,7 @@ public abstract class	InvariantChecking
 	 * @param message				message to be printed on stdout if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
-	public static boolean	checkBlackBoxInvariant(
+	public static boolean	checkInvariant(
 		boolean invariantExpression,
 		Class<?> definingClass,
 		Object instance,
@@ -181,7 +181,7 @@ public abstract class	InvariantChecking
 
 		if (!invariantExpression) {
 			System.out.println(
-				"Black-box invariant violation in class "
+				"Invariant violation in class "
 				+ definingClass.getSimpleName()
 				+ " for the object "
 				+ (instance != null ? instance.toString() : "unknown instance")
@@ -191,8 +191,8 @@ public abstract class	InvariantChecking
 	}
 
 	/**
-	 * check a black-box invariant expression and print a message if the
-	 * expression evaluates to false.
+	 * check an invariant expression and print a message if the expression
+	 * evaluates to false.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -208,7 +208,7 @@ public abstract class	InvariantChecking
 	 * @param message				message to be printed on the trace window of {@code instance} if {@code invariantExpression} is false.
 	 * @return						the value of {@code invariantExpression}.
 	 */
-	public static boolean	checkBlackBoxInvariant(
+	public static boolean	checkInvariant(
 		boolean invariantExpression,
 		Class<? extends AbstractComponent> definingClass,
 		AbstractComponent component,
@@ -225,7 +225,7 @@ public abstract class	InvariantChecking
 
 		if (!invariantExpression) {
 			component.traceMessage(
-					"Black-box invariant violation in class "
+					"Invariant violation in class "
 					+ definingClass.getSimpleName()
 					+ " for the component "
 					+ component

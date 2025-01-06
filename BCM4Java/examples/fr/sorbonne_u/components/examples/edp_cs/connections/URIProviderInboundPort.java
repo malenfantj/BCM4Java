@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.basic_cs.ports;
+package fr.sorbonne_u.components.examples.edp_cs.connections;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -36,17 +36,25 @@ package fr.sorbonne_u.components.examples.basic_cs.ports;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
+import fr.sorbonne_u.components.examples.edp_cs.components.URIProvider;
 import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
  * The class <code>URIProviderInboundPort</code> defines the inbound port
  * exposing the interface <code>URIProviderI</code> for components of
  * type <code>URIProvider</code>.
  *
  * <p><strong>Description</strong></p>
+ * 
+ * <p>
+ * This is exactly the same code as in the basic client/server example. It is
+ * copied here because the code of the component {@code URIProvider} is modified
+ * in this variant, hence the port must import the new variant of this component
+ * rather than the component defined in the basic client/server packages.
+ * </p>
  * 
  * <p><strong>Invariant</strong></p>
  * 
@@ -76,12 +84,12 @@ implements	URIProviderCI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	uri != null and owner instanceof URIProvider
-	 * post	true			// no postcondition.
+	 * pre	{@code uri != null && owner instanceof URIProvider}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param uri		URI under which the port will be published.
-	 * @param owner		component owning the port.
+	 * @param uri			URI under which the port will be published.
+	 * @param owner			component owning the port.
 	 * @throws Exception	<i>todo.</i>
 	 */
 	public				URIProviderInboundPort(
@@ -90,9 +98,11 @@ implements	URIProviderCI
 		) throws Exception
 	{
 		// the implemented interface is statically known
-		super(uri, URIProviderCI.class, owner) ;
+		super(uri, URIProviderCI.class, owner);
 
-		assert	uri != null && owner instanceof URIProvider ;
+		assert	uri != null && owner instanceof URIProvider :
+				new PreconditionException(
+						"uri != null && owner instanceof URIProvider");
 	}
 
 	/**
@@ -106,8 +116,8 @@ implements	URIProviderCI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	uri != null and owner instanceof URIProvider
-	 * post	true			// no postcondition.
+	 * pre	{@code uri != null && owner instanceof URIProvider}
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param owner		component owning the port.
@@ -118,9 +128,11 @@ implements	URIProviderCI
 		) throws Exception
 	{
 		// the implemented interface is statically known
-		super(URIProviderCI.class, owner) ;
+		super(URIProviderCI.class, owner);
 
-		assert	owner instanceof URIProvider ;
+		assert	owner instanceof URIProvider :
+			new PreconditionException(
+					"uri != null && owner instanceof URIProvider");
 	}
 
 	/**
@@ -130,8 +142,8 @@ implements	URIProviderCI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true				// no more preconditions.
-	 * post	ret != null
+	 * pre	{@code true}	// no more preconditions.
+	 * post	{@code return != null}
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI#provideURI()
@@ -145,7 +157,7 @@ implements	URIProviderCI
 		// defining the service to be called (to be contrasted with the
 		// anonymous class used in provideURIs.
 		return this.getOwner().handleRequest(
-						owner -> ((URIProvider)owner).provideURIService()) ;
+						owner -> ((URIProvider)owner).provideURIService());
 	}
 
 	/**
@@ -155,14 +167,16 @@ implements	URIProviderCI
 	public String[]		provideURIs(final int numberOfRequestedURIs)
 	throws Exception
 	{
+		// use another way to call the service method within by explicitly
+		// creating a task submitted to the component
 		return this.getOwner().handleRequest(
 				new AbstractComponent.AbstractService<String[]>() {
 					@Override
 					public String[] call() throws Exception {
 						return ((URIProvider)this.getServiceOwner()).
-								provideURIsService(numberOfRequestedURIs) ;
+								provideURIsService(numberOfRequestedURIs);
 					}
 				}) ;
 	}
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

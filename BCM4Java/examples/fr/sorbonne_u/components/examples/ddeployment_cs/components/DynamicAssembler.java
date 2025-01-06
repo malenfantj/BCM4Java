@@ -37,7 +37,7 @@ package fr.sorbonne_u.components.examples.ddeployment_cs.components;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.connectors.URIServiceConnector;
+import fr.sorbonne_u.components.examples.basic_cs.connections.URIServiceConnector;
 import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
 import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
 import fr.sorbonne_u.components.examples.ddeployment_cs.connectors.URIConsumerLaunchConnector;

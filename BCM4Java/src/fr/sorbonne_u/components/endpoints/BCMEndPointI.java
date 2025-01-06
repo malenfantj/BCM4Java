@@ -166,7 +166,7 @@ extends		EndPointI<CI>,
 	 *
 	 * @return	the required interface of this end point.
 	 */
-	public Class<CI>	getImplementedInterface();
+	public Class<CI>	getClientSideInterface();
 
 	/**
 	 * return the reference proposing the required interface of this end point.
@@ -178,10 +178,10 @@ extends		EndPointI<CI>,
 	 * post	{@code true}	// no more postconditions.
 	 * </pre>
 	 * 
-	 * @see fr.sorbonne_u.components.endpoints.EndPointI#getReference()
+	 * @see fr.sorbonne_u.components.endpoints.EndPointI#getClientSideReference()
 	 */
 	@Override
-	public CI			getReference();
+	public CI			getClientSideReference();
 
 	/**
 	 * copy this BCM end point except its transient information <i>i.e.</i>,
@@ -221,7 +221,7 @@ extends		EndPointI<CI>,
 	public String		getInboundPortURI();
 
 	/**
-	 * return the (server side) offered interface of this BCM end point.
+	 * return the server side offered interface of this BCM end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -233,5 +233,5 @@ extends		EndPointI<CI>,
 	 * @param <OCI>	the type of the offered interface.
 	 * @return		the offered interface of this end point.
 	 */
-	public <OCI extends OfferedCI> Class<OCI>	getOfferedComponentInterface();
+	public <OCI extends OfferedCI> Class<OCI>	getServerSideInterface();
 }

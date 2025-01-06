@@ -148,7 +148,7 @@ implements	BCMEndPointI<CI>,
 	{
 		this(implementedInterface,
 			 serverSideOfferedInterface,
-			 AbstractPort.generatePortURI());
+			 AbstractPort.generatePortURI(implementedInterface));
 	}
 
 	/**
@@ -239,7 +239,7 @@ implements	BCMEndPointI<CI>,
 	 * pre	{@code c != null}
 	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
 	 * post	{@code return != null && return.isPublished()}
-	 * post	{@code ((AbstractPort)return).getPortURI.equals(inboundPortURI)}
+	 * post	{@code ((AbstractPort)return).getPortURI().equals(inboundPortURI)}
 	 * post	{@code getOfferedComponentInterface().isAssignableFrom(return.getClass())}
 	 * </pre>
 	 *
@@ -309,7 +309,7 @@ implements	BCMEndPointI<CI>,
 	 * <pre>
 	 * pre	{@code c != null}
 	 * post	{@code return != null && return.isPublished() && return.connected()}
-	 * post	{@code ((AbstractPort)return).getServerPortURI().equals(this.getInboundPortURI())}
+	 * post	{@code ((AbstractPort)return).getServerPortURI().equals(getInboundPortURI())}
 	 * post	{@code getImplementedInterface().isAssignableFrom(return.getClass())}
 	 * </pre>
 	 *
@@ -372,10 +372,10 @@ implements	BCMEndPointI<CI>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getReference()
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getClientSideReference()
 	 */
 	@Override
-	public CI			getReference()
+	public CI			getClientSideReference()
 	{
 		assert	clientSideInitialised() :
 				new PreconditionException("clientSideInitialised()");
@@ -425,8 +425,8 @@ implements	BCMEndPointI<CI>,
 			ret.inboundPort = null;
 			ret.client = null;
 			ret.outboundPort = null;
-			assert	ret.getImplementedInterface().
-									equals(this.getImplementedInterface()) :
+			assert	ret.getClientSideInterface().
+									equals(this.getClientSideInterface()) :
 					new PostconditionException(
 							"return.getImplementedInterface().equals("
 							+ "getImplementedInterface())");
@@ -434,8 +434,8 @@ implements	BCMEndPointI<CI>,
 					new PostconditionException(
 							"return.getInboundPortURI().equals("
 							+ "getInboundPortURI())");
-			assert	ret.getOfferedComponentInterface().
-								equals(this.getOfferedComponentInterface()) :
+			assert	ret.getServerSideInterface().
+								equals(this.getServerSideInterface()) :
 					new PostconditionException(
 							"return.getOfferedComponentInterface().equals("
 							+ "getOfferedComponentInterface())");
@@ -455,11 +455,11 @@ implements	BCMEndPointI<CI>,
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getOfferedComponentInterface()
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getServerSideInterface()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <OCI extends OfferedCI> Class<OCI>	getOfferedComponentInterface()
+	public <OCI extends OfferedCI> Class<OCI>	getServerSideInterface()
 	{
 		return (Class<OCI>) this.serverSideOfferedInterface;
 	}

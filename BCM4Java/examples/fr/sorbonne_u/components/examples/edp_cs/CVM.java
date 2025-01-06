@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.basic_cs;
+package fr.sorbonne_u.components.examples.edp_cs;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -35,9 +35,9 @@ package fr.sorbonne_u.components.examples.basic_cs;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.components.URIConsumer;
-import fr.sorbonne_u.components.examples.basic_cs.components.URIProvider;
-import fr.sorbonne_u.components.examples.basic_cs.connections.URIServiceConnector;
+import fr.sorbonne_u.components.examples.edp_cs.components.URIConsumer;
+import fr.sorbonne_u.components.examples.edp_cs.components.URIProvider;
+import fr.sorbonne_u.components.examples.edp_cs.connections.URIServiceEndPoint;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 
 // -----------------------------------------------------------------------------
@@ -120,12 +120,16 @@ extends		AbstractCVM
 		// Creation phase
 		// ---------------------------------------------------------------------
 
+		// create the URI service endpoint
+		URIServiceEndPoint uriServiceEndPoint = new URIServiceEndPoint();
+
 		// create the provider component
 		this.uriProviderURI =
 			AbstractComponent.createComponent(
 					URIProvider.class.getCanonicalName(),
-					new Object[]{PROVIDER_COMPONENT_URI,
-								 URIProviderInboundPortURI});
+					new Object[]{((URIServiceEndPoint)uriServiceEndPoint.
+															copyWithSharable()),
+								 PROVIDER_COMPONENT_URI});
 		assert	this.isDeployedComponent(this.uriProviderURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
@@ -137,33 +141,13 @@ extends		AbstractCVM
 			AbstractComponent.createComponent(
 					URIConsumer.class.getCanonicalName(),
 					new Object[]{CONSUMER_COMPONENT_URI,
-								 URIGetterOutboundPortURI});
+								 uriServiceEndPoint.copyWithSharable()});
 		assert	this.isDeployedComponent(this.uriConsumerURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
 		this.toggleTracing(this.uriConsumerURI);
 		this.toggleLogging(this.uriConsumerURI);
 		
-		// ---------------------------------------------------------------------
-		// Connection phase
-		// ---------------------------------------------------------------------
-
-		// do the connection
-		this.doPortConnection(
-				this.uriConsumerURI,
-				URIGetterOutboundPortURI,
-				URIProviderInboundPortURI,
-				URIServiceConnector.class.getCanonicalName()) ;
-		// Nota: the above use of the reference to the object representing
-		// the URI consumer component is allowed only in the deployment
-		// phase of the component virtual machine (to perform the static
-		// interconnection of components in a static architecture) and
-		// inside the concerned component (i.e., where the method
-		// doPortConnection can be called with the this destination
-		// (this.doPortConenction(...)). It must never be used in another
-		// component as the references to objects used to implement component
-		// features must not be shared among components.
-
 		// ---------------------------------------------------------------------
 		// Deployment done
 		// ---------------------------------------------------------------------
@@ -180,8 +164,6 @@ extends		AbstractCVM
 	{
 		// Port disconnections can be done here for static architectures
 		// otherwise, they can be done in the finalise methods of components.
-		this.doPortDisconnection(this.uriConsumerURI,
-								 URIGetterOutboundPortURI);
 
 		super.finalise();
 	}

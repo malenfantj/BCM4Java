@@ -98,7 +98,7 @@ extends		AbstractEndPointI
 	 *
 	 * @return		the interface proposed by this end point.
 	 */
-	public Class<I>		getImplementedInterface();
+	public Class<I>		getClientSideInterface();
 
 	/**
 	 * return the reference embedded in this end point.
@@ -112,7 +112,7 @@ extends		AbstractEndPointI
 	 *
 	 * @return	the reference embedded in this end point.
 	 */
-	public I			getReference();
+	public I			getClientSideReference();
 
 	/**
 	 * copy this end point except its transient information <i>i.e.</i>,

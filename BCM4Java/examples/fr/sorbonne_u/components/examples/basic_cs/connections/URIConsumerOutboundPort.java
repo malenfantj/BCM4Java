@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.basic_cs.ports;
+package fr.sorbonne_u.components.examples.basic_cs.connections;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //

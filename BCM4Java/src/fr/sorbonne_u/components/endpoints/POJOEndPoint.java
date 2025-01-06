@@ -90,16 +90,16 @@ implements	Cloneable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code implementedInterface != null}
+	 * pre	{@code clientSideInterface != null}
 	 * post	{@code !serverSideInitialised()}
 	 * post	{@code !clientSideInitialised()}
 	 * </pre>
 	 *
-	 * @param implementedInterface	the interface implemented by this end point.
+	 * @param clientSideInterface	the interface implemented by this end point.
 	 */
-	public				POJOEndPoint(Class<I> implementedInterface)
+	public				POJOEndPoint(Class<I> clientSideInterface)
 	{
-		super(implementedInterface);
+		super(clientSideInterface);
 
 		this.reference = null;
 		this.clientSideInitialised = false;
@@ -111,18 +111,18 @@ implements	Cloneable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code implementedInterface != null}
+	 * pre	{@code clientSideInterface != null}
 	 * pre	{@code reference != null}
 	 * post	{@code serverSideInitialised()}
 	 * post	{@code !clientSideInitialised()}
 	 * </pre>
 	 *
-	 * @param implementedInterface	the interface implemented by this end point.
-	 * @param reference	the reference to a Java object embedded in this POJO end point.
+	 * @param clientSideInterface	the interface proposed by this end point.
+	 * @param reference				the reference to a Java object embedded in this POJO endpoint.
 	 */
-	private				POJOEndPoint(Class<I> implementedInterface, I reference)
+	private				POJOEndPoint(Class<I> clientSideInterface, I reference)
 	{
-		super(implementedInterface);
+		super(clientSideInterface);
 
 		assert	reference != null :
 				new PreconditionException("reference != null");
@@ -185,10 +185,10 @@ implements	Cloneable
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.EndPointI#getReference()
+	 * @see fr.sorbonne_u.components.endpoints.EndPointI#getClientSideReference()
 	 */
 	@Override
-	public I			getReference()
+	public I			getClientSideReference()
 	{
 		assert	clientSideInitialised() :
 				new PreconditionException("clientSideInitialised()");
@@ -245,14 +245,16 @@ implements	Cloneable
 		try {
 			@SuppressWarnings("unchecked")
 			POJOEndPoint<I> ret = (POJOEndPoint<I>) this.clone();
-			assert	ret.getImplementedInterface().
-									equals(this.getImplementedInterface()) :
+			assert	ret.getClientSideInterface().
+									equals(this.getClientSideInterface()) :
 					new PostconditionException(
-							"return.getImplementedInterface().equals("
-							+ "getImplementedInterface())");
-			assert	ret.getReference().equals(this.getReference()) :
+							"return.getClientSideInterface().equals("
+							+ "getClientSideInterface())");
+			assert	ret.getClientSideReference().
+										equals(this.getClientSideReference()) :
 					new PostconditionException(
-							"ret.getReference().equals(getReference())");
+							"ret.getClientSideReference().equals("
+							+ "getClientSideReference())");
 			return ret;
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e) ;

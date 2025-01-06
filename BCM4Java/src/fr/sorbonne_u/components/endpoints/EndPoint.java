@@ -43,7 +43,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
- * invariant	{@code implementedInterface != null}
+ * invariant	{@code clientSideInterface != null}
  * </pre>
  * 
  * <p><strong>Invariants</strong></p>
@@ -66,7 +66,7 @@ implements	EndPointI<I>
 	// Sharable information
 
 	/** the interface implemented by this end point.	*/
-	protected final Class<I>	implementedInterface;
+	protected final Class<I>	clientSideInterface;
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -78,19 +78,19 @@ implements	EndPointI<I>
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code implementedInterface != null}
+	 * pre	{@code clientSideInterface != null}
 	 * post	{@code !serverSideInitialised()}
 	 * post	{@code !clientSideInitialised()}
 	 * </pre>
 	 *
-	 * @param implementedInterface	the interface implemented by this end point.
+	 * @param clientSideInterface	the interface proposed to the client by this end point.
 	 */
-	public				EndPoint(Class<I> implementedInterface)
+	public				EndPoint(Class<I> clientSideInterface)
 	{
-		assert	implementedInterface != null :
-				new PreconditionException("implementedInterface != null");
+		assert	clientSideInterface != null :
+				new PreconditionException("clientSideInterface != null");
 
-		this.implementedInterface = implementedInterface;
+		this.clientSideInterface = clientSideInterface;
 	}
 
 	// -------------------------------------------------------------------------
@@ -98,12 +98,12 @@ implements	EndPointI<I>
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.EndPointI#getImplementedInterface()
+	 * @see fr.sorbonne_u.components.endpoints.EndPointI#getClientSideInterface()
 	 */
 	@Override
-	public Class<I>		getImplementedInterface()
+	public Class<I>		getClientSideInterface()
 	{
-		return this.implementedInterface;
+		return this.clientSideInterface;
 	}
 
 	/**
@@ -153,6 +153,6 @@ implements	EndPointI<I>
 	{
 		assert	sb != null : new PreconditionException("sb != null");
 
-		sb.append(this.implementedInterface.getSimpleName());
+		sb.append(this.clientSideInterface.getSimpleName());
 	}
 }
