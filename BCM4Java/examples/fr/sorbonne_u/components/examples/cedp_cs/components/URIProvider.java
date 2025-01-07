@@ -1,6 +1,4 @@
-package fr.sorbonne_u.components.examples.edp_cs.components;
-
-import java.util.stream.Stream;
+package fr.sorbonne_u.components.examples.cedp_cs.components;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -38,13 +36,15 @@ import java.util.stream.Stream;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.OfferedInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
-import fr.sorbonne_u.components.examples.edp_cs.connections.URIServiceEndPoint;
+import fr.sorbonne_u.components.examples.cedp_cs.connections.CompositeURIServiceEndpoint;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.MultipleURIProviderCI;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIProviderCI;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import java.util.stream.Stream;
 
 // -----------------------------------------------------------------------------
 /**
@@ -53,38 +53,36 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Implementation invariants</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
- * invariant	{@code uriPrefix != null}
+ * invariant	{@code	this.uriPrefix != null}
  * </pre>
  * 
  * <p><strong>Invariants</strong></p>
  * 
  * <pre>
- * invariant	{@code c.isOfferedInterface(URIProviderCI.class)}
+ * invariant	{@code	c.isOfferedInterface(SingleURIProviderI.class)}
+ * invariant	{@code	c.isOfferedInterface(MultipleURIProviderI.class)}
  * </pre>
  * 
  * <p>Created on : 2025-01-07</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-@OfferedInterfaces(offered = {URIProviderCI.class})
+@OfferedInterfaces(offered = {SingleURIProviderCI.class,
+							  MultipleURIProviderCI.class})
 public class			URIProvider
 extends		AbstractComponent
 {
 	// -------------------------------------------------------------------------
-	// Constants and variables
+	// Constructors and instance variables
 	// -------------------------------------------------------------------------
 
 	/**	a string prefix that will identify the URI provider.				*/
-	protected final String				uriPrefix;
-	/** the endpoint of the URI service provided by this component.			*/
-	protected final URIServiceEndPoint	uriServiceEndPoint;
-
-	// -------------------------------------------------------------------------
-	// Constructors
-	// -------------------------------------------------------------------------
+	protected String						uriPrefix;
+	/** composite end point used to offer provider services.				*/
+	protected CompositeURIServiceEndpoint	compositeURIServiceEndpoint;
 
 	/**
 	 * check the invariant of the class on an instance.
@@ -94,85 +92,73 @@ extends		AbstractComponent
 	protected static void	checkInvariant(URIProvider c)
 	{
 		assert	c.uriPrefix != null :
-					new InvariantException("The URI prefix is null!");
-		assert	c.isOfferedInterface(URIProviderCI.class) :
-					new InvariantException("The URI component should "
-							+ "offer the interface URIProviderI!");
+				new InvariantException("The URI prefix is null!");
+		assert	c.isOfferedInterface(SingleURIProviderCI.class) :
+				new InvariantException(
+						"The URI component should offer the interface "
+						+ "SingleURIProviderI!");
+		assert	c.isOfferedInterface(MultipleURIProviderCI.class) :
+				new InvariantException(
+						"The URI component should offer the interface "
+						+ "MultipleURIProviderI!");
 	}
 
 	/**
 	 * create a component with a given uri prefix and that will expose its
-	 * service through a port of the given URI.
+	 * service through the given composite end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code uriPrefix != null && uriServiceEndPoint != null}
-	 * post	{@code isPortExisting(uriServiceEndPoint.getInboundPortURI())}
-	 * post	{@code findPortFromURI(uriServiceEndPoint.getInboundPortURI()).getImplementedInterface().equals(URIProviderCI.class)}
-	 * post	{@code findPortFromURI(uriServiceEndPoint.getInboundPortURI()).isPublished()}
+	 * pre	uriPrefix != null and compositeURIServiceEndpoint != null != null
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param uriServiceEndPoint	service endpoint for the URI provider.
-	 * @param uriPrefix				the URI prefix of this provider.
-	 * @throws Exception			<i>to do</i>.
+	 * @param uriPrefix						the URI prefix of this provider.
+	 * @param compositeURIServiceEndpoint	composite end point used to offer provider services.
+	 * @throws Exception					<i>to do</i>.
 	 */
 	protected				URIProvider(
-		URIServiceEndPoint uriServiceEndPoint,
-		String uriPrefix
+		String uriPrefix,
+		CompositeURIServiceEndpoint compositeURIServiceEndpoint
 		) throws Exception
 	{
 		// the reflection inbound port URI is the URI of the component
-		super(uriPrefix, 1, 0) ;
+		super(uriPrefix, 1, 0);
 
-		assert	uriServiceEndPoint != null :
-				new PreconditionException("uriServiceEndPoint != null");
-		assert	uriServiceEndPoint.getServerSideInterface().
-												equals(URIProviderCI.class) :
-				new PreconditionException(
-						"uriServiceEndPoint.getOfferedComponentInterface()."
-						+ "equals(URIProviderCI.class)");
 		assert	uriPrefix != null :
-					new PreconditionException("uri can't be null!");
+				new PreconditionException("uriPrefix can't be null!");
+		assert	compositeURIServiceEndpoint != null :
+				new PreconditionException(
+						"compositeURIServiceEndpoint can't be null!");
 
 		this.uriPrefix = uriPrefix;
-		this.uriServiceEndPoint = uriServiceEndPoint;
 
-		// if the offered interface is not declared in an annotation on
+		// if the offered interfaces are not declared in an annotation on
 		// the component class, it can be added manually with the
-		// following instruction:
-		//this.addOfferedInterface(URIProviderI.class) ;
+		// following instructions:
+		//this.addOfferedInterface(SingleURIProviderI.class);
+		//this.addOfferedInterface(MultipleURIProviderI.class);
 
 		// create the port that exposes the offered interface with the
 		// given URI to ease the connection from client components.
-		uriServiceEndPoint.initialiseServerSide(this);
+		this.compositeURIServiceEndpoint = compositeURIServiceEndpoint;
+		compositeURIServiceEndpoint.initialiseServerSide(this);
 
 		if (AbstractCVM.isDistributed) {
 			this.getLogger().setDirectory(System.getProperty("user.dir"));
 		} else {
 			this.getLogger().setDirectory(System.getProperty("user.home"));
 		}
-		this.getTracer().setTitle("Provider");
+		this.getTracer().setTitle("provider");
 		this.getTracer().setRelativePosition(1, 0);
 
-		URIProvider.checkInvariant(this) ;
+		URIProvider.checkInvariant(this);
 		AbstractComponent.checkImplementationInvariant(this);
 		AbstractComponent.checkInvariant(this);
-
-		assert	isPortExisting(uriServiceEndPoint.getInboundPortURI()) :
+		assert	this.uriPrefix.equals(uriPrefix) :
 				new PostconditionException(
-						"The component must have a port with URI " +
-						uriServiceEndPoint.getInboundPortURI());
-		assert	findPortFromURI(uriServiceEndPoint.getInboundPortURI()).
-					getImplementedInterface().equals(URIProviderCI.class) :
-				new PostconditionException(
-						"The component must have a port with implemented "
-						+ "interface URIProviderI");
-		assert	findPortFromURI(uriServiceEndPoint.getInboundPortURI()).
-																isPublished() :
-				new PostconditionException(
-						"The component must have a port published with URI " +
-						uriServiceEndPoint.getInboundPortURI());
+						"The URI prefix has not been initialised!");
 	}
 
 	//--------------------------------------------------------------------------
@@ -207,7 +193,7 @@ extends		AbstractComponent
 	public void			shutdown() throws ComponentShutdownException
 	{
 		try {
-			this.uriServiceEndPoint.cleanUpServerSide();
+			this.compositeURIServiceEndpoint.cleanUpServerSide();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -221,7 +207,7 @@ extends		AbstractComponent
 	public void			shutdownNow() throws ComponentShutdownException
 	{
 		try {
-			this.uriServiceEndPoint.cleanUpServerSide();
+			this.compositeURIServiceEndpoint.cleanUpServerSide();
 		} catch (Exception e) {
 			throw new ComponentShutdownException(e);
 		}
@@ -238,22 +224,20 @@ extends		AbstractComponent
 	 * 
 	 * <p><strong>Description</strong></p>
 	 * 
-	 * <p>
 	 * Starting point is to define the service methods of the server component.
-	 * </p>
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	{@code true}	// no precondition.
-	 * post	{@code return != null and return.startsWith(this.uriPrefix))}
+	 * post	{@code return != null && ret.startsWith(this.uriPrefix))}
 	 * </pre>
 	 *
 	 * @return	the produced URI.
 	 */
 	public String		provideURIService()
 	{
-		this.logMessage("provider creates a new URI and returns it.") ;
+		this.logMessage("provider creates a new URI and returns it.");
 		// see http://www.asciiarmor.com/post/33736615/java-util-uuid-mini-faq
 		String ret = this.uriPrefix + "-" +
 									java.util.UUID.randomUUID().toString();
@@ -274,22 +258,23 @@ extends		AbstractComponent
 	 * 
 	 * <pre>
 	 * pre	{@code n > 0}
-	 * post	{@code return != null and return.size() == n}
-	 * post	{@code Stream.of(ret).allMatch(uri -> uri != null && uri.startsWith(uriPrefix))}
+	 * post	{@code return != null && ret.size() == n}
+	 * post	{@code Stream.of(ret).allMatch(uri -> uri != null)}
 	 * </pre>
 	 *
 	 * @param n				number of requested URIs.
-	 * @return				array of <code>n</code> URIs considered as strings.
+	 * @return				array of {@code n} URIs implemented as strings.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public String[]		provideURIsService(final int n)
-	throws Exception
+	public String[]		provideURIsService(final int n) throws Exception
 	{
-		assert	n > 0 : new PreconditionException("n must be greater than 0"
-											+ " but equal to: " + n + "!");
+		assert	n > 0 :
+				new PreconditionException(
+						"n must be greater than 0"
+						+ " but is equal to: " + n + "!");
 
-		this.logMessage("provider creates " + n + " new URI and returns them.") ;
-		String[] ret = new String[n] ;
+		this.logMessage("provider creates " + n + " new URI and returns them.");
+		String[] ret = new String[n];
 		for (int i = 0 ; i < n ; i++) {
 			// see http://www.asciiarmor.com/post/33736615/java-util-uuid-mini-faq
 			ret[i] = this.uriPrefix + "-" +
@@ -299,13 +284,10 @@ extends		AbstractComponent
 		assert	ret != null :
 				new PostconditionException("the result is null!");
 		assert	ret.length == n :
+				new PostconditionException("The length of the result is not n!");
+		assert	Stream.of(ret).allMatch(uri -> uri != null) :
 				new PostconditionException(
-						"The length of the result is not n!");
-		assert	Stream.of(ret).allMatch(uri -> uri != null &&
-													uri.startsWith(uriPrefix)) :
-				new PostconditionException(
-						"Stream.of(ret).allMatch(uri -> uri != null && "
-						+ "uri.startsWith(uriPrefix))");
+						"Stream.of(ret).allMatch(uri -> uri != null)");
 
 		return ret;
 	}

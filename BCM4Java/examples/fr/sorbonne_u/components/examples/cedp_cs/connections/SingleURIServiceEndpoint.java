@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.edp_cs.connections;
+package fr.sorbonne_u.components.examples.cedp_cs.connections;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -36,10 +36,8 @@ package fr.sorbonne_u.components.examples.edp_cs.connections;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.endpoints.BCMEndPoint;
-import fr.sorbonne_u.components.examples.basic_cs.connections.URIConsumerOutboundPort;
-import fr.sorbonne_u.components.examples.basic_cs.connections.URIServiceConnector;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIConsumerCI;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIProviderCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
@@ -48,8 +46,8 @@ import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>URIServiceEndPoint</code> implements the BCM endpoint for
- * the URI service in the basic client/server example.
+ * The class <code>SingleURIServiceEndpoint</code> implements the BCM endpoint
+ * for the single URI service in the basic client/server example.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -65,12 +63,12 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2025-01-03</p>
+ * <p>Created on : 2025-01-07</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			URIServiceEndPoint
-extends		BCMEndPoint<URIConsumerCI>
+public class			SingleURIServiceEndpoint
+extends BCMEndPoint<SingleURIConsumerCI>
 {
 	// -------------------------------------------------------------------------
 	// Constants and variables
@@ -96,7 +94,7 @@ extends		BCMEndPoint<URIConsumerCI>
 	 * @return			true if the implementation invariants are observed, false otherwise.
 	 */
 	protected static boolean	implementationInvariants(
-		URIServiceEndPoint instance
+		SingleURIServiceEndpoint instance
 		)
 	{
 		assert instance != null : new PreconditionException("instance != null");
@@ -118,7 +116,7 @@ extends		BCMEndPoint<URIConsumerCI>
 	 * @param instance	instance to be tested.
 	 * @return			true if the invariants are observed, false otherwise.
 	 */
-	protected static boolean	invariants(URIServiceEndPoint instance)
+	protected static boolean	invariants(SingleURIServiceEndpoint instance)
 	{
 		assert instance != null : new PreconditionException("instance != null");
 
@@ -142,9 +140,12 @@ extends		BCMEndPoint<URIConsumerCI>
 	 *
 	 * @param inboundPortURI	URI of the inbound port providing the offered interface.
 	 */
-	public				URIServiceEndPoint(String inboundPortURI)
+	public				SingleURIServiceEndpoint(
+		String inboundPortURI
+		)
 	{
-		super(URIConsumerCI.class, URIProviderCI.class, inboundPortURI);
+		super(SingleURIConsumerCI.class, SingleURIProviderCI.class,
+			  inboundPortURI);
 	}
 
 	/**
@@ -158,9 +159,9 @@ extends		BCMEndPoint<URIConsumerCI>
 	 * </pre>
 	 *
 	 */
-	public				URIServiceEndPoint()
+	public				SingleURIServiceEndpoint()
 	{
-		super(URIConsumerCI.class, URIProviderCI.class);
+		super(SingleURIConsumerCI.class, SingleURIProviderCI.class);
 	}
 
 	// -------------------------------------------------------------------------
@@ -182,8 +183,8 @@ extends		BCMEndPoint<URIConsumerCI>
 				new PreconditionException(
 						"inboundPortURI != null && !inboundPortURI.isEmpty()");
 
-		URIProviderInboundPort p =
-						new URIProviderInboundPort(this.inboundPortURI, c);
+		SingleURIProviderInboundPort p =
+				new SingleURIProviderInboundPort(inboundPortURI, c);
 		p.publishPort();
 
 		// Postconditions checking
@@ -198,11 +199,11 @@ extends		BCMEndPoint<URIConsumerCI>
 						"getOfferedComponentInterface()."
 						+ "isAssignableFrom(return.getClass())");
 		// Invariant checking
-		assert	URIServiceEndPoint.implementationInvariants(this) :
+		assert	SingleURIServiceEndpoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
-						"implementationInvariants(this)");
-		assert	URIServiceEndPoint.invariants(this) :
-				new InvariantException("invariants(this)");
+						"SingleURIServiceEndpoint.implementationInvariants(this)");
+		assert	SingleURIServiceEndpoint.invariants(this) :
+				new InvariantException("SingleURIServiceEndpoint.invariants(this)");
 		
 		return p;
 	}
@@ -211,7 +212,7 @@ extends		BCMEndPoint<URIConsumerCI>
 	 * @see fr.sorbonne_u.components.endpoints.BCMEndPoint#makeOutboundPort(fr.sorbonne_u.components.AbstractComponent, java.lang.String)
 	 */
 	@Override
-	protected URIConsumerCI		makeOutboundPort(
+	protected SingleURIConsumerCI	makeOutboundPort(
 		AbstractComponent c,
 		String inboundPortURI
 		) throws Exception
@@ -219,12 +220,13 @@ extends		BCMEndPoint<URIConsumerCI>
 		// Preconditions checking
 		assert	c != null : new PreconditionException("c != null");
 
-		URIConsumerOutboundPort p = new URIConsumerOutboundPort(c);
+		SingleURIConsumerOutboundPort p =
+				new SingleURIConsumerOutboundPort(c);
 		p.publishPort();
 		c.doPortConnection(
 				p.getPortURI(),
-				this.inboundPortURI,
-				URIServiceConnector.class.getCanonicalName());
+				inboundPortURI,
+				SingleURIServiceConnector.class.getCanonicalName());
 
 		// Postconditions checking
 		assert	p != null && p.isPublished() && p.connected() :

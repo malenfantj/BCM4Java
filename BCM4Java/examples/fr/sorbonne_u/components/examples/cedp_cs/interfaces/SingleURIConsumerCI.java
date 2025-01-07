@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.basic_cs.interfaces;
+package fr.sorbonne_u.components.examples.cedp_cs.interfaces;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -36,10 +36,11 @@ package fr.sorbonne_u.components.examples.basic_cs.interfaces;
 
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 /**
- * The interface <code>URIConsumerCI</code> defines the interface required
- * by a component that needs to get URI from an URI provider component.
+ * The component interface <code>SingleURIConsumerCI</code> defines the component
+ * interface required by a component that needs to get URI from an URI provider
+ * component.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -56,11 +57,11 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2014-01-22</p>
+ * <p>Created on : 2025-01-07</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		URIConsumerCI
+public interface		SingleURIConsumerCI
 extends		RequiredCI
 {
 	/**
@@ -76,23 +77,7 @@ extends		RequiredCI
 	 * @return				the requested URI.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public String		getURI() throws Exception;
+	public String		getURI() throws Exception ;
 
-	/**
-	 * get several new URIs at once.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code numberOfURIs > 0}
-	 * post	{@code return != null && return.length == numberOfURIs}
-	 * post	{@code Stream.of(ret).allMatch(uri -> uri != null)}
-	 * </pre>
-	 *
-	 * @param numberOfURIs	number of requested URIs.
-	 * @return				array of URIs.
-	 * @throws Exception	<i>to do</i>.
-	 */
-	public String[]		getURIs(int numberOfURIs) throws Exception;
 }
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

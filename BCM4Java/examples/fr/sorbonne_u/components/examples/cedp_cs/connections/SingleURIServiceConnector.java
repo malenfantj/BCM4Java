@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.basic_cs.interfaces;
+package fr.sorbonne_u.components.examples.cedp_cs.connections;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -34,21 +34,29 @@ package fr.sorbonne_u.components.examples.basic_cs.interfaces;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.interfaces.RequiredCI;
+import fr.sorbonne_u.components.connectors.AbstractConnector;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIConsumerCI;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIProviderCI;
 
 //-----------------------------------------------------------------------------
 /**
- * The interface <code>URIConsumerCI</code> defines the interface required
- * by a component that needs to get URI from an URI provider component.
+ * The class <code>SingleURIServiceConnector</code> implements a connector
+ * between the <code>SingleURIConsumerCI</code> and the
+ * <code>SingleURIProviderCI</code> component interfaces.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * As a RMI remote interface, all of the methods must throw
- * <code>RemoteException</code>. The choice here is to throw
- * <code>Exception</code> to cater for potential exceptions
- * thrown by the implementation methods.
+ * It implements the required interface <code>SingleURIConsumerCI</code> and in
+ * the method <code>getURI</code>, it calls the corresponding offered method
+ * <code>provideURI</code>.
  * </p>
+ * 
+ * <p><strong>Implementation Invariants</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code true}	// no more invariant
+ * </pre>
  * 
  * <p><strong>Invariants</strong></p>
  * 
@@ -56,43 +64,31 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2014-01-22</p>
+ * <p>Created on : 2025-01-07</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public interface		URIConsumerCI
-extends		RequiredCI
+public class			SingleURIServiceConnector
+extends		AbstractConnector
+implements	SingleURIConsumerCI
 {
 	/**
-	 * get a new URI.
+	 * implement the required interface by simply calling the inbound port with
+	 * the corresponding offered method.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code return != null}
+	 * pre	true				// no more preconditions.
+	 * post	ret != null
 	 * </pre>
-	 *
-	 * @return				the requested URI.
-	 * @throws Exception	<i>to do</i>.
-	 */
-	public String		getURI() throws Exception;
-
-	/**
-	 * get several new URIs at once.
 	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code numberOfURIs > 0}
-	 * post	{@code return != null && return.length == numberOfURIs}
-	 * post	{@code Stream.of(ret).allMatch(uri -> uri != null)}
-	 * </pre>
-	 *
-	 * @param numberOfURIs	number of requested URIs.
-	 * @return				array of URIs.
-	 * @throws Exception	<i>to do</i>.
+	 * @see fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIConsumerCI#getURI()
 	 */
-	public String[]		getURIs(int numberOfURIs) throws Exception;
+	@Override
+	public String		getURI() throws Exception
+	{
+		return ((SingleURIProviderCI)this.offering).provideURI() ;
+	}
 }
 //-----------------------------------------------------------------------------

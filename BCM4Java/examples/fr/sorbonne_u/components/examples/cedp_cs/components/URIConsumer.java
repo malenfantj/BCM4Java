@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.edp_cs.components;
+package fr.sorbonne_u.components.examples.cedp_cs.components;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -38,8 +38,9 @@ import java.util.concurrent.TimeUnit;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
-import fr.sorbonne_u.components.examples.edp_cs.connections.URIServiceEndPoint;
+import fr.sorbonne_u.components.examples.cedp_cs.connections.CompositeURIServiceEndpoint;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.MultipleURIConsumerCI;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIConsumerCI;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 
 //-----------------------------------------------------------------------------
@@ -51,17 +52,13 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
  * 
  * <p>
  * The component declares its required service through the required interface
- * <code>URIConsumerI</code> which has a <code>getURI</code> requested service
+ * {@code SingleURIConsumerCI} and {@code MultipleURIConsumerCI} which have
+ * respectively a {@code getURI} and a {@code getURIs} requested service
  * signature.  The internal method <code>getURIandPrint</code> implements the
  * main task of the component, as it calls the provider component through the
- * outbound port implementing the connection.  It does that repeatedly ten
- * times then disconnect and halt.  The <code>start</code> method initiates
- * this process. 
- * </p>
- * <p>
- * In this version, the connection between this component and the URI provider
- * one is done in the virtual machine code, in a form of external assembly of
- * components following one of the vision of the concept of component assembly.
+ * composite endpoint implementing the connection.  It does that repeatedly ten
+ * times then disconnect and halt.  The {@code start} method initiates this
+ * process. 
  * </p>
  * 
  * <p><strong>Implementation Invariants</strong></p>
@@ -69,7 +66,7 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
- *
+ * 
  * <p><strong>Invariants</strong></p>
  * 
  * <pre>
@@ -82,35 +79,32 @@ import fr.sorbonne_u.components.exceptions.ComponentStartException;
  */
 // The next annotation requires that the referenced interface is added to
 // the required interfaces of the component.
-@RequiredInterfaces(required = {URIConsumerCI.class})
+@RequiredInterfaces(required = {SingleURIConsumerCI.class,
+								MultipleURIConsumerCI.class})
 public class			URIConsumer
 extends		AbstractComponent
 {
-	// -------------------------------------------------------------------------
-	// Constants and variables
-	// -------------------------------------------------------------------------
+	// ------------------------------------------------------------------------
+	// Constructors and instance variables
+	// ------------------------------------------------------------------------
 
 	/** number of URIs that will be required by the consumer when calling
 	 *  for several URIs at the same time.									*/
-	protected final static int			N = 2 ;
+	protected final static int				N = 2 ;
 
-	/** the endpoint of the URI service consumed by this component.			*/
-	protected final URIServiceEndPoint uriServiceEndPoint;
+	/** composite end point used to call provider services.					*/
+	protected CompositeURIServiceEndpoint	compositeURIServiceEndpoint;
 	/**	counting service invocations.										*/
-	protected int						counter ;
-
-	// ------------------------------------------------------------------------
-	// Constructors
-	// ------------------------------------------------------------------------
+	protected int							counter ;
 
 	/**
-	 * @param uri					URI of the component
-	 * @param uriServiceEndPoint	service endpoint for the URI provider.
-	 * @throws Exception			<i>todo</i>.
+	 * @param uri							URI of the component
+	 * @param compositeURIServiceEndpoint	composite end point used to call provider services.
+	 * @throws Exception					<i>to do</i>.
 	 */
 	protected				URIConsumer(
 		String uri,
-		URIServiceEndPoint uriServiceEndPoint
+		CompositeURIServiceEndpoint compositeURIServiceEndpoint
 		) throws Exception
 	{
 		// the reflection inbound port URI is the URI of the component
@@ -121,7 +115,7 @@ extends		AbstractComponent
 		// following instruction:
 		//this.addRequiredInterface(URIConsumerI.class) ;
 
-		this.uriServiceEndPoint = uriServiceEndPoint;
+		this.compositeURIServiceEndpoint = compositeURIServiceEndpoint;
 		this.counter = 0 ;
 
 		if (AbstractCVM.isDistributed) {
@@ -148,33 +142,37 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @throws Exception	<i>todo.</i>
+	 * @throws Exception	<i>to do</i>.
 	 */
 	public void			getURIandPrint() throws Exception
 	{
 		this.counter++ ;
 		if (this.counter <= 10) {
 			// Get the next URI and print it
-			String uri = this.uriServiceEndPoint.getClientSideReference().getURI();
+			String uri = this.compositeURIServiceEndpoint.
+									getSingleURIServiceEndpoint().
+											getClientSideReference().getURI() ;
 			this.logMessage("consumer getting a new URI no "
-							+ this.counter + ": " + uri + ".");
+							+ this.counter + ": " + uri + ".") ;
 
 			// Get a set of new URIs and print them
-			String[] uris = this.uriServiceEndPoint.getClientSideReference().
-													getURIs(URIConsumer.N);
-			StringBuffer mes = new StringBuffer();
+			String[] uris = this.compositeURIServiceEndpoint.
+									getMultipleURIServiceEndpoint().
+											getClientSideReference().
+													getURIs(URIConsumer.N) ;
+			StringBuffer mes = new StringBuffer() ;
 			for (int i = 0 ; i < URIConsumer.N ; i++) {
-				mes.append(uris[i]);
+				mes.append(uris[i]) ;
 				if (i < URIConsumer.N - 1) {
-					mes.append(", ");
+					mes.append(", ") ;
 				}
 			}
 			this.logMessage("consumer getting a new set of URIs no "
-							+ this.counter + " [" + mes + "].");
+							+ this.counter + " [" + mes + "].") ;
 
 			// Schedule the next service method invocation in one second.
 			// All tasks and services of a component must be called through
@@ -188,7 +186,7 @@ extends		AbstractComponent
 						public void run() {
 							try {
 								((URIConsumer)this.getTaskOwner()).
-													getURIandPrint();
+													getURIandPrint() ;
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -209,8 +207,8 @@ extends		AbstractComponent
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true				// no more preconditions.
-	 * post	true				// no more postconditions.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.AbstractComponent#start()
@@ -224,8 +222,8 @@ extends		AbstractComponent
 		// services of this component or of another component as they will
 		// not have started yet, hence not able to execute any incoming calls.
 
-		// connect to the server side
-		this.uriServiceEndPoint.initialiseClientSide(this);
+		// create the outbound port, publish and connect it
+		this.compositeURIServiceEndpoint.initialiseClientSide(this);
 	}
 
 	/**
@@ -267,10 +265,11 @@ extends		AbstractComponent
 		// This is the place where to clean up resources, such as
 		// disconnecting ports and unpublishing outbound ports that
 		// will be destroyed when shutting down.
-		// In static architectures like in this example, endpoints can also
+		// In static architectures like in this example, ports can also
 		// be disconnected by the finalise method of the component
 		// virtual machine.
-		this.uriServiceEndPoint.cleanUpClientSide();
+
+		this.compositeURIServiceEndpoint.cleanUpClientSide();
 
 		// This called at the end to make the component internal
 		// state move to the finalised state.

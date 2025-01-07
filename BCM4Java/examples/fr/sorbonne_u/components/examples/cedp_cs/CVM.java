@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.edp_cs;
+package fr.sorbonne_u.components.examples.cedp_cs;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
@@ -35,21 +35,21 @@ package fr.sorbonne_u.components.examples.edp_cs;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.examples.edp_cs.components.URIConsumer;
-import fr.sorbonne_u.components.examples.edp_cs.components.URIProvider;
-import fr.sorbonne_u.components.examples.edp_cs.connections.URIServiceEndPoint;
+import fr.sorbonne_u.components.examples.cedp_cs.components.URIConsumer;
+import fr.sorbonne_u.components.examples.cedp_cs.components.URIProvider;
+import fr.sorbonne_u.components.examples.cedp_cs.connections.CompositeURIServiceEndpoint;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 
 // -----------------------------------------------------------------------------
 /**
  * The class <code>CVM</code> implements the single JVM assembly for the basic
- * client/server example.
+ * client/server example using a composite end point.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p>
  * An URI provider component defined by the class <code>URIProvider</code>
- * offers an URI creation service, which is used by an URI consumer component
+ * offers URI creation services, which is used by an URI consumer component
  * defined by the class <code>URIConsumer</code>. Both are deployed within a
  * single JVM.
  * </p>
@@ -81,23 +81,19 @@ extends		AbstractCVM
 	protected static final String	PROVIDER_COMPONENT_URI = "my-URI-provider";
 	/** URI of the consumer component (convenience).						*/
 	protected static final String	CONSUMER_COMPONENT_URI = "my-URI-consumer";
-	/** URI of the provider outbound port (simplifies the connection).		*/
-	protected static final String	URIGetterOutboundPortURI = "oport";
-	/** URI of the consumer inbound port (simplifies the connection).		*/
-	protected static final String	URIProviderInboundPortURI = "iport";
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	public				CVM() throws Exception
 	{
 		super() ;
 	}
 
-	//-------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// CVM life-cycle methods
-	//-------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * instantiate the components, publish their port and interconnect them.
@@ -105,8 +101,8 @@ extends		AbstractCVM
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code !this.deploymentDone()}
-	 * post	{@code this.deploymentDone()}
+	 * pre	!this.deploymentDone()
+	 * post	this.deploymentDone()
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
@@ -133,16 +129,19 @@ extends		AbstractCVM
 		// Creation phase
 		// ---------------------------------------------------------------------
 
-		// create the URI service endpoint
-		URIServiceEndPoint uriServiceEndPoint = new URIServiceEndPoint();
+		// creating a composite end point to use both the SingleURIConsumerCI
+		// and the MultipleURIConsumerCI component interfaces
+		CompositeURIServiceEndpoint compositeURIServiceEndpoint =
+											new CompositeURIServiceEndpoint();
 
 		// create the provider component
 		String uriProviderURI =
 			AbstractComponent.createComponent(
-					URIProvider.class.getCanonicalName(),
-					new Object[]{((URIServiceEndPoint)uriServiceEndPoint.
-															copyWithSharable()),
-								 PROVIDER_COMPONENT_URI});
+				URIProvider.class.getCanonicalName(),
+				new Object[]{
+					PROVIDER_COMPONENT_URI,
+					(CompositeURIServiceEndpoint)compositeURIServiceEndpoint.
+														copyWithSharable()});
 		assert	this.isDeployedComponent(uriProviderURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
@@ -152,15 +151,17 @@ extends		AbstractCVM
 		// create the consumer component
 		String uriConsumerURI =
 			AbstractComponent.createComponent(
-					URIConsumer.class.getCanonicalName(),
-					new Object[]{CONSUMER_COMPONENT_URI,
-								 uriServiceEndPoint.copyWithSharable()});
+				URIConsumer.class.getCanonicalName(),
+				new Object[]{
+					CONSUMER_COMPONENT_URI,
+					(CompositeURIServiceEndpoint)compositeURIServiceEndpoint.
+														copyWithSharable()});
 		assert	this.isDeployedComponent(uriConsumerURI);
 		// make it trace its operations; comment and uncomment the line to see
 		// the difference
 		this.toggleTracing(uriConsumerURI);
 		this.toggleLogging(uriConsumerURI);
-		
+
 		// ---------------------------------------------------------------------
 		// Deployment done
 		// ---------------------------------------------------------------------

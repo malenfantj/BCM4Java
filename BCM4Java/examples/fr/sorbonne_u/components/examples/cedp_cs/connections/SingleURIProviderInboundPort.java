@@ -1,4 +1,4 @@
-package fr.sorbonne_u.components.examples.edp_cs.connections;
+package fr.sorbonne_u.components.examples.cedp_cs.connections;
 
 //Copyright Jacques Malenfant, Sorbonne Universite.
 //
@@ -34,27 +34,18 @@ package fr.sorbonne_u.components.examples.edp_cs.connections;
 //The fact that you are presently reading this means that you have had
 //knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.ComponentI;
-import fr.sorbonne_u.components.examples.edp_cs.components.URIProvider;
-import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI;
+import fr.sorbonne_u.components.examples.cedp_cs.components.URIProvider;
+import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIProviderCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
-import fr.sorbonne_u.exceptions.PreconditionException;
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
- * The class <code>URIProviderInboundPort</code> defines the inbound port
- * exposing the interface <code>URIProviderI</code> for components of
+ * The class <code>SingleURIProviderInboundPort</code> defines the inbound port
+ * exposing the interface <code>SingleURIProviderI</code> for components of
  * type <code>URIProvider</code>.
  *
  * <p><strong>Description</strong></p>
- * 
- * <p>
- * This is exactly the same code as in the basic client/server example. It is
- * copied here because the code of the component {@code URIProvider} is modified
- * in this variant, hence the port must import the new variant of this component
- * rather than the component defined in the basic client/server packages.
- * </p>
  * 
  * <p><strong>Implementation Invariants</strong></p>
  * 
@@ -72,20 +63,16 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			URIProviderInboundPort
+public class			SingleURIProviderInboundPort
 extends		AbstractInboundPort
-implements	URIProviderCI
+implements	SingleURIProviderCI
 {
-	// -------------------------------------------------------------------------
-	// Constants and variables
-	// -------------------------------------------------------------------------
-
 	/** required by UnicastRemonteObject.									*/
 	private static final long serialVersionUID = 1L;
 
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Constructors
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
 	 * create the port under some given URI and for a given owner.
@@ -106,17 +93,15 @@ implements	URIProviderCI
 	 * @param owner			component owning the port.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public				URIProviderInboundPort(
+	public				SingleURIProviderInboundPort(
 		String uri,
 		ComponentI owner
 		) throws Exception
 	{
 		// the implemented interface is statically known
-		super(uri, URIProviderCI.class, owner);
+		super(uri, SingleURIProviderCI.class, owner);
 
-		assert	uri != null && owner instanceof URIProvider :
-				new PreconditionException(
-						"uri != null && owner instanceof URIProvider");
+		assert	uri != null && owner instanceof URIProvider;
 	}
 
 	/**
@@ -134,27 +119,25 @@ implements	URIProviderCI
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param owner		component owning the port.
-	 * @throws Exception	<i>todo.</i>
+	 * @param owner			component owning the port.
+	 * @throws Exception	<i>to do</i>.
 	 */
-	public				URIProviderInboundPort(
+	public				SingleURIProviderInboundPort(
 		ComponentI owner
 		) throws Exception
 	{
 		// the implemented interface is statically known
-		super(URIProviderCI.class, owner);
+		super(SingleURIProviderCI.class, owner);
 
-		assert	owner instanceof URIProvider :
-			new PreconditionException(
-					"uri != null && owner instanceof URIProvider");
+		assert	owner instanceof URIProvider;
 	}
 
-	//-------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 	// Methods
-	//-------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI#provideURI()
+	 * @see fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIProviderCI#provideURI()
 	 */
 	@Override
 	public String		provideURI() throws Exception
@@ -167,24 +150,5 @@ implements	URIProviderCI
 		return this.getOwner().handleRequest(
 						owner -> ((URIProvider)owner).provideURIService());
 	}
-
-	/**
-	 * @see fr.sorbonne_u.components.examples.basic_cs.interfaces.URIProviderCI#provideURIs(int)
-	 */
-	@Override
-	public String[]		provideURIs(final int numberOfRequestedURIs)
-	throws Exception
-	{
-		// use another way to call the service method within by explicitly
-		// creating a task submitted to the component
-		return this.getOwner().handleRequest(
-				new AbstractComponent.AbstractService<String[]>() {
-					@Override
-					public String[] call() throws Exception {
-						return ((URIProvider)this.getServiceOwner()).
-								provideURIsService(numberOfRequestedURIs);
-					}
-				}) ;
-	}
 }
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
