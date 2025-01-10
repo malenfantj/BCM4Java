@@ -234,7 +234,7 @@ implements	Cloneable
 	 * 
 	 * <pre>
 	 * pre	{@code true}	// no more preconditions.
-	 * post	{@code ret.getReference().equals(getReference())}
+	 * post	{@code return.getClientSideInterface().equals(getClientSideInterface()))}
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#copyWithSharable()
@@ -246,15 +246,10 @@ implements	Cloneable
 			@SuppressWarnings("unchecked")
 			POJOEndPoint<I> ret = (POJOEndPoint<I>) this.clone();
 			assert	ret.getClientSideInterface().
-									equals(this.getClientSideInterface()) :
+											equals(getClientSideInterface()) :
 					new PostconditionException(
 							"return.getClientSideInterface().equals("
 							+ "getClientSideInterface())");
-			assert	ret.getClientSideReference().
-										equals(this.getClientSideReference()) :
-					new PostconditionException(
-							"ret.getClientSideReference().equals("
-							+ "getClientSideReference())");
 			return ret;
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e) ;
