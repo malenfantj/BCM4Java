@@ -34,6 +34,8 @@ package fr.sorbonne_u.components.endpoints;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.io.Serializable;
+
+import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 
@@ -91,7 +93,6 @@ extends		EndPointI<CI>,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code !clientSideInitialised()}
 	 * pre	{@code serverSideEndPointOwner instanceof AbstractComponent}
 	 * post	{@code true}	// no more postconditions.
 	 * </pre>
@@ -108,7 +109,6 @@ extends		EndPointI<CI>,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code !serverSideInitialised()}
 	 * pre	{@code clientSideEndPointOwner instanceof AbstractComponent}
 	 * post	{@code true}	// no more postconditions.
 	 * </pre>
@@ -221,6 +221,20 @@ extends		EndPointI<CI>,
 	public String		getInboundPortURI();
 
 	/**
+	 * return the URI of the outbound port embedded in this BCM end point.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null && !return.isEmpty()}
+	 * </pre>
+	 *
+	 * @return	the URI of the outbound port embedded in this BCM end point.
+	 */
+	public String		getOutboundPortURI();
+
+	/**
 	 * return the server side offered interface of this BCM end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -234,4 +248,36 @@ extends		EndPointI<CI>,
 	 * @return		the offered interface of this end point.
 	 */
 	public <OCI extends OfferedCI> Class<OCI>	getServerSideInterface();
+
+	/**
+	 * on the server side, return true if {@code c} is the server component of
+	 * this end point.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code serverSideInitialised()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param c	the reference on a component object.
+	 * @return	true if {@code c} is the client component of this end point.
+	 */
+	public boolean		isServerComponent(AbstractComponent c);
+
+	/**
+	 * on the client side, return true if {@code c} is the client component of
+	 * this end point.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code clientSideInitialised()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param c	the reference on a component object.
+	 * @return	true if {@code c} is the client component of this end point.
+	 */
+	public boolean		isClientComponent(AbstractComponent c);
 }

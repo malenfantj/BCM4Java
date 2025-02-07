@@ -35,6 +35,7 @@ package fr.sorbonne_u.components.cvm;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.rmi.AccessException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -47,6 +48,7 @@ import fr.sorbonne_u.components.cvm.config.ConfigurationFileParser;
 import fr.sorbonne_u.components.cvm.config.ConfigurationParameters;
 import fr.sorbonne_u.components.cvm.config.exceptions.ConfigurationException;
 import fr.sorbonne_u.components.cvm.utils.DCVMCyclicBarrierClient;
+import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.DistributedExecutionException;
 import fr.sorbonne_u.components.exceptions.RegistrationException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
@@ -234,6 +236,34 @@ implements	DistributedComponentVirtualMachineI
 													new GlobalRegistryClient();
 
 	/**
+	 * return true if the key is bound in the registry.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param key				a key to be sought.
+	 * @return					true if the key is bound in the registry.
+	 * @throws BCMException		<i>to do</i>.
+	 */
+	public static boolean	isPublished(String key) throws BCMException
+	{
+		try {
+			AbstractDistributedCVM.theRMIRegistry.lookup(key);
+			return true;
+		} catch (NotBoundException e) {
+			return false;
+		} catch (AccessException e) {
+			throw new BCMException(e) ;
+		} catch (RemoteException e) {
+			throw new BCMException(e) ;
+		}
+	}
+
+	/**
 	 * publish inbound ports (data inbound ports and two way ports) both
 	 * locally and globally, which includes the RMI registry and the global
 	 * component registry; outbound ports need not be published globally
@@ -375,7 +405,8 @@ implements	DistributedComponentVirtualMachineI
 	public Remote		getRemoteReference(String remoteURI)
 	throws Exception
 	{
-		assert	remoteURI != null && !remoteURI.isEmpty() : new PreconditionException("remoteURI != null");
+		assert	remoteURI != null && !remoteURI.isEmpty() :
+				new PreconditionException("remoteURI != null");
 
 		Remote reference = null;
 		String response =

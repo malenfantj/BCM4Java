@@ -36,6 +36,10 @@ package fr.sorbonne_u.components.endpoints;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantChecking;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import java.util.ArrayList;
 
@@ -80,9 +84,68 @@ implements	CompositeEndPointI,
 	// Sharable information
 
 	/** number of expected end points in this multiple end point.			*/
-	protected final int					numberOfEndPoints;
+	protected final int						numberOfEndPoints;
 	/** map from implemented interfaces to single end points.				*/
-	private Map<Class<?>,EndPointI<?>>	endPointsMap;
+	protected Map<Class<?>,EndPointI<?>>	endPointsMap;
+
+	// -------------------------------------------------------------------------
+	// Invariants
+	// -------------------------------------------------------------------------
+
+	/**
+	 * return true if the implementation invariants are observed, false otherwise.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code instance != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param instance	instance to be tested.
+	 * @return			true if the implementation invariants are observed, false otherwise.
+	 */
+	protected static boolean	implementationInvariants(
+		CompositeEndPoint instance
+		)
+	{
+		assert instance != null : new PreconditionException("instance != null");
+
+		boolean ret = true;
+		ret &= InvariantChecking.checkImplementationInvariant(
+				instance.numberOfEndPoints > 1,
+				CompositeEndPoint.class, instance,
+				"numberOfEndPoints > 1");
+		ret &= InvariantChecking.checkImplementationInvariant(
+				instance.endPointsMap.size() == instance.numberOfEndPoints ||
+					!instance.serverSideInitialised() &&
+											!instance.clientSideInitialised(),
+				CompositeEndPoint.class, instance,
+				"endPointsMap.size() == numberOfEndPoints || "
+				+ "!serverSideInitialised() && !clientSideInitialised()");
+		return ret;
+	}
+
+	/**
+	 * return true if the invariants are observed, false otherwise.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code instance != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param instance	instance to be tested.
+	 * @return			true if the invariants are observed, false otherwise.
+	 */
+	protected static boolean	invariants(CompositeEndPoint instance)
+	{
+		assert instance != null : new PreconditionException("instance != null");
+
+		boolean ret = true;
+		return ret;
+	}
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -108,6 +171,17 @@ implements	CompositeEndPointI,
 
 		this.numberOfEndPoints = numberOfEndPoints;
 		this.endPointsMap = new HashMap<>();
+
+		assert	!serverSideInitialised() :
+				new PostconditionException("!serverSideInitialised()");
+		assert	!clientSideInitialised() :
+				new PostconditionException("!clientSideInitialised()");
+
+		assert	CompositeEndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"CompositeEndPoint.implementationInvariants(this)");
+		assert	CompositeEndPoint.invariants(this) :
+				new InvariantException("CompositeEndPoint.invariants(this)");
 	}
 
 	/**
@@ -118,6 +192,8 @@ implements	CompositeEndPointI,
 	 * 
 	 * <pre>
 	 * pre	{@code initialEndPoints != null}
+	 * pre	{@code initialEndPoints.stream().allMatch(e -> !e.serverSideInitialised())}
+	 * pre	{@code initialEndPoints.stream().allMatch(e -> !e.clientSideInitialised())}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
@@ -129,12 +205,31 @@ implements	CompositeEndPointI,
 	{
 		assert	initialEndPoints != null :
 				new PreconditionException("initialEndPoints != null");
+		assert	initialEndPoints.stream().allMatch(e -> !e.serverSideInitialised()) :
+				new PreconditionException(
+						"initialEndPoints.stream().allMatch("
+						+ "e -> !e.serverSideInitialised())");
+		assert	initialEndPoints.stream().allMatch(e -> !e.clientSideInitialised()) :
+				new PreconditionException(
+						"initialEndPoints.stream().allMatch("
+						+ "e -> !e.clientSideInitialised())");
 
 		this.numberOfEndPoints = initialEndPoints.size();
 		this.endPointsMap = new HashMap<>();
 		for (EndPointI<?> e : initialEndPoints) {
 			this.endPointsMap.put(e.getClientSideInterface(), e);
 		}
+
+		assert	!serverSideInitialised() :
+				new PostconditionException("!serverSideInitialised()");
+		assert	!clientSideInitialised() :
+				new PostconditionException("!clientSideInitialised()");
+
+		assert	CompositeEndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"CompositeEndPoint.implementationInvariants(this)");
+		assert	CompositeEndPoint.invariants(this) :
+				new InvariantException("CompositeEndPoint.invariants(this)");
 	}
 
 	// -------------------------------------------------------------------------
@@ -162,10 +257,20 @@ implements	CompositeEndPointI,
 				new PreconditionException("serverSideEndPointOwner != null");
 		assert	!serverSideInitialised() :
 				new PreconditionException("!serverSideInitialised()");
+		assert	!clientSideInitialised() :
+				new PreconditionException("!clientSideInitialised()");
 		assert	complete() : new PreconditionException("complete()");
 
 		this.endPointsMap.values().stream().
 				forEach(e -> e.initialiseServerSide(serverSideEndPointOwner));
+
+		assert	serverSideInitialised() :
+				new PreconditionException("serverSideInitialised()");
+		assert	CompositeEndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"CompositeEndPoint.implementationInvariants(this)");
+		assert	CompositeEndPoint.invariants(this) :
+				new InvariantException("CompositeEndPoint.invariants(this)");
 	}
 
 	/**
@@ -187,12 +292,22 @@ implements	CompositeEndPointI,
 	{
 		assert	clientSideEndPointOwner != null :
 				new PreconditionException("clientSideEndPointOwner != null");
+		assert	serverSideInitialised() :
+				new PreconditionException("serverSideInitialised()");
 		assert	!clientSideInitialised() :
 				new PreconditionException("!clientSideInitialised()");
 		assert	complete() : new PreconditionException("complete()");
 
 		this.endPointsMap.values().stream().
 				forEach(e -> e.initialiseClientSide(clientSideEndPointOwner));
+
+		assert	clientSideInitialised() :
+				new PreconditionException("clientSideInitialised()");
+		assert	CompositeEndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"CompositeEndPoint.implementationInvariants(this)");
+		assert	CompositeEndPoint.invariants(this) :
+				new InvariantException("CompositeEndPoint.invariants(this)");
 	}
 
 	/**
@@ -201,7 +316,20 @@ implements	CompositeEndPointI,
 	@Override
 	public void			cleanUpServerSide()
 	{
+		assert	serverSideInitialised() :
+				new PreconditionException("serverSideInitialised()");
+		assert	!clientSideInitialised() :
+				new PreconditionException("!clientSideInitialised()");
+
 		this.endPointsMap.values().stream().forEach(e -> e.cleanUpServerSide());
+
+		assert	!serverSideInitialised() :
+				new PostconditionException("!serverSideInitialised()");
+		assert	CompositeEndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"CompositeEndPoint.implementationInvariants(this)");
+		assert	CompositeEndPoint.invariants(this) :
+				new InvariantException("CompositeEndPoint.invariants(this)");
 	}
 
 	/**
@@ -210,7 +338,20 @@ implements	CompositeEndPointI,
 	@Override
 	public void			cleanUpClientSide()
 	{
+		assert	serverSideInitialised() :
+				new PreconditionException("serverSideInitialised()");
+		assert	clientSideInitialised() :
+				new PreconditionException("clientSideInitialised()");
+
 		this.endPointsMap.values().stream().forEach(e -> e.cleanUpClientSide());
+
+		assert	!clientSideInitialised() :
+				new PostconditionException("!clientSideInitialised()");
+		assert	CompositeEndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"CompositeEndPoint.implementationInvariants(this)");
+		assert	CompositeEndPoint.invariants(this) :
+				new InvariantException("CompositeEndPoint.invariants(this)");
 	}
 
 	// -------------------------------------------------------------------------
@@ -237,7 +378,7 @@ implements	CompositeEndPointI,
 				new PreconditionException("clientSideInitialised()");
 
 		assert	hasCompatibleInterface(inter) :
-				new RuntimeException("hasImplementedInterface(inter)");
+				new RuntimeException("hasCompatibleInterface(inter)");
 
 		Class<?> found  = null;
 		EndPointI<J> res = null;
@@ -294,6 +435,13 @@ implements	CompositeEndPointI,
 				ret.endPointsMap.put(e.getKey(),
 									 e.getValue().copyWithSharable());
 			}
+
+			assert	CompositeEndPoint.implementationInvariants(ret) :
+					new ImplementationInvariantException(
+							"CompositeEndPoint.implementationInvariants(ret)");
+			assert	CompositeEndPoint.invariants(ret) :
+					new InvariantException("CompositeEndPoint.invariants(ret)");
+
 			return ret;
 		} catch (CloneNotSupportedException e1) {
 			throw new RuntimeException(e1) ;

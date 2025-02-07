@@ -34,9 +34,13 @@ package fr.sorbonne_u.components.endpoints;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.interfaces.RequiredCI;
+import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import java.util.ArrayList;
+import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.exceptions.BCMException;
 
 /**
  * The class <code>BCMCompositeEndPoint</code> implements specialisation of
@@ -74,7 +78,57 @@ implements	BCMCompositeEndPointI
 	// Constants and variables
 	// -------------------------------------------------------------------------
 
+	/** default serial version UID.											*/
 	private static final long serialVersionUID = 1L;
+
+	// -------------------------------------------------------------------------
+	// Invariants
+	// -------------------------------------------------------------------------
+
+	/**
+	 * return true if the implementation invariants are observed, false otherwise.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code instance != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param instance	instance to be tested.
+	 * @return			true if the implementation invariants are observed, false otherwise.
+	 */
+	protected static boolean	implementationInvariants(
+		BCMCompositeEndPoint instance
+		)
+	{
+		assert instance != null : new PreconditionException("instance != null");
+		boolean ret = true;
+		CompositeEndPoint.implementationInvariants(instance);
+		return ret;
+	}
+
+	/**
+	 * return true if the invariants are observed, false otherwise.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code instance != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param instance	instance to be tested.
+	 * @return			true if the invariants are observed, false otherwise.
+	 */
+	protected static boolean	invariants(BCMCompositeEndPoint instance)
+	{
+		assert instance != null : new PreconditionException("instance != null");
+
+		boolean ret = true;
+		CompositeEndPoint.invariants(instance);
+		return ret;
+	}
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -106,6 +160,8 @@ implements	BCMCompositeEndPointI
 	 * 
 	 * <pre>
 	 * pre	{@code initialEndPoints != null}
+	 * pre	{@code initialEndPoints.stream().allMatch(e -> !e.serverSideInitialised())}
+	 * pre	{@code initialEndPoints.stream().allMatch(e -> !e.clientSideInitialised())}
 	 * pre	{@code initialEndPoints.stream().allMatch(e -> e instanceof BCMEndPoint<?>)}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
@@ -120,9 +176,9 @@ implements	BCMCompositeEndPointI
 
 		assert	initialEndPoints.stream().
 									allMatch(e -> e instanceof BCMEndPoint<?>) :
-			new PreconditionException(
-					"initialEndPoints.stream()."
-					+ "allMatch(e -> e instanceof BCMEndPoint<?>)");
+				new PreconditionException(
+						"initialEndPoints.stream()."
+						+ "allMatch(e -> e instanceof BCMEndPoint<?>)");
 	}
 
 	// -------------------------------------------------------------------------
@@ -147,4 +203,80 @@ implements	BCMCompositeEndPointI
 
 		return res;
 	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPoint#initialiseServerSide(java.lang.Object)
+	 */
+	@Override
+	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	{
+		assert	serverSideEndPointOwner instanceof AbstractComponent :
+				new PreconditionException(
+						"serverSideEndPointOwner instanceof AbstractComponent");
+
+		super.initialiseServerSide(serverSideEndPointOwner);
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPoint#initialiseClientSide(java.lang.Object)
+	 */
+	@Override
+	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	{
+		assert	clientSideEndPointOwner instanceof AbstractComponent :
+				new PreconditionException(
+						"clientSideEndPointOwner instanceof AbstractComponent");
+
+		super.initialiseClientSide(clientSideEndPointOwner);
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.BCMCompositeEndPointI#copyWithSharable()
+	 */
+	@Override
+	public BCMCompositeEndPointI	copyWithSharable()
+	{
+		CompositeEndPointI ret = super.copyWithSharable();
+
+		assert	ret instanceof BCMCompositeEndPointI :
+				new RuntimeException(
+						new BCMException(
+								"ret instanceof BCMCompositeEndPointI"));
+
+		assert	BCMCompositeEndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"BCMCompositeEndPoint.implementationInvariants(this)");
+		assert	BCMCompositeEndPoint.invariants(this) :
+				new InvariantException(
+						"BCMCompositeEndPoint.invariants(this)");
+
+		return (BCMCompositeEndPointI) ret;
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.BCMCompositeEndPointI#isServerComponent(fr.sorbonne_u.components.AbstractComponent)
+	 */
+	@Override
+	public boolean		isServerComponent(AbstractComponent c)
+	{
+		assert	serverSideInitialised() :
+				new PreconditionException("serverSideInitialised()");
+		
+		return this.endPointsMap.values().stream().allMatch(
+							e -> ((BCMEndPoint<?>)e).isServerComponent(c));
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.BCMCompositeEndPointI#isClientComponent(fr.sorbonne_u.components.AbstractComponent)
+	 */
+	@Override
+	public boolean		isClientComponent(AbstractComponent c)
+	{
+		assert	clientSideInitialised() :
+				new PreconditionException("clientSideInitialised()");
+		
+		return this.endPointsMap.values().stream().allMatch(
+							e -> ((BCMEndPoint<?>)e).isClientComponent(c));
+	}
 }
+// -----------------------------------------------------------------------------

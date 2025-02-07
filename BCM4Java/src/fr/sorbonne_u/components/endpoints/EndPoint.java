@@ -33,6 +33,11 @@ package fr.sorbonne_u.components.endpoints;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.AbstractEndPoint;
+import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantChecking;
+import fr.sorbonne_u.exceptions.InvariantException;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
 /**
@@ -57,6 +62,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public abstract class	EndPoint<I>
+extends		AbstractEndPoint
 implements	EndPointI<I>
 {
 	// -------------------------------------------------------------------------
@@ -67,6 +73,57 @@ implements	EndPointI<I>
 
 	/** the interface implemented by this end point.	*/
 	protected final Class<I>	clientSideInterface;
+
+	// -------------------------------------------------------------------------
+	// Invariants
+	// -------------------------------------------------------------------------
+
+	/**
+	 * return true if the implementation invariants are observed, false otherwise.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code instance != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param instance	instance to be tested.
+	 * @return			true if the implementation invariants are observed, false otherwise.
+	 */
+	protected static boolean	implementationInvariants(
+		EndPoint<?> instance
+		)
+	{
+		assert instance != null : new PreconditionException("instance != null");
+		boolean ret = true;
+		ret &= InvariantChecking.checkImplementationInvariant(
+				instance.clientSideInterface != null,
+				EndPoint.class, instance,
+				"clientSideInterface != null");
+		return ret;
+	}
+
+	/**
+	 * return true if the invariants are observed, false otherwise.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code instance != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param instance	instance to be tested.
+	 * @return			true if the invariants are observed, false otherwise.
+	 */
+	protected static boolean	invariants(EndPoint<?> instance)
+	{
+		assert instance != null : new PreconditionException("instance != null");
+
+		boolean ret = true;
+		return ret;
+	}
 
 	// -------------------------------------------------------------------------
 	// Constructors
@@ -91,6 +148,17 @@ implements	EndPointI<I>
 				new PreconditionException("clientSideInterface != null");
 
 		this.clientSideInterface = clientSideInterface;
+
+		assert	!serverSideInitialised() :
+				new PostconditionException("!serverSideInitialised()");
+		assert	!clientSideInitialised() :
+				new PostconditionException("!clientSideInitialised()");
+
+		assert	EndPoint.implementationInvariants(this) :
+				new ImplementationInvariantException(
+						"EndPoint.implementationInvariants(this)");
+		assert	EndPoint.invariants(this) :
+				new InvariantException("EndPoint.invariants(this)");
 	}
 
 	// -------------------------------------------------------------------------

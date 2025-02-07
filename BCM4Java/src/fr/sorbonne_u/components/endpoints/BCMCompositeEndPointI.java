@@ -34,6 +34,7 @@ package fr.sorbonne_u.components.endpoints;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.io.Serializable;
+import fr.sorbonne_u.components.AbstractComponent;
 
 /**
  * The interface <code>BCMCompositeEndPointI</code> declares the methods that
@@ -62,7 +63,7 @@ extends		CompositeEndPointI,
 			Serializable
 {
 	// -------------------------------------------------------------------------
-	// From MultiEndPointsI, adding more precise information.
+	// From CompositeEndPointsI, adding more precise information.
 	// -------------------------------------------------------------------------
 
 	/**
@@ -78,4 +79,85 @@ extends		CompositeEndPointI,
 	 */
 	@Override
 	public <I, J extends I> EndPointI<J>	getEndPoint(Class<I> inter);
+
+	/**
+	 * initialise all of the end points.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code serverSideEndPointOwner instanceof AbstractComponent}
+	 * post	{@code true}	// no more postconditions.
+	 * </pre>
+	 * 
+	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPointI#initialiseServerSide(java.lang.Object)
+	 */
+	@Override
+	public void			initialiseServerSide(Object serverSideEndPointOwner);
+
+	/**
+	 * initialise all of the end points.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code clientSideEndPointOwner instanceof AbstractComponent}
+	 * post	{@code true}	// no more postconditions.
+	 * </pre>
+	 * 
+	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPointI#initialiseClientSide(java.lang.Object)
+	 */
+	@Override
+	public void			initialiseClientSide(Object clientSideEndPointOwner);
+
+	/**
+	 * copy all of the end points.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no more preconditions.
+	 * post	{@code true}	// no more postconditions.
+	 * </pre>
+	 * 
+	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPointI#copyWithSharable()
+	 */
+	@Override
+	public BCMCompositeEndPointI	copyWithSharable();
+
+	// -------------------------------------------------------------------------
+	// Same as in BCMEndPointsI, but adapted.
+	// -------------------------------------------------------------------------
+
+	/**
+	 * on the server side, return true if {@code c} is the server component of
+	 * this end point.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code serverSideInitialised()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param c	the reference on a component object.
+	 * @return	true if {@code c} is the client component of this end point.
+	 */
+	public boolean		isServerComponent(AbstractComponent c);
+
+	/**
+	 * on the client side, return true if {@code c} is the client component of
+	 * this end point.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code clientSideInitialised()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param c	the reference on a component object.
+	 * @return	true if {@code c} is the client component of this end point.
+	 */
+	public boolean		isClientComponent(AbstractComponent c);
 }

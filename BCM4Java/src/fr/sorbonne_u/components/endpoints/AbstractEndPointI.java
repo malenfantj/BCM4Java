@@ -81,6 +81,7 @@ public interface		AbstractEndPointI
 	 * 
 	 * <pre>
 	 * pre	{@code !serverSideInitialised()}
+	 * pre	{@code !clientSideInitialised()}
 	 * pre	{@code serverSideEndPointOwner != null}
 	 * post	{@code serverSideInitialised()}
 	 * </pre>
@@ -111,6 +112,7 @@ public interface		AbstractEndPointI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code serverSideInitialised()}
 	 * pre	{@code !clientSideInitialised()}
 	 * pre	{@code clientSideEndPointOwner != null}
 	 * post	{@code clientSideInitialised()}
@@ -128,10 +130,10 @@ public interface		AbstractEndPointI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code !clientSideInitialised()}
+	 * pre	{@code serverSideInitialised()}
 	 * post	{@code !serverSideInitialised()}
 	 * </pre>
-	 *
 	 */
 	public void			cleanUpServerSide();
 
@@ -142,10 +144,10 @@ public interface		AbstractEndPointI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code serverSideInitialised()}
+	 * pre	{@code clientSideInitialised()}
 	 * post	{@code !clientSideInitialised()}
 	 * </pre>
-	 *
 	 */
 	public void			cleanUpClientSide();
 }

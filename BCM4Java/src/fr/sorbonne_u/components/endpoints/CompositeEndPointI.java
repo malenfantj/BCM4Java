@@ -129,7 +129,6 @@ extends		AbstractEndPointI
 	 * 
 	 * <pre>
 	 * pre	{@code inter != null}
-	 * pre	{@code clientSideInitialised()}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
