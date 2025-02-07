@@ -139,13 +139,15 @@ extends BCMEndPoint<SingleURIConsumerCI>
 	 * </pre>
 	 *
 	 * @param inboundPortURI	URI of the inbound port providing the offered interface.
+	 * @param outboundPortURI	URI of the outbound port providing the required interface.
 	 */
 	public				SingleURIServiceEndpoint(
-		String inboundPortURI
+		String inboundPortURI,
+		String outboundPortURI
 		)
 	{
 		super(SingleURIConsumerCI.class, SingleURIProviderCI.class,
-			  inboundPortURI);
+			  inboundPortURI, outboundPortURI);
 	}
 
 	/**
@@ -209,11 +211,12 @@ extends BCMEndPoint<SingleURIConsumerCI>
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPoint#makeOutboundPort(fr.sorbonne_u.components.AbstractComponent, java.lang.String)
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPoint#makeOutboundPort(fr.sorbonne_u.components.AbstractComponent, java.lang.String, java.lang.String)
 	 */
 	@Override
 	protected SingleURIConsumerCI	makeOutboundPort(
 		AbstractComponent c,
+		String outboundPortURI,
 		String inboundPortURI
 		) throws Exception
 	{
@@ -221,7 +224,7 @@ extends BCMEndPoint<SingleURIConsumerCI>
 		assert	c != null : new PreconditionException("c != null");
 
 		SingleURIConsumerOutboundPort p =
-				new SingleURIConsumerOutboundPort(c);
+				new SingleURIConsumerOutboundPort(outboundPortURI, c);
 		p.publishPort();
 		c.doPortConnection(
 				p.getPortURI(),

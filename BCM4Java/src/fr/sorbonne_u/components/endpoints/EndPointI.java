@@ -87,7 +87,7 @@ public interface		EndPointI<I>
 extends		AbstractEndPointI
 {
 	/**
-	 * return the interface implemented by this end point.
+	 * return the interface provided by this end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -101,7 +101,7 @@ extends		AbstractEndPointI
 	public Class<I>		getClientSideInterface();
 
 	/**
-	 * return the reference embedded in this end point.
+	 * return the client side reference embedded in this end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 

@@ -159,6 +159,7 @@ extends		AbstractComponent
 		this.counter++ ;
 		if (this.counter <= 10) {
 			// Get the next URI and print it
+			this.logMessage("here");
 			String uri = this.uriServiceEndPoint.getClientSideReference().getURI();
 			this.logMessage("consumer getting a new URI no "
 							+ this.counter + ": " + uri + ".");
