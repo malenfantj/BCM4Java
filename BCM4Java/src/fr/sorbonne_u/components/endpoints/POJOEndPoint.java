@@ -34,9 +34,14 @@ package fr.sorbonne_u.components.endpoints;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
+import fr.sorbonne_u.exceptions.InvariantChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import java.util.HashMap;
+import java.util.Map;
+import fr.sorbonne_u.components.AbstractPort;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 /**
  * The class <code>POJOEndPoint</code> defines a plain old Java
@@ -46,16 +51,17 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * A POJO end point merely uses the reference to the Java server object as the
+ * A POJO end point is an abstraction of a standard Java reference, so this
+ * implementation merely uses the reference to the Java server object as the
  * reference to be used by the client to call it. As an end point, it only adds
  * the explicit knowledge of the implemented interface inherited from
- * {@code EndPoint<I>}.
+ * {@code EndPoint<I>}. 
  * </p>
  * 
  * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
- * invariant	{@code true}	// no invariant
+ * invariant	{@code endPointURI != null && !endPointURI.isEmpty()}
  * </pre>
  * 
  * <p><strong>Invariants</strong></p>
@@ -76,15 +82,24 @@ implements	Cloneable
 	// Constants and variables
 	// -------------------------------------------------------------------------
 
-	// transient here is used to signify that the data is not sharable; indeed
-	// a POJOEndPoint is not meant to be serialised, hence the declaration has
-	// no sense from the Java point of view.
+	/** map from end point URIs to Java object references to server objects;
+	 *  this map is neede to respect the same protocol as other end points
+	 *  <i>i.e.</i>, using {@code copyWithSharable} to pass end points both
+	 *  to the server and the client sides and then
+	 *  {@code initialiseServerSide} before {@code initialiseClientSide}
+	 *  which must retrieve the Java server object reference.			  	*/
+	protected static final Map<String,Object>	GLOBAL_ENDPOINT_REFERENCES;
 
-	/** when true, the client has initialised the end point, false otherwise.*/
-	protected transient boolean		clientSideInitialised;
+	// Sharable information
+	/** URI of the end point.												*/
+	protected final String					endPointURI;
+
+	// Non sharable information; here the transient modifier indicates
+	// that the information is not sharable though it is meaningless in
+	// the Java sense as POJO end points are not meant to be serialised.
 
 	/** direct reference to the POJO.										*/
-	protected transient I			reference;
+	protected transient I					reference;
 
 	// -------------------------------------------------------------------------
 	// Invariants
@@ -108,9 +123,16 @@ implements	Cloneable
 		)
 	{
 		assert instance != null : new PreconditionException("instance != null");
-		boolean ret = true;
-		ret &= EndPoint.implementationInvariants(instance);
-		return ret;
+
+		synchronized (instance) {
+			boolean ret = true;
+			ret &= InvariantChecking.checkImplementationInvariant(
+					instance.endPointURI != null && !instance.endPointURI.isEmpty(),
+					POJOEndPoint.class, instance,
+					"endPointURI != null && !endPointURI.isEmpty()");
+			ret &= EndPoint.implementationInvariants(instance);
+			return ret;
+		}
 	}
 
 	/**
@@ -130,14 +152,20 @@ implements	Cloneable
 	{
 		assert instance != null : new PreconditionException("instance != null");
 
-		boolean ret = true;
-		ret &= EndPoint.invariants(instance);
-		return ret;
+		synchronized (instance) {
+			boolean ret = true;
+			ret &= EndPoint.invariants(instance);
+			return ret;
+		}
 	}
 
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
+
+	static {
+		GLOBAL_ENDPOINT_REFERENCES = new HashMap<>();
+	}
 
 	/**
 	 * create a POJO endpoint.
@@ -156,8 +184,10 @@ implements	Cloneable
 	{
 		super(clientSideInterface);
 
+		// just a convenient reuse of an existing BCM URI generator, though
+		// ports and end points are conceptually related
+		this.endPointURI = AbstractPort.generatePortURI();
 		this.reference = null;
-		this.clientSideInitialised = false;
 
 		assert	POJOEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
@@ -176,7 +206,11 @@ implements	Cloneable
 	@Override
 	public boolean		serverSideInitialised()
 	{
-		return this.reference != null;
+		synchronized (GLOBAL_ENDPOINT_REFERENCES) {
+			synchronized (this) {
+				return GLOBAL_ENDPOINT_REFERENCES.containsKey(this.endPointURI);	
+			}
+		}
 	}
 
 	/**
@@ -185,21 +219,37 @@ implements	Cloneable
 	@SuppressWarnings("unchecked")
 	@Override
 	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException
 	{
-		assert	!serverSideInitialised() :
-				new PreconditionException("!serverSideInitialised()");
-		assert	!clientSideInitialised() :
-				new PreconditionException("!clientSideInitialised()");
-		assert	serverSideEndPointOwner != null :
-				new PreconditionException("serverSideEndPointOwner != null");
+		synchronized (GLOBAL_ENDPOINT_REFERENCES) {
+			synchronized (this) {
+				assert	!serverSideInitialised() :
+						new PreconditionException("!serverSideInitialised()");
+				assert	!clientSideInitialised() :
+						new PreconditionException("!clientSideInitialised()");
+				assert	serverSideEndPointOwner != null :
+						new PreconditionException(
+								"serverSideEndPointOwner != null");
 
-		this.reference = (I) serverSideEndPointOwner;
+				try {
+					this.reference = (I) serverSideEndPointOwner;
+				} catch(ClassCastException e) {
+					throw new ConnectionException(
+							"The reference " + serverSideEndPointOwner
+							+ " does not conform to the server side interface "
+							+ this.clientSideInterface.getCanonicalName()
+							+ "of this end point.", e);
+				}
+				GLOBAL_ENDPOINT_REFERENCES.put(this.endPointURI,
+											   serverSideEndPointOwner);
 
-		assert	POJOEndPoint.implementationInvariants(this) :
-				new ImplementationInvariantException(
-						"POJOEndPoint.implementationInvariants(this)");
-		assert	POJOEndPoint.invariants(this) :
-				new InvariantException("POJOEndPoint.invariants(this)");
+				assert	POJOEndPoint.implementationInvariants(this) :
+						new ImplementationInvariantException(
+								"POJOEndPoint.implementationInvariants(this)");
+				assert	POJOEndPoint.invariants(this) :
+						new InvariantException("POJOEndPoint.invariants(this)");
+			}
+		}
 	}
 
 	/**
@@ -208,31 +258,41 @@ implements	Cloneable
 	@Override
 	public boolean		clientSideInitialised()
 	{
-		return this.clientSideInitialised && this.serverSideInitialised();
+		synchronized (this) {
+			return this.reference != null;
+		}
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#initialiseClientSide(java.lang.Object)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException
 	{
-		assert	serverSideInitialised() :
-				new PreconditionException("serverSideInitialised()");
-		assert	!clientSideInitialised() :
-				new PreconditionException("!clientSideInitialised()");
-		assert	clientSideEndPointOwner != null :
-				new PreconditionException("clientSideEndPointOwner != null");
+		synchronized (GLOBAL_ENDPOINT_REFERENCES) {
+			synchronized (this) {
+				assert	serverSideInitialised() :
+						new PreconditionException("serverSideInitialised()");
+				assert	!clientSideInitialised() :
+						new PreconditionException("!clientSideInitialised()");
+				assert	clientSideEndPointOwner != null :
+						new PreconditionException(
+								"clientSideEndPointOwner != null");
 
-		this.clientSideInitialised = true;
+				this.reference =
+						(I) GLOBAL_ENDPOINT_REFERENCES.get(this.endPointURI);
 
-		assert	clientSideInitialised() :
-				new PreconditionException("clientSideInitialised()");
-		assert	POJOEndPoint.implementationInvariants(this) :
-				new ImplementationInvariantException(
-						"POJOEndPoint.implementationInvariants(this)");
-		assert	POJOEndPoint.invariants(this) :
-				new InvariantException("POJOEndPoint.invariants(this)");
+				assert	clientSideInitialised() :
+						new PreconditionException("clientSideInitialised()");
+				assert	POJOEndPoint.implementationInvariants(this) :
+						new ImplementationInvariantException(
+								"POJOEndPoint.implementationInvariants(this)");
+				assert	POJOEndPoint.invariants(this) :
+						new InvariantException("POJOEndPoint.invariants(this)");
+			}
+		}
 	}
 
 	/**
@@ -241,10 +301,12 @@ implements	Cloneable
 	@Override
 	public I			getClientSideReference()
 	{
-		assert	clientSideInitialised() :
-				new PreconditionException("clientSideInitialised()");
+		synchronized (this) {
+			assert	clientSideInitialised() :
+					new PreconditionException("clientSideInitialised()");
 
-		return this.reference;
+			return this.reference;
+		}
 	}
 
 	/**
@@ -253,20 +315,22 @@ implements	Cloneable
 	@Override
 	public void			cleanUpClientSide()
 	{
-		assert	serverSideInitialised() :
-				new PreconditionException("serverSideInitialised()");
-		assert	clientSideInitialised() :
-				new PreconditionException("clientSideInitialised()");
+		synchronized (this) {
+				assert	serverSideInitialised() :
+						new PreconditionException("serverSideInitialised()");
+				assert	clientSideInitialised() :
+						new PreconditionException("clientSideInitialised()");
 
-		this.clientSideInitialised = false;
+				this.reference = null;
 
-		assert	!clientSideInitialised() :
-				new PostconditionException("!clientSideInitialised()");
-		assert	POJOEndPoint.implementationInvariants(this) :
-				new ImplementationInvariantException(
-						"POJOEndPoint.implementationInvariants(this)");
-		assert	POJOEndPoint.invariants(this) :
-				new InvariantException("POJOEndPoint.invariants(this)");
+				assert	!clientSideInitialised() :
+						new PostconditionException("!clientSideInitialised()");
+				assert	POJOEndPoint.implementationInvariants(this) :
+						new ImplementationInvariantException(
+								"POJOEndPoint.implementationInvariants(this)");
+				assert	POJOEndPoint.invariants(this) :
+						new InvariantException("POJOEndPoint.invariants(this)");
+		}
 	}
 
 	/**
@@ -275,20 +339,25 @@ implements	Cloneable
 	@Override
 	public void			cleanUpServerSide()
 	{
-		assert	serverSideInitialised() :
-				new PreconditionException("serverSideInitialised()");
-		assert	!clientSideInitialised() :
-				new PreconditionException("!clientSideInitialised()");
+		synchronized (GLOBAL_ENDPOINT_REFERENCES) {
+			synchronized (this) {
+				assert	serverSideInitialised() :
+						new PreconditionException("serverSideInitialised()");
+				assert	!clientSideInitialised() :
+						new PreconditionException("!clientSideInitialised()");
 
-		this.reference = null;
+				GLOBAL_ENDPOINT_REFERENCES.remove(this.endPointURI);
+				this.reference = null;
 
-		assert	!serverSideInitialised() :
-				new PostconditionException("!serverSideInitialised()");
-		assert	POJOEndPoint.implementationInvariants(this) :
-				new ImplementationInvariantException(
-						"POJOEndPoint.implementationInvariants(this)");
-		assert	POJOEndPoint.invariants(this) :
-				new InvariantException("POJOEndPoint.invariants(this)");
+				assert	!serverSideInitialised() :
+						new PostconditionException("!serverSideInitialised()");
+				assert	POJOEndPoint.implementationInvariants(this) :
+						new ImplementationInvariantException(
+								"POJOEndPoint.implementationInvariants(this)");
+				assert	POJOEndPoint.invariants(this) :
+						new InvariantException("POJOEndPoint.invariants(this)");
+			}
+		}
 	}
 
 	/**
@@ -319,24 +388,27 @@ implements	Cloneable
 	@Override
 	public POJOEndPoint<I>	copyWithSharable()
 	{
-		try {
-			@SuppressWarnings("unchecked")
-			POJOEndPoint<I> ret = (POJOEndPoint<I>) this.clone();
-			assert	ret.getClientSideInterface().
+		synchronized (this) {
+			try {
+				@SuppressWarnings("unchecked")
+				POJOEndPoint<I> ret = (POJOEndPoint<I>) this.clone();
+			
+				assert	ret.getClientSideInterface().
 											equals(getClientSideInterface()) :
-					new PostconditionException(
-							"return.getClientSideInterface().equals("
-							+ "getClientSideInterface())");
+						new PostconditionException(
+								"return.getClientSideInterface().equals("
+								+ "getClientSideInterface())");
 
-			assert	POJOEndPoint.implementationInvariants(ret) :
-					new ImplementationInvariantException(
-							"POJOEndPoint.implementationInvariants(ret)");
-			assert	POJOEndPoint.invariants(ret) :
-					new InvariantException("POJOEndPoint.invariants(ret)");
+				assert	POJOEndPoint.implementationInvariants(ret) :
+						new ImplementationInvariantException(
+								"POJOEndPoint.implementationInvariants(ret)");
+				assert	POJOEndPoint.invariants(ret) :
+						new InvariantException("POJOEndPoint.invariants(ret)");
 
-			return ret;
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e) ;
+				return ret;
+			} catch (CloneNotSupportedException e) {
+				throw new RuntimeException(e) ;
+			}
 		}
 	}
 
@@ -346,10 +418,14 @@ implements	Cloneable
 	@Override
 	protected void addLocalContentToStringBuffer(StringBuffer sb)
 	{
-		super.addLocalContentToStringBuffer(sb);
-		sb.append(", ");
-		sb.append(this.clientSideInitialised);
-		sb.append(", ");
-		sb.append(this.reference.getClass().getSimpleName());
+		synchronized (this) {
+			super.addLocalContentToStringBuffer(sb);
+			sb.append(", ");
+			sb.append(this.serverSideInitialised());
+			sb.append(", ");
+			sb.append(this.clientSideInitialised());
+			sb.append(", ");
+			sb.append(this.reference.getClass().getSimpleName());
+		}
 	}
 }

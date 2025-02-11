@@ -42,6 +42,7 @@ import fr.sorbonne_u.components.examples.cedp_cs.connections.CompositeURIService
 import fr.sorbonne_u.components.examples.cedp_cs.interfaces.MultipleURIConsumerCI;
 import fr.sorbonne_u.components.examples.cedp_cs.interfaces.SingleURIConsumerCI;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 //-----------------------------------------------------------------------------
 /**
@@ -223,7 +224,11 @@ extends		AbstractComponent
 		// not have started yet, hence not able to execute any incoming calls.
 
 		// create the outbound port, publish and connect it
-		this.compositeURIServiceEndpoint.initialiseClientSide(this);
+		try {
+			this.compositeURIServiceEndpoint.initialiseClientSide(this);
+		} catch (ConnectionException e) {
+			throw new ComponentStartException(e) ;
+		}
 	}
 
 	/**

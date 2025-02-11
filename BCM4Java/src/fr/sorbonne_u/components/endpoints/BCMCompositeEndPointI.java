@@ -35,6 +35,7 @@ package fr.sorbonne_u.components.endpoints;
 
 import java.io.Serializable;
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 /**
  * The interface <code>BCMCompositeEndPointI</code> declares the methods that
@@ -93,7 +94,8 @@ extends		CompositeEndPointI,
 	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPointI#initialiseServerSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseServerSide(Object serverSideEndPointOwner);
+	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException;
 
 	/**
 	 * initialise all of the end points.
@@ -108,7 +110,8 @@ extends		CompositeEndPointI,
 	 * @see fr.sorbonne_u.components.endpoints.CompositeEndPointI#initialiseClientSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseClientSide(Object clientSideEndPointOwner);
+	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException;
 
 	/**
 	 * copy all of the end points.

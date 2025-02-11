@@ -40,6 +40,7 @@ import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
@@ -335,6 +336,7 @@ implements	BCMEndPointI<CI>,
 	 */
 	@Override
 	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException
 	{
 		assert	serverSideEndPointOwner != null :
 				new PreconditionException("serverSideEndPointOwner != null");
@@ -354,7 +356,7 @@ implements	BCMEndPointI<CI>,
 							(AbstractComponent) serverSideEndPointOwner,
 							this.inboundPortURI);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new ConnectionException(e);
 		}
 
 		assert	serverSideInitialised() :
@@ -423,6 +425,7 @@ implements	BCMEndPointI<CI>,
 	 */
 	@Override
 	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException
 	{
 		assert	serverSideInitialised() :
 				new PreconditionException("serverSideInitialised()");
@@ -441,13 +444,13 @@ implements	BCMEndPointI<CI>,
 							this.outboundPortURI,
 							this.inboundPortURI);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new ConnectionException(e);
 		}
 
 		try {
 			assert	((AbstractPort)this.outboundPort).getServerPortURI().
 											equals(this.getInboundPortURI()) :
-					new RuntimeException(
+					new ConnectionException(
 							"BCMEndPoint::initialiseClientSide connection "
 							+ "exception: outbound port not connected to the "
 							+ "inbound port with URI "

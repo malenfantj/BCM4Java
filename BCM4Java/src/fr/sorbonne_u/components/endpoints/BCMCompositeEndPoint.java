@@ -41,6 +41,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
 import java.util.ArrayList;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 /**
  * The class <code>BCMCompositeEndPoint</code> implements specialisation of
@@ -209,6 +210,7 @@ implements	BCMCompositeEndPointI
 	 */
 	@Override
 	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException
 	{
 		assert	serverSideEndPointOwner instanceof AbstractComponent :
 				new PreconditionException(
@@ -222,6 +224,7 @@ implements	BCMCompositeEndPointI
 	 */
 	@Override
 	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException
 	{
 		assert	clientSideEndPointOwner instanceof AbstractComponent :
 				new PreconditionException(

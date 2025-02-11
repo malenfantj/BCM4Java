@@ -36,6 +36,9 @@ package fr.sorbonne_u.components.endpoints;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import fr.sorbonne_u.components.exceptions.BCMRuntimeException;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
@@ -252,6 +255,7 @@ implements	CompositeEndPointI,
 	 */
 	@Override
 	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException
 	{
 		assert	serverSideEndPointOwner != null :
 				new PreconditionException("serverSideEndPointOwner != null");
@@ -261,8 +265,18 @@ implements	CompositeEndPointI,
 				new PreconditionException("!clientSideInitialised()");
 		assert	complete() : new PreconditionException("complete()");
 
-		this.endPointsMap.values().stream().
-				forEach(e -> e.initialiseServerSide(serverSideEndPointOwner));
+		try {
+			this.endPointsMap.values().stream().
+				forEach(e -> {try {
+									e.initialiseServerSide(
+											serverSideEndPointOwner);
+							  } catch(ConnectionException exc) {
+								  	throw new BCMRuntimeException(exc);
+							  }});
+		} catch(BCMRuntimeException e) {
+			ConnectionException ce = (ConnectionException) e.getCause();
+			throw ce;
+		}
 
 		assert	serverSideInitialised() :
 				new PreconditionException("serverSideInitialised()");
@@ -289,6 +303,7 @@ implements	CompositeEndPointI,
 	 */
 	@Override
 	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException
 	{
 		assert	clientSideEndPointOwner != null :
 				new PreconditionException("clientSideEndPointOwner != null");
@@ -298,8 +313,18 @@ implements	CompositeEndPointI,
 				new PreconditionException("!clientSideInitialised()");
 		assert	complete() : new PreconditionException("complete()");
 
-		this.endPointsMap.values().stream().
-				forEach(e -> e.initialiseClientSide(clientSideEndPointOwner));
+		try {
+			this.endPointsMap.values().stream().
+				forEach(e -> {try {
+									e.initialiseClientSide(
+											clientSideEndPointOwner);
+							  } catch(ConnectionException exc) {
+								  	throw new BCMRuntimeException(exc);
+							  }});
+		} catch(BCMRuntimeException e) {
+			ConnectionException ce = (ConnectionException) e.getCause();
+			throw ce;
+		}
 
 		assert	clientSideInitialised() :
 				new PreconditionException("clientSideInitialised()");

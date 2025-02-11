@@ -36,6 +36,7 @@ package fr.sorbonne_u.components.endpoints;
 import java.io.Serializable;
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 
@@ -100,7 +101,8 @@ extends		EndPointI<CI>,
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#initialiseServerSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseServerSide(Object serverSideEndPointOwner);
+	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException;
 
 	/**
 	 * create the outbound port, publish it and connect it to the server side
@@ -116,7 +118,8 @@ extends		EndPointI<CI>,
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#initialiseClientSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseClientSide(Object clientSideEndPointOwner);
+	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException;
 
 	/**
 	 * unpublish and destroy the inbound port on the server side component.

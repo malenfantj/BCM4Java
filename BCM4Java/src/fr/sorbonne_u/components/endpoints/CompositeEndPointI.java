@@ -1,5 +1,7 @@
 package fr.sorbonne_u.components.endpoints;
 
+import fr.sorbonne_u.components.exceptions.ConnectionException;
+
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -83,7 +85,8 @@ extends		AbstractEndPointI
 	 * @see fr.sorbonne_u.components.endpoints.AbstractEndPointI#initialiseServerSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseServerSide(Object serverSideEndPointOwner);
+	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException;
 
 	/**
 	 * initialise the client side references embedded in this multiple end
@@ -100,7 +103,8 @@ extends		AbstractEndPointI
 	 * @see fr.sorbonne_u.components.endpoints.AbstractEndPointI#initialiseClientSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseClientSide(Object clientSideEndPointOwner);
+	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException;
 
 	// -------------------------------------------------------------------------
 	// Local signatures

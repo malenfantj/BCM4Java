@@ -33,6 +33,8 @@ package fr.sorbonne_u.components.endpoints;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.components.exceptions.ConnectionException;
+
 /**
  * The interface <code>AbstractEndPointI</code> defines the signature of
  * methods common to all end points;
@@ -87,8 +89,10 @@ public interface		AbstractEndPointI
 	 * </pre>
 	 *
 	 * @param serverSideEndPointOwner	server side end point owner.
+	 * @throws ConnectionException		when {@code serverSideEndPointOwner} does not conform to the end point expectations.
 	 */
-	public void			initialiseServerSide(Object serverSideEndPointOwner);
+	public void			initialiseServerSide(Object serverSideEndPointOwner)
+	throws ConnectionException;
 
 	/**
 	 * return true if the client side of this end point is initialised, false
@@ -119,8 +123,10 @@ public interface		AbstractEndPointI
 	 * </pre>
 	 *
 	 * @param clientSideEndPointOwner	client side end point owner.
+	 * @throws ConnectionException		when {@code clientSideEndPointOwner} does not conform to the end point expectations.
 	 */
-	public void			initialiseClientSide(Object clientSideEndPointOwner);
+	public void			initialiseClientSide(Object clientSideEndPointOwner)
+	throws ConnectionException;
 
 	
 	/**
