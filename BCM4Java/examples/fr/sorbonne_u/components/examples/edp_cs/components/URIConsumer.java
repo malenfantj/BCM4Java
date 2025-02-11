@@ -41,6 +41,7 @@ import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.examples.basic_cs.interfaces.URIConsumerCI;
 import fr.sorbonne_u.components.examples.edp_cs.connections.URIServiceEndPoint;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 //-----------------------------------------------------------------------------
 /**
@@ -159,7 +160,6 @@ extends		AbstractComponent
 		this.counter++ ;
 		if (this.counter <= 10) {
 			// Get the next URI and print it
-			this.logMessage("here");
 			String uri = this.uriServiceEndPoint.getClientSideReference().getURI();
 			this.logMessage("consumer getting a new URI no "
 							+ this.counter + ": " + uri + ".");
@@ -226,7 +226,11 @@ extends		AbstractComponent
 		// not have started yet, hence not able to execute any incoming calls.
 
 		// connect to the server side
-		this.uriServiceEndPoint.initialiseClientSide(this);
+		try {
+			this.uriServiceEndPoint.initialiseClientSide(this);
+		} catch (ConnectionException e) {
+			throw new ComponentStartException(e) ;
+		}
 	}
 
 	/**
