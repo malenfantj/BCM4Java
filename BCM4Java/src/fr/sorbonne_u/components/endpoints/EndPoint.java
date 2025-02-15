@@ -45,6 +45,12 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * implementation of an end point, to be extended to fully implement actual
  * implementation-dependent end points.
  *
+ * <p><strong>Description</strong></p>
+ * 
+ * <p>
+ * This partial implementation is thread safe.
+ * </p>
+ * 
  * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
@@ -71,7 +77,7 @@ implements	EndPointI<I>
 
 	// Sharable information
 
-	/** the interface implemented by this end point.	*/
+	/** the interface implemented by this end point.						*/
 	protected final Class<I>	clientSideInterface;
 
 	// -------------------------------------------------------------------------
@@ -98,9 +104,9 @@ implements	EndPointI<I>
 		assert instance != null : new PreconditionException("instance != null");
 		boolean ret = true;
 		ret &= InvariantChecking.checkImplementationInvariant(
-				instance.clientSideInterface != null,
-				EndPoint.class, instance,
-				"clientSideInterface != null");
+					instance.clientSideInterface != null,
+					EndPoint.class, instance,
+					"clientSideInterface != null");
 		return ret;
 	}
 

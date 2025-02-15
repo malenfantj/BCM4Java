@@ -42,10 +42,10 @@ package fr.sorbonne_u.components.endpoints;
  * 
  * <p>
  * An end point embed a reference connecting two entities to be used by a
- * client entity to call a server entity, a caller. The protocol is to create
- * the end point (with appropriate implementation-dependent information that is
- * shared among the caller and the callee). The protocol is the following,
- * actions being performed in the presented order:
+ * client entity to call a server entity. The protocol is to create the end
+ * point (with appropriate implementation-dependent information that is shared
+ * among the caller and the callee). The protocol is the following, actions
+ * being performed in the following order:
  * <ol>
  * <li>Create the end point, providing the implementation-dependent information
  *   required by its actual implementation.</li>
@@ -61,16 +61,16 @@ package fr.sorbonne_u.components.endpoints;
  *   software entity; this will perform whatever implementation-dependent
  *   actions required to establish the connection from the client side.</li>
  * <li>On the client side: call {@code getReference()} to get the reference
- *   implementing the interface {@code I} through which the cleint can call
+ *   implementing the interface {@code I} through which the client can call
  *   server side methods as long as needed.</li>
  * <li>On the client side: when the end point is no longer needed, call
  *   {@code cleanUpClientSide}; this will perform whatever
  *   implementation-dependent actions required to cut the connection
- *   on the client side.</li>
+ *   on the client side and clean up the resources used for the connection.</li>
  * <li>On the server side: when the end point is no longer needed, call
  *   {@code cleanUpServerSide}; this will perform whatever
  *   implementation-dependent actions required to cut the connection
- *   on the server side.</li>
+ *   on the server side and clean up the resources used for the connection.</li>
  * </ol>
  * 
  * <p><strong>Invariants</strong></p>
@@ -101,7 +101,8 @@ extends		AbstractEndPointI
 	public Class<I>		getClientSideInterface();
 
 	/**
-	 * return the client side reference embedded in this end point.
+	 * on the client side only, return the client side reference embedded in
+	 * this end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -124,6 +125,7 @@ extends		AbstractEndPointI
 	 * pre	{@code true}	// no precondition.
 	 * post	{@code return != null}
 	 * post	{@code return.getImplementedInterface().equals(getImplementedInterface())}
+	 * post	{@code ret.serverSideInitialised() == serverSideInitialised()}
 	 * </pre>
 	 *
 	 * @return	a duplicate of this end point except its transient information.

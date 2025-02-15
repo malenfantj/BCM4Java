@@ -36,16 +36,26 @@ package fr.sorbonne_u.components.endpoints;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 /**
- * The interface <code>AbstractEndPointI</code> defines the signature of
+ * The interface <code>AbstractEndPointI</code> defines the signatures of
  * methods common to all end points;
  * @see fr.sorbonne_u.components.endpoints.EndPointI for more details
  * about end points and their usage.
  *
  * <p><strong>Description</strong></p>
  * 
+ * TODO: major revision to have two sets of interfaces and objects representing
+ *       the server and the client sides to ensure that methods that can only
+ *       be called on one side are only visible on that side; also, replace the
+ *       copyWithSharable protocol by creating first a end point and then a
+ *       server and a client side with dedicated methods.
+ * 
  * <p>
  * The signatures declared in this interface apply to all end points. They
- * are meant to allow the initialisation and the clean up of the end points.
+ * are meant to allow the initialisation of the end points both on the server
+ * and the client sides before the client can use them to call the server
+ * and their clean up, first on the client and then on the server side, after
+ * their use to manage in an implementation-dependent way the resources used
+ * in them (registries, ports, etc.).
  * </p>
  * 
  * <p><strong>Invariants</strong></p>
@@ -76,14 +86,13 @@ public interface		AbstractEndPointI
 	public boolean		serverSideInitialised();
 
 	/**
-	 * initialise the server side of this end point, performing whatever action
-	 * needed to make this reference readily usable.
+	 * on the server side, initialise the server side of this end point,
+	 * performing whatever action needed to make it readily usable.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	{@code !serverSideInitialised()}
-	 * pre	{@code !clientSideInitialised()}
 	 * pre	{@code serverSideEndPointOwner != null}
 	 * post	{@code serverSideInitialised()}
 	 * </pre>
@@ -95,8 +104,8 @@ public interface		AbstractEndPointI
 	throws ConnectionException;
 
 	/**
-	 * return true if the client side of this end point is initialised, false
-	 * otherwise.
+	 * on the client side only, return true if the client side of this end point
+	 * is initialised, false otherwise.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -110,8 +119,8 @@ public interface		AbstractEndPointI
 	public boolean		clientSideInitialised();
 
 	/**
-	 * initialise the client side reference embedded in this end point,
-	 * performing whatever action needed to make this reference readily usable.
+	 * on the client side only, initialise the client side of this end point,
+	 * performing whatever action needed to make it readily usable.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -128,31 +137,58 @@ public interface		AbstractEndPointI
 	public void			initialiseClientSide(Object clientSideEndPointOwner)
 	throws ConnectionException;
 
-	
 	/**
-	 * clean up the server side of this end point, performing whatever action
-	 * required to disable it definitively.
+	 * on the server side only, return true if the server side of the end point
+	 * has been cleaned, false otherwise.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code !clientSideInitialised()}
-	 * pre	{@code serverSideInitialised()}
-	 * post	{@code !serverSideInitialised()}
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if the server side of the end point has been cleaned, false otherwise.
+	 */
+	public boolean		serverSideClean();
+
+	/**
+	 * on the server side only, clean up the server side of this end point,
+	 * performing whatever action required to disable it definitively.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !serverSideClean()}
+	 * post	{@code serverSideClean()}
 	 * </pre>
 	 */
 	public void			cleanUpServerSide();
 
 	/**
-	 * clean up the client side of this end point, performing whatever action
-	 * required to disable it definitively.
+	 * on the client side only, return true if the client side of the end point
+	 * has been cleaned, false otherwise.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code serverSideInitialised()}
-	 * pre	{@code clientSideInitialised()}
-	 * post	{@code !clientSideInitialised()}
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if the client side of the end point has been cleaned, false otherwise.
+	 */
+	public boolean		clientSideClean();
+
+	/**
+	 * on the client side only, clean up the client side of this end point,
+	 * performing whatever action required to disable it definitively.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !clientSideClean()}
+	 * post	{@code clientSideClean()}
 	 * </pre>
 	 */
 	public void			cleanUpClientSide();

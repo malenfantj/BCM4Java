@@ -1,7 +1,5 @@
 package fr.sorbonne_u.components.endpoints;
 
-import fr.sorbonne_u.components.exceptions.ConnectionException;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -34,6 +32,8 @@ import fr.sorbonne_u.components.exceptions.ConnectionException;
 //
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
+
+import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 /**
  * The interface <code>CompositeEndPointI</code> defines the signatures of
@@ -72,8 +72,8 @@ extends		AbstractEndPointI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * initialise the server side of this multiple end points, performing
-	 * whatever action needed to make this reference readily usable.
+	 * on the server side only, initialise the server side of this composite
+	 * end point, performing whatever action needed to make it readily usable.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -89,9 +89,8 @@ extends		AbstractEndPointI
 	throws ConnectionException;
 
 	/**
-	 * initialise the client side references embedded in this multiple end
-	 * points, performing whatever action needed to make this reference readily
-	 * usable.
+	 * on the client side only, initialise the client side of this composite
+	 * end point, performing whatever action needed to make it readily usable.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -109,6 +108,20 @@ extends		AbstractEndPointI
 	// -------------------------------------------------------------------------
 	// Local signatures
 	// -------------------------------------------------------------------------
+
+	/**
+	 * return the number of end points composed in this composite end point.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return > 0}
+	 * </pre>
+	 *
+	 * @return	the number of end points composed in this composite end point.
+	 */
+	public int			numberOfComposedEndPoints();
 
 	/**
 	 * return true if all expected end points are defined in this multiple end
@@ -151,7 +164,7 @@ extends		AbstractEndPointI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code true}	// no precondition.
+	 * pre	{@code complete()}
 	 * post	{@code return != null}
 	 * </pre>
 	 *

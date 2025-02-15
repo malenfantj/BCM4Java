@@ -54,9 +54,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * embedding in the different steps the BCM dependent actions needed to
  * establish the connection. In BCM, an end point is used both on the client
  * and the server side where, after their initialisation, they hold the outbound
- * port for the former and the inbound port for the latter. Hence, on the
- * client side, they cannot be "client side initialised" and on the server side,
- * they cannot be "client side initialised".
+ * port for the former and the inbound port for the latter.
  * </p>
  * <p>
  * The redefinitions of the methods in this interface simply makes some typing
@@ -83,13 +81,11 @@ extends		EndPointI<CI>,
 	// -------------------------------------------------------------------------
 
 	/**
-	 * create and publish the inbound port on the client component.
-	 * 
-	 * <p><strong>Description</strong></p>
-	 * 
-	 * <p>
-	 * In BCM end points, the end points is used both by the client and the 
-	 * </p>
+	 * on the server side component only, if an inbound port with the URI
+	 * attributed when creating the end point exists, it is reused in the end
+	 * point otherwise create and publish the inbound port on the component;
+	 * also set the server side owner component of the end point to
+	 * {@code serverSideEndPointOwner}.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -105,8 +101,9 @@ extends		EndPointI<CI>,
 	throws ConnectionException;
 
 	/**
-	 * create the outbound port, publish it and connect it to the server side
-	 * inbound port.
+	 * on the client side component only, create an outbound port, publish it
+	 * and connect it to the server side inbound port; also set the client side
+	 * owner component of the end point to {@code clientSideEndPointOwner}.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -122,8 +119,8 @@ extends		EndPointI<CI>,
 	throws ConnectionException;
 
 	/**
-	 * unpublish and destroy the inbound port on the server side component.
-	 * <p><strong>Contract</strong></p>
+	 * on the server side component only, unpublish and destroy the inbound port
+	 * from the component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -138,8 +135,8 @@ extends		EndPointI<CI>,
 	public void			cleanUpServerSide();
 
 	/**
-	 * disconnect, unpublish and destroy the outbound port on the client side
-	 * component.
+	 * on the client side component only, disconnect, unpublish and destroy the
+	 * outbound port from the client component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -172,7 +169,8 @@ extends		EndPointI<CI>,
 	public Class<CI>	getClientSideInterface();
 
 	/**
-	 * return the reference proposing the required interface of this end point.
+	 * on the client side component only, return the reference proposing the
+	 * required interface of this end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -224,20 +222,6 @@ extends		EndPointI<CI>,
 	public String		getInboundPortURI();
 
 	/**
-	 * return the URI of the outbound port embedded in this BCM end point.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code return != null && !return.isEmpty()}
-	 * </pre>
-	 *
-	 * @return	the URI of the outbound port embedded in this BCM end point.
-	 */
-	public String		getOutboundPortURI();
-
-	/**
 	 * return the server side offered interface of this BCM end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -253,8 +237,10 @@ extends		EndPointI<CI>,
 	public <OCI extends OfferedCI> Class<OCI>	getServerSideInterface();
 
 	/**
-	 * on the server side, return true if {@code c} is the server component of
-	 * this end point.
+	 * on the server side component only, return true if {@code c} is the server
+	 * component of this end point.
+	 * 
+	 * TODO: really useful?
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -269,8 +255,10 @@ extends		EndPointI<CI>,
 	public boolean		isServerComponent(AbstractComponent c);
 
 	/**
-	 * on the client side, return true if {@code c} is the client component of
-	 * this end point.
+	 * on the client side component only, return true if {@code c} is the client
+	 * component of this end point.
+	 * 
+	 * TODO: really useful?
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 

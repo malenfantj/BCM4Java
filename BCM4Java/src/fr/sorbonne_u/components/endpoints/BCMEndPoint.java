@@ -40,11 +40,13 @@ import fr.sorbonne_u.components.cvm.AbstractDistributedCVM;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.exceptions.BCMRuntimeException;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
+import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.exceptions.InvariantChecking;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
@@ -70,9 +72,12 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * with the provided URI on the given server component and publishes the port
  * in the registry.
  * {@code makeOutboundPort(AbstractComponent,String)} creates the outbound
- * port on the given client component and then connect this port to the
+ * port on the given client component and then connects this port to the
  * server component with the given inbound port URI using the appropriate
  * connector.
+ * </p>
+ * <p>
+ * This partial implementation is not thread safe.
  * </p>
  * 
  * <p><strong>Implementation Invariants</strong></p>
@@ -80,9 +85,8 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <pre>
  * invariant	{@code serverSideOfferedInterface != null}
  * invariant	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
- * invariant	{@code outboundPortURI != null && !outboundPortURI.isEmpty()}
- * invariant	{@code serverSideInitialised || inboundPort == null && server == null}
- * invariant	{@code clientSideInitialised || outboundPort == null && client == null}
+ * invariant	{@code serverSideInitialised() || inboundPort == null}
+ * invariant	{@code clientSideInitialised() || outboundPort == null}
  * </pre>
  * 
  * <p><strong>Invariants</strong></p>
@@ -113,8 +117,6 @@ implements	BCMEndPointI<CI>,
 	protected final Class<? extends OfferedCI>	serverSideOfferedInterface;
 	/** URI of the inbound port offering {@code serverSideOfferedInterface}.*/
 	protected final String						inboundPortURI;
-	/** URI of the outbound port.											*/
-	protected String							outboundPortURI;
 
 	// Not sharable information
 
@@ -128,8 +130,6 @@ implements	BCMEndPointI<CI>,
 	 *  resides on the server side otherwise it is null.					*/
 	protected transient AbstractInboundPort		inboundPort;
 
-	/** when true, the client has initialised the end point, false otherwise.*/
-	protected transient boolean					clientSideInitialised;
 	/** reference to the client side component; only available on the
 	 *  copy of the end point that resides on the client side otherwise it
 	 *  is null.															*/
@@ -163,29 +163,24 @@ implements	BCMEndPointI<CI>,
 
 		boolean ret = true;
 		ret &= InvariantChecking.checkImplementationInvariant(
-				instance.serverSideOfferedInterface != null,
-				BCMEndPoint.class, instance,
-				"serverSideOfferedInterface != null");
+					instance.serverSideOfferedInterface != null,
+					BCMEndPoint.class, instance,
+					"serverSideOfferedInterface != null");
 		ret &= InvariantChecking.checkImplementationInvariant(
-				instance.inboundPortURI != null &&
+					instance.inboundPortURI != null &&
 										!instance.inboundPortURI.isEmpty(),
-				BCMEndPoint.class, instance,
-				"inboundPortURI != null && !inboundPortURI.isEmpty()");
+					BCMEndPoint.class, instance,
+					"inboundPortURI != null && !inboundPortURI.isEmpty()");
 		ret &= InvariantChecking.checkImplementationInvariant(
-				instance.outboundPortURI != null &&
-										!instance.outboundPortURI.isEmpty(),
-				BCMEndPoint.class, instance,
-				"outboundPortURI != null && !outboundPortURI.isEmpty()");
+					instance.serverSideInitialised() ||
+											instance.inboundPort == null,
+					BCMEndPoint.class, instance,
+					"serverSideInitialised() || inboundPort == null");
 		ret &= InvariantChecking.checkImplementationInvariant(
-				instance.serverSideInitialised ||
-						instance.inboundPort == null && instance.server == null,
-				BCMEndPoint.class, instance,
-				"serverSideInitialised || inboundPort == null && server == null");
-		ret &= InvariantChecking.checkImplementationInvariant(
-				instance.clientSideInitialised ||
-					instance.outboundPort == null && instance.client == null,
-				BCMEndPoint.class, instance,
-				"clientSideInitialised || outboundPort == null && client == null");
+					instance.clientSideInitialised() ||
+											instance.outboundPort == null,
+					BCMEndPoint.class, instance,
+					"clientSideInitialised() || outboundPort == null");
 		ret &= EndPoint.implementationInvariants(instance);
 		return ret;
 	}
@@ -217,7 +212,7 @@ implements	BCMEndPointI<CI>,
 	// -------------------------------------------------------------------------
 
 	/**
-	 * create a new BCM end point descriptor with a generated inbound port URI.
+	 * create a new BCM end point with a generated inbound port URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -238,12 +233,11 @@ implements	BCMEndPointI<CI>,
 	{
 		this(implementedInterface,
 			 serverSideOfferedInterface,
-			 AbstractPort.generatePortURI(implementedInterface),
 			 AbstractPort.generatePortURI(implementedInterface));
 	}
 
 	/**
-	 * create a new BCM end point descriptor with the given inbound port URI.
+	 * create a new BCM end point with the given inbound port URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -251,7 +245,6 @@ implements	BCMEndPointI<CI>,
 	 * pre	{@code implementedInterface != null}
 	 * pre	{@code serverSideOfferedInterface != null}
 	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
-	 * pre	{@code outboundPortURI != null && !outboundPortURI.isEmpty()}
 	 * post	{@code !serverSideInitialised()}
 	 * post	{@code !clientSideInitialised()}
 	 * </pre>
@@ -259,13 +252,11 @@ implements	BCMEndPointI<CI>,
 	 * @param implementedInterface			the component interface required by this end point.
 	 * @param serverSideOfferedInterface	the component interface offered by the server side of this end point.
 	 * @param inboundPortURI				URI if the inbound port to which this end point connects.
-	 * @param outboundPortURI				URI if the outbound port from which this end point connects.
 	 */
 	public				BCMEndPoint(
 		Class<CI> implementedInterface,
 		Class<? extends OfferedCI> serverSideOfferedInterface,
-		String inboundPortURI,
-		String outboundPortURI
+		String inboundPortURI
 		)
 	{
 		super(implementedInterface);
@@ -275,23 +266,22 @@ implements	BCMEndPointI<CI>,
 		assert	inboundPortURI != null && !inboundPortURI.isEmpty() :
 				new PreconditionException(
 						"inboundPortURI != null && !inboundPortURI.isEmpty()");
-		assert	outboundPortURI != null && !outboundPortURI.isEmpty() :
-				new PreconditionException(
-						"outboundPortURI != null && !outboundPortURI.isEmpty()");
 
 		// sharable information
 		this.serverSideOfferedInterface = serverSideOfferedInterface;
 		this.inboundPortURI = inboundPortURI;
-		this.outboundPortURI = outboundPortURI;
 
 		// transient information
 		this.serverSideInitialised = false;
 		this.server = null;
 		this.inboundPort = null;
-		this.clientSideInitialised = false;
 		this.client = null;
 		this.outboundPort = null;
 
+		assert	!serverSideInitialised() :
+				new PostconditionException("!serverSideInitialised()");
+		assert	!clientSideInitialised() :
+				new PostconditionException("!clientSideInitialised()");
 		assert	BCMEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
 						"BCMEndPoint.implementationInvariants(this)");
@@ -307,43 +297,43 @@ implements	BCMEndPointI<CI>,
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#serverSideInitialised()
 	 */
 	@Override
-	public boolean		serverSideInitialised()
+	public synchronized boolean		serverSideInitialised()
 	{
 		if (this.serverSideInitialised) {
 			return true;
+		} else if (this.inboundPortURI == null) {
+			return false;
 		} else {
-			if (this.inboundPortURI == null) {
-				return false;
-			} else {
-				boolean ret =
+			boolean ret =
 					AbstractCVM.isPublishedInLocalRegistry(this.inboundPortURI);
-				if (!ret && AbstractCVM.isDistributed) {
-					try {
-						ret = AbstractDistributedCVM.isPublished(
-														this.inboundPortURI);
-					} catch (BCMException e) {
-						throw new RuntimeException(e);
-					}
+			if (!ret && AbstractCVM.isDistributed) {
+				try {
+					ret = AbstractDistributedCVM.isPublished(this.inboundPortURI);
+				} catch (BCMException e) {
+					throw new RuntimeException(e);
 				}
-				this.serverSideInitialised = ret;
-				return ret;
 			}
+			this.serverSideInitialised = ret;
+			return ret;
 		}
 	}
 
 	/**
+	 * if no inbound port with the URI attributed when creating the end point
+	 * exists, the method calls {@code makeInboundPort} to create and publish
+	 * an inbound port with the provided URI on the server component.
+	 * 
 	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#initialiseServerSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseServerSide(Object serverSideEndPointOwner)
-	throws ConnectionException
+	public synchronized void	initialiseServerSide(
+		Object serverSideEndPointOwner
+		) throws ConnectionException
 	{
-		assert	serverSideEndPointOwner != null :
-				new PreconditionException("serverSideEndPointOwner != null");
 		assert	!serverSideInitialised() :
 				new PreconditionException("!serverSideInitialised()");
-		assert	!clientSideInitialised() :
-				new PreconditionException("!clientSideInitialised()");
+		assert	serverSideEndPointOwner != null :
+				new PreconditionException("serverSideEndPointOwner != null");
 		assert	serverSideEndPointOwner instanceof AbstractComponent :
 				new PreconditionException(
 						"serverSideEndPointOwner instanceof "
@@ -351,16 +341,33 @@ implements	BCMEndPointI<CI>,
 
 		this.server = (AbstractComponent) serverSideEndPointOwner;
 		try {
-			this.inboundPort =
-					this.makeInboundPort(
-							(AbstractComponent) serverSideEndPointOwner,
-							this.inboundPortURI);
+			PortI p = this.getPortFromURI(this.server, this.inboundPortURI);
+
+			if (p == null) {
+				this.inboundPort =
+						this.makeInboundPort(
+								(AbstractComponent) serverSideEndPointOwner,
+								this.inboundPortURI);
+			} else {
+				assert	p instanceof AbstractInboundPort :
+						new BCMRuntimeException(
+								"a port with URI " + this.inboundPortURI
+								+ " exists in this end point owner but is not an "
+								+ "inbound port.");
+				assert	p.isPublished() :
+						new BCMRuntimeException(
+								"an inbound port with URI " + this.inboundPortURI
+								+ " exists on this end point owner component but"
+								+ " it is not published");
+
+				this.inboundPort = (AbstractInboundPort) p;
+			}
 		} catch (Exception e) {
 			throw new ConnectionException(e);
 		}
 
 		assert	serverSideInitialised() :
-				new PreconditionException("serverSideInitialised()");
+				new PostconditionException("serverSideInitialised()");
 		assert	BCMEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
 						"BCMEndPoint.implementationInvariants(this)");
@@ -369,8 +376,9 @@ implements	BCMEndPointI<CI>,
 	}
 
 	/**
-	 * create, publish and return the inbound port on the server side component
-	 * {@code c} with the given inbound port URI.
+	 * on the server side component only, create, publish and return an inbound
+	 * port on the server side component {@code c} with the given inbound port
+	 * URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -384,7 +392,7 @@ implements	BCMEndPointI<CI>,
 	 *
 	 * @param c					component that will own the inbound port.
 	 * @param inboundPortURI	URI of the inbound port to be created.
-	 * @return					the created inbound port.
+	 * @return					the created inbound port which must be published.
 	 * @throws Exception		<i>to do</i>.
 	 */
 	protected abstract AbstractInboundPort	makeInboundPort(
@@ -396,41 +404,25 @@ implements	BCMEndPointI<CI>,
 	 * @see fr.sorbonne_u.components.endpoints.EndPointI#clientSideInitialised()
 	 */
 	@Override
-	public boolean		clientSideInitialised()
+	public synchronized boolean		clientSideInitialised()
 	{
-		if (this.clientSideInitialised) {
-			return true;
-		} else {
-			if (this.outboundPortURI == null) {
-				return false;
-			} else {
-				boolean ret =
-					AbstractCVM.isPublishedInLocalRegistry(this.outboundPortURI);
-				if (!ret && AbstractCVM.isDistributed) {
-					try {
-						ret = AbstractDistributedCVM.isPublished(
-														this.outboundPortURI);
-					} catch (BCMException e) {
-						throw new RuntimeException(e);
-					}
-				}
-				this.clientSideInitialised = ret;
-				return ret;
-			}
-		}
+		return this.client != null && this.outboundPort != null;
 	}
 
 	/**
 	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#initialiseClientSide(java.lang.Object)
 	 */
 	@Override
-	public void			initialiseClientSide(Object clientSideEndPointOwner)
-	throws ConnectionException
+	public synchronized void	initialiseClientSide(
+		Object clientSideEndPointOwner
+		) throws ConnectionException
 	{
 		assert	serverSideInitialised() :
 				new PreconditionException("serverSideInitialised()");
 		assert	!clientSideInitialised() :
 				new PreconditionException("!clientSideInitialised()");
+		assert	clientSideEndPointOwner != null :
+				new PreconditionException("clientSideEndPointOwner != null");
 		assert	clientSideEndPointOwner instanceof AbstractComponent :
 				new PreconditionException(
 						"clientSideEndPointOwner instanceof "
@@ -441,7 +433,6 @@ implements	BCMEndPointI<CI>,
 			this.outboundPort =
 					this.makeOutboundPort(
 							(AbstractComponent) clientSideEndPointOwner,
-							this.outboundPortURI,
 							this.inboundPortURI);
 		} catch (Exception e) {
 			throw new ConnectionException(e);
@@ -460,7 +451,7 @@ implements	BCMEndPointI<CI>,
 		}
 
 		assert	clientSideInitialised() :
-				new PreconditionException("clientSideInitialised()");
+				new PostconditionException("clientSideInitialised()");
 		assert	BCMEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
 						"BCMEndPoint.implementationInvariants(this)");
@@ -469,29 +460,38 @@ implements	BCMEndPointI<CI>,
 	}
 
 	/**
-	 * create, publish, connect and return the outbound port requiring the
-	 * component interface {@code CI} on the client side component {@code c}.
+	 * on the client side component only, create, publish, connect and return
+	 * the outbound port requiring the component interface {@code CI} on the
+	 * client side component {@code c}.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	{@code c != null}
+	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
 	 * post	{@code return != null && return.isPublished() && return.connected()}
 	 * post	{@code ((AbstractPort)return).getServerPortURI().equals(getInboundPortURI())}
 	 * post	{@code getImplementedInterface().isAssignableFrom(return.getClass())}
 	 * </pre>
 	 *
 	 * @param c					component that will own the outbound port.
-	 * @param outboundPortURI	URI to be givent to the new outbound port.
-	 * @param inboundPortURI	URI of the inbound prt to which the end point must be connected.
-	 * @return					the created outbound port.
+	 * @param inboundPortURI	URI of the inbound port to which the outbound port must be connected.
+	 * @return					the created outbound port, which must be published and connected.
 	 * @throws Exception		<i>to do</i>.
 	 */
 	protected abstract CI	makeOutboundPort(
 		AbstractComponent c,
-		String outboundPortURI,
 		String inboundPortURI
 		) throws Exception;
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.AbstractEndPointI#serverSideClean()
+	 */
+	@Override
+	public boolean		serverSideClean()
+	{
+		return !this.serverSideInitialised;
+	}
 
 	/**
 	 * unpublish and destroy the inbound port.
@@ -501,10 +501,8 @@ implements	BCMEndPointI<CI>,
 	@Override
 	public void			cleanUpServerSide()
 	{
-		assert	serverSideInitialised() :
+		assert	!serverSideClean() :
 				new PreconditionException("serverSideInitialised()");
-		assert	!clientSideInitialised() :
-				new PreconditionException("!clientSideInitialised()");
 
 		try {
 			if (this.inboundPort != null) {
@@ -520,13 +518,22 @@ implements	BCMEndPointI<CI>,
 			throw new RuntimeException(e);
 		}
 
-		assert	!serverSideInitialised() :
-				new PostconditionException("!serverSideInitialised()");
+		assert	serverSideClean() :
+				new PostconditionException("serverSideClean()");
 		assert	BCMEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
 						"BCMEndPoint.implementationInvariants(this)");
 		assert	BCMEndPoint.invariants(this) :
 				new InvariantException("BCMEndPoint.invariants(this)");
+	}
+
+	/**
+	 * @see fr.sorbonne_u.components.endpoints.AbstractEndPointI#clientSideClean()
+	 */
+	@Override
+	public boolean		clientSideClean()
+	{
+		return !this.clientSideInitialised();
 	}
 
 	/**
@@ -537,31 +544,29 @@ implements	BCMEndPointI<CI>,
 	@Override
 	public void			cleanUpClientSide()
 	{
-		assert	serverSideInitialised() :
-				new PreconditionException("serverSideInitialised()");
-		assert	clientSideInitialised() :
-				new PreconditionException("clientSideInitialised()");
+		assert	!clientSideClean() :
+				new PreconditionException("!clientSideClean()");
 
 		if (this.outboundPort != null) {
 			try {
-				if (((AbstractOutboundPort)this.outboundPort).connected()) {
-					this.client.doPortDisconnection(
-						((AbstractOutboundPort)this.outboundPort).getPortURI());
+				AbstractOutboundPort p =
+								(AbstractOutboundPort) this.outboundPort;
+				if (p.connected()) {
+					this.client.doPortDisconnection(p.getPortURI());
 				}
-				if (((AbstractOutboundPort)this.outboundPort).isPublished()) {
-					((AbstractOutboundPort)this.outboundPort).unpublishPort();
+				if (p.isPublished()) {
+					p.unpublishPort();
 				}
-				((AbstractOutboundPort)this.outboundPort).destroyPort();
+				p.destroyPort();
 				this.outboundPort = null;
 				this.client = null;
-				this.clientSideInitialised = false;
 			} catch(Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 
-		assert	!clientSideInitialised() :
-				new PostconditionException("!clientSideInitialised()");
+		assert	clientSideClean() :
+				new PostconditionException("clientSideClean()");
 		assert	BCMEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
 						"BCMEndPoint.implementationInvariants(this)");
@@ -608,7 +613,10 @@ implements	BCMEndPointI<CI>,
 	 * 
 	 * <pre>
 	 * pre	{@code true}	// no more preconditions.
-	 * post	{@code true}	// no more postconditions.
+	 * post	{@code return != null}
+	 * post	{@code return.getClientSideInterface().equals(getClientSideInterface())}
+	 * post	{@code return.getInboundPortURI().equals(getInboundPortURI())}
+	 * post	{@code return.getServerSideInterface().equals(getServerSideInterface())}
 	 * </pre>
 	 * 
 	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#copyWithSharable()
@@ -640,14 +648,10 @@ implements	BCMEndPointI<CI>,
 							"return.getInboundPortURI().equals("
 							+ "getInboundPortURI())");
 			assert	ret.getServerSideInterface().
-									equals(this.getServerSideInterface()) :
+											equals(getServerSideInterface()) :
 					new PostconditionException(
-							"return.getOfferedComponentInterface().equals("
-							+ "getOfferedComponentInterface())");
-			assert	ret.getOutboundPortURI().equals(this.getOutboundPortURI()) :
-					new PostconditionException(
-							"return.getOutboundPortURI().equals("
-							+ "getOutboundPortURI())");
+							"return.getServerSideInterface().equals("
+							+ "getServerSideInterface())");
 
 			return ret;
 		} catch (CloneNotSupportedException e) {
@@ -662,15 +666,6 @@ implements	BCMEndPointI<CI>,
 	public String		getInboundPortURI()
 	{
 		return this.inboundPortURI;
-	}
-
-	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPointI#getOutboundPortURI()
-	 */
-	@Override
-	public String		getOutboundPortURI()
-	{
-		return this.outboundPortURI;
 	}
 
 	/**
@@ -689,10 +684,7 @@ implements	BCMEndPointI<CI>,
 	@Override
 	public boolean		isServerComponent(AbstractComponent c)
 	{
-		assert	serverSideInitialised() :
-				new PreconditionException("serverSideInitialised()");
-		
-		return c == this.server;
+		return c != null && c == this.server;
 	}
 
 	/**
@@ -701,10 +693,7 @@ implements	BCMEndPointI<CI>,
 	@Override
 	public boolean		isClientComponent(AbstractComponent c)
 	{
-		assert	clientSideInitialised() :
-				new PreconditionException("clientSideInitialised()");
-		
-		return c == this.client;
+		return c != null && c == this.client;
 	}
 
 	/**
@@ -714,19 +703,23 @@ implements	BCMEndPointI<CI>,
 	protected void		addLocalContentToStringBuffer(StringBuffer sb)
 	{
 		super.addLocalContentToStringBuffer(sb);
-		sb.append(", ");
+		sb.append(", inboundPortURI = ");
 		sb.append(this.inboundPortURI);
-		sb.append(", ");
+		sb.append(", serverSideInitialised() = ");
 		sb.append(this.serverSideInitialised());
-		sb.append(", ");
+		sb.append(", serverSideClean() = ");
+		sb.append(this.serverSideClean());
+		sb.append(", clientSideInitialised() = ");
 		sb.append(this.clientSideInitialised());
 		if (this.clientSideInitialised()) {
-			sb.append(", ");
+			sb.append(", outbound port URI = ");
 			try {
 				sb.append(((AbstractPort)this.outboundPort).getPortURI());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
+		sb.append(", clientSideClean() = ");
+		sb.append(this.clientSideClean());
 	}
 }

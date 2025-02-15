@@ -45,8 +45,8 @@ import fr.sorbonne_u.components.exceptions.ConnectionException;
  * 
  * <p>
  * The redefinitions of the methods in this interface simply makes some typing
- * constraints as well as pre- and postconditions more precise for BCM end
- * points compared to generic end points.
+ * constraints as well as pre- and postconditions and explanations more precise
+ * for BCM end points compared to generic end points.
  * </p>
  * 
  * <p><strong>Invariants</strong></p>
@@ -68,7 +68,7 @@ extends		CompositeEndPointI,
 	// -------------------------------------------------------------------------
 
 	/**
-	 * return the BCM end point requiring {@code inter}.
+	 * return the BCM end point requiring the component interface {@code inter}.
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
@@ -82,7 +82,7 @@ extends		CompositeEndPointI,
 	public <I, J extends I> EndPointI<J>	getEndPoint(Class<I> inter);
 
 	/**
-	 * initialise all of the end points.
+	 * initialise all of the end points added to the composite end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -98,7 +98,7 @@ extends		CompositeEndPointI,
 	throws ConnectionException;
 
 	/**
-	 * initialise all of the end points.
+	 * initialise all of the end points added to the composite end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -114,7 +114,7 @@ extends		CompositeEndPointI,
 	throws ConnectionException;
 
 	/**
-	 * copy all of the end points.
+	 * copy all of the end points added to the composite end point.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -134,33 +134,33 @@ extends		CompositeEndPointI,
 
 	/**
 	 * on the server side, return true if {@code c} is the server component of
-	 * this end point.
+	 * this end point, false otherwise and if {@code c} is null.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code serverSideInitialised()}
+	 * pre	{@code true}	// no more preconditions.
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param c	the reference on a component object.
-	 * @return	true if {@code c} is the client component of this end point.
+	 * @return	true if {@code c} is the client component of this end point, false otherwise and if {@code c} is null.
 	 */
 	public boolean		isServerComponent(AbstractComponent c);
 
 	/**
 	 * on the client side, return true if {@code c} is the client component of
-	 * this end point.
+	 * this end point, false otherwise and if {@code c} is null.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code clientSideInitialised()}
+	 * pre	{@code true}	// no more preconditions.
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 * @param c	the reference on a component object.
-	 * @return	true if {@code c} is the client component of this end point.
+	 * @return	true if {@code c} is the client component of this end point, false otherwise and if {@code c} is null.
 	 */
 	public boolean		isClientComponent(AbstractComponent c);
 }

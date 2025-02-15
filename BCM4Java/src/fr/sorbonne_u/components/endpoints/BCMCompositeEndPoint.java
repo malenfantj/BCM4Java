@@ -44,8 +44,9 @@ import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 /**
- * The class <code>BCMCompositeEndPoint</code> implements specialisation of
- * generic composite end points to the BCM4Java case.
+ * The class <code>BCMCompositeEndPoint</code> implements a specialisation of
+ * generic composite end points to the BCM4Java case using ports and connectors
+ * to implement the end points.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -53,6 +54,9 @@ import fr.sorbonne_u.components.exceptions.ConnectionException;
  * The only addition to the implementation of generic composite end point
  * is the type verification made as pre- and postconditions in the redefinition
  * of the {@code getEndPoint(Class<I>)} method.
+ * </p>
+ * <p>
+ * This implementation is not thread safe.
  * </p>
  * 
  * <p><strong>Implementation Invariants</strong></p>
@@ -239,6 +243,8 @@ implements	BCMCompositeEndPointI
 	@Override
 	public BCMCompositeEndPointI	copyWithSharable()
 	{
+		assert	this.complete() : new PreconditionException("complete()");
+
 		CompositeEndPointI ret = super.copyWithSharable();
 
 		assert	ret instanceof BCMCompositeEndPointI :
