@@ -142,15 +142,11 @@ extends BCMEndPoint<MultipleURIConsumerCI>
 	 * </pre>
 	 *
 	 * @param inboundPortURI	URI of the inbound port providing the offered interface.
-	 * @param outboundPortURI	URI of the outbound port providing the required interface.
 	 */
-	public					MultipleURIServiceEndpoint(
-		String inboundPortURI,
-		String outboundPortURI
-		)
+	public					MultipleURIServiceEndpoint(String inboundPortURI)
 	{
 		super(MultipleURIConsumerCI.class, MultipleURIProviderCI.class,
-			  inboundPortURI, outboundPortURI);
+			  inboundPortURI);
 		
 		// Invariant checking
 		assert	MultipleURIServiceEndpoint.implementationInvariants(this) :
@@ -232,12 +228,11 @@ extends BCMEndPoint<MultipleURIConsumerCI>
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.endpoints.BCMEndPoint#makeOutboundPort(fr.sorbonne_u.components.AbstractComponent, java.lang.String, java.lang.String)
+	 * @see fr.sorbonne_u.components.endpoints.BCMEndPoint#makeOutboundPort(fr.sorbonne_u.components.AbstractComponent, java.lang.String)
 	 */
 	@Override
 	protected MultipleURIConsumerCI	makeOutboundPort(
 		AbstractComponent c,
-		String outboundPortURI,
 		String inboundPortURI
 		) throws Exception
 	{
@@ -245,7 +240,7 @@ extends BCMEndPoint<MultipleURIConsumerCI>
 		assert	c != null : new PreconditionException("c != null");
 
 		MultipleURIConsumerOutboundPort p =
-				new MultipleURIConsumerOutboundPort(outboundPortURI, c);
+								new MultipleURIConsumerOutboundPort(c);
 		p.publishPort();
 		c.doPortConnection(
 				p.getPortURI(),
