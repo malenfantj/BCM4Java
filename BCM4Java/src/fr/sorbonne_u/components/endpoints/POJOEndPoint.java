@@ -295,7 +295,7 @@ implements	Cloneable
 	public boolean		serverSideClean()
 	{
 		return this.reference == null &&
-					GLOBAL_ENDPOINT_REFERENCES.containsKey(this.endPointURI);
+					!GLOBAL_ENDPOINT_REFERENCES.containsKey(this.endPointURI);
 	}
 
 	/**
