@@ -109,7 +109,7 @@ implements	BCMCompositeEndPointI
 	{
 		assert instance != null : new PreconditionException("instance != null");
 		boolean ret = true;
-		CompositeEndPoint.implementationInvariants(instance);
+		ret &= CompositeEndPoint.implementationInvariants(instance);
 		return ret;
 	}
 
@@ -131,7 +131,7 @@ implements	BCMCompositeEndPointI
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
-		CompositeEndPoint.invariants(instance);
+		ret &= CompositeEndPoint.invariants(instance);
 		return ret;
 	}
 

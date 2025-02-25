@@ -100,8 +100,7 @@ extends BCMEndPoint<MultipleURIConsumerCI>
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
-//		ret &= InvariantChecking.checkImplementationInvariant(invariantExpression, MultipleURIServiceEndpoint.class,
-//				instance, "");
+		ret &= BCMEndPoint.implementationInvariants(instance);
 		return ret;
 	}
 
@@ -123,7 +122,7 @@ extends BCMEndPoint<MultipleURIConsumerCI>
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
-//		ret &= InvariantChecking.checkInvariant(invariantExpression, MultipleURIServiceEndpoint.class, instance, "");
+		ret &= BCMEndPoint.invariants(instance);
 		return ret;
 	}
 
@@ -262,10 +261,11 @@ extends BCMEndPoint<MultipleURIConsumerCI>
 						+ "return.getClass())");
 		
 		// Invariant checking
-		assert	implementationInvariants(this) :
+		assert	MultipleURIServiceEndpoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
-						"implementationInvariants(this)");
-		assert	invariants(this) : new InvariantException("invariants(this)");
+						"MultipleURIServiceEndpoint.implementationInvariants(this)");
+		assert	MultipleURIServiceEndpoint.invariants(this) :
+				new InvariantException("MultipleURIServiceEndpoint.invariants(this)");
 		
 		return p;
 	}

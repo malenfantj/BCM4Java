@@ -102,6 +102,7 @@ extends		BCMEndPoint<URIConsumerCI>
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
+		ret &= BCMEndPoint.implementationInvariants(instance);
 		return ret;
 	}
 
@@ -123,6 +124,7 @@ extends		BCMEndPoint<URIConsumerCI>
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
+		ret &= BCMEndPoint.invariants(instance);
 		return ret;
 	}
 
@@ -200,9 +202,9 @@ extends		BCMEndPoint<URIConsumerCI>
 		// Invariant checking
 		assert	URIServiceEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
-						"implementationInvariants(this)");
+						"URIServiceEndPoint.implementationInvariants(this)");
 		assert	URIServiceEndPoint.invariants(this) :
-				new InvariantException("invariants(this)");
+				new InvariantException("URIServiceEndPoint.invariants(this)");
 		
 		return p;
 	}
@@ -241,10 +243,11 @@ extends		BCMEndPoint<URIConsumerCI>
 						+ "return.getClass())");
 		
 		// Invariant checking
-		assert	implementationInvariants(this) :
+		assert	URIServiceEndPoint.implementationInvariants(this) :
 				new ImplementationInvariantException(
-						"implementationInvariants(this)");
-		assert	invariants(this) : new InvariantException("invariants(this)");
+						"URIServiceEndPoint.implementationInvariants(this)");
+		assert	URIServiceEndPoint.invariants(this) :
+				new InvariantException("URIServiceEndPoint.invariants(this)");
 		
 		return p;
 	}

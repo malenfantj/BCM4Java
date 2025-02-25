@@ -502,7 +502,7 @@ implements	BCMEndPointI<CI>,
 	public void			cleanUpServerSide()
 	{
 		assert	!serverSideClean() :
-				new PreconditionException("serverSideInitialised()");
+				new PreconditionException("!serverSideClean()");
 
 		try {
 			if (this.inboundPort != null) {
