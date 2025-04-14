@@ -297,8 +297,7 @@ extends		AbstractPlugin
 	 * @param c				an asynchronous call object (Command pattern).
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public void			asyncCall(AbstractAsyncCall c
-		) throws Exception
+	public void			asyncCall(AbstractAsyncCall c) throws Exception
 	{
 		assert	c != null : new PreconditionException("c != null");
 
