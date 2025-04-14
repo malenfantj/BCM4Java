@@ -278,7 +278,7 @@ extends		AbstractPlugin
 	 * @param receptionPortURI	URI of the inbound port waiting for the result of a call.
 	 * @throws Exception		<i>to do</i>.
 	 */
-	public void			disconnectClient(String receptionPortURI)
+	public void			disconnectReceptionPort(String receptionPortURI)
 	throws Exception
 	{
 		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :

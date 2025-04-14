@@ -86,7 +86,9 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * }
  * </pre>
  * <p>
- * and as follows for ones without explicit result:
+ * and as follows for ones without explicit result <i>i.e.</i>, a method of
+ * return type {@code void} but for which the caller wants to synchronise with
+ * its termination:
  * </p>
  * <pre>
  * protected void execute() throws Exception
@@ -127,12 +129,13 @@ implements	AsyncCallI
 	 *  call is processed.													*/
 	transient protected AsyncCallServerPlugin	plugin;
 
-	/** URI of this call.													*/
-	protected String				callURI;
 	/** actual parameters of the call.										*/
 	protected final Serializable[]	parameters;
-	/** URI of the result reception inbound port to which the result must
-	 *  be sent.															*/
+
+	/** URI of this call, when the caller waits for a result.				*/
+	protected String				callURI;
+	/** when the caller waits for a result, URI of the result reception
+	 *  inbound port to which the result must be sent.						*/
 	protected String				receptionPortURI;
 
 	// -------------------------------------------------------------------------
@@ -171,7 +174,7 @@ implements	AsyncCallI
 	{
 		super();
 
-		assert	params != null;
+		assert	params != null : new PreconditionException("params != null");
 
 		this.parameters = params;
 	}

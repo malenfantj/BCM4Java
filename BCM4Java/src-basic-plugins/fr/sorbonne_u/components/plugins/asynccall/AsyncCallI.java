@@ -125,13 +125,14 @@ extends		Serializable
 		) throws Exception;
 
 	/**
-	 * execute the call on the runner, returning the result through the
-	 * plug-in by the method <code>sendResult</code>.
+	 * execute the call on the runner, and if {@code resultReceptionInfoSet()}
+	 * is true, return the result through the plug-in by the method
+	 * <code>sendResult</code>.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code callInfoSet() && callInfoSet()}
+	 * pre	{@code calleeInfoSet()}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
@@ -145,7 +146,7 @@ extends		Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code callInfoSet()}
+	 * pre	{@code resultReceptionInfoSet()}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *

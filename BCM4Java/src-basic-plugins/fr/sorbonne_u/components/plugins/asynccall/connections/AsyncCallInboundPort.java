@@ -92,7 +92,7 @@ implements	AsyncCallCI
 	throws Exception
 	{
 		((AsyncCallServerPlugin)this.getOwnerPlugin(this.getPluginURI())).
-											disconnectClient(receptionPortURI);
+											disconnectReceptionPort(receptionPortURI);
 	}
 
 	/**
