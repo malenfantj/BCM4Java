@@ -285,8 +285,30 @@ extends		AbstractPlugin
 	}
 
 	/**
-	 * call the server side in an asynchronous fashion using the protocol
-	 * implemented by this plug-in to get the result.
+	 * call the server side asynchronously.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code c != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param c				an asynchronous call object (Command pattern).
+	 * @throws Exception	<i>to do</i>.
+	 */
+	public void			asyncCall(AbstractAsyncCall c
+		) throws Exception
+	{
+		assert	c != null : new PreconditionException("c != null");
+
+		this.outPort.asyncCall(c);
+	}
+
+	/**
+	 * call the server side asynchronously using the protocol implemented by
+	 * this plug-in to synchronise with the termination of the remote task,
+	 * potentially getting a result.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -296,10 +318,10 @@ extends		AbstractPlugin
 	 * </pre>
 	 *
 	 * @param c				an asynchronous call object.
-	 * @return				a completable future that will contain the result.
+	 * @return				a completable future that will contain the result or null if no explicit result is awaited.
 	 * @throws Exception	<i>to do</i>.
 	 */
-	public RemoteCompletableFuture<Serializable>	asyncCall(
+	public RemoteCompletableFuture<Serializable>	asyncCallWithFuture(
 		AbstractAsyncCall c
 		) throws Exception
 	{

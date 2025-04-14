@@ -176,12 +176,13 @@ extends		AbstractComponent
 
 		this.traceMessage("Calling add...\n");
 		RemoteCompletableFuture<Serializable> cf1 =
-			this.plugin.asyncCall(new Server.Add(new Serializable[]{1, 2}));
+			this.plugin.asyncCallWithFuture(
+								new Server.Add(new Serializable[]{1, 2}));
 		this.traceMessage("Calling show...\n");
 		// CompletableFuture<T> can be used as type, but cf2 will indeed contain
 		// a RemoteCompletableFuture, hence that can't be cancelled...
 		CompletableFuture<Serializable> cf2 =
-			this.plugin.asyncCall(
+			this.plugin.asyncCallWithFuture(
 				new Server.Show(new Serializable[]{"message from client.\n"}));
 
 		if (!cf1.isDone()) {

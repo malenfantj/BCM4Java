@@ -33,6 +33,7 @@ package fr.sorbonne_u.components.plugins.asynccall.example;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.plugins.asynccall.AbstractAsyncCall;
 import fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerPlugin;
@@ -132,6 +133,9 @@ extends		AbstractComponent
 			assert	this.parameters[0] instanceof Integer;
 			assert	this.parameters[1] instanceof Integer;
 
+			assert	this.resultReceptionInfoSet() :
+					new BCMException("resultReceptionInfoSet()");
+
 			this.sendResult(((Server)this.receiver).add(
 												(Integer)this.parameters[0],
 												(Integer)this.parameters[1]));
@@ -192,6 +196,9 @@ extends		AbstractComponent
 		{
 			assert	this.parameters.length == 1;
 			assert	this.parameters[0] instanceof String;
+
+			assert	this.resultReceptionInfoSet() :
+					new BCMException("resultReceptionInfoSet()");
 
 			((Server)this.receiver).show((String)this.parameters[0]);
 
