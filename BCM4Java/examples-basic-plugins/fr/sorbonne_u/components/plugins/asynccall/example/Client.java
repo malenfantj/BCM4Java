@@ -47,13 +47,13 @@ import java.util.concurrent.CompletableFuture;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -172,7 +172,7 @@ extends		AbstractComponent
 		this.plugin.connectToServer(this.serverReflectionInboundPortURI);
 
 		assert	this.plugin.isConnectedToServer();
-		this.traceMessage("Connected to server...\n");
+		this.traceMessage("Server connected...\n");
 
 		this.traceMessage("Calling add...\n");
 		RemoteCompletableFuture<Serializable> cf1 =

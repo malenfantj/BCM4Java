@@ -96,13 +96,13 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * }
  * </pre>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code parameters != null}
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no invariant
@@ -181,23 +181,31 @@ implements	AsyncCallI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#callInfoSet()
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#resultReceptionInfoSet()
 	 */
 	@Override
-	public boolean		callInfoSet()
+	public boolean		resultReceptionInfoSet()
 	{
 		return this.callURI != null && this.receptionPortURI != null;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#setCallInfo(java.lang.String, java.lang.String)
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#setResultReceptionInfo(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void			setCallInfo(String callURI, String receptionPortURI)
+	public void			setResultReceptionInfo(
+		String callURI,
+		String receptionPortURI
+		)
 	{
-		assert	!this.callInfoSet() : new PreconditionException("");
-		assert	callURI != null && callURI.length() > 0 : new PreconditionException("");
-		assert	receptionPortURI != null && receptionPortURI.length() > 0 : new PreconditionException("");
+		assert	!this.resultReceptionInfoSet() :
+				new PreconditionException("!this.resultReceptionInfoSet()");
+		assert	callURI != null && !callURI.isEmpty() :
+				new PreconditionException("callURI != null && !callURI.isEmpty()");
+		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :
+				new PreconditionException(
+						"receptionPortURI != null && "
+						+ "!receptionPortURI.isEmpty()");
 
 		this.callURI = callURI;
 		this.receptionPortURI = receptionPortURI;
@@ -222,7 +230,7 @@ implements	AsyncCallI
 		) throws Exception
 	{
 		assert	!this.calleeInfoSet() :
-				new PreconditionException("calleeInfoSet()");
+				new PreconditionException("!calleeInfoSet()");
 		assert	server != null && plugin != null :
 				new PreconditionException("server != null && plugin != null");
 		assert	server.isInstalled(plugin.getPluginURI()) :
@@ -240,7 +248,8 @@ implements	AsyncCallI
 	@Override
 	public void			sendResult(Serializable result) throws Exception
 	{
-		assert	this.callInfoSet() : new PreconditionException("callInfoSet()");
+		assert	this.resultReceptionInfoSet() :
+				new PreconditionException("resultReceptionInfoSet()");
 
 		this.plugin.sendResult(this.callURI, result, this.receptionPortURI);
 	}

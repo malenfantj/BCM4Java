@@ -51,13 +51,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  * to which call correspond which result.
  * </p>
  * 
- * <p><strong>White-box Invariant</strong></p>
- * 
- * <pre>
- * invariant	{@code true}	// no invariant
- * </pre>
- * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no invariant

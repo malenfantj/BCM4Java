@@ -42,13 +42,32 @@ import java.util.concurrent.CompletableFuture;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p>
+ * Futures in Java are not meant to be returned by RMI calls as they are not
+ * serializable. Remote asynchronous calls with futures are provided by the
+ * JMS framework. Several limited work around are used in plain J2SE, like
+ * this one.
+ * </p>
+ * <p>
+ * This class is merely a wrapper around a completable future that prevents the
+ * user from trying to cancel the task that would compute the value of the
+ * future. It is meant to be used to synchronise a caller in a JVM 1 with the
+ * availability of a result computed by a JVM 2 but without making a connection
+ * with the task computing this result. The result must be transferred manually
+ * from JVM 2 and JVM 1 and then used to complete the future, hence freeing the
+ * caller blocked on a get on the future. In such a protocol, the future is
+ * never transmitted over the network, hence need not be serializable. It is
+ * created and managed on the client side only and not known from the server
+ * side of the call.
+ * </p>
+ * 
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant

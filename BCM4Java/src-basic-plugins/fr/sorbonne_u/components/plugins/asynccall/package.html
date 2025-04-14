@@ -59,7 +59,7 @@ knowledge of the CeCILL-C license and that you accept its terms.
 
 <p>
 This package provides a limited form of inter-component asynchronous calls with
-future for BCM. The salient characteristics of this plug-in are:
+future in BCM4Java. The salient characteristics of this plug-in are:
 </p>
 <ul>
 <li>calls themselves use a Command pattern where all calls are instances of
@@ -75,8 +75,8 @@ future for BCM. The salient characteristics of this plug-in are:
   <code>AsyncCallServerPlugin</code> respectively;</li>
 <li>when performing an asynchronous call with the <code>asyncCall</code>
   method offered by <code>AsyncCallClientPlugin</code>, client components code
-  gets a local future variable to hold the result that can be used to
-  synchronise with its reception.</li>
+  gets a local future variable ({@code RemoteCompletableFuture}) that will hold
+  the result and that can be used to synchronise with its reception.</li>
 </ul>
 <p>
 Conceptually, in Java, an asynchronous call would return a future variable upon
@@ -86,9 +86,9 @@ the asynchronous call until it needs the result of this call, and therefore
 providing some parallelism between the caller and the callee.
 </p>
 <p>
-Calls between BCM components cannot directly use standard Java future objects
-because they may be done with RMI and Java future objects are not serialisable.
-Here, we use the following idea:.
+Calls between BCM4Java components cannot directly use standard Java future
+objects because they may be done with RMI and Java future objects are not
+serialisable. Here, we use the following idea:.
 </p>
 <ol>
 <li>the caller performs the calls as an asynchronous one using a predefined
@@ -100,16 +100,16 @@ Here, we use the following idea:.
   result when available;</li>
 <li>when the call has finished on the server side, it sends the result using
   again a standard asynchronous call <i>i.e.</i>, without future;</li>
-<li>the caller receives the result and sets a completable future that was
-  created (and immediately returned to the calling code) when the
+<li>the caller receives the result and sets a remote completable future that
+  was created (and immediately returned to the calling code) when the
   asynchronous call was performed.</li>
 </ol>
 <p>
 In Java, completable future can be used to cancel an asynchronous computation.
-Here, as the call can be made on a distant server component, cancellation is
-not implemented. Hence, a specific <code>RemoteCompletableFuture</code> is
-provided which throws an exception if one tries to cancel a computation with
-it.
+Here, as the call is made on a distant server component but with no connection
+with the task that will execute it, cancellation is not implemented. Hence, a
+specific <code>RemoteCompletableFuture</code> is provided which throws an
+exception if one tries to cancel a computation through it.
 </p>
 <p>
 This package defines the component interfaces, their ports and connectors, as

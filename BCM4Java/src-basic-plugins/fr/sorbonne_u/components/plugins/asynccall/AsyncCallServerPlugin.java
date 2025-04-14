@@ -53,9 +53,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * To use this plug-in properly, a server classical component must first create
- * an instance of the plug-in, set its URI (as usual for plug-ins), set its
- * preferred execution service URI and then install it.
+ * To use this plug-in properly, aclassical BCM4Java server component must first
+ * create an instance of the plug-in, set its URI (as usual for plug-ins), set
+ * its preferred execution service URI and then install it.
  * </p>
  * <p>
  * In asynchronous calls, the caller provides the URI of an inbound port to
@@ -68,21 +68,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * </p>
  * <p>
  * TODO: One limitation of the current implementation is the thread safety that
- * can be challenged if the call can be executed in parallel with the connection of
- * the outbound port used to return the result. No waiting is put in place to
+ * can be challenged if the call can be executed in parallel with the connection
+ * of the outbound port used to return the result. No waiting is put in place to
  * ensure that this connection is done before the method {@code sendResult} is
  * called, hence it is possible that the precondition that this connection has
  * been done before the call to {@code sendResult} may fail due to race
  * conditions.
  * </p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -233,7 +233,7 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code receptionPortURI != null && receptionPortURI.length() != 0}
+	 * pre	{@code receptionPortURI != null && !receptionPortURI.isEmpty()}
 	 * post	{@code receptionPortConnected(receptionPortURI)}
 	 * </pre>
 	 *
@@ -247,23 +247,19 @@ extends		AbstractPlugin
 				new PreconditionException(
 				"receptionPortURI != null && !receptionPortURI.isEmpty()");
 
-		try {
-			AsyncCallResultReceptionOutboundPort p =
+		AsyncCallResultReceptionOutboundPort p =
 					new AsyncCallResultReceptionOutboundPort(this.getOwner());
-			AsyncCallResultReceptionOutboundPort p1 =
+		AsyncCallResultReceptionOutboundPort p1 =
 					this.resultReceptionOutboundPorts.
 											putIfAbsent(receptionPortURI, p);
-			if (p1 == null) {
-				p.publishPort();
-				this.getOwner().doPortConnection(
+		if (p1 == null) {
+			p.publishPort();
+			this.getOwner().doPortConnection(
 					p.getPortURI(),
 					receptionPortURI,
 					AsyncCallResultReceptionConnector.class.getCanonicalName());
-			} else {
-				assert	p1.connected();
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e) ;
+		} else {
+			assert	p1.connected();
 		}
 	}
 
@@ -275,13 +271,15 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code receptionPortURI != null && receptionPortURI.length() != 0}
+	 * pre	{@code receptionPortURI != null && !receptionPortURI.isEmpty()}
 	 * post	{@code !receptionPortConnected(receptionPortURI)}
 	 * </pre>
 	 *
 	 * @param receptionPortURI	URI of the inbound port waiting for the result of a call.
+	 * @throws Exception		<i>to do</i>.
 	 */
 	public void			disconnectClient(String receptionPortURI)
+	throws Exception
 	{
 		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :
 				new PreconditionException(
@@ -290,13 +288,9 @@ extends		AbstractPlugin
 		AsyncCallResultReceptionOutboundPort p =
 				this.resultReceptionOutboundPorts.remove(receptionPortURI);
 		if (p != null) {
-			try {
-				this.getOwner().doPortDisconnection(p.getPortURI());
-				p.unpublishPort();
-				p.destroyPort();
-			} catch (Exception e) {
-				throw new RuntimeException(e) ;
-			}
+			this.getOwner().doPortDisconnection(p.getPortURI());
+			p.unpublishPort();
+			p.destroyPort();
 		}
 	}
 
@@ -338,8 +332,8 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code callURI != null && callURI.length() > 0}
-	 * pre	{@code receptionPortURI != null && receptionPortURI.length() > 0}
+	 * pre	{@code callURI != null && !callURI.isEmpty()}
+	 * pre	{@code receptionPortURI != null && !receptionPortURI.isEmpty()}
 	 * pre	{@code receptionPortConnected(receptionPortURI)}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
@@ -355,23 +349,19 @@ extends		AbstractPlugin
 		String receptionPortURI
 		) throws Exception
 	{
-		assert	callURI != null && callURI.length() > 0 :
+		assert	callURI != null && !callURI.isEmpty() :
 				new PreconditionException(
-								"callURI != null && callURI.length() > 0");
-		assert	receptionPortURI != null && receptionPortURI.length() > 0 :
+								"callURI != null && !callURI.isEmpty()");
+		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :
 				new PreconditionException(
 								"receptionPortURI != null && "
-								+ "receptionPortURI.length() > 0");
+								+ "!receptionPortURI.isEmpty()");
 		assert	this.receptionPortConnected(receptionPortURI) :
 				new PreconditionException(
 								"receptionPortConnected(receptionPortURI)");
 
-		try {
-			this.resultReceptionOutboundPorts.get(receptionPortURI).
+		this.resultReceptionOutboundPorts.get(receptionPortURI).
 												acceptResult(callURI, result);
-		} catch (Exception e) {
-			throw new RuntimeException(e) ;
-		}
 	}
 }
 // -----------------------------------------------------------------------------

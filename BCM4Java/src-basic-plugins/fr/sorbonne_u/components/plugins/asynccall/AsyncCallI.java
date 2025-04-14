@@ -42,13 +42,7 @@ import fr.sorbonne_u.components.AbstractComponent;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
- * 
- * <pre>
- * invariant	{@code true}	// no invariant
- * </pre>
- * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no invariant
@@ -62,7 +56,7 @@ public interface		AsyncCallI
 extends		Serializable
 {
 	/**
-	 * return	true if the call information are set.
+	 * return true if the call information are set.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -73,7 +67,7 @@ extends		Serializable
 	 *
 	 * @return	true if the call information are set.
 	 */
-	public boolean		callInfoSet();
+	public boolean		resultReceptionInfoSet();
 
 	/**
 	 * set the client side information to be used to execute the call.
@@ -81,18 +75,21 @@ extends		Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code callURI != null && callURI.length() > 0}
-	 * pre	{@code receptionPortURI != null && receptionPortURI.length() > 0}
-	 * post	{@code true}	// no postcondition.
+	 * pre	{@code !callInfoSet()}
+	 * pre	{@code callURI != null && !callURI.isEmpty()}
+	 * pre	{@code receptionPortURI != null && !receptionPortURI.isEmpty()}
+	 * post	{@code callInfoSet()}
 	 * </pre>
 	 *
 	 * @param callURI			URI of this call.
 	 * @param receptionPortURI	URI of the result reception inbound port to which the result must be sent.
 	 */
-	public void			setCallInfo(String callURI, String receptionPortURI);
+	public void			setResultReceptionInfo(
+		String callURI,
+		String receptionPortURI);
 
 	/**
-	 * return	true if the callee information are set.
+	 * return true if the callee information are set.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -111,9 +108,10 @@ extends		Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code calleeInfoSet()}
+	 * pre	{@code !calleeInfoSet()}
 	 * pre	{@code server != null && plugin != null}
 	 * pre	{@code server.isInstalled(plugin.getPluginURI())}
+	 * post	{@code calleeInfoSet()}
 	 * post	{@code plugin.receptionPortConnected(receptionPortURI)}
 	 * </pre>
 	 *

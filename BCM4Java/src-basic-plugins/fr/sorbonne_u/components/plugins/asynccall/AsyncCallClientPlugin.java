@@ -34,6 +34,7 @@ package fr.sorbonne_u.components.plugins.asynccall;
 
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallConnector;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallOutboundPort;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionInboundPort;
@@ -77,13 +78,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * can't be passed to another component).
  * </p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -309,7 +310,7 @@ extends		AbstractPlugin
 		RemoteCompletableFuture<Serializable> cf =
 									new RemoteCompletableFuture<Serializable>();
 		this.awaitingResults.put(callURI, cf);
-		c.setCallInfo(callURI, this.inPort.getPortURI());
+		c.setResultReceptionInfo(callURI, this.inPort.getPortURI());
 		this.outPort.asyncCall(c);
 		return cf;
 	}
@@ -321,18 +322,22 @@ extends		AbstractPlugin
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code callURI != null && callURI.length() > 0}
+	 * pre	{@code callURI != null && !callURI.isEmpty()}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param callURI	URI attributed to the call when it was passed to the server.
-	 * @param result	the result of the call coming back from the server.
+	 * @param callURI		URI attributed to the call when it was passed to the server.
+	 * @param result		the result of the call coming back from the server.
+	 * @throws BCMException	<i>to do</i>.
 	 */
-	public void			receive(String callURI, Serializable result)
+	public void			receive(String callURI, Serializable result) throws BCMException
 	{
-		assert	callURI != null && callURI.length() > 0 :
+		assert	callURI != null && !callURI.isEmpty() :
 				new PreconditionException(
-								"callURI != null && callURI.length() > 0");
+								"callURI != null && !callURI.isEmpty()");
+
+		assert	this.awaitingResults.containsKey(callURI) :
+				new BCMException("unknown call URI: " + callURI);
 
 		RemoteCompletableFuture<Serializable> cf =
 									this.awaitingResults.remove(callURI);
@@ -340,6 +345,8 @@ extends		AbstractPlugin
 			synchronized (cf) {
 				if (!cf.isDone()) {
 					cf.complete(result);
+				} else {
+					throw new BCMException("already completed call: " + callURI);
 				}
 			}
 		}

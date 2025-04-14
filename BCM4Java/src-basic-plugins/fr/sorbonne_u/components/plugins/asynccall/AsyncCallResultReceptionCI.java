@@ -44,13 +44,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
- * 
- * <pre>
- * invariant	{@code true}	// no invariant
- * </pre>
- * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no invariant
@@ -70,7 +64,7 @@ extends		OfferedCI,
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code callURI != null && callURI.length() > 0}
+	 * pre	{@code callURI != null && !callURI.isEmpty()}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *

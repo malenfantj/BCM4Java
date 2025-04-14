@@ -45,13 +45,13 @@ import java.io.Serializable;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -83,13 +83,13 @@ extends		AbstractComponent
 	 *
 	 * <p><strong>Description</strong></p>
 	 * 
-	 * <p><strong>White-box Invariant</strong></p>
+	 * <p><strong>Implementation Invariants</strong></p>
 	 * 
 	 * <pre>
 	 * invariant	{@code true}	// no more invariant
 	 * </pre>
 	 * 
-	 * <p><strong>Black-box Invariant</strong></p>
+	 * <p><strong>Invariants</strong></p>
 	 * 
 	 * <pre>
 	 * invariant	{@code true}	// no more invariant
@@ -146,13 +146,13 @@ extends		AbstractComponent
 	 *
 	 * <p><strong>Description</strong></p>
 	 * 
-	 * <p><strong>White-box Invariant</strong></p>
+	 * <p><strong>Implementation Invariants</strong></p>
 	 * 
 	 * <pre>
 	 * invariant	{@code true}	// no more invariant
 	 * </pre>
 	 * 
-	 * <p><strong>Black-box Invariant</strong></p>
+	 * <p><strong>Invariants</strong></p>
 	 * 
 	 * <pre>
 	 * invariant	{@code true}	// no more invariant
@@ -194,6 +194,7 @@ extends		AbstractComponent
 			assert	this.parameters[0] instanceof String;
 
 			((Server)this.receiver).show((String)this.parameters[0]);
+
 			// when the service has a void return type, the value null is sent
 			// back to signal the completion of the call.
 			this.sendResult(null);
