@@ -1,0 +1,19 @@
+<deployment>
+   <hosts>
+    <host name="localhost"
+          dir="/Users/jmalenfant/dev/BCM4Java/BCM4Java/examples-basic-plugins/fr/sorbonne_u/components/plugins/asynccall/example/"/>
+  </hosts>
+  <cyclicBarrier   hostname="localhost" port="55253"/>
+  <globalRegistry  hostname="localhost" port="55252"/>
+  <rmiRegistryPort no="55999"/>
+  <jvms2hostnames>
+    <jvm2hostname jvmuri="server"
+        rmiRegistryCreator="true"
+        hostname="localhost"
+        mainclass="fr.sorbonne_u.components.plugins.asynccall.example.DistributedCVM"/>
+    <jvm2hostname jvmuri="client"
+        rmiRegistryCreator="false"
+        	hostname="localhost"
+        mainclass="fr.sorbonne_u.components.plugins.asynccall.example.DistributedCVM"/>
+  </jvms2hostnames>
+</deployment>

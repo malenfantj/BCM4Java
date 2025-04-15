@@ -228,7 +228,7 @@ extends		AbstractComponent
 		super(1, 0);
 
 		this.getTracer().setTitle("Server");
-		this.getTracer().setRelativePosition(0, 1);
+		this.getTracer().setRelativePosition(1, 1);
 		this.toggleTracing();
 	}
 
@@ -249,7 +249,7 @@ extends		AbstractComponent
 		super(reflectionInboundPortURI, 1, 0);
 
 		this.getTracer().setTitle("Server");
-		this.getTracer().setRelativePosition(0, 1);
+		this.getTracer().setRelativePosition(1, 1);
 		this.toggleTracing();
 	}
 

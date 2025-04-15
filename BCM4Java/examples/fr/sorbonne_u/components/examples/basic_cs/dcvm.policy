@@ -3,7 +3,6 @@ grant {
   permission java.io.FilePermission "./jars/*", "read,write";
   permission java.io.FilePermission "/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/jre/lib/*", "read";
   permission java.io.FilePermission "/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/lib/*", "read";
-  permission java.io.FilePermission "/Library/Java/JavaVirtualMachines/jdk1.8.0_31.jdk/Contents/Home/jre/lib/*", "read";
   permission java.lang.RuntimePermission "accessDeclaredMembers" ;
   permission java.lang.RuntimePermission "getClassLoader" ;
   permission java.util.PropertyPermission "javax.xml.validation.SchemaFactory:http://relaxng.org/ns/structure/1.0", "read,write";

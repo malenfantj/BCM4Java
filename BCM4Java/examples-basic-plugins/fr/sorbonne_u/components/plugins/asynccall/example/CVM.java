@@ -75,9 +75,11 @@ extends		AbstractCVM
 	@Override
 	public void			deploy() throws Exception
 	{
+		// create the client component
 		AbstractComponent.createComponent(
 			Client.class.getCanonicalName(),
 			new Object[]{SERVER_REFLECTION_INBOUND_PORT_URI});
+		// create the server component
 		AbstractComponent.createComponent(
 			Server.class.getCanonicalName(),
 			new Object[]{SERVER_REFLECTION_INBOUND_PORT_URI});

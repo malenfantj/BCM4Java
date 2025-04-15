@@ -331,7 +331,7 @@ public class				GlobalRegistry
 		super() ;
 
 		assert	configFileName != null :
-					new PreconditionException("configFileName == null") ;
+				new PreconditionException("configFileName == null") ;
 
 		if (GLOBAL_REGISTRY_IS_LOGGING) {
 			this.executionLog = new Logger("globalRegistry");
@@ -369,7 +369,14 @@ public class				GlobalRegistry
 		}
 		REQUEST_HANDLER = Executors.newFixedThreadPool(this.numberOfJVMsInDCVM);
 		this.finished = new CountDownLatch(this.numberOfJVMsInDCVM);
+
+		long t1 = System.currentTimeMillis();
 		this.ss = new ServerSocket(REGISTRY_PORT);
+		long t2 = System.currentTimeMillis();
+		if (t2 - t1 > 2000L) {
+			System.out.println("Beware, long socket creation delay: "
+							   + (t2 - t1) + " milliseconds!");
+		}
 	}
 
 	// ------------------------------------------------------------------------
@@ -397,6 +404,7 @@ public class				GlobalRegistry
 			this.tracer.traceMessage(System.currentTimeMillis() + "|" +
 										"Global registry up and running!\n");
 		}
+		
 		int count = 0 ;
 		while (count < this.numberOfJVMsInDCVM) {
 			try {
@@ -423,6 +431,7 @@ public class				GlobalRegistry
 				e.printStackTrace();
 			}
 		}
+
 		if (GLOBAL_REGISTRY_IS_LOGGING) {
 			this.executionLog.logMessage("All (" + count + ") connected!");
 			this.tracer.traceMessage(System.currentTimeMillis() + "|" +

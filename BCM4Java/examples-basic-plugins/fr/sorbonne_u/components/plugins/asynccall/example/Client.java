@@ -103,6 +103,7 @@ extends		AbstractComponent
 
 		this.serverReflectionInboundPortURI = serverReflectionInboundPortURI;
 		this.getTracer().setTitle("Client");
+		this.getTracer().setRelativePosition(1, 0);
 		this.toggleTracing();
 	}
 
