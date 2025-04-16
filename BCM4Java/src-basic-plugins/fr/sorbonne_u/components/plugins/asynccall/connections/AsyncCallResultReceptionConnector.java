@@ -34,6 +34,8 @@ package fr.sorbonne_u.components.plugins.asynccall.connections;
 
 import java.io.Serializable;
 import fr.sorbonne_u.components.connectors.AbstractConnector;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.plugins.asynccall.AsyncCallResultReceptionCI;
 
 // -----------------------------------------------------------------------------
@@ -64,6 +66,10 @@ public class			AsyncCallResultReceptionConnector
 extends		AbstractConnector
 implements	AsyncCallResultReceptionCI
 {
+	// -------------------------------------------------------------------------
+	// Methods
+	// -------------------------------------------------------------------------
+
 	/**
 	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallResultReceptionCI#acceptResult(java.lang.String, java.io.Serializable)
 	 */
@@ -71,6 +77,12 @@ implements	AsyncCallResultReceptionCI
 	public void			acceptResult(String callURI, Serializable result)
 	throws Exception
 	{
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
+			System.out.println(
+					"AsyncCallResultReceptionConnector::acceptResult("
+					+ callURI + ", " + result);
+		}
+
 		((AsyncCallResultReceptionCI)this.offering).
 											acceptResult(callURI, result);
 	}

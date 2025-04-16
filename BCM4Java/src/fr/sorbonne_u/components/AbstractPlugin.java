@@ -41,10 +41,11 @@ import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
+import fr.sorbonne_u.exceptions.AssertionChecking;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.exceptions.VerboseException;
 import fr.sorbonne_u.utils.Pair;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -52,8 +53,8 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import fr.sorbonne_u.components.AbstractComponent.ExecutorServiceFactory;
 import fr.sorbonne_u.components.ComponentI.ComponentService;
 import fr.sorbonne_u.components.ComponentI.ComponentTask;
@@ -434,19 +435,30 @@ implements	PluginI
 	}
 
 	// -------------------------------------------------------------------------
-	// Plug-in instance variables and base constructor
+	// Constants and variables
 	// -------------------------------------------------------------------------
 
 	/** URI of the plug-in.													*/
 	private final AtomicReference<String>		plugInURI;
 	/** component holding this plug-in										*/
 	private final AtomicReference<ComponentI>	owner;
+
+	/** if true, the call to the owner component must be executed by the
+	 *  caller component thread.											*/
+	protected final boolean						callerRuns;
+
+	/** lock mutual exclusion over the preferred executor service.			*/
+	protected final ReentrantReadWriteLock		executorServiceLock;
 	/** URI of the preferred executor service used to execute services
 	 *  on owner or null if none.											*/
-	private final AtomicReference<String>		preferredExecutorServiceURI;
+	private String								preferredExecutorServiceURI;
 	/** index of the preferred executor service used to execute services
 	 *  on owner; negative if none.											*/
-	private final AtomicInteger					preferredExecutorServiceIndex;
+	private int									preferredExecutorServiceIndex;
+
+	// -------------------------------------------------------------------------
+	// Constructor
+	// -------------------------------------------------------------------------
 
 	/**
 	 * create a new plug-in instance.
@@ -454,20 +466,114 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	true			// no postcondition.
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
 	 */
 	public				AbstractPlugin()
 	{
+		this(false, null);
+	}
+
+	/**
+	 * create a new plug-in instance which code is run by callers threads if
+	 * {@code callerRuns} is true.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param callerRuns	if true, the call to the owner component must be executed by the caller component thread.
+	 */
+	public				AbstractPlugin(
+		boolean callerRuns
+		)
+	{
+		this(callerRuns, null);
+	}
+
+	/**
+	 * create a new plug-in instance with the given preferred executor service
+	 * URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code executorServiceURI != null && !executorServiceURI.isEmpty()}
+	 * post	{@code getPreferredExecutionServiceURI().equals(executorServiceURI)}
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws VerboseException 	if {@code executorServiceURI == null || executorServiceURI.isEmpty()}.
+	 */
+	public				AbstractPlugin(
+		String executorServiceURI
+		) throws VerboseException
+	{
+		this(false,
+			 AssertionChecking.assertTrueOrThrow(
+						executorServiceURI != null &&
+												!executorServiceURI.isEmpty(),
+						() -> new PreconditionException(
+								"executorServiceURI != null || "
+								+ "!executorServiceURI.isEmpty()"))
+				?	executorServiceURI
+				:	null);
+	}
+
+	/**
+	 * create a new plug-in instance with the options represented by the actual
+	 * parameters as explained below.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !callerRuns || executorServiceURI == null}
+	 * pre	{@code executorServiceURI == null || !executorServiceURI.isEmpty()}
+	 * post	{@code executorServiceURI == null || getPreferredExecutionServiceURI().equals(executorServiceURI)}
+	 * </pre>
+	 *
+	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 */
+	protected			AbstractPlugin(
+		boolean callerRuns,
+		String executorServiceURI
+		)
+	{
 		super();
+
+		assert	!callerRuns || executorServiceURI == null :
+				new PreconditionException(
+						"!callerRuns || executorServiceURI == null");
+
 		this.owner = new AtomicReference<ComponentI>(null);
 		this.plugInURI = new AtomicReference<String>(null);
-		this.preferredExecutorServiceURI = new AtomicReference<String>(null);
-		this.preferredExecutorServiceIndex = new AtomicInteger(-1);
+		this.callerRuns = callerRuns;
+		this.executorServiceLock = new ReentrantReadWriteLock();
+		if (executorServiceURI != null) {
+			assert	!executorServiceURI.isEmpty() :
+					new PreconditionException(
+							"executorServiceURI == null || "
+							+ "!executorServiceURI.isEmpty()");
+			this.setPreferredExecutionServiceURI(executorServiceURI);
+		} else {
+			this.preferredExecutorServiceURI = null;
+			this.preferredExecutorServiceIndex = -1;
+		}
+
+		assert	executorServiceURI == null || 
+					getPreferredExecutionServiceURI().equals(executorServiceURI) :
+				new PostconditionException(
+						"executorServiceURI == null || "
+						+ "getPreferredExecutionServiceURI().equals("
+						+ "executorServiceURI)");
 	}
-	
+
 	// --------------------------------------------------------------------
 	// Plug-in base services
 	// --------------------------------------------------------------------
@@ -497,7 +603,7 @@ implements	PluginI
 	 * <pre>
 	 * pre	{@code getOwner() == null}
 	 * pre	{@code owner != null}
-	 * post	{@code getOwner() != null}
+	 * post	{@code getOwner() == owner}
 	 * </pre>
 	 *
 	 * @param owner		the component that will own this plug-in.
@@ -506,9 +612,22 @@ implements	PluginI
 	{
 		assert	owner != null : new PreconditionException("owner != null");
 		assert	this.getOwner() == null :
-					new PreconditionException("getOwner() == null");
+				new PreconditionException("getOwner() == null");
 
 		this.owner.set(owner);
+
+		this.executorServiceLock.writeLock();
+		try {
+			if (this.preferredExecutorServiceURI != null &&
+									this.preferredExecutorServiceIndex < 0) {
+				this.preferredExecutorServiceIndex =
+						((AbstractComponent)this.getOwner()).
+								getExecutorServiceIndex(
+									this.getPreferredExecutionServiceURI());
+			}
+		} finally {
+			this.executorServiceLock.writeLock().unlock();
+		}
 	}
 
 	/**
@@ -534,12 +653,26 @@ implements	PluginI
 	}
 
 	/**
+	 * @see fr.sorbonne_u.components.PluginI#isCallerRuns()
+	 */
+	@Override
+	public boolean		isCallerRuns()
+	{
+		return this.callerRuns;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.PluginI#getPreferredExecutionServiceURI()
 	 */
 	@Override
 	public String		getPreferredExecutionServiceURI()
 	{
-		return this.preferredExecutorServiceURI.get();
+		this.executorServiceLock.readLock().lock();
+		try {
+			return this.preferredExecutorServiceURI;
+		} finally {
+			this.executorServiceLock.readLock().unlock();
+		}
 	}
 
 	/**
@@ -548,7 +681,12 @@ implements	PluginI
 	@Override
 	public int			getPreferredExecutionServiceIndex()
 	{
-		return this.preferredExecutorServiceIndex.get();
+		this.executorServiceLock.readLock().lock();
+		try {
+			return this.preferredExecutorServiceIndex;
+		} finally {
+			this.executorServiceLock.readLock().unlock();
+		}
 	}
 
 	/**
@@ -560,8 +698,11 @@ implements	PluginI
 		)
 	{
 		assert	executorServiceURI != null :
-					new PreconditionException("executorServiceURI != null");
-		assert	this.getOwner() == null ||
+				new PreconditionException("executorServiceURI != null");
+
+		this.executorServiceLock.writeLock().lock();
+		try {
+			assert	this.getOwner() == null ||
 							this.getOwner().validExecutorServiceURI(
 														executorServiceURI) :
 					new PreconditionException(
@@ -569,10 +710,16 @@ implements	PluginI
 							"this.getOwner().validExecutorServiceURI(" +
 							"executorServiceURI)");
 
-		this.preferredExecutorServiceURI.set(executorServiceURI);
-
-		assert	executorServiceURI.equals(
+			this.preferredExecutorServiceURI = executorServiceURI;
+			if (this.getOwner() != null) {
+				this.preferredExecutorServiceIndex =
+						((AbstractComponent)this.getOwner()).
+								getExecutorServiceIndex(
 									this.getPreferredExecutionServiceURI());
+			}
+		} finally {
+			this.executorServiceLock.writeLock().unlock();
+		}
 	}
 
 	/**
@@ -596,12 +743,6 @@ implements	PluginI
 				 			"getPreferredExecutionServiceURI())");
 
 		this.owner.set(owner);
-		if (this.getPreferredExecutionServiceURI() != null) {
-			this.preferredExecutorServiceIndex.set(
-					((AbstractComponent)this.getOwner()).
-							getExecutorServiceIndex(
-									this.getPreferredExecutionServiceURI()));
-		}
 	}
 
 	/**

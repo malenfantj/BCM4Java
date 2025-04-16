@@ -35,7 +35,7 @@ package fr.sorbonne_u.components.endpoints;
 
 import fr.sorbonne_u.components.AbstractEndPoint;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
-import fr.sorbonne_u.exceptions.InvariantChecking;
+import fr.sorbonne_u.exceptions.AssertionChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
@@ -103,7 +103,7 @@ implements	EndPointI<I>
 	{
 		assert instance != null : new PreconditionException("instance != null");
 		boolean ret = true;
-		ret &= InvariantChecking.checkImplementationInvariant(
+		ret &= AssertionChecking.checkImplementationInvariant(
 					instance.clientSideInterface != null,
 					EndPoint.class, instance,
 					"clientSideInterface != null");

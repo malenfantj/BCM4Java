@@ -269,8 +269,6 @@ extends		AbstractComponent
 			this.traceMessage("Installing plugin...\n");
 			AsyncCallServerPlugin plugin = new AsyncCallServerPlugin();
 			plugin.setPluginURI(PLUGIN_URI);
-			plugin.setPreferredExecutionServiceURI(
-											STANDARD_REQUEST_HANDLER_URI);
 			this.installPlugin(plugin);
 			this.traceMessage("Plugin installed...\n");
 		} catch (Exception e) {

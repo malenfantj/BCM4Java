@@ -62,10 +62,21 @@ import fr.sorbonne_u.components.AbstractPort;
  * component.
  * </p>
  * 
- * <p><strong>Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
- * invariant	true
+ * invariant	{@code !callerRuns || executorServiceURI == null}
+ * invariant	{@code (executorServiceURI == null) == (executorServiceIndex == -1)}
+ * invariant	{@code (executorServiceURI != null) == (executorServiceIndex.get() >= 0)}
+ * invariant	{@code executorServiceURI == null || executorServiceIndex == owner.getExecutorServiceIndex(executorServiceURI)}
+ * </pre>
+ * 
+ * <p><strong>Invariants</strong></p>
+ * 
+ * <pre>
+ * invariant	{@code !hasPlugin() || getOwner().isInstalled(getPluginURI())}
+ * invariant	{@code !hasExecutorService() || getOwner().validExecutorServiceURI(getExecutorServiceURI())}
+ * invariant	{@code !hasExecutorService() || getExecutorServiceIndex() == getExecutorServiceIndex(getExecutorServiceURI())}
  * </pre>
  * 
  * <p>Created on : 2011-11-07</p>
@@ -83,6 +94,10 @@ implements	InboundPortI
 	private static final long		serialVersionUID = 1L;
 	/** URI of the plug-in to be called in the owner or null if none.		*/
 	protected final String			pluginURI;
+
+	/** if true, the call to the owner component must be executed by the
+	 *  caller component thread.											*/
+	protected final boolean			callerRuns;
 	/** URI of the executor service to be used to execute the service on the
 	 *  owner or null if none.												*/
 	protected final String			executorServiceURI;
@@ -129,19 +144,6 @@ implements	InboundPortI
 								"executorServiceIndex == " +
 								"owner.getExecutorServiceIndex(" +
 								"executorServiceURI)");
-			assert	!p.hasPlugin() ||
-								p.getOwner().isInstalled(p.getPluginURI()) :
-						new ImplementationInvariantException(
-								"owner component does not have an " +
-								"installed plug-in with URI: " +
-								p.getPluginURI());
-			assert	!p.hasExecutorService() ||
-								p.getOwner().validExecutorServiceURI(
-												p.getExecutorServiceURI()) :
-						new ImplementationInvariantException(
-								"owner component does not have an executor "
-								+ "service with URI: "
-								+ p.getExecutorServiceURI());
 			assert	!p.hasExecutorService() ||
 								p.getExecutorServiceIndex() ==
 									p.getExecutorServiceIndex(
@@ -174,6 +176,19 @@ implements	InboundPortI
 		assert	p != null ;
 
 		synchronized (p) {
+			assert	!p.hasPlugin() ||
+								p.getOwner().isInstalled(p.getPluginURI()) :
+					new InvariantException(
+							"owner component does not have an " +
+							"installed plug-in with URI: " +
+							p.getPluginURI());
+			assert	!p.hasExecutorService() ||
+							p.getOwner().validExecutorServiceURI(
+												p.getExecutorServiceURI()) :
+					new InvariantException(
+							"owner component does not have an executor "
+							+ "service with URI: "
+							+ p.getExecutorServiceURI());
 			// From InboundPortI
 			assert	p.getOwner().isOfferedInterface(p.getImplementedInterface()) :
 						new InvariantException(p.getImplementedInterface() +
@@ -184,13 +199,121 @@ implements	InboundPortI
 	}
 
 	/**
-	 * create and initialise inbound ports, with a given URI and given plug-in
+	 * create and initialise an inbound port with a given URI and given plug-in
 	 * and executor service URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code uri != null && owner != null && implementedInterface != null}
+	 * pre	{@code uri != null && !uri.isEmpty()}
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
+	 * pre	{@code !owner.isPortExisting(uri)}
+	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
+	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
+	 * pre	{@code executorServiceURI == null || !callerRuns}
+	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * </pre>
+	 *
+	 * @param uri					unique identifier of the port.
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws Exception 			<i>to do</i>.
+	 */
+	public				AbstractInboundPort(
+		String uri,
+		Class<? extends OfferedCI> implementedInterface,
+		ComponentI owner,
+		String pluginURI,
+		boolean callerRuns,
+		String executorServiceURI
+		) throws Exception
+	{
+		super(uri, implementedInterface, owner) ;
+
+		assert	pluginURI == null || owner.isInstalled(pluginURI) :
+					new PreconditionException(
+							"owner component does not have an installed "
+							+ "plug-in with URI: " + pluginURI);
+		assert	executorServiceURI == null || !callerRuns :
+				new PreconditionException(
+						"executorServiceURI == null || !callerRuns");
+		assert	executorServiceURI == null ||
+						owner.validExecutorServiceURI(executorServiceURI) :
+					new PreconditionException(
+							"owner component does not have an executor "
+							+ "service with URI: " + executorServiceURI);
+
+		this.pluginURI = pluginURI;
+		this.executorServiceURI = executorServiceURI;
+		this.callerRuns = callerRuns;
+		if (executorServiceURI != null) {
+			this.executorServiceIndex.set(
+							this.getExecutorServiceIndex(executorServiceURI));
+		}
+
+		AbstractInboundPort.checkImplementationInvariant(this);
+		AbstractInboundPort.checkInvariant(this);
+		AbstractPort.checkImplementationInvariant(this);
+		AbstractPort.checkInvariant(this);
+	}
+
+	/**
+	 * create and initialise an inbound port with a generated URI and given
+	 * plug-in and executor service URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
+	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
+	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
+	 * pre	{@code executorServiceURI == null || !callerRuns}
+	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code getImplementedInterface().equals(implementedInterface)}
+	 * </pre>
+	 *
+	 * @param implementedInterface	interface implemented by this port.
+	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws Exception 			<i>to do</i>.
+	 */
+	public				AbstractInboundPort(
+		Class<? extends OfferedCI> implementedInterface,
+		ComponentI owner,
+		String pluginURI,
+		boolean callerRuns,
+		String executorServiceURI
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(implementedInterface),
+			 implementedInterface, owner, pluginURI, callerRuns,
+			 executorServiceURI);
+	}
+
+	/**
+	 * create and initialise an inbound port with a given URI and given plug-in
+	 * and executor service URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code uri != null && !uri.isEmpty()}
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
 	 * pre	{@code !owner.isPortExisting(uri)}
 	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
 	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
@@ -207,7 +330,7 @@ implements	InboundPortI
 	 * @param owner					component that owns this port.
 	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
 	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
-	 * @throws Exception 			<i>todo.</i>
+	 * @throws Exception 			<i>to do</i>.
 	 */
 	public				AbstractInboundPort(
 		String uri,
@@ -217,39 +340,19 @@ implements	InboundPortI
 		String executorServiceURI
 		) throws Exception
 	{
-		super(uri, implementedInterface, owner) ;
-
-		assert	pluginURI == null || owner.isInstalled(pluginURI) :
-					new PreconditionException(
-							"owner component does not have an installed "
-							+ "plug-in with URI: " + pluginURI);
-		assert	executorServiceURI == null ||
-						owner.validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"owner component does not have an executor "
-							+ "service with URI: " + executorServiceURI);
-
-		this.pluginURI = pluginURI;
-		this.executorServiceURI = executorServiceURI;
-		if (executorServiceURI != null) {
-			this.executorServiceIndex.set(
-							this.getExecutorServiceIndex(executorServiceURI));
-		}
-
-		AbstractInboundPort.checkImplementationInvariant(this);
-		AbstractInboundPort.checkInvariant(this);
-		AbstractPort.checkImplementationInvariant(this);
-		AbstractPort.checkInvariant(this);
+		this(uri, implementedInterface, owner, pluginURI, false,
+			 executorServiceURI);
 	}
 
 	/**
-	 * create and initialise inbound ports, with a given plug-in and executor
+	 * create and initialise an inbound port with a given plug-in and executor
 	 * service URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code owner != null && implementedInterface != null}
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
 	 * pre	{@code implementedInterface.isAssignableFrom(this.getClass())}
 	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
 	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
@@ -263,7 +366,7 @@ implements	InboundPortI
 	 * @param owner					component that owns this port.
 	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
 	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
-	 * @throws Exception 			<i>todo.</i>
+	 * @throws Exception 			<i>to do</i>.
 	 */
 	public				AbstractInboundPort(
 		Class<? extends OfferedCI> implementedInterface,
@@ -277,12 +380,14 @@ implements	InboundPortI
 	}
 
 	/**
-	 * create and initialise inbound ports, with a given URI.
+	 * create and initialise an inbound port with a given URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code uri != null && owner != null && implementedInterface != null}
+	 * pre	{@code uri != null && !uri.isEmpty()}
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
 	 * pre	{@code !owner.isPortExisting(uri)}
 	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
 	 * post	{@code !isDestroyed()}
@@ -295,7 +400,7 @@ implements	InboundPortI
 	 * @param uri					unique identifier of the port.
 	 * @param implementedInterface	interface implemented by this port.
 	 * @param owner					component that owns this port.
-	 * @throws Exception 			<i>todo.</i>
+	 * @throws Exception 			<i>to do</i>.
 	 */
 	public				AbstractInboundPort(
 		String uri,
@@ -307,12 +412,13 @@ implements	InboundPortI
 	}
 
 	/**
-	 * create and initialise inbound ports with an automatically generated URI.
+	 * create and initialise an inbound port with an automatically generated URI.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code owner != null && implementedInterface != null}
+	 * pre	{@code owner != null}
+	 * pre	{@code implementedInterface != null}
 	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
 	 * post	{@code !isDestroyed()}
 	 * post	{@code getOwner().equals(owner)}
@@ -322,7 +428,7 @@ implements	InboundPortI
 	 *
 	 * @param implementedInterface	interface implemented by this port.
 	 * @param owner					component that owns this port.
-	 * @throws Exception 			<i>todo.</i>
+	 * @throws Exception 			<i>to do</i>.
 	 */
 	public				AbstractInboundPort(
 		Class<? extends OfferedCI> implementedInterface,
@@ -601,6 +707,26 @@ implements	InboundPortI
 	// -------------------------------------------------------------------------
 
 	/**
+	 * return true if the port is applying a caller runs policy for all calls.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isDestroyed()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if the port is applying a caller runs policy for all calls.
+	 */
+	protected boolean	isCallerRuns()
+	{
+		assert	!this.isDestroyed.get() :
+				new PreconditionException("!isDestroyed()");
+
+		return this.callerRuns;
+	}
+
+	/**
 	 * return true if this inbound port has an associated plug-in in its owner.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -615,7 +741,7 @@ implements	InboundPortI
 	protected boolean	hasPlugin()
 	{
 		assert	!this.isDestroyed.get() :
-					new PreconditionException("!isDestroyed()");
+				new PreconditionException("!isDestroyed()");
 
 		return this.pluginURI != null;
 	}
@@ -658,10 +784,10 @@ implements	InboundPortI
 	protected String	getPluginURI()
 	{
 		assert	!this.isDestroyed.get() :
-					new PreconditionException("!isDestroyed()");
+				new PreconditionException("!isDestroyed()");
 		assert	this.hasPlugin() :
-					new PreconditionException(
-							"Inbound port " + this.uri + " has no plug-in!");
+				new PreconditionException(
+						"Inbound port " + this.uri + " has no plug-in!");
 
 		return this.pluginURI;
 	}
@@ -683,11 +809,11 @@ implements	InboundPortI
 	protected String	getExecutorServiceURI()
 	{
 		assert	!this.isDestroyed.get() :
-					new PreconditionException("!isDestroyed()");
+				new PreconditionException("!isDestroyed()");
 		assert	this.hasExecutorService() :
-					new PreconditionException(
-							"Inbound port " + this.uri +
-												" has no executor service!");
+				new PreconditionException(
+						"Inbound port " + this.uri +
+						" has no executor service!");
 
 		return this.executorServiceURI;
 	}

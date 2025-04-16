@@ -34,21 +34,22 @@ package fr.sorbonne_u.exceptions;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
+import java.util.function.Supplier;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>InvariantChecking</code> implements helper methods to check
- * invariants in objects and components.
+ * The class <code>AssertionChecking</code> implements helper methods to check
+ * assertions in objects and components.
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>Glass-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -58,7 +59,7 @@ import fr.sorbonne_u.components.AbstractComponent;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public abstract class	InvariantChecking
+public abstract class	AssertionChecking
 {
 	/**
 	 * check an implementation invariant expression and print a message if the
@@ -232,6 +233,71 @@ public abstract class	InvariantChecking
 					+ ": " + message + "\n");
 		}
 		return invariantExpression;
+	}
+
+	/**
+	 * assert that {@code value} is not null or throw the exception provided by
+	 * {@code exceptionFactory}; meant to be used as an assert expression
+	 * (rather than the standard Java assert instruction).
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code exceptionFactory != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>				type of the value to be tested and returned.
+	 * @param value				value to be asserted non null.
+	 * @param exceptionFactory	supplier of an exception to be thrown if {@code value} is null.
+	 * @return					{@code value} if it is not null.
+	 * @throws VerboseException	a {@code PreconditionException} if {@code exceptionFactory} is {@code null} or an exception provided by {@code exceptionFactory} if {@code value} is null.
+	 */
+	public static <T> T		assertNonNullOrThrow(
+		T value,
+		Supplier<? extends VerboseException> exceptionFactory
+		) throws	VerboseException
+	{
+		assert	exceptionFactory != null :
+				new PreconditionException("exceptionFactory != null");
+
+		if (value != null) {
+			return value;
+		} else {
+			throw exceptionFactory.get();
+		}
+	}
+
+	/**
+	 * assert that {@code expression} is true or throw the exception provided by
+	 * {@code exceptionFactory}; meant to be used as an assert expression
+	 * (rather than the standard Java assert instruction).
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code exceptionFactory != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param expression		expression to be asserted true.
+	 * @param exceptionFactory	supplier of an exception to be thrown if {@code expression} is false.
+	 * @return					true if {@code expression} is.
+	 * @throws VerboseException	a {@code PreconditionException} if {@code exceptionFactory} is {@code null} or an exception provided by {@code exceptionFactory} if {@code expression} is false.
+	 */
+	public static boolean	assertTrueOrThrow(
+		boolean expression,
+		Supplier<? extends VerboseException> exceptionFactory
+		) throws	VerboseException
+	{
+		assert	exceptionFactory != null :
+				new PreconditionException("exceptionFactory != null");
+
+		if (expression) {
+			return true;
+		} else {
+			throw exceptionFactory.get();
+		}
 	}
 }
 // -----------------------------------------------------------------------------

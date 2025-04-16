@@ -47,7 +47,7 @@ import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.components.ports.PortI;
-import fr.sorbonne_u.exceptions.InvariantChecking;
+import fr.sorbonne_u.exceptions.AssertionChecking;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -162,21 +162,21 @@ implements	BCMEndPointI<CI>,
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
-		ret &= InvariantChecking.checkImplementationInvariant(
+		ret &= AssertionChecking.checkImplementationInvariant(
 					instance.serverSideOfferedInterface != null,
 					BCMEndPoint.class, instance,
 					"serverSideOfferedInterface != null");
-		ret &= InvariantChecking.checkImplementationInvariant(
+		ret &= AssertionChecking.checkImplementationInvariant(
 					instance.inboundPortURI != null &&
 										!instance.inboundPortURI.isEmpty(),
 					BCMEndPoint.class, instance,
 					"inboundPortURI != null && !inboundPortURI.isEmpty()");
-		ret &= InvariantChecking.checkImplementationInvariant(
+		ret &= AssertionChecking.checkImplementationInvariant(
 					instance.serverSideInitialised() ||
 											instance.inboundPort == null,
 					BCMEndPoint.class, instance,
 					"serverSideInitialised() || inboundPort == null");
-		ret &= InvariantChecking.checkImplementationInvariant(
+		ret &= AssertionChecking.checkImplementationInvariant(
 					instance.clientSideInitialised() ||
 											instance.outboundPort == null,
 					BCMEndPoint.class, instance,

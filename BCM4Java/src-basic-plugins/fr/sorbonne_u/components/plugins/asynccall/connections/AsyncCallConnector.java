@@ -33,6 +33,8 @@ package fr.sorbonne_u.components.plugins.asynccall.connections;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.connectors.AbstractConnector;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.plugins.asynccall.AbstractAsyncCall;
 import fr.sorbonne_u.components.plugins.asynccall.AsyncCallCI;
 
@@ -63,6 +65,10 @@ public class			AsyncCallConnector
 extends		AbstractConnector
 implements	AsyncCallCI
 {
+	// -------------------------------------------------------------------------
+	// Methods
+	// -------------------------------------------------------------------------
+
 	/**
 	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallCI#disconnectClient(java.lang.String)
 	 */
@@ -70,6 +76,12 @@ implements	AsyncCallCI
 	public void			disconnectClient(String receptionPortURI)
 	throws Exception
 	{
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
+			System.out.println(
+					"AsyncCallConnector::disconnectClient "
+					+ receptionPortURI);
+		}
+
 		((AsyncCallCI)this.offering).disconnectClient(receptionPortURI);
 	}
 
@@ -79,6 +91,12 @@ implements	AsyncCallCI
 	@Override
 	public void			asyncCall(AbstractAsyncCall c) throws Exception
 	{
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
+			System.out.println(
+					"AsyncCallConnector::asyncCall "
+					+ c.getClass().getSimpleName());
+		}
+
 		((AsyncCallCI)this.offering).asyncCall(c);
 	}
 }

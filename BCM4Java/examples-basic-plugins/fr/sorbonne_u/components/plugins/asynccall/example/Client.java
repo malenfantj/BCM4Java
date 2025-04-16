@@ -97,7 +97,7 @@ extends		AbstractComponent
 	 */
 	protected			Client(String serverReflectionInboundPortURI)
 	{
-		super(1, 0);
+		super(2, 0);
 
 		assert	serverReflectionInboundPortURI != null && serverReflectionInboundPortURI.length() > 0;
 
@@ -127,7 +127,7 @@ extends		AbstractComponent
 		String serverReflectionInboundPortURI
 		)
 	{
-		super(reflectionInboundPortURI, 1, 0);
+		super(reflectionInboundPortURI, 3, 0);
 
 		assert	reflectionInboundPortURI != null &&
 										reflectionInboundPortURI.length() > 0;
@@ -194,18 +194,10 @@ extends		AbstractComponent
 			this.traceMessage("Waiting for the show to return...\n");
 		}
 		this.traceMessage("Returning from show: " + cf2.get() + "\n");
-	}
 
-	/**
-	 * @see fr.sorbonne_u.components.AbstractComponent#finalise()
-	 */
-	@Override
-	public synchronized void	finalise() throws Exception
-	{
 		this.traceMessage("Disconnecting from server...\n");
 		this.plugin.disconnectFromServer();
 		this.traceMessage("Disconnected from server...\n");
-		super.finalise();
 	}
 }
 // -----------------------------------------------------------------------------

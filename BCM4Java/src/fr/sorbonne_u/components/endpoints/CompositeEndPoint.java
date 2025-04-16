@@ -40,7 +40,7 @@ import java.util.Map.Entry;
 import fr.sorbonne_u.components.exceptions.BCMRuntimeException;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
-import fr.sorbonne_u.exceptions.InvariantChecking;
+import fr.sorbonne_u.exceptions.AssertionChecking;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
@@ -117,7 +117,7 @@ implements	CompositeEndPointI,
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
-		ret &= InvariantChecking.checkImplementationInvariant(
+		ret &= AssertionChecking.checkImplementationInvariant(
 				instance.numberOfEndPoints > 1,
 				CompositeEndPoint.class, instance,
 				"numberOfEndPoints > 1");
@@ -142,7 +142,7 @@ implements	CompositeEndPointI,
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
-		ret &= InvariantChecking.checkInvariant(
+		ret &= AssertionChecking.checkInvariant(
 				instance.complete() ||
 					!instance.serverSideInitialised() &&
 											!instance.clientSideInitialised(),

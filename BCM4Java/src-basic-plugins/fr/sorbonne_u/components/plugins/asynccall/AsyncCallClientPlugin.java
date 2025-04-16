@@ -34,7 +34,9 @@ package fr.sorbonne_u.components.plugins.asynccall;
 
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallConnector;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallOutboundPort;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionInboundPort;
@@ -353,6 +355,12 @@ extends		AbstractPlugin
 	 */
 	public void			receive(String callURI, Serializable result) throws BCMException
 	{
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
+			System.out.println(
+					"AsyncCallClientPlugin::receive("
+					+ callURI + ", " + result + ")");
+		}
+
 		assert	callURI != null && !callURI.isEmpty() :
 				new PreconditionException(
 								"callURI != null && !callURI.isEmpty()");

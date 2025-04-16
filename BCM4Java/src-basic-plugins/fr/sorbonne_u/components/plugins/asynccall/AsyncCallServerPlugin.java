@@ -39,8 +39,9 @@ import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallInboundPo
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionConnector;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionOutboundPort;
 import fr.sorbonne_u.components.ports.PortI;
+import fr.sorbonne_u.exceptions.AssertionChecking;
 import fr.sorbonne_u.exceptions.PreconditionException;
-
+import fr.sorbonne_u.exceptions.VerboseException;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -112,7 +113,7 @@ extends		AbstractPlugin
 	// -------------------------------------------------------------------------
 
 	/**
-	 * create a plug-in instance.
+	 * create a new plug-in instance.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -124,6 +125,76 @@ extends		AbstractPlugin
 	 */
 	public				AsyncCallServerPlugin()
 	{
+		this(false, null);
+	}
+
+	/**
+	 * create a new plug-in instance which code is run by callers threads if
+	 * {@code callerRuns} is true.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param callerRuns	if true, the call to the owner component must be executed by the caller component thread.
+	 */
+	public				AsyncCallServerPlugin(boolean callerRuns)
+	{
+		this(callerRuns, null);
+	}
+
+	/**
+	 * create a new plug-in instance with the given preferred executor service
+	 * URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code executorServiceURI != null && !executorServiceURI.isEmpty()}
+	 * post	{@code getPreferredExecutionServiceURI().equals(executorServiceURI)}
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws VerboseException 	if {@code executorServiceURI == null || executorServiceURI.isEmpty()}.
+	 */
+	public				AsyncCallServerPlugin(String executorServiceURI)
+	throws VerboseException
+	{
+		this(false,
+				 AssertionChecking.assertTrueOrThrow(
+							executorServiceURI != null &&
+													!executorServiceURI.isEmpty(),
+							() -> new PreconditionException(
+									"executorServiceURI != null || "
+									+ "!executorServiceURI.isEmpty()"))
+					?	executorServiceURI
+					:	null);
+	}
+
+	/**
+	 * create a new plug-in instance with the options represented by the actual
+	 * parameters as explained below.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !callerRuns || executorServiceURI == null}
+	 * pre	{@code executorServiceURI == null || !executorServiceURI.isEmpty()}
+	 * post	{@code executorServiceURI == null || getPreferredExecutionServiceURI().equals(executorServiceURI)}
+	 * </pre>
+	 *
+	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 */
+	public				AsyncCallServerPlugin(
+		boolean callerRuns,
+		String executorServiceURI
+		)
+	{
+		super(callerRuns, executorServiceURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -156,9 +227,16 @@ extends		AbstractPlugin
 	{
 		super.initialise();
 
-		this.inPort = new AsyncCallInboundPort(this.getOwner(),
-											   this.getPluginURI());
-		this.inPort.publishPort();
+		if (this.inPort == null) {
+			this.inPort = new AsyncCallInboundPort(
+										this.getOwner(),
+										this.getPluginURI(),
+										this.callerRuns,
+										this.getPreferredExecutionServiceURI());
+			this.inPort.publishPort();
+		} else {
+			
+		}
 	}
 
 	/**
@@ -313,7 +391,15 @@ extends		AbstractPlugin
 		assert	c != null;
 
 		c.setCalleeInfo((AbstractComponent)this.getOwner(), this);
-		this.runTaskOnComponent(this.getPreferredExecutionServiceIndex(),
+		if (this.callerRuns) {
+			c.execute();
+		} else {
+			boolean noPreferredExecutorService = false;
+			this.executorServiceLock.readLock().lock();
+			try {
+				if (this.getPreferredExecutionServiceURI() != null) {
+					this.runTaskOnComponent(
+							this.getPreferredExecutionServiceIndex(),
 								new AbstractComponent.AbstractTask() {
 									@Override
 									public void run() {
@@ -324,6 +410,26 @@ extends		AbstractPlugin
 										}
 									}
 								});
+				} else {
+					noPreferredExecutorService = true;
+				}
+			} finally {
+				this.executorServiceLock.readLock().unlock();
+			}
+			if (noPreferredExecutorService) {
+				this.runTaskOnComponent(
+						new AbstractComponent.AbstractTask() {
+							@Override
+							public void run() {
+								try {
+									c.execute();
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						});
+			}
+		}
 	}
 
 	/**
@@ -351,14 +457,14 @@ extends		AbstractPlugin
 	{
 		assert	callURI != null && !callURI.isEmpty() :
 				new PreconditionException(
-								"callURI != null && !callURI.isEmpty()");
+						"callURI != null && !callURI.isEmpty()");
 		assert	receptionPortURI != null && !receptionPortURI.isEmpty() :
 				new PreconditionException(
-								"receptionPortURI != null && "
-								+ "!receptionPortURI.isEmpty()");
+						"receptionPortURI != null && "
+						+ "!receptionPortURI.isEmpty()");
 		assert	this.receptionPortConnected(receptionPortURI) :
 				new PreconditionException(
-								"receptionPortConnected(receptionPortURI)");
+						"receptionPortConnected(receptionPortURI)");
 
 		this.resultReceptionOutboundPorts.get(receptionPortURI).
 												acceptResult(callURI, result);

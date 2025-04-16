@@ -85,6 +85,20 @@ extends		Serializable
 	public void			setPluginURI(String uri);
 
 	/**
+	 * return true if the plug-in services must be executed by the caller thread.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if the plug-in services must be executed by the caller thread.
+	 */
+	public boolean		isCallerRuns();
+
+	/**
 	 * get the URI of the executor service used to execute services on the
 	 * owner component.
 	 * 

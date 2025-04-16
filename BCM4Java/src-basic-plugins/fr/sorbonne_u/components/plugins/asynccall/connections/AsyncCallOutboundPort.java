@@ -33,6 +33,8 @@ package fr.sorbonne_u.components.plugins.asynccall.connections;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.cvm.AbstractCVM;
+import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.plugins.asynccall.AbstractAsyncCall;
 import fr.sorbonne_u.components.plugins.asynccall.AsyncCallCI;
 import fr.sorbonne_u.components.ports.AbstractOutboundPort;
@@ -64,19 +66,72 @@ public class			AsyncCallOutboundPort
 extends		AbstractOutboundPort
 implements	AsyncCallCI
 {
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+
 	private static final long serialVersionUID = 1L;
 
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
+
+	/**
+	 * create and initialise an outbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null}
+	 * pre	{@code AsyncCallCI.class.isAssignableFrom(getClass())}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code AsyncCallCI.class.isAssignableFrom(getImplementedInterface())}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(getPortURI())}
+	 * </pre>
+	 *
+	 * @param owner					component that owns this port.
+	 * @throws Exception			<i>todo.</i>
+	 */
 	public				AsyncCallOutboundPort(ComponentI owner)
 	throws Exception
 	{
 		super(AsyncCallCI.class, owner);
 	}
 
+	/**
+	 * create and initialise an outbound port with a given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null && uri != null && implementedInterface != null}
+	 * pre	{@code !owner.isPortExisting(uri)}
+	 * pre	{@code AsyncCallResultReceptionCI.class.isAssignableFrom(getClass())}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code AsyncCallCI.class.isAssignableFrom(getImplementedInterface())}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code !connected()}
+	 * post {@code !isRemotelyConnected()}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * </pre>
+	 *
+	 * @param uri			unique identifier of the port.
+	 * @param owner			component that owns this port.
+	 * @throws Exception 	<i>to do</i>.
+	 */
 	public				AsyncCallOutboundPort(String uri, ComponentI owner)
 	throws Exception
 	{
 		super(uri, AsyncCallCI.class, owner);
 	}
+
+	// -------------------------------------------------------------------------
+	// Methods
+	// -------------------------------------------------------------------------
 
 	/**
 	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallCI#disconnectClient(java.lang.String)
@@ -85,6 +140,12 @@ implements	AsyncCallCI
 	public void			disconnectClient(String receptionPortURI)
 	throws Exception
 	{
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
+			System.out.println(
+					"AsyncCallOutboundPort::disconnectClient "
+					+ receptionPortURI);
+		}
+
 		((AsyncCallCI)this.getConnector()).disconnectClient(receptionPortURI);
 	}
 
@@ -94,6 +155,12 @@ implements	AsyncCallCI
 	@Override
 	public void			asyncCall(AbstractAsyncCall c) throws Exception
 	{
+		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
+			System.out.println(
+					"AsyncCallOutboundPort::asyncCall "
+					+ c.getClass().getSimpleName());
+		}
+
 		((AsyncCallCI)this.getConnector()).asyncCall(c);
 	}
 }
