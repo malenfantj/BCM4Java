@@ -356,9 +356,9 @@ extends		AbstractPlugin
 	public void			receive(String callURI, Serializable result) throws BCMException
 	{
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
-			System.out.println(
-					"AsyncCallClientPlugin::receive("
-					+ callURI + ", " + result + ")");
+			this.getOwner().traceMessage(
+					"AsyncCallClientPlugin[" + this.getPluginURI()
+					+ "]::receive(" + callURI + ", " + result + ")\n");
 		}
 
 		assert	callURI != null && !callURI.isEmpty() :

@@ -164,14 +164,13 @@ extends		AbstractPlugin
 	throws VerboseException
 	{
 		this(false,
-				 AssertionChecking.assertTrueOrThrow(
-							executorServiceURI != null &&
-													!executorServiceURI.isEmpty(),
-							() -> new PreconditionException(
+			 AssertionChecking.assertTrueOrThrow(
+					 executorServiceURI != null && !executorServiceURI.isEmpty(),
+					 () -> new PreconditionException(
 									"executorServiceURI != null || "
 									+ "!executorServiceURI.isEmpty()"))
-					?	executorServiceURI
-					:	null);
+			 ?	executorServiceURI
+			 :	null);
 	}
 
 	/**
