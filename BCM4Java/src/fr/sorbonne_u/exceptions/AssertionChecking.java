@@ -299,5 +299,38 @@ public abstract class	AssertionChecking
 			throw exceptionFactory.get();
 		}
 	}
+
+	/**
+	 * assert that {@code expression} is true and then return {@code value}
+	 * otherwise throw the exception provided by{@code exceptionFactory}.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code exceptionFactory != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param <T>				type of the value to be tested and returned.
+	 * @param value				value to be asserted non null.
+	 * @param exceptionFactory	supplier of an exception to be thrown if {@code value} is null.
+	 * @return					{@code value} if it is not null.
+	 * @throws VerboseException	a {@code PreconditionException} if {@code exceptionFactory} is {@code null} or an exception provided by {@code exceptionFactory} if {@code value} is null.
+	 */
+	public static <T> T		assertTrueAndReturnOrThrow(
+		boolean expression,
+		T value,
+		Supplier<? extends VerboseException> exceptionFactory
+		) throws	VerboseException
+	{
+		assert	exceptionFactory != null :
+				new PreconditionException("exceptionFactory != null");
+
+		if (expression) {
+			return value;
+		} else {
+			throw exceptionFactory.get();
+		}
+	}
 }
 // -----------------------------------------------------------------------------
