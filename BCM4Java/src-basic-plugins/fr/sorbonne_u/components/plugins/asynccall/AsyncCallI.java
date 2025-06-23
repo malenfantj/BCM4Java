@@ -121,7 +121,7 @@ extends		Serializable
 	 */
 	public void			setCalleeInfo(
 		AbstractComponent server,
-		AsyncCallServerPlugin plugin
+		AsyncCallServerSidePlugin plugin
 		) throws Exception;
 
 	/**

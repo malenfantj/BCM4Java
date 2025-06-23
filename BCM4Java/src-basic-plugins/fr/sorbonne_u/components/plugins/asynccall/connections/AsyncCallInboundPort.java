@@ -41,7 +41,7 @@ import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.plugins.asynccall.AbstractAsyncCall;
 import fr.sorbonne_u.components.plugins.asynccall.AsyncCallCI;
-import fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerPlugin;
+import fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerSidePlugin;
 import fr.sorbonne_u.components.ports.AbstractInboundPort;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -94,9 +94,7 @@ implements	AsyncCallCI
 	 * pre	{@code implementedInterface != null}
 	 * pre	{@code !owner.isPortExisting(uri)}
 	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
-	 * pre	{@code pluginURI != null}
-	 * pre	{@code owner.isInstalled(pluginURI)}
-	 * pre	{@code executorServiceURI == null || !callerRuns}
+	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
 	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
 	 * post	{@code !isDestroyed()}
 	 * post	{@code getPortURI().equals(uri)}
@@ -109,7 +107,6 @@ implements	AsyncCallCI
 	 * @param implementedInterface	interface implemented by this port.
 	 * @param owner					component that owns this port.
 	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
-	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
 	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
 	 * @throws Exception 			<i>to do</i>.
 	 */
@@ -118,95 +115,11 @@ implements	AsyncCallCI
 		Class<? extends OfferedCI> implementedInterface,
 		ComponentI owner,
 		String pluginURI,
-		boolean callerRuns,
 		String executorServiceURI
 		) throws Exception
 	{
-		super(uri, implementedInterface, owner, pluginURI, callerRuns,
+		super(uri, implementedInterface, owner, pluginURI, false,
 			  executorServiceURI);
-
-		assert	pluginURI != null :
-				new PreconditionException("pluginURI != null");
-		assert	owner.isInstalled(pluginURI) :
-				new PreconditionException("owner.isInstalled(pluginURI)");
-	}
-
-	/**
-	 * create and initialise an inbound port with a generated URI and given
-	 * plug-in and executor service URI.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code owner != null}
-	 * pre	{@code implementedInterface != null}
-	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
-	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
-	 * pre	{@code executorServiceURI == null || !callerRuns}
-	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
-	 * post	{@code !isDestroyed()}
-	 * post	{@code getOwner().equals(owner)}
-	 * post	{@code getImplementedInterface().equals(implementedInterface)}
-	 * </pre>
-	 *
-	 * @param implementedInterface	interface implemented by this port.
-	 * @param owner					component that owns this port.
-	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
-	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
-	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
-	 * @throws Exception 			<i>to do</i>.
-	 */
-	public				AsyncCallInboundPort(
-		Class<? extends OfferedCI> implementedInterface,
-		ComponentI owner,
-		String pluginURI,
-		boolean callerRuns,
-		String executorServiceURI
-		) throws Exception
-	{
-		this(AbstractPort.generatePortURI(implementedInterface),
-			 implementedInterface, owner, pluginURI, callerRuns,
-			 executorServiceURI);
-	}
-
-	/**
-	 * create and initialise an inbound port with a given URI and given plug-in
-	 * and executor service URI.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code uri != null && !uri.isEmpty()}
-	 * pre	{@code owner != null}
-	 * pre	{@code implementedInterface != null}
-	 * pre	{@code !owner.isPortExisting(uri)}
-	 * pre	{@code implementedInterface.isAssignableFrom(getClass())}
-	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
-	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
-	 * post	{@code !isDestroyed()}
-	 * post	{@code getPortURI().equals(uri)}
-	 * post	{@code getOwner().equals(owner)}
-	 * post	{@code getImplementedInterface().equals(implementedInterface)}
-	 * post	{@code owner.isPortExisting(uri)}
-	 * </pre>
-	 *
-	 * @param uri					unique identifier of the port.
-	 * @param implementedInterface	interface implemented by this port.
-	 * @param owner					component that owns this port.
-	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
-	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
-	 * @throws Exception 			<i>to do</i>.
-	 */
-	public				AsyncCallInboundPort(
-		String uri,
-		Class<? extends OfferedCI> implementedInterface,
-		ComponentI owner,
-		String pluginURI,
-		String executorServiceURI
-		) throws Exception
-	{
-		this(uri, implementedInterface, owner, pluginURI, false,
-			 executorServiceURI);
 	}
 
 	/**
@@ -244,83 +157,6 @@ implements	AsyncCallCI
 			 implementedInterface, owner, pluginURI, executorServiceURI);
 	}
 
-
-	/**
-	 * create and initialise an inbound port with a given URI and given plug-in
-	 * and executor service URI.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code uri != null && !uri.isEmpty()}
-	 * pre	{@code owner != null}
-	 * pre	{@code !owner.isPortExisting(uri)}
-	 * pre	{@code AsyncCallCI.class.isAssignableFrom(getClass())}
-	 * pre	{@code pluginURI != null}
-	 * pre	{@code owner.isInstalled(pluginURI)}
-	 * pre	{@code executorServiceURI == null || !callerRuns}
-	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
-	 * post	{@code !isDestroyed()}
-	 * post	{@code getPortURI().equals(uri)}
-	 * post	{@code getOwner().equals(owner)}
-	 * post	{@code getImplementedInterface().equals(AsyncCallCI.class)}
-	 * post	{@code owner.isPortExisting(uri)}
-	 * </pre>
-	 *
-	 * @param uri					unique identifier of the port.
-	 * @param owner					component that owns this port.
-	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
-	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
-	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
-	 * @throws Exception 			<i>to do</i>.
-	 */
-	public				AsyncCallInboundPort(
-		String uri,
-		ComponentI owner,
-		String pluginURI,
-		boolean callerRuns,
-		String executorServiceURI
-		) throws Exception
-	{
-		this(uri, AsyncCallCI.class, owner, pluginURI, callerRuns,
-			 executorServiceURI);
-	}
-
-	/**
-	 * create and initialise an inbound port with a generated URI and given
-	 * plug-in and executor service URI.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code owner != null}
-	 * pre	{@code AsyncCallCI.class.isAssignableFrom(getClass())}
-	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
-	 * pre	{@code executorServiceURI == null || !callerRuns}
-	 * pre	{@code executorServiceURI == null || owner.validExecutorServiceURI(executorServiceURI)}
-	 * post	{@code !isDestroyed()}
-	 * post	{@code getOwner().equals(owner)}
-	 * post	{@code getImplementedInterface().equals(implementedInterface)}
-	 * </pre>
-	 *
-	 * @param owner					component that owns this port.
-	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
-	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
-	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
-	 * @throws Exception 			<i>to do</i>.
-	 */
-	public				AsyncCallInboundPort(
-		ComponentI owner,
-		String pluginURI,
-		boolean callerRuns,
-		String executorServiceURI
-		) throws Exception
-	{
-		this(AbstractPort.generatePortURI(AsyncCallCI.class),
-			 AsyncCallCI.class, owner, pluginURI, callerRuns,
-			 executorServiceURI);
-	}
-
 	/**
 	 * create and initialise an inbound port with a given URI and given plug-in
 	 * and executor service URI.
@@ -354,8 +190,7 @@ implements	AsyncCallCI
 		String executorServiceURI
 		) throws Exception
 	{
-		this(uri, AsyncCallCI.class, owner, pluginURI, false,
-			 executorServiceURI);
+		this(uri, AsyncCallCI.class, owner, pluginURI, executorServiceURI);
 	}
 
 	/**
@@ -407,17 +242,16 @@ implements	AsyncCallCI
 					+ receptionPortURI);
 		}
 
-		if (this.isCallerRuns()) {
-			((AsyncCallServerPlugin)this.getOwnerPlugin(this.getPluginURI())).
-									disconnectReceptionPort(receptionPortURI);
-		} else if (this.hasExecutorService()) {
+		assert	this.hasPlugin() : new PreconditionException("hasPlugin()");
+
+		if (this.hasExecutorService()) {
 			this.getOwner().runTask(
 				this.getExecutorServiceIndex(),
 				new AbstractComponent.AbstractTask(this.getPluginURI()) {
 					@Override
 					public void run() {
 						try {
-							((AsyncCallServerPlugin)
+							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).
 									disconnectReceptionPort(receptionPortURI);
 						} catch (Exception e) {
@@ -431,7 +265,7 @@ implements	AsyncCallCI
 					@Override
 					public void run() {
 						try {
-							((AsyncCallServerPlugin)
+							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).
 									disconnectReceptionPort(receptionPortURI);
 						} catch (Exception e) {
@@ -454,19 +288,16 @@ implements	AsyncCallCI
 					+ c.getClass().getSimpleName());
 		}
 
-		((AsyncCallServerPlugin)this.getOwnerPlugin(this.getPluginURI())).
-																asyncCall(c);
-		if (this.isCallerRuns()) {
-			((AsyncCallServerPlugin)this.getOwnerPlugin(this.getPluginURI())).
-																asyncCall(c);
-		} else if (this.hasExecutorService()) {
+		assert	this.hasPlugin() : new PreconditionException("hasPlugin()");
+
+		if (this.hasExecutorService()) {
 			this.getOwner().runTask(
 				this.getExecutorServiceIndex(),
 				new AbstractComponent.AbstractTask(this.getPluginURI()) {
 					@Override
 					public void run() {
 						try {
-							((AsyncCallServerPlugin)
+							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).asyncCall(c);
 						} catch (Exception e) {
 							throw new BCMRuntimeException(e) ;
@@ -479,7 +310,7 @@ implements	AsyncCallCI
 					@Override
 					public void run() {
 						try {
-							((AsyncCallServerPlugin)
+							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).asyncCall(c);
 						} catch (Exception e) {
 							throw new BCMRuntimeException(e) ;

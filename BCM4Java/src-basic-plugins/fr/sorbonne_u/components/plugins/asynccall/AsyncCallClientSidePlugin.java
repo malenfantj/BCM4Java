@@ -44,14 +44,16 @@ import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.exceptions.VerboseException;
+
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>AsyncCallClientPlugin</code> implements a protocol to call
- * asynchronously another component with a limited form of promise or future
- * variable as result.
+ * The class <code>AsyncCallClientSidePlugin</code> implements a protocol to
+ * call asynchronously another component with a limited form of promise or
+ * future variable as result.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -96,7 +98,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			AsyncCallClientPlugin
+public class			AsyncCallClientSidePlugin
 extends		AbstractPlugin
 {
 	// -------------------------------------------------------------------------
@@ -113,6 +115,47 @@ extends		AbstractPlugin
 	 *  when the results of the corresponding calls will be received.		*/
 	protected ConcurrentHashMap<String,RemoteCompletableFuture<Serializable>>
 													awaitingResults;
+
+	// -------------------------------------------------------------------------
+	// Constructor
+	// -------------------------------------------------------------------------
+
+	/**
+	 * create a new asynchronous call client side plug-in instance which will
+	 * use the standard request handler executor service to execute its code.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 */
+	public				AsyncCallClientSidePlugin()
+	{
+		super();
+	}
+
+	/**
+	 * create a new asynchronous call client side plug-in which will use the
+	 * executor service with URI {@code executorServiceURI} to execute its code.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code executorServiceURI != null && !executorServiceURI.isEmpty()}
+	 * post	{@code getPreferredExecutionServiceURI().equals(executorServiceURI)}
+	 * </pre>
+	 *
+	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
+	 * @throws VerboseException 	if {@code executorServiceURI == null || executorServiceURI.isEmpty()}.
+	 */
+	public				AsyncCallClientSidePlugin(String executorServiceURI)
+	throws VerboseException
+	{
+		super(executorServiceURI);
+	}
 
 	// -------------------------------------------------------------------------
 	// Plug-in life-cycle

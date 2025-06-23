@@ -46,6 +46,8 @@ import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.exceptions.VerboseException;
 import fr.sorbonne_u.utils.Pair;
+import fr.sorbonne_u.utils.URIGenerator;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -444,7 +446,8 @@ implements	PluginI
 	private final AtomicReference<ComponentI>	owner;
 
 	/** if true, the call to the owner component must be executed by the
-	 *  caller component thread.											*/
+	 *  caller component thread otherwise a preferred execution service must
+	 *  be designated and used.												*/
 	protected final boolean						callerRuns;
 
 	/** lock mutual exclusion over the preferred executor service.			*/
@@ -461,24 +464,26 @@ implements	PluginI
 	// -------------------------------------------------------------------------
 
 	/**
-	 * create a new plug-in instance.
+	 * create a new plug-in instance which will use the standard request handler
+	 * executor service to run its code.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
 	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
+	 * post	{@code getPreferredExecutionServiceURI().equals(AbstractComponent.STANDARD_REQUEST_HANDLER_URI)}
 	 * </pre>
 	 *
 	 */
 	public				AbstractPlugin()
 	{
-		this(false, null);
+		this(false, AbstractComponent.STANDARD_REQUEST_HANDLER_URI);
 	}
 
 	/**
 	 * create a new plug-in instance which code is run by callers threads if
-	 * {@code callerRuns} is true.
+	 * {@code callerRuns} is true but if {@code callerRuns} is false, then its
+	 * code will be run in a new executor service to be created.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -493,12 +498,12 @@ implements	PluginI
 		boolean callerRuns
 		)
 	{
-		this(callerRuns, null);
+		this(callerRuns, callerRuns ? null : URIGenerator.generateURI());
 	}
 
 	/**
 	 * create a new plug-in instance with the given preferred executor service
-	 * URI.
+	 * URI which will be created if not already existing in the owner component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -512,7 +517,7 @@ implements	PluginI
 	 */
 	public				AbstractPlugin(
 		String executorServiceURI
-		) throws VerboseException
+		) throws VerboseException 
 	{
 		this(false,
 			 AssertionChecking.assertTrueOrThrow(
@@ -550,16 +555,16 @@ implements	PluginI
 		assert	!callerRuns || executorServiceURI == null :
 				new PreconditionException(
 						"!callerRuns || executorServiceURI == null");
+		assert	executorServiceURI == null || !executorServiceURI.isEmpty() :
+				new PreconditionException(
+						"executorServiceURI == null || "
+						+ "!executorServiceURI.isEmpty()");
 
 		this.owner = new AtomicReference<ComponentI>(null);
 		this.plugInURI = new AtomicReference<String>(null);
 		this.callerRuns = callerRuns;
 		this.executorServiceLock = new ReentrantReadWriteLock();
 		if (executorServiceURI != null) {
-			assert	!executorServiceURI.isEmpty() :
-					new PreconditionException(
-							"executorServiceURI == null || "
-							+ "!executorServiceURI.isEmpty()");
 			this.setPreferredExecutionServiceURI(executorServiceURI);
 		} else {
 			this.preferredExecutorServiceURI = null;
@@ -603,7 +608,7 @@ implements	PluginI
 	 * <pre>
 	 * pre	{@code getOwner() == null}
 	 * pre	{@code owner != null}
-	 * post	{@code getOwner() == owner}
+	 * post	{@code getOwner().equals(owner)}
 	 * </pre>
 	 *
 	 * @param owner		the component that will own this plug-in.
@@ -615,19 +620,6 @@ implements	PluginI
 				new PreconditionException("getOwner() == null");
 
 		this.owner.set(owner);
-
-		this.executorServiceLock.writeLock();
-		try {
-			if (this.preferredExecutorServiceURI != null &&
-									this.preferredExecutorServiceIndex < 0) {
-				this.preferredExecutorServiceIndex =
-						((AbstractComponent)this.getOwner()).
-								getExecutorServiceIndex(
-									this.getPreferredExecutionServiceURI());
-			}
-		} finally {
-			this.executorServiceLock.writeLock().unlock();
-		}
 	}
 
 	/**
@@ -697,26 +689,20 @@ implements	PluginI
 		String executorServiceURI
 		)
 	{
-		assert	executorServiceURI != null :
-				new PreconditionException("executorServiceURI != null");
+		assert	executorServiceURI != null && !executorServiceURI.isEmpty():
+				new PreconditionException(
+						"executorServiceURI != null && "
+						+ "!executorServiceURI.isEmpty()");
 
 		this.executorServiceLock.writeLock().lock();
 		try {
-			assert	this.getOwner() == null ||
-							this.getOwner().validExecutorServiceURI(
-														executorServiceURI) :
-					new PreconditionException(
-							"getOwner() == null || " + 
-							"this.getOwner().validExecutorServiceURI(" +
-							"executorServiceURI)");
-
 			this.preferredExecutorServiceURI = executorServiceURI;
-			if (this.getOwner() != null) {
-				this.preferredExecutorServiceIndex =
-						((AbstractComponent)this.getOwner()).
-								getExecutorServiceIndex(
-									this.getPreferredExecutionServiceURI());
-			}
+
+			assert	executorServiceURI.equals(
+									this.getPreferredExecutionServiceURI()) :
+					new PostconditionException(
+							"executorServiceURI.equals("
+							+ "getPreferredExecutionServiceURI())");
 		} finally {
 			this.executorServiceLock.writeLock().unlock();
 		}
@@ -734,15 +720,33 @@ implements	PluginI
 		assert	!owner.isInstalled(this.getPluginURI()) :
 					new PreconditionException(
 							"!owner.isInstalled(getPluginURI())");
-		assert	getPreferredExecutionServiceURI() == null ||
-				 			owner.validExecutorServiceURI(
-				 						getPreferredExecutionServiceURI()) :
-				 	new PreconditionException(
-				 			"getPreferredExecutionServiceURI() == null || " + 
-				 			"owner.validExecutorServiceURI(" + 
-				 			"getPreferredExecutionServiceURI())");
 
 		this.owner.set(owner);
+
+		this.executorServiceLock.writeLock().lock();
+		try {
+			if (this.getPreferredExecutionServiceURI() != null) {
+				if (!owner.validExecutorServiceURI(
+										getPreferredExecutionServiceURI())) {
+					this.createNewExecutorService(
+							this.getPreferredExecutionServiceURI(), 1, false);
+				}
+				this.preferredExecutorServiceIndex =
+						((AbstractComponent)this.getOwner()).
+								getExecutorServiceIndex(
+										this.getPreferredExecutionServiceURI());
+			}
+
+			assert	getPreferredExecutionServiceURI() == null ||
+								owner.validExecutorServiceURI(
+											getPreferredExecutionServiceURI()) :
+					new PreconditionException(
+							"getPreferredExecutionServiceURI() == null || " + 
+							"owner.validExecutorServiceURI(" + 
+							"getPreferredExecutionServiceURI())");
+		} finally {
+			this.executorServiceLock.writeLock().unlock();
+		}
 	}
 
 	/**
@@ -752,7 +756,7 @@ implements	PluginI
 	public void			initialise() throws Exception
 	{
 		assert	AbstractPlugin.initialisedAtAbstractPluginLevel(this) :
-					new PostconditionException("isInitialised()");
+				new PostconditionException("isInitialised()");
 	}
 
 	/**
@@ -809,9 +813,9 @@ implements	PluginI
 	protected PortI		findPortFromURI(String portURI)
 	{
 		assert	portURI != null :
-					new PreconditionException("portURI != null");
+				new PreconditionException("portURI != null");
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 
 		return ((AbstractComponent)this.getOwner()).findPortFromURI(portURI);
@@ -835,7 +839,7 @@ implements	PluginI
 	protected void		addRequiredInterface(Class<? extends RequiredCI> inter)
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).addRequiredInterface(inter);
 	}
@@ -858,7 +862,7 @@ implements	PluginI
 	protected void		addOfferedInterface(Class<? extends OfferedCI> inter)
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).addOfferedInterface(inter);
 	}
@@ -884,7 +888,7 @@ implements	PluginI
 		)
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).removeRequiredInterface(inter);
 	}
@@ -910,7 +914,7 @@ implements	PluginI
 		)
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).removeOfferedInterface(inter);
 	}
@@ -930,7 +934,7 @@ implements	PluginI
 	protected void		logMessage(String message)
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		this.getOwner().logMessage(message);
 	}
@@ -961,10 +965,10 @@ implements	PluginI
 		)
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	!this.getOwner().validExecutorServiceURI(uri) :
-					new PreconditionException(
-									"getOwner().validExecutorServiceURI(uri)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceURI(uri)");
 
 		return ((AbstractComponent)this.getOwner()).
 						createNewExecutorService(uri, nbThreads, schedulable);
@@ -1169,7 +1173,7 @@ implements	PluginI
 		)
 	{
 		assert	this.getOwner() != null :
-			new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).
 											shutdownNowExecutorService(uri);
@@ -1199,11 +1203,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceIndex("
-													+ "executorServiceIndex)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceIndex("
+						+ "executorServiceIndex)");
 
 		return ((AbstractComponent)this.getOwner()).
 								runTaskOnComponent(executorServiceIndex, t);
@@ -1233,11 +1237,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceURI("
-													+ "executorServiceURI)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceURI("
+						+ "executorServiceURI)");
 
 		return ((AbstractComponent)this.getOwner()).
 								runTaskOnComponent(executorServiceURI, t);
@@ -1263,7 +1267,7 @@ implements	PluginI
 			RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
 			return ((AbstractComponent)this.getOwner()).runTaskOnComponent(
@@ -1302,11 +1306,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceIndex("
-													+ "executorServiceIndex)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceIndex("
+						+ "executorServiceIndex)");
 
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskOnComponent(executorServiceIndex, t, delay, u);
@@ -1342,11 +1346,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceURI("
-													+ "executorServiceURI)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceURI("
+						+ "executorServiceURI)");
 
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskOnComponent(executorServiceURI, t, delay, u);
@@ -1379,7 +1383,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
 			return ((AbstractComponent)this.getOwner()).
@@ -1429,11 +1433,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceIndex("
-													+ "executorServiceIndex)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceIndex("
+						+ "executorServiceIndex)");
 
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
@@ -1479,11 +1483,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceURI("
-													+ "executorServiceURI)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceURI("
+						+ "executorServiceURI)");
 
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskAtFixedRateOnComponent(
@@ -1526,7 +1530,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
 			return ((AbstractComponent)this.getOwner()).
@@ -1575,11 +1579,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceIndex("
-													+ "executorServiceIndex)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceIndex("
+						+ "executorServiceIndex)");
 
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskWithFixedDelayOnComponent(
@@ -1621,11 +1625,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceURI("
-													+ "executorServiceURI)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceURI("
+						+ "executorServiceURI)");
 
 		return ((AbstractComponent)this.getOwner()).
 					scheduleTaskWithFixedDelayOnComponent(
@@ -1664,7 +1668,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
 			return ((AbstractComponent)this.getOwner()).
@@ -1786,7 +1790,7 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
 			return ((AbstractComponent)this.getOwner()).baselineHandleRequest(
@@ -1826,11 +1830,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceIndex("
-													+ "executorServiceIndex)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceIndex("
+						+ "executorServiceIndex)");
 
 		return ((AbstractComponent)this.getOwner()).scheduleRequest(
 									executorServiceIndex, request, delay, u);
@@ -1866,11 +1870,11 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
-							"getOwner().validExecutorServiceURI("
-													+ "executorServiceURI)");
+				new PreconditionException(
+						"getOwner().validExecutorServiceURI("
+						+ "executorServiceURI)");
 
 		return ((AbstractComponent)this.getOwner()).scheduleRequest(
 									executorServiceURI, request, delay, u);
@@ -1904,9 +1908,9 @@ implements	PluginI
 					RejectedExecutionException
 	{
 		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
+				new PreconditionException("getOwner() != null");
 		assert	this.getPreferredExecutionServiceURI() != null :
-					new PreconditionException(
+				new PreconditionException(
 								"getPreferredExecutionServiceURI() != null");
 
 		return ((AbstractComponent)this.getOwner()).scheduleRequest(

@@ -39,7 +39,6 @@ import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallInboundPo
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionConnector;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionOutboundPort;
 import fr.sorbonne_u.components.ports.PortI;
-import fr.sorbonne_u.exceptions.AssertionChecking;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.exceptions.VerboseException;
 import java.io.Serializable;
@@ -47,16 +46,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>AsyncCallServerPlugin</code> implements a protocol to be
+ * The class <code>AsyncCallServerSidePlugin</code> implements a protocol to be
  * called asynchronously by another component to which the result is sent
  * back using another asynchronous call.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * To use this plug-in properly, aclassical BCM4Java server component must first
- * create an instance of the plug-in, set its URI (as usual for plug-ins), set
- * its preferred execution service URI and then install it.
+ * To use this plug-in properly, a classical BCM4Java server component must
+ * first create an instance of the plug-in, set its URI (as usual for plug-ins),
+ * set its preferred execution service URI and then install it.
  * </p>
  * <p>
  * In asynchronous calls, the caller provides the URI of an inbound port to
@@ -93,7 +92,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			AsyncCallServerPlugin
+public class			AsyncCallServerSidePlugin
 extends		AbstractPlugin
 {
 	// -------------------------------------------------------------------------
@@ -101,6 +100,7 @@ extends		AbstractPlugin
 	// -------------------------------------------------------------------------
 
 	private static final long					serialVersionUID = 1L;
+
 	/** port through which the asynchronous calls are received.				*/
 	protected AsyncCallInboundPort				inPort;
 	/** ports through which results are sent back the the caller
@@ -113,7 +113,8 @@ extends		AbstractPlugin
 	// -------------------------------------------------------------------------
 
 	/**
-	 * create a new plug-in instance.
+	 * create a new asynchronous call server side plug-in instance which will
+	 * use the standard request handler executor service to execute its code.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -123,27 +124,9 @@ extends		AbstractPlugin
 	 * </pre>
 	 *
 	 */
-	public				AsyncCallServerPlugin()
+	public				AsyncCallServerSidePlugin()
 	{
-		this(false, null);
-	}
-
-	/**
-	 * create a new plug-in instance which code is run by callers threads if
-	 * {@code callerRuns} is true.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code true}	// no precondition.
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param callerRuns	if true, the call to the owner component must be executed by the caller component thread.
-	 */
-	public				AsyncCallServerPlugin(boolean callerRuns)
-	{
-		this(callerRuns, null);
+		super();
 	}
 
 	/**
@@ -160,40 +143,10 @@ extends		AbstractPlugin
 	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
 	 * @throws VerboseException 	if {@code executorServiceURI == null || executorServiceURI.isEmpty()}.
 	 */
-	public				AsyncCallServerPlugin(String executorServiceURI)
+	public				AsyncCallServerSidePlugin(String executorServiceURI)
 	throws VerboseException
 	{
-		this(false,
-			 AssertionChecking.assertTrueOrThrow(
-					 executorServiceURI != null && !executorServiceURI.isEmpty(),
-					 () -> new PreconditionException(
-									"executorServiceURI != null || "
-									+ "!executorServiceURI.isEmpty()"))
-			 ?	executorServiceURI
-			 :	null);
-	}
-
-	/**
-	 * create a new plug-in instance with the options represented by the actual
-	 * parameters as explained below.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code !callerRuns || executorServiceURI == null}
-	 * pre	{@code executorServiceURI == null || !executorServiceURI.isEmpty()}
-	 * post	{@code executorServiceURI == null || getPreferredExecutionServiceURI().equals(executorServiceURI)}
-	 * </pre>
-	 *
-	 * @param callerRuns			if true, the call to the owner component must be executed by the caller component thread.
-	 * @param executorServiceURI	URI of the executor service to be used to execute the service on the component or null if none.
-	 */
-	public				AsyncCallServerPlugin(
-		boolean callerRuns,
-		String executorServiceURI
-		)
-	{
-		super(callerRuns, executorServiceURI);
+		super(executorServiceURI);
 	}
 
 	// -------------------------------------------------------------------------
@@ -230,7 +183,6 @@ extends		AbstractPlugin
 			this.inPort = new AsyncCallInboundPort(
 										this.getOwner(),
 										this.getPluginURI(),
-										this.callerRuns,
 										this.getPreferredExecutionServiceURI());
 			this.inPort.publishPort();
 		} else {

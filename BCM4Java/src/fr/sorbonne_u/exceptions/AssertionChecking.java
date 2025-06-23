@@ -312,9 +312,10 @@ public abstract class	AssertionChecking
 	 * </pre>
 	 *
 	 * @param <T>				type of the value to be tested and returned.
-	 * @param value				value to be asserted non null.
-	 * @param exceptionFactory	supplier of an exception to be thrown if {@code value} is null.
-	 * @return					{@code value} if it is not null.
+	 * @param expression		boolean expression; if true, return {@code value}, otherwise throw the exception supplied by {@code exceptionFactory}.
+	 * @param value				value to be returned if {@code expression} is true.
+	 * @param exceptionFactory	supplier of an exception to be thrown if {@code expression} is false.
+	 * @return					{@code value} if {@code expression} is true.
 	 * @throws VerboseException	a {@code PreconditionException} if {@code exceptionFactory} is {@code null} or an exception provided by {@code exceptionFactory} if {@code value} is null.
 	 */
 	public static <T> T		assertTrueAndReturnOrThrow(

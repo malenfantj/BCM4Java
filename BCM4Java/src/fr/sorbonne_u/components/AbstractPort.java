@@ -42,6 +42,7 @@ import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.utils.URIGenerator;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -151,8 +152,8 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	implementedInterface != null
-	 * post	ret != null
+	 * pre	{@code implementedInterface != null}
+	 * post	{@code ret != null}
 	 * </pre>
 	 *
 	 * @param implementedInterface	interface to be implemented by the port.
@@ -161,9 +162,10 @@ implements	PortI
 	public static String	generatePortURI(Class<?> implementedInterface)
 	{
 		assert	implementedInterface != null :
-					new PreconditionException("Implemented interface is null!");
+				new PreconditionException("Implemented interface is null!");
 
-		String ret = implementedInterface.getName() + "-" + generatePortURI();
+		String ret = URIGenerator.generateURIwithPrefix(
+											implementedInterface.getName());
 
 		assert	ret != null :
 					new PostconditionException("Result shouldn't be null!");
@@ -177,19 +179,18 @@ implements	PortI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	true			// no precondition.
-	 * post	ret != null
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code ret != null}
 	 * </pre>
 	 *
-	 * @return	a distributed system-wide unique id.
+	 * @return	a distributed system-wide unique resource identifier.
 	 */
 	public static String	generatePortURI()
 	{
-		// see http://www.asciiarmor.com/post/33736615/java-util-uuid-mini-faq
-		String ret = java.util.UUID.randomUUID().toString();
+		String ret = URIGenerator.generateURI();
 
 		assert	ret != null :
-					new PostconditionException("Result shouldn't be null!");
+				new PostconditionException("Result shouldn't be null!");
 
 		return ret;
 	}

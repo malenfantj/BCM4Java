@@ -127,7 +127,7 @@ implements	AsyncCallI
 	transient protected AbstractComponent		receiver;
 	/** the real time asynchronous call server plug-in through which this
 	 *  call is processed.													*/
-	transient protected AsyncCallServerPlugin	plugin;
+	transient protected AsyncCallServerSidePlugin	plugin;
 
 	/** actual parameters of the call.										*/
 	protected final Serializable[]	parameters;
@@ -224,12 +224,12 @@ implements	AsyncCallI
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#setCalleeInfo(fr.sorbonne_u.components.AbstractComponent, fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerPlugin)
+	 * @see fr.sorbonne_u.components.plugins.asynccall.AsyncCallI#setCalleeInfo(fr.sorbonne_u.components.AbstractComponent, fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerSidePlugin)
 	 */
 	@Override
 	public void			setCalleeInfo(
 		AbstractComponent server,
-		AsyncCallServerPlugin plugin
+		AsyncCallServerSidePlugin plugin
 		) throws Exception
 	{
 		assert	!this.calleeInfoSet() :
