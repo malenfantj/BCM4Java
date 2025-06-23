@@ -34,12 +34,12 @@ package fr.sorbonne_u.components.registry.protocol;
 
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.registry.ConnectionData;
 import fr.sorbonne_u.components.registry.ConnectionType;
 import fr.sorbonne_u.components.registry.exceptions.BadConnectionDataException;
 import fr.sorbonne_u.components.registry.exceptions.GlobalRegistryResponseException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.utils.URIGenerator;
 
 // -----------------------------------------------------------------------------
 /**
@@ -62,7 +62,7 @@ public class			ProtocolTest
 	@Test
 	public void			testLookupRequest()
 	{
-		String key = AbstractPort.generatePortURI();
+		String key = URIGenerator.generateURI();
 		String request = Request.LOOKUP_REQUEST_NAME + " " + key;
 
 		LookupRequest r = new LookupRequest(key);
@@ -90,7 +90,7 @@ public class			ProtocolTest
 	@Test
 	public void			testPutRequest()
 	{
-		String key = AbstractPort.generatePortURI();
+		String key = URIGenerator.generateURI();
 		String value =
 			(new ConnectionData(ConnectionType.RMI, "localhost", 1)).
 															toString();
@@ -139,7 +139,7 @@ public class			ProtocolTest
 	@Test
 	public void			testRemoveRequest()
 	{
-		String key = AbstractPort.generatePortURI();
+		String key = URIGenerator.generateURI();
 		String request = Request.REMOVE_REQUEST_NAME + " " + key;
 
 		RemoveRequest r = new RemoveRequest(key);
@@ -184,7 +184,7 @@ public class			ProtocolTest
 	@Test
 	public void			testUnknownRequest()
 	{
-		String request = AbstractPort.generatePortURI();
+		String request = URIGenerator.generateURI();
 
 		UnknownRequest r = new UnknownRequest(request);
 		Assertions.assertFalse(r.isLookupRequest());
@@ -201,7 +201,7 @@ public class			ProtocolTest
 	@Test
 	public void			testLookupResponse()
 	{
-		String key = AbstractPort.generatePortURI();
+		String key = URIGenerator.generateURI();
 		String value =
 				(new ConnectionData(ConnectionType.RMI, "localhost", 1)).
 																toString();
@@ -259,7 +259,7 @@ public class			ProtocolTest
 	@Test
 	public void			testPutResponse()
 	{
-		String key = AbstractPort.generatePortURI();
+		String key = URIGenerator.generateURI();
 
 		String positive = Response.PUT_RESPONSE_NAME + " " + Response.OK;
 		String negative = Response.PUT_RESPONSE_NAME + " "
@@ -299,7 +299,7 @@ public class			ProtocolTest
 	@Test
 	public void			testRemoveResponse()
 	{
-		String key = AbstractPort.generatePortURI();
+		String key = URIGenerator.generateURI();
 
 		String positive = Response.REMOVE_RESPONSE_NAME + " " + Response.OK;
 		String negative = Response.REMOVE_RESPONSE_NAME + " "
@@ -366,7 +366,7 @@ public class			ProtocolTest
 	@Test
 	public void			testErrorResponse()
 	{
-		String key = AbstractPort.generatePortURI();
+		String key = URIGenerator.generateURI();
 		String request = "xyz " + key;
 		String positive = Response.ERROR_RESPONSE_NAME + " " + request;
 

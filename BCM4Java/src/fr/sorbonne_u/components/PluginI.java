@@ -129,16 +129,16 @@ extends		Serializable
 	public int			getPreferredExecutionServiceIndex();
 
 	/**
-	 * set the URI of the executor service used to execute simulations; this
-	 * method must be called at most once before installing the plug-in on
-	 * the owner component.
+	 * set the URI of the executor service used to execute the code of the
+	 * plug-in; this method must be called at most once before installing the
+	 * plug-in on the owner component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code executorServiceURI != null}
-	 * pre	{@code getOwner() == null || getOwner().validExecutorServiceURI(executorServiceURI)} 
-	 * post	{@code executorServiceURI.equals(getExecutionServiceURI())}
+	 * pre	{@code executorServiceURI != null && !executorServiceURI.isEmpty()}
+	 * pre	{@code getOwner() == null}
+	 * post	{@code executorServiceURI.equals(getPreferredExecutionServiceURI())}
 	 * </pre>
 	 *
 	 * @param executorServiceURI	URI of the executor service used to execute simulations.
@@ -150,7 +150,9 @@ extends		Serializable
 	/**
 	 * initialise the plug-in reference to its owner component and add to the
 	 * component every specific information, ports, etc. required to run the
-	 * plug-in.
+	 * plug-in; if a preferred executor service URI is set but the corresponding
+	 * executor service does not exist in the owner component, then a new non
+	 * schedulable executor service with one thread will be automatically created.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -158,8 +160,8 @@ extends		Serializable
 	 * pre	{@code owner != null}
 	 * pre	{@code getPluginURI() != null}
 	 * pre	{@code !owner.isInstalled(getPluginURI())}
-	 * pre 	{@code getPreferredExecutionServiceURI() == null || owner.validExecutorServiceURI(getPreferredExecutionServiceURI())}
 	 * post	{@code owner == getOwner()}
+	 * post	{@code getPreferredExecutionServiceURI() == null || owner.validExecutorServiceURI(getPreferredExecutionServiceURI())}
 	 * post	{@code getPreferredExecutionServiceURI() == null || getPreferredExecutionServiceIndex() == ((AbstractComponent)owner).getExecutorServiceIndex(getPreferredExecutionServiceURI())}
 	 * </pre>
 	 *
@@ -170,7 +172,7 @@ extends		Serializable
 
 	/**
 	 * initialise the plug-in by adding to the owner component every
-	 * specific information, ports, etc. required to run the plug-in;
+	 * plug-in specific information, ports, etc. required to run the plug-in;
 	 * subclasses should add any other initialisation necessary to make
 	 * the plug-in work in the context of its owner.
 	 * 

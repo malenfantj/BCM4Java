@@ -36,7 +36,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.plugins.asynccall.AbstractAsyncCall;
-import fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerPlugin;
+import fr.sorbonne_u.components.plugins.asynccall.AsyncCallServerSidePlugin;
 import java.io.Serializable;
 
 // -----------------------------------------------------------------------------
@@ -267,7 +267,7 @@ extends		AbstractComponent
 
 		try {
 			this.traceMessage("Installing plugin...\n");
-			AsyncCallServerPlugin plugin = new AsyncCallServerPlugin();
+			AsyncCallServerSidePlugin plugin = new AsyncCallServerSidePlugin();
 			plugin.setPluginURI(PLUGIN_URI);
 			this.installPlugin(plugin);
 			this.traceMessage("Plugin installed...\n");

@@ -37,9 +37,9 @@ import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.utils.URIGenerator;
 import java.util.HashMap;
 import java.util.Map;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.exceptions.ConnectionException;
 
 /**
@@ -181,7 +181,7 @@ implements	Cloneable
 
 		// just a convenient reuse of an existing BCM URI generator, though
 		// ports and end points are conceptually related
-		this.endPointURI = AbstractPort.generatePortURI();
+		this.endPointURI = URIGenerator.generateURI();
 		this.reference = null;
 
 		assert	POJOEndPoint.implementationInvariants(this) :

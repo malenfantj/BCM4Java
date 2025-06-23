@@ -34,8 +34,8 @@ package fr.sorbonne_u.components.examples.dpp.withPlugins.example;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.examples.dpp.withPlugins.plugins.SinkPlugin;
+import fr.sorbonne_u.utils.URIGenerator;
 
 //------------------------------------------------------------------------------
 /**
@@ -85,7 +85,7 @@ extends		AbstractComponent
 		assert	!transmissionInboundPortURI.isEmpty();
 
 		SinkPlugin splugin = new SinkPlugin();
-		splugin.setPluginURI(AbstractPort.generatePortURI());
+		splugin.setPluginURI(URIGenerator.generateURI());
 		this.installPlugin(splugin);
 		splugin.createAndPublishInboundPort(transmissionInboundPortURI);
 	}

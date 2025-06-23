@@ -1,8 +1,5 @@
 package fr.sorbonne_u.components.examples.dpp.example;
 
-import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.AbstractPort;
-
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
@@ -38,6 +35,8 @@ import fr.sorbonne_u.components.AbstractPort;
 
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.examples.dpp.components.DataSink;
+import fr.sorbonne_u.utils.URIGenerator;
+import fr.sorbonne_u.components.AbstractComponent;
 
 // -----------------------------------------------------------------------------
 /**
@@ -71,11 +70,11 @@ extends		AbstractCVM
 	@Override
 	public void			deploy() throws Exception
 	{
-		String processorURI = AbstractPort.generatePortURI();
+		String processorURI = URIGenerator.generateURI();
 		AbstractComponent.createComponent(
 				Source.class.getCanonicalName(),
 				new Object[]{processorURI});
-		String sinkURI = AbstractPort.generatePortURI();
+		String sinkURI = URIGenerator.generateURI();
 		AbstractComponent.createComponent(
 				Processor.class.getCanonicalName(),
 				new Object[]{processorURI, sinkURI});

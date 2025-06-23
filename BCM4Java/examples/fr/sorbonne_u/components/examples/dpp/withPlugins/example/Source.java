@@ -34,10 +34,10 @@ package fr.sorbonne_u.components.examples.dpp.withPlugins.example;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.examples.dpp.example.ExamplePipelineData;
 import fr.sorbonne_u.components.examples.dpp.withPlugins.plugins.EmitterPlugin;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.utils.URIGenerator;
 
 //------------------------------------------------------------------------------
 /**
@@ -94,7 +94,7 @@ extends		AbstractComponent
 		assert	!firstProcessingComponentInboundPortURI.isEmpty();
 
 		EmitterPlugin eplugin = new EmitterPlugin();
-		this.emitterPluginURI = AbstractPort.generatePortURI();
+		this.emitterPluginURI = URIGenerator.generateURI();
 		eplugin.setPluginURI(this.emitterPluginURI);
 		eplugin.setNextInboundPortURI(firstProcessingComponentInboundPortURI);
 		this.installPlugin(eplugin);

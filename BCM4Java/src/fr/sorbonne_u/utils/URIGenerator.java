@@ -1,10 +1,11 @@
-package fr.sorbonne_u.components.plugins.asynccall.example;
+package fr.sorbonne_u.utils;
 
 // Copyright Jacques Malenfant, Sorbonne Universite.
 // Jacques.Malenfant@lip6.fr
 //
-// This software is a computer program whose purpose is to provide an
-// implementation of the BCM component model.
+// This software is a computer program whose purpose is to provide a
+// basic component programming model to program with components
+// distributed applications in the Java programming language.
 //
 // This software is governed by the CeCILL-C license under French law and
 // abiding by the rules of distribution of free software.  You can use,
@@ -32,15 +33,20 @@ package fr.sorbonne_u.components.plugins.asynccall.example;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
-import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.AbstractComponent;
+import fr.sorbonne_u.exceptions.PostconditionException;
+import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>CVM</code> runs an example of asynchronous calls with
- * future in BCM4Java using the <code>asynccall</code> plug-ins.
+ * The class <code>URIGenerator</code> provides two static methods to generate
+ * unique resource identifiers.
  *
  * <p><strong>Description</strong></p>
+ * 
+ * <p>
+ * Uses a technique found here:
+ * {@code http://www.asciiarmor.com/post/33736615/java-util-uuid-mini-faq}.
+ * </p>
  * 
  * <p><strong>Implementation Invariants</strong></p>
  * 
@@ -54,49 +60,58 @@ import fr.sorbonne_u.components.AbstractComponent;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2021-04-13</p>
+ * <p>Created on : 2025-06-23</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			CVM
-extends		AbstractCVM
+public abstract class	URIGenerator
 {
-	/** URI is fixed so this solution could be readily distributed.			*/
-	protected static final String	SERVER_REFLECTION_INBOUND_PORT_URI =
-																	"server";
+	// -------------------------------------------------------------------------
+	// Methods
+	// -------------------------------------------------------------------------
 
-	public				CVM() throws Exception
+	/**
+	 * generate a unique resource identifier.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code ret != null}
+	 * </pre>
+	 *
+	 * @return	a distributed system-wide unique resource identifier.
+	 */
+	public static String	generateURI()
 	{
+		// see http://www.asciiarmor.com/post/33736615/java-util-uuid-mini-faq
+		String ret = java.util.UUID.randomUUID().toString();
+
+		assert	ret != null :
+				new PostconditionException("Result shouldn't be null!");
+
+		return ret;
 	}
 
 	/**
-	 * @see fr.sorbonne_u.components.cvm.AbstractCVM#deploy()
+	 * generate a unique resource identifier which prefix is given by
+	 * {@code prefix}.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code prefix != null}
+	 * post	{@code ret != null}
+	 * </pre>
+	 *
+	 * @param prefix	string that will appear first in the URI.
+	 * @return			a distributed system-wide unique resource identifier beginning with {@code prefix}.
 	 */
-	@Override
-	public void			deploy() throws Exception
+	public static String	generateURIwithPrefix(String prefix)
 	{
-		// create the client component
-		AbstractComponent.createComponent(
-			Client.class.getCanonicalName(),
-			new Object[]{SERVER_REFLECTION_INBOUND_PORT_URI});
-		// create the server component
-		AbstractComponent.createComponent(
-			Server.class.getCanonicalName(),
-			new Object[]{SERVER_REFLECTION_INBOUND_PORT_URI});
-		
-		super.deploy();
-	}
+		assert	prefix != null : new PreconditionException("prefix != null");
 
-	public static void	main(String[] args)
-	{
-		try {
-			CVM cvm = new CVM();
-			cvm.startStandardLifeCycle(3000L);
-			Thread.sleep(10000L);
-			System.exit(0);
-		} catch (Exception e) {
-			throw new RuntimeException(e) ;
-		}
+		return prefix + "-" + generateURI();
 	}
 }
 // -----------------------------------------------------------------------------

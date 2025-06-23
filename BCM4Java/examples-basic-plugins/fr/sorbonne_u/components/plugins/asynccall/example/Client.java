@@ -34,7 +34,7 @@ package fr.sorbonne_u.components.plugins.asynccall.example;
 
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
-import fr.sorbonne_u.components.plugins.asynccall.AsyncCallClientPlugin;
+import fr.sorbonne_u.components.plugins.asynccall.AsyncCallClientSidePlugin;
 import fr.sorbonne_u.components.plugins.asynccall.RemoteCompletableFuture;
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
@@ -75,7 +75,7 @@ extends		AbstractComponent
 	protected static final String	PLUGIN_URI = "client plugin URI";
 	/** The reference to the asynchronous call client plug-in installed
 	 *  by this component.													*/
-	protected AsyncCallClientPlugin plugin;
+	protected AsyncCallClientSidePlugin plugin;
 	/** URI of the reflection inbound port of the server component.			*/
 	protected final String			serverReflectionInboundPortURI;
 
@@ -153,7 +153,7 @@ extends		AbstractComponent
 		try {
 			this.traceMessage(
 					"Installing the asynchronous call client plug-in...\n");
-			this.plugin = new AsyncCallClientPlugin();
+			this.plugin = new AsyncCallClientSidePlugin();
 			this.plugin.setPluginURI(PLUGIN_URI);
 			this.installPlugin(this.plugin);
 			this.traceMessage("Plug-in installed...\n");

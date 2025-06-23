@@ -34,13 +34,13 @@ package fr.sorbonne_u.components.examples.dpp.withPlugins.example;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import fr.sorbonne_u.components.AbstractComponent;
-import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.examples.dpp.example.ExamplePipelineData;
 import fr.sorbonne_u.components.examples.dpp.interfaces.PipelineDataI;
 import fr.sorbonne_u.components.examples.dpp.interfaces.ProcessingI;
 import fr.sorbonne_u.components.examples.dpp.withPlugins.plugins.EmitterPlugin;
 import fr.sorbonne_u.components.examples.dpp.withPlugins.plugins.ProcessorPlugin;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
+import fr.sorbonne_u.utils.URIGenerator;
 
 // -----------------------------------------------------------------------------
 /**
@@ -100,11 +100,11 @@ implements	ProcessingI
 	{
 		super(1, 0);
 		ProcessorPlugin pplugin = new ProcessorPlugin();
-		pplugin.setPluginURI(AbstractPort.generatePortURI());
+		pplugin.setPluginURI(URIGenerator.generateURI());
 		this.installPlugin(pplugin);
 		pplugin.createAndPublishInboundPort(transmissionInboundPortURI);
 		EmitterPlugin eplugin = new EmitterPlugin();
-		this.emitterPluginURI = AbstractPort.generatePortURI();
+		this.emitterPluginURI = URIGenerator.generateURI();
 		eplugin.setPluginURI(this.emitterPluginURI);
 		eplugin.setNextInboundPortURI(nextProcessingComponentInboundPortURI);
 		this.installPlugin(eplugin);
