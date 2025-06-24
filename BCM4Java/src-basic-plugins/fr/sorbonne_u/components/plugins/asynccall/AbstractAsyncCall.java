@@ -35,6 +35,7 @@ package fr.sorbonne_u.components.plugins.asynccall;
 import java.io.Serializable;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.exceptions.PreconditionException;
+import fr.sorbonne_u.components.exceptions.BCMException;
 
 // -----------------------------------------------------------------------------
 /**
@@ -255,6 +256,35 @@ implements	AsyncCallI
 				new PreconditionException("resultReceptionInfoSet()");
 
 		this.plugin.sendResult(this.callURI, result, this.receptionPortURI);
+	}
+
+	/**
+	 * execute the call and if a {@code TailRecursiveCall} is thrown, forward
+	 * its call to another component through its asynchronous call client
+	 * side plug-in.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code resultReceptionInfoSet()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @throws Exception	<p>to do</p>.
+	 */
+	public void			internalExecute() throws Exception
+	{
+		assert	this.resultReceptionInfoSet() :
+				new BCMException("resultReceptionInfoSet()");
+
+		try {
+			this.execute();;
+		} catch(TailRecursiveCall e) {
+			AsyncCallClientSidePlugin p = e.getAsyncCallClientSidePlugin();
+			AbstractAsyncCall c = e.getTailRecursiveCall();
+			c.setResultReceptionInfo(this.callURI, this.receptionPortURI);
+			p.asyncCall(c);
+		}
 	}
 }
 // -----------------------------------------------------------------------------

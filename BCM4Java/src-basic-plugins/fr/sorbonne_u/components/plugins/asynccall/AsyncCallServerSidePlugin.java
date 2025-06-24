@@ -355,7 +355,7 @@ extends		AbstractPlugin
 									@Override
 									public void run() {
 										try {
-											c.execute();
+											c.internalExecute();
 										} catch (Exception e) {
 											e.printStackTrace();
 										}
@@ -373,7 +373,7 @@ extends		AbstractPlugin
 							@Override
 							public void run() {
 								try {
-									c.execute();
+									c.internalExecute();
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
