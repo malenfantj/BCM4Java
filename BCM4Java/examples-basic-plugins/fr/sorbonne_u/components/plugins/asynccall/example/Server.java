@@ -87,7 +87,7 @@ extends		AbstractComponent
 	 * <p><strong>Implementation Invariants</strong></p>
 	 * 
 	 * <pre>
-	 * invariant	{@code true}	// no more invariant
+	 * invariant	{@code parameters.length == 2 && parameters[0] instanceof Integer && parameters[1] instanceof Integer}
 	 * </pre>
 	 * 
 	 * <p><strong>Invariants</strong></p>
@@ -115,11 +115,12 @@ extends		AbstractComponent
 		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
-		 * @param parameters	parameters to be passed to the service.
+		 * @param left  left operand of add.
+		 * @param right	right operand of add.
 		 */
-		public			Add(Serializable[] parameters)
+		public			Add(int left, int right)
 		{
-			super(parameters);
+			super(new Serializable[]{left, right});
 		}
 
 		/**
@@ -128,11 +129,6 @@ extends		AbstractComponent
 		@Override
 		public void		execute() throws Exception
 		{
-			// the add command must have two and only two integer parameters.
-			assert	this.parameters.length == 2;
-			assert	this.parameters[0] instanceof Integer;
-			assert	this.parameters[1] instanceof Integer;
-
 			assert	this.resultReceptionInfoSet() :
 					new BCMException("resultReceptionInfoSet()");
 
@@ -181,11 +177,11 @@ extends		AbstractComponent
 		 * post	{@code true}	// no postcondition.
 		 * </pre>
 		 *
-		 * @param parameters	parameters to be passed to the service.
+		 * @param message 	string to be passed to {@code show}.
 		 */
-		public			Show(Serializable[] parameters)
+		public			Show(String message)
 		{
-			super(parameters);
+			super(new Serializable[]{message});
 		}
 
 		/**
@@ -194,9 +190,6 @@ extends		AbstractComponent
 		@Override
 		public void		execute() throws Exception
 		{
-			assert	this.parameters.length == 1;
-			assert	this.parameters[0] instanceof String;
-
 			assert	this.resultReceptionInfoSet() :
 					new BCMException("resultReceptionInfoSet()");
 
