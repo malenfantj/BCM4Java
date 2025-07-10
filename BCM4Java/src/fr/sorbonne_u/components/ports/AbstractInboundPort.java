@@ -41,9 +41,7 @@ import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
-
 import java.util.concurrent.atomic.AtomicInteger;
-
 import fr.sorbonne_u.components.AbstractPort;
 
 // -----------------------------------------------------------------------------
