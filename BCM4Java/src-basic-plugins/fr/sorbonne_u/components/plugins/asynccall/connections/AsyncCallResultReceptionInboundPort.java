@@ -121,7 +121,8 @@ implements	AsyncCallResultReceptionCI
 		String executorServiceURI
 		) throws Exception
 	{
-		super(uri, implementedInterface, owner, pluginURI, false,
+		super(uri, implementedInterface, owner, pluginURI,
+			  executorServiceURI == null ? true : false,
 			  executorServiceURI);
 	}
 
@@ -230,6 +231,68 @@ implements	AsyncCallResultReceptionCI
 			 executorServiceURI);
 	}
 
+	/**
+	 * create and initialise an inbound port with a given URI and given plug-in
+	 * but no executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code uri != null && !uri.isEmpty()}
+	 * pre	{@code owner != null}
+	 * pre	{@code !owner.isPortExisting(uri)}
+	 * pre	{@code AsyncCallResultReceptionCI.class.isAssignableFrom(getClass())}
+	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getPortURI().equals(uri)}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code getImplementedInterface().equals(AsyncCallResultReceptionCI.class)}
+	 * post	{@code owner.isPortExisting(uri)}
+	 * </pre>
+	 *
+	 * @param uri					unique identifier of the port.
+	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @throws Exception 			<i>to do</i>.
+	 */
+	public				AsyncCallResultReceptionInboundPort(
+		String uri,
+		ComponentI owner,
+		String pluginURI
+		) throws Exception
+	{
+		this(uri, AsyncCallResultReceptionCI.class, owner, pluginURI, null);
+	}
+
+	/**
+	 * create and initialise an inbound port with a given plug-in but no
+	 * executor service.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code owner != null}
+	 * pre	{@code AsyncCallResultReceptionCI.class.isAssignableFrom(this.getClass())}
+	 * pre	{@code pluginURI == null || owner.isInstalled(pluginURI)}
+	 * post	{@code !isDestroyed()}
+	 * post	{@code getOwner().equals(owner)}
+	 * post	{@code getImplementedInterface().equals(AsyncCallResultReceptionCI.class)}
+	 * post	{@code owner.isPortExisting(getPortURI())}
+	 * </pre>
+	 *
+	 * @param owner					component that owns this port.
+	 * @param pluginURI				URI of the plug-in to be called in the owner or null if none.
+	 * @throws Exception 			<i>to do</i>.
+	 */
+	public				AsyncCallResultReceptionInboundPort(
+		ComponentI owner,
+		String pluginURI
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(AsyncCallResultReceptionCI.class),
+			 AsyncCallResultReceptionCI.class, owner, pluginURI, null);
+	}
+
 	// -------------------------------------------------------------------------
 	// Methods
 	// -------------------------------------------------------------------------
@@ -256,7 +319,11 @@ implements	AsyncCallResultReceptionCI
 
 		assert	this.hasPlugin() : new PreconditionException("hasPlugin()");
 
-		if (this.hasExecutorService()) {
+		if (this.callerRuns) {
+			((AsyncCallClientSidePlugin)
+					this.getInstalledPlugin(this.getPluginURI())).
+													receive(callURI, result);
+		} else if (this.hasExecutorService()) {
 			this.getOwner().runTask(
 					this.getExecutorServiceIndex(),
 					new AbstractComponent.AbstractTask(this.getPluginURI()) {

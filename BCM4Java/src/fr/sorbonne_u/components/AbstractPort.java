@@ -406,6 +406,43 @@ implements	PortI
 	}
 
 	/**
+	 * return true if {@code pluginURI} corresponds to a plug-in installed on
+	 * the owner component, false otherwise.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code pluginURI != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param pluginURI	URI of a potential plug-in to be tested.
+	 * @return			true if {@code pluginURI} corresponds to a plug-in installed on the owner component, false otherwise.
+	 */
+	protected boolean	isInstalledPlugin(String pluginURI)
+	{
+		return this.owner.isInstalled(pluginURI);
+	}
+
+	/**
+	 * return the corresponding installed plug-in or null if none.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code pluginURI != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param pluginURI	unique plug-in identifier.
+	 * @return			the corresponding installed plug-in or null if none.
+	 */
+	protected PluginI	getInstalledPlugin(String pluginURI)
+	{
+		return this.owner.getPlugin(pluginURI);
+	}
+
+	/**
 	 * get the index of the executor service with the given URI.
 	 * 
 	 * <p><strong>Contract</strong></p>

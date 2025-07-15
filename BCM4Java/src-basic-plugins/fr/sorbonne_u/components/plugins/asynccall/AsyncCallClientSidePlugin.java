@@ -36,13 +36,17 @@ import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.exceptions.BCMRuntimeException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallConnector;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallOutboundPort;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionInboundPort;
+import fr.sorbonne_u.components.ports.AbstractInboundPort;
+import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.components.reflection.connectors.ReflectionConnector;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.ports.ReflectionOutboundPort;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.exceptions.VerboseException;
 
@@ -106,10 +110,16 @@ extends		AbstractPlugin
 	// -------------------------------------------------------------------------
 
 	private static final long						serialVersionUID = 1L;
+	/** component interface required to perform asynchronous calls.			*/
+	protected Class<? extends AsyncCallCI>			asyncCallRequiredInterface;
 	/** port used to perform asynchronous calls to the server.				*/
-	protected AsyncCallOutboundPort					outPort;
+	protected AsyncCallCI							outPort;
+	/** component interface offered to receive the results of asynchronous
+	 *  calls.																*/
+	protected Class<? extends AsyncCallResultReceptionCI>
+													resultReceptionInterface;
 	/** port used ot receive the results of the asynchronous calls.			*/
-	protected AsyncCallResultReceptionInboundPort	inPort;
+	protected AsyncCallResultReceptionCI			inPort;
 
 	/** hash map containing the completable futures awaiting to be completed
 	 *  when the results of the corresponding calls will be received.		*/
@@ -169,12 +179,19 @@ extends		AbstractPlugin
 	{
 		super.installOn(owner);
 
-		if (!this.getOwner().isRequiredInterface(AsyncCallCI.class)) {
-			this.addRequiredInterface(AsyncCallCI.class);
+		if (this.asyncCallRequiredInterface == null) {
+			this.asyncCallRequiredInterface = AsyncCallCI.class;
 		}
-		if (!this.getOwner().isOfferedInterface(
-										AsyncCallResultReceptionCI.class)) {
-			this.addOfferedInterface(AsyncCallResultReceptionCI.class);
+		if (this.resultReceptionInterface == null) {
+			this.resultReceptionInterface = AsyncCallResultReceptionCI.class;
+		}
+
+		if (!this.getOwner().isRequiredInterface(
+											this.asyncCallRequiredInterface)) {
+			this.addRequiredInterface(this.asyncCallRequiredInterface);
+		}
+		if (!this.getOwner().isOfferedInterface(this.resultReceptionInterface)) {
+			this.addOfferedInterface(this.resultReceptionInterface);
 		}
 	}
 
@@ -188,14 +205,12 @@ extends		AbstractPlugin
 
 		this.awaitingResults = new ConcurrentHashMap<>();
 
-		this.outPort = new AsyncCallOutboundPort(this.getOwner());
-		this.outPort.publishPort();
+		this.outPort = (AsyncCallCI) this.createAsyncCallOutboundPort();
+		this.getOutboundPort().publishPort();
 		this.inPort =
-				new AsyncCallResultReceptionInboundPort(
-						this.getOwner(),
-						this.getPluginURI(),
-						this.getPreferredExecutionServiceURI());
-		this.inPort.publishPort();
+				(AsyncCallResultReceptionCI)
+									this.createResultReceptionInboundPort();
+		this.getInboundPort().publishPort();
 	}
 
 	/**
@@ -204,11 +219,12 @@ extends		AbstractPlugin
 	@Override
 	public void			finalise() throws Exception
 	{
-		if (this.outPort != null) {
-			if (this.outPort.connected()) {
-				this.getOwner().doPortDisconnection(this.outPort.getPortURI());
+		if (this.getOutboundPort() != null) {
+			if (this.getOutboundPort().connected()) {
+				this.getOwner().doPortDisconnection(
+										this.getOutboundPort().getPortURI());
 			}
-			this.outPort.unpublishPort();
+			this.getOutboundPort().unpublishPort();
 		}
 		this.awaitingResults.clear();
 
@@ -221,7 +237,7 @@ extends		AbstractPlugin
 	@Override
 	public void			uninstall() throws Exception
 	{
-		this.inPort.unpublishPort();
+		this.getInboundPort().unpublishPort();
 
 		super.uninstall();
 	}
@@ -245,7 +261,8 @@ extends		AbstractPlugin
 	public boolean		isConnectedToServer()
 	{
 		try {
-			return this.outPort != null && this.outPort.connected();
+			return this.getOutboundPort() != null &&
+										this.getOutboundPort().connected();
 		} catch (Exception e) {
 			throw new RuntimeException(e) ;
 		}
@@ -300,7 +317,7 @@ extends		AbstractPlugin
 		}
 
 		this.getOwner().doPortConnection(
-				this.outPort.getPortURI(),
+				this.getOutboundPort().getPortURI(),
 				serverInboundPortURIs[0],
 				AsyncCallConnector.class.getCanonicalName());
 
@@ -322,10 +339,10 @@ extends		AbstractPlugin
 	 */
 	public void			disconnectFromServer() throws Exception
 	{
-		this.outPort.disconnectClient(this.inPort.getPortURI());
-		this.getOwner().doPortDisconnection(this.outPort.getPortURI());
-		this.outPort.unpublishPort();
-		this.outPort.destroyPort();
+		this.outPort.disconnectClient(this.getInboundPort().getPortURI());
+		this.getOwner().doPortDisconnection(this.getOutboundPort().getPortURI());
+		this.getOutboundPort().unpublishPort();
+		this.getOutboundPort().destroyPort();
 		this.outPort = null;
 	}
 
@@ -376,7 +393,7 @@ extends		AbstractPlugin
 		RemoteCompletableFuture<Serializable> cf =
 									new RemoteCompletableFuture<Serializable>();
 		this.awaitingResults.put(callURI, cf);
-		c.setResultReceptionInfo(callURI, this.inPort.getPortURI());
+		c.setResultReceptionInfo(callURI, this.getInboundPort().getPortURI());
 		this.outPort.asyncCall(c);
 		return cf;
 	}
@@ -396,7 +413,8 @@ extends		AbstractPlugin
 	 * @param result		the result of the call coming back from the server.
 	 * @throws BCMException	<i>to do</i>.
 	 */
-	public void			receive(String callURI, Serializable result) throws BCMException
+	public void			receive(String callURI, Serializable result)
+	throws BCMException
 	{
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
 			this.getOwner().traceMessage(
@@ -413,15 +431,112 @@ extends		AbstractPlugin
 
 		RemoteCompletableFuture<Serializable> cf =
 									this.awaitingResults.remove(callURI);
-		if (cf != null) {
-			synchronized (cf) {
-				if (!cf.isDone()) {
-					cf.complete(result);
-				} else {
-					throw new BCMException("already completed call: " + callURI);
-				}
-			}
-		}
+
+		assert	cf != null : new BCMRuntimeException("cf != null");
+		assert	!cf.isDone() : new BCMRuntimeException("!cf.isDone()");
+
+		cf.complete(result);
+	}
+
+	// -------------------------------------------------------------------------
+	// Internal methods
+	// -------------------------------------------------------------------------
+
+	/**
+	 * return the outbound port to perform asynchronous calls.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
+	 * </pre>
+	 *
+	 * @return	the outbound port to perform asynchronous calls.
+	 */
+	protected AbstractOutboundPort	getOutboundPort()
+	{
+		return (AbstractOutboundPort) this.outPort;
+	}
+
+	/**
+	 * return	the inbound port receiving results.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
+	 * </pre>
+	 *
+	 * @return	the inbound port receiving results.
+	 */
+	protected AbstractInboundPort	getInboundPort()
+	{
+		return (AbstractInboundPort) this.inPort;
+	}
+
+	/**
+	 * create a result reception inbound port for this plug-in.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null && AsyncCallResultReceptionCI.class.isAssignableFrom(return.getClass())}
+	 * </pre>
+	 *
+	 * @return				a result reception inbound port.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	protected AbstractInboundPort	createResultReceptionInboundPort()
+	throws Exception
+	{
+		AbstractInboundPort ret =
+				new AsyncCallResultReceptionInboundPort(
+							this.getOwner(),
+							this.getPluginURI(),
+							this.getPreferredExecutionServiceURI());
+
+		assert	AsyncCallResultReceptionCI.class.isAssignableFrom(ret.getClass()) :
+				new PostconditionException(
+						"AsyncCallResultReceptionCI.class.isAssignableFrom("
+						+ "ret.getClass())");
+		assert	this.resultReceptionInterface.isAssignableFrom(ret.getClass()) :
+				new BCMException(
+						"resultReceptionInterface.isAssignableFrom("
+						+ "ret.getClass())"); 
+
+		return ret;
+	}
+
+	/**
+	 * create an asynchronous call outbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null && AsyncCallCI.class.isAssignableFrom(return.getClass()}
+	 * </pre>
+	 *
+	 * @return				an asynchronous call outbound port.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	protected AbstractOutboundPort	createAsyncCallOutboundPort()
+	throws Exception
+	{
+		AbstractOutboundPort ret = new AsyncCallOutboundPort(this.getOwner());
+
+		assert	AsyncCallCI.class.isAssignableFrom(ret.getClass()) :
+				new PostconditionException(
+						"AsyncCallCI.class.isAssignableFrom(ret.getClass()");
+		assert	this.asyncCallRequiredInterface.isAssignableFrom(ret.getClass()) :
+				new BCMException(
+						"asyncCallRequiredInterface.isAssignableFrom("
+						+ "ret.getClass())");
+
+		return ret;
 	}
 }
 // -----------------------------------------------------------------------------

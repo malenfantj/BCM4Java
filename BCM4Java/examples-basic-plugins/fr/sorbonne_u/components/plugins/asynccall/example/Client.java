@@ -36,8 +36,8 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.plugins.asynccall.AsyncCallClientSidePlugin;
 import fr.sorbonne_u.components.plugins.asynccall.RemoteCompletableFuture;
+
 import java.io.Serializable;
-import java.util.concurrent.CompletableFuture;
 
 // -----------------------------------------------------------------------------
 /**
@@ -97,6 +97,7 @@ extends		AbstractComponent
 	 */
 	protected			Client(String serverReflectionInboundPortURI)
 	{
+		// one thread for execute, one to receive the result
 		super(2, 0);
 
 		assert	serverReflectionInboundPortURI != null && serverReflectionInboundPortURI.length() > 0;
@@ -127,7 +128,7 @@ extends		AbstractComponent
 		String serverReflectionInboundPortURI
 		)
 	{
-		super(reflectionInboundPortURI, 3, 0);
+		super(reflectionInboundPortURI, 2, 0);
 
 		assert	reflectionInboundPortURI != null &&
 										reflectionInboundPortURI.length() > 0;
@@ -181,7 +182,7 @@ extends		AbstractComponent
 		this.traceMessage("Calling show...\n");
 		// CompletableFuture<T> can be used as type, but cf2 will indeed contain
 		// a RemoteCompletableFuture, hence that can't be cancelled...
-		CompletableFuture<Serializable> cf2 =
+		RemoteCompletableFuture<Serializable> cf2 =
 			this.plugin.asyncCallWithFuture(
 								new Server.Show("message from client.\n"));
 

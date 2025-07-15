@@ -35,10 +35,15 @@ package fr.sorbonne_u.components.plugins.asynccall;
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPlugin;
 import fr.sorbonne_u.components.ComponentI;
+import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.exceptions.BCMRuntimeException;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallInboundPort;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionConnector;
 import fr.sorbonne_u.components.plugins.asynccall.connections.AsyncCallResultReceptionOutboundPort;
+import fr.sorbonne_u.components.ports.AbstractInboundPort;
+import fr.sorbonne_u.components.ports.AbstractOutboundPort;
 import fr.sorbonne_u.components.ports.PortI;
+import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.exceptions.VerboseException;
 import java.io.Serializable;
@@ -101,11 +106,19 @@ extends		AbstractPlugin
 
 	private static final long					serialVersionUID = 1L;
 
+	/** component interface offered to accept asynchronous calls.			*/
+	protected Class<? extends AsyncCallCI>		asyncCallOfferedInterface;
+
 	/** port through which the asynchronous calls are received.				*/
-	protected AsyncCallInboundPort				inPort;
+	protected AsyncCallCI						inPort;
+
+	/** component interface required to send back the results of asynchronous
+	 *  calls.																*/
+	protected Class<? extends AsyncCallResultReceptionCI>
+												resultReceptionInterface;
 	/** ports through which results are sent back the the caller
 	 *  components.															*/
-	protected ConcurrentHashMap<String,AsyncCallResultReceptionOutboundPort>
+	protected ConcurrentHashMap<String,AsyncCallResultReceptionCI>
 												resultReceptionOutboundPorts;
 
 	// -------------------------------------------------------------------------
@@ -161,13 +174,20 @@ extends		AbstractPlugin
 	{
 		super.installOn(owner);
 
-		if (!this.getOwner().isOfferedInterface(AsyncCallCI.class)) {
-			this.addOfferedInterface(AsyncCallCI.class);
+		if (this.asyncCallOfferedInterface == null) {
+			this.asyncCallOfferedInterface = AsyncCallCI.class;
 		}
-		if (!this.getOwner().isRequiredInterface(
-										AsyncCallResultReceptionCI.class)) {
-			this.addRequiredInterface(AsyncCallResultReceptionCI.class);
+		if (this.resultReceptionInterface == null) {
+			this.resultReceptionInterface = AsyncCallResultReceptionCI.class;
 		}
+
+		if (!this.getOwner().isOfferedInterface(this.asyncCallOfferedInterface)) {
+			this.addOfferedInterface(this.asyncCallOfferedInterface);
+		}
+		if (!this.getOwner().isRequiredInterface(this.resultReceptionInterface)) {
+			this.addRequiredInterface(this.resultReceptionInterface);
+		}
+
 		this.resultReceptionOutboundPorts = new ConcurrentHashMap<>();
 	}
 
@@ -180,11 +200,8 @@ extends		AbstractPlugin
 		super.initialise();
 
 		if (this.inPort == null) {
-			this.inPort = new AsyncCallInboundPort(
-										this.getOwner(),
-										this.getPluginURI(),
-										this.getPreferredExecutionServiceURI());
-			this.inPort.publishPort();
+			this.inPort = (AsyncCallCI) this.createAsyncCallInboundPort();
+			this.getInboundPort().publishPort();
 		} else {
 			
 		}
@@ -196,10 +213,10 @@ extends		AbstractPlugin
 	@Override
 	public void			finalise() throws Exception
 	{
-		for (AsyncCallResultReceptionOutboundPort p :
+		for (AsyncCallResultReceptionCI p :
 								this.resultReceptionOutboundPorts.values()) {
-			this.getOwner().doPortDisconnection(p.getPortURI());
-			p.unpublishPort();
+			this.getOwner().doPortDisconnection(((PortI)p).getPortURI());
+			((PortI)p).unpublishPort();
 		}
 		this.resultReceptionOutboundPorts.clear();
 
@@ -212,7 +229,7 @@ extends		AbstractPlugin
 	@Override
 	public void			uninstall() throws Exception
 	{
-		this.inPort.unpublishPort();
+		this.getInboundPort().unpublishPort();
 
 		super.uninstall();
 	}
@@ -246,7 +263,7 @@ extends		AbstractPlugin
 		if (!this.resultReceptionOutboundPorts.containsKey(receptionPortURI)) {
 			return false;
 		} else {
-			PortI p = this.resultReceptionOutboundPorts.get(receptionPortURI);
+			PortI p = this.getOutboundPort(receptionPortURI);
 			if (p == null) {
 				return false;
 			} else {
@@ -276,19 +293,20 @@ extends		AbstractPlugin
 				new PreconditionException(
 				"receptionPortURI != null && !receptionPortURI.isEmpty()");
 
-		AsyncCallResultReceptionOutboundPort p =
-					new AsyncCallResultReceptionOutboundPort(this.getOwner());
-		AsyncCallResultReceptionOutboundPort p1 =
+		AsyncCallResultReceptionCI p =
+				(AsyncCallResultReceptionCI)
+								this.createResultReceptionOutboundPort();
+		AsyncCallResultReceptionCI p1 =
 					this.resultReceptionOutboundPorts.
 											putIfAbsent(receptionPortURI, p);
 		if (p1 == null) {
-			p.publishPort();
+			((PortI)p).publishPort();
 			this.getOwner().doPortConnection(
-					p.getPortURI(),
+					((PortI)p).getPortURI(),
 					receptionPortURI,
 					AsyncCallResultReceptionConnector.class.getCanonicalName());
 		} else {
-			assert	p1.connected();
+			assert	((PortI)p1).connected();
 		}
 	}
 
@@ -314,8 +332,8 @@ extends		AbstractPlugin
 				new PreconditionException(
 					"receptionPortURI != null && !receptionPortURI.isEmpty()");
 
-		AsyncCallResultReceptionOutboundPort p =
-				this.resultReceptionOutboundPorts.remove(receptionPortURI);
+		PortI p =
+			(PortI) this.resultReceptionOutboundPorts.remove(receptionPortURI);
 		if (p != null) {
 			this.getOwner().doPortDisconnection(p.getPortURI());
 			p.unpublishPort();
@@ -339,36 +357,15 @@ extends		AbstractPlugin
 	 */
 	public void			asyncCall(AbstractAsyncCall c) throws Exception
 	{
-		assert	c != null;
+		assert	c != null : new PreconditionException("c != null");
 
 		c.setCalleeInfo((AbstractComponent)this.getOwner(), this);
-		if (this.callerRuns) {
-			c.execute();
-		} else {
-			boolean noPreferredExecutorService = false;
-			this.executorServiceLock.readLock().lock();
-			try {
-				if (this.getPreferredExecutionServiceURI() != null) {
-					this.runTaskOnComponent(
-							this.getPreferredExecutionServiceIndex(),
-								new AbstractComponent.AbstractTask() {
-									@Override
-									public void run() {
-										try {
-											c.internalExecute();
-										} catch (Exception e) {
-											e.printStackTrace();
-										}
-									}
-								});
-				} else {
-					noPreferredExecutorService = true;
-				}
-			} finally {
-				this.executorServiceLock.readLock().unlock();
-			}
-			if (noPreferredExecutorService) {
+		boolean noPreferredExecutorService = false;
+		this.executorServiceLock.readLock().lock();
+		try {
+			if (this.getPreferredExecutionServiceURI() != null) {
 				this.runTaskOnComponent(
+						this.getPreferredExecutionServiceIndex(),
 						new AbstractComponent.AbstractTask() {
 							@Override
 							public void run() {
@@ -379,7 +376,24 @@ extends		AbstractPlugin
 								}
 							}
 						});
+			} else {
+				noPreferredExecutorService = true;
 			}
+		} finally {
+			this.executorServiceLock.readLock().unlock();
+		}
+		if (noPreferredExecutorService) {
+			this.runTaskOnComponent(
+					new AbstractComponent.AbstractTask() {
+						@Override
+						public void run() {
+							try {
+								c.internalExecute();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
 		}
 	}
 
@@ -419,6 +433,117 @@ extends		AbstractPlugin
 
 		this.resultReceptionOutboundPorts.get(receptionPortURI).
 												acceptResult(callURI, result);
+	}
+
+	// -------------------------------------------------------------------------
+	// Internal methods
+	// -------------------------------------------------------------------------
+
+	/**
+	 * return the outbound port corresponding to {@code receptionPortURI} to
+	 * perform asynchronous calls.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
+	 * </pre>
+	 *
+	 * @param receptionPortURI	URI of the sought port.
+	 * @return					the outbound port corresponding to {@code receptionPortURI} to perform asynchronous calls.
+	 */
+	protected AbstractOutboundPort	getOutboundPort(String receptionPortURI)
+	{
+		return (AbstractOutboundPort)
+					this.resultReceptionOutboundPorts.get(receptionPortURI);
+	}
+
+	/**
+	 * return	the inbound port receiving results.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null}
+	 * </pre>
+	 *
+	 * @return	the inbound port receiving results.
+	 */
+	protected AbstractInboundPort	getInboundPort()
+	{
+		return (AbstractInboundPort) this.inPort;
+	}
+
+	/**
+	 * return the asynchronous call inbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null && AsyncCallCI.class.isAssignableFrom(return.getClass()}
+	 * </pre>
+	 *
+	 * @return				the asynchronous call inbound port.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	protected AbstractInboundPort	createAsyncCallInboundPort() throws Exception
+	{
+		if (this.getPreferredExecutionServiceURI() == null) {
+			throw new BCMRuntimeException(
+						"The AsyncCallServerSidePlugin can't have no preferred"
+						+ " executor service otherwise the call to asyncCall"
+						+ " would not be asynchronous!");
+		}
+
+		AbstractInboundPort ret =
+				new AsyncCallInboundPort(
+						this.getOwner(),
+						this.getPluginURI(),
+						this.getPreferredExecutionServiceURI());
+
+		assert	AsyncCallCI.class.isAssignableFrom(ret.getClass()) :
+				new PostconditionException(
+						"AsyncCallCI.class.isAssignableFrom(ret.getClass()");
+		assert	this.asyncCallOfferedInterface.isAssignableFrom(ret.getClass()) :
+				new BCMException(
+						"asyncCallOfferedInterface.isAssignableFrom("
+						+ "ret.getClass())");
+
+		return ret;
+	}
+
+	/**
+	 * create a result reception outbound port.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return				a result reception outbound port.
+	 * @throws Exception	<i>to do</i>.
+	 */
+	protected AbstractOutboundPort	createResultReceptionOutboundPort()
+	throws Exception
+	{
+		AbstractOutboundPort ret =
+				new AsyncCallResultReceptionOutboundPort(this.getOwner());
+
+		assert	AsyncCallResultReceptionCI.class.isAssignableFrom(ret.getClass()) :
+				new PostconditionException(
+						"AsyncCallResultReceptionCI.class.isAssignableFrom("
+						+ "ret.getClass())");
+		assert	this.resultReceptionInterface.isAssignableFrom(ret.getClass()) :
+				new BCMException(
+						"resultReceptionInterface.isAssignableFrom("
+						+ "ret.getClass())"); 
+
+		return ret;
 	}
 }
 // -----------------------------------------------------------------------------

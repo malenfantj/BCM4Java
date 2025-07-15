@@ -91,7 +91,7 @@ extends		AbstractCVM
 	{
 		try {
 			CVM cvm = new CVM();
-			cvm.startStandardLifeCycle(3000L);
+			cvm.startStandardLifeCycle(5000L);
 			Thread.sleep(10000L);
 			System.exit(0);
 		} catch (Exception e) {

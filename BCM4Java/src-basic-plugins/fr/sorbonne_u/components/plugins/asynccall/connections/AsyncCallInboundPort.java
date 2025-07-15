@@ -309,7 +309,11 @@ implements	AsyncCallCI
 
 		assert	this.hasPlugin() : new PreconditionException("hasPlugin()");
 
-		if (this.hasExecutorService()) {
+		if (this.callerRuns) {
+			((AsyncCallServerSidePlugin)
+					this.getInstalledPlugin(this.getPluginURI())).
+									disconnectReceptionPort(receptionPortURI);
+		} else if (this.hasExecutorService()) {
 			this.getOwner().runTask(
 				this.getExecutorServiceIndex(),
 				new AbstractComponent.AbstractTask(this.getPluginURI()) {
@@ -355,7 +359,10 @@ implements	AsyncCallCI
 
 		assert	this.hasPlugin() : new PreconditionException("hasPlugin()");
 
-		if (this.hasExecutorService()) {
+		if (this.callerRuns) {
+			((AsyncCallServerSidePlugin)
+					this.getInstalledPlugin(this.getPluginURI())).asyncCall(c);
+		} else if (this.hasExecutorService()) {
 			this.getOwner().runTask(
 				this.getExecutorServiceIndex(),
 				new AbstractComponent.AbstractTask(this.getPluginURI()) {
