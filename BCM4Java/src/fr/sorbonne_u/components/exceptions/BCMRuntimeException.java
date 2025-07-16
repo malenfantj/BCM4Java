@@ -33,9 +33,12 @@ package fr.sorbonne_u.components.exceptions;
 // The fact that you are presently reading this means that you have had
 // knowledge of the CeCILL-C license and that you accept its terms.
 
+import fr.sorbonne_u.exceptions.VerboseRuntimeException;
+
 // -----------------------------------------------------------------------------
 /**
- * The class <code>BCMRuntimeException</code>
+ * The class <code>BCMRuntimeException</code> is the BCM4Java equivalent of
+ * Java {@code RuntimeException}.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -56,35 +59,36 @@ package fr.sorbonne_u.components.exceptions;
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
 public class			BCMRuntimeException
-extends		RuntimeException
+extends		VerboseRuntimeException
 {
 	// -------------------------------------------------------------------------
 	// Constants and variables
 	// -------------------------------------------------------------------------
 
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID = 1L;
+	private static final int	LEVEL = 2;
 
 	// -------------------------------------------------------------------------
 	// Constructors
 	// -------------------------------------------------------------------------
 
 	public				BCMRuntimeException() {
-		super();
+		super(LEVEL);
 	}
 
 	public				BCMRuntimeException(String message)
 	{
-		super(message);
+		super(LEVEL, message);
 	}
 
 	public				BCMRuntimeException(Throwable cause)
 	{
-		super(cause);
+		super(LEVEL, cause);
 	}
 
 	public				BCMRuntimeException(String message, Throwable cause)
 	{
-		super(message, cause);
+		super(LEVEL, message, cause);
 	}
 
 	public				BCMRuntimeException(
@@ -94,7 +98,42 @@ extends		RuntimeException
 		boolean writableStackTrace
 		)
 	{
-		super(message, cause, enableSuppression, writableStackTrace);
+		super(LEVEL, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				BCMRuntimeException(
+		int level,
+		String message,
+		Throwable cause,
+		boolean enableSuppression,
+		boolean writableStackTrace
+		)
+	{
+		super(level, message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public				BCMRuntimeException(
+		int level,
+		String message,
+		Throwable cause
+		)
+	{
+		super(level, message, cause);
+	}
+
+	public				BCMRuntimeException(int level, String message)
+	{
+		super(level, message);
+	}
+
+	public				BCMRuntimeException(int level, Throwable cause)
+	{
+		super(level, cause);
+	}
+
+	public				BCMRuntimeException(int level)
+	{
+		super(level);
 	}
 }
 // -----------------------------------------------------------------------------

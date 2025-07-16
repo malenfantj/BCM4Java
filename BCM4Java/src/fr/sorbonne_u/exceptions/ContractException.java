@@ -41,13 +41,13 @@ package fr.sorbonne_u.exceptions;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -62,6 +62,10 @@ extends		VerboseException
 {
 	private static final long	serialVersionUID = 1L;
 	private static final int	LEVEL = 2;
+
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
 
 	public			ContractException()
 	{

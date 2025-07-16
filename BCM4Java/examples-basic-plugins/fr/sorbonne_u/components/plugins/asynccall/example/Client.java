@@ -72,12 +72,12 @@ extends		AbstractComponent
 
 	/** URI of the asynchronous call client plug-in installed by this
 	 *  component.															*/
-	protected static final String	PLUGIN_URI = "client plugin URI";
+	protected static final String		PLUGIN_URI = "client plugin URI";
 	/** The reference to the asynchronous call client plug-in installed
 	 *  by this component.													*/
 	protected AsyncCallClientSidePlugin plugin;
 	/** URI of the reflection inbound port of the server component.			*/
-	protected final String			serverReflectionInboundPortURI;
+	protected final String				serverReflectionInboundPortURI;
 
 	// -------------------------------------------------------------------------
 	// Constructors

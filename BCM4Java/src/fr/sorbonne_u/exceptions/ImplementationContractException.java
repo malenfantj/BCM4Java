@@ -53,13 +53,13 @@ package fr.sorbonne_u.exceptions;
  * <code>ImplementationContractException</code> is thrown.
  * </p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -72,8 +72,16 @@ package fr.sorbonne_u.exceptions;
 public class			ImplementationContractException
 extends		ContractException
 {
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+
 	private static final long serialVersionUID = 1L;
 	private static final int	LEVEL = 3;
+
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
 
 	public				ImplementationContractException()
 	{

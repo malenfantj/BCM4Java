@@ -43,13 +43,13 @@ import fr.sorbonne_u.exceptions.VerboseException;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -62,8 +62,16 @@ import fr.sorbonne_u.exceptions.VerboseException;
 public class			BCMException
 extends		VerboseException
 {
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+
 	private static final int	LEVEL = 2;
 	private static final long	serialVersionUID = 1L;
+
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
 
 	public				BCMException()
 	{

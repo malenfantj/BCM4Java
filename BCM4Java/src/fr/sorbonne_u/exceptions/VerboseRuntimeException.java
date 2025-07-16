@@ -35,8 +35,8 @@ package fr.sorbonne_u.exceptions;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>ContractException</code> defines exceptions which leaves a
- * trace on the out stream when raised.
+ * The class <code>VerboseRuntimeException</code> defines runtime exceptions
+ * which leaves a trace on the out stream when raised.
  *
  * <p><strong>Description</strong></p>
  * 
@@ -52,12 +52,12 @@ package fr.sorbonne_u.exceptions;
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p>Created on : 2020-06-29</p>
+ * <p>Created on : 2025-07-16</p>
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-public class			VerboseException
-extends		Exception
+public class			VerboseRuntimeException
+extends RuntimeException
 {
 	// -------------------------------------------------------------------------
 	// Constants and variables
@@ -76,27 +76,27 @@ extends		Exception
 	// Constructors
 	// -------------------------------------------------------------------------
 
-	public				VerboseException()
+	public				VerboseRuntimeException()
 	{
 		this(LEVEL);
 	}
 
-	public				VerboseException(String message)
+	public				VerboseRuntimeException(String message)
 	{
 		this(LEVEL, message);
 	}
 
-	public				VerboseException(Throwable cause)
+	public				VerboseRuntimeException(Throwable cause)
 	{
 		this(LEVEL, cause);
 	}
 
-	public				VerboseException(String message, Throwable cause)
+	public				VerboseRuntimeException(String message, Throwable cause)
 	{
 		this(LEVEL, message, cause);
 	}
 
-	public				VerboseException(
+	public				VerboseRuntimeException(
 		String message,
 		Throwable cause,
 		boolean enableSuppression,
@@ -106,7 +106,7 @@ extends		Exception
 		this(LEVEL, message, cause, enableSuppression, writableStackTrace);
 	}
 
-	public				VerboseException(int level)
+	public				VerboseRuntimeException(int level)
 	{
 		if (VERBOSE) {
 			StringBuffer sb = new StringBuffer();
@@ -130,7 +130,7 @@ extends		Exception
 		}
 	}
 
-	public				VerboseException(int level, String message)
+	public				VerboseRuntimeException(int level, String message)
 	{
 		super(message);
 		if (VERBOSE) {
@@ -157,7 +157,7 @@ extends		Exception
 		}
 	}
 
-	public				VerboseException(int level, Throwable cause)
+	public				VerboseRuntimeException(int level, Throwable cause)
 	{
 		super(cause);
 		if (VERBOSE) {
@@ -184,7 +184,7 @@ extends		Exception
 		}
 	}
 
-	public				VerboseException(
+	public				VerboseRuntimeException(
 		int level,
 		String message,
 		Throwable cause)
@@ -216,7 +216,7 @@ extends		Exception
 		}
 	}
 
-	public				VerboseException(
+	public				VerboseRuntimeException(
 		int level,
 		String message,
 		Throwable cause,

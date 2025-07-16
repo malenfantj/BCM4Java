@@ -41,13 +41,13 @@ package fr.sorbonne_u.exceptions;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -60,8 +60,16 @@ package fr.sorbonne_u.exceptions;
 public class			PostconditionException
 extends		ContractException
 {
+	// -------------------------------------------------------------------------
+	// Constants and variables
+	// -------------------------------------------------------------------------
+
 	private static final int	LEVEL = 3;
 	private static final long	serialVersionUID = 1L;
+
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
 
 	public				PostconditionException()
 	{
