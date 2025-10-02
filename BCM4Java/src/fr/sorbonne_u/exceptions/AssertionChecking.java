@@ -104,6 +104,42 @@ public abstract class	AssertionChecking
 		}
 		return invariantExpression;
 	}
+
+	/**
+	 * check a static implementation invariant expression and print a message
+	 * if the expression evaluates to false.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code definingClass != null}
+	 * pre	{@code instance == null || definingClass.isAssignableFrom(instance.getClass())}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param invariantExpression	result of the invariant expression.
+	 * @param definingClass			class defining the invariant expression.
+	 * @param message				message to be printed on stdout if {@code invariantExpression} is false.
+	 * @return						the value of {@code invariantExpression}.
+	 */
+	public static boolean	checkStaticImplementationInvariant(
+		boolean invariantExpression,
+		Class<?> definingClass,
+		String message
+		)
+	{
+		assert	definingClass != null :
+				new PreconditionException("definingClass != null");
+
+		if (!invariantExpression) {
+			System.out.println(
+				"Static implementation invariant violation in class "
+				+ definingClass.getSimpleName()
+				+ ": " + message);
+		}
+		return invariantExpression;
+	}
+
 	/**
 	 * check an implementation invariant expression for a component and print a
 	 * message if the expression evaluates to false.
@@ -186,6 +222,40 @@ public abstract class	AssertionChecking
 				+ definingClass.getSimpleName()
 				+ " for the object "
 				+ (instance != null ? instance.toString() : "unknown instance")
+				+ ": " + message);
+		}
+		return invariantExpression;
+	}
+
+	/**
+	 * check an invariant expression and print a message if the expression
+	 * evaluates to false.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code definingClass != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param invariantExpression	result of the invariant expression.
+	 * @param definingClass			class defining the invariant expression.
+	 * @param message				message to be printed on stdout if {@code invariantExpression} is false.
+	 * @return						the value of {@code invariantExpression}.
+	 */
+	public static boolean	checkStaticInvariant(
+		boolean invariantExpression,
+		Class<?> definingClass,
+		String message
+		)
+	{
+		assert	definingClass != null :
+				new PreconditionException("definingClass != null");
+
+		if (!invariantExpression) {
+			System.out.println(
+				"Static invariant violation in class "
+				+ definingClass.getSimpleName()
 				+ ": " + message);
 		}
 		return invariantExpression;
