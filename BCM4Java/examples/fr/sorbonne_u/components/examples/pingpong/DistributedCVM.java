@@ -203,7 +203,7 @@ extends		AbstractDistributedCVM
 			cvm.startStandardLifeCycle(60000L);
 			Thread.sleep(5000L);
 			System.exit(0);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}		
 	}

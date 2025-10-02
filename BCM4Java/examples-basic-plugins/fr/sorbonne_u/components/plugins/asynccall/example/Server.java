@@ -264,7 +264,7 @@ extends		AbstractComponent
 			plugin.setPluginURI(PLUGIN_URI);
 			this.installPlugin(plugin);
 			this.traceMessage("Plugin installed...\n");
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 	}

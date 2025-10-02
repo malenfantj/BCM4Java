@@ -688,7 +688,7 @@ implements	DistributedComponentVirtualMachineI
 			assert	this.isDeployedComponent(dccURI) :
 					new DistributedExecutionException(
 							"isDeployedComponent(dccURI)");
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			System.out.println("The dynamic component creator has not been "
 											+ "successfully deployed!");
 			throw e;

@@ -161,7 +161,7 @@ extends		AbstractComponent
 					this.findInboundPortURIsFromInterface(ExampleCI.class);
 			PortI p = this.findPortFromURI(uris[0]);
 			p.unpublishPort();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdown();

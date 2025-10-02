@@ -203,7 +203,7 @@ extends		AbstractComponent
 		try {
 			this.pairDataIBP.unpublishPort() ;
 			this.pairDataIBP.destroyPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 

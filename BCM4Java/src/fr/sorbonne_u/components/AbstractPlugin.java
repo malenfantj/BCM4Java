@@ -349,7 +349,7 @@ implements	PluginI
 					try {
 						((FakeComponent)this.getTaskOwner()).doInstallPluginOn(
 									pluginToInstall, pluginInboundPortURI);
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -388,7 +388,7 @@ implements	PluginI
 					try {
 						((FakeComponent) this.getTaskOwner()).doFinalisePlugin(
 								pluginInboundPortURI, pluginURI);
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -429,7 +429,7 @@ implements	PluginI
 						((FakeComponent) this.getTaskOwner()).
 							doUnistallPluginFrom(
 									pluginInboundPortURI, pluginURI);
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}

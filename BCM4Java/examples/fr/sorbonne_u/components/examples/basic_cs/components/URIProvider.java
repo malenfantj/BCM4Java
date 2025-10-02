@@ -192,7 +192,7 @@ extends		AbstractComponent
 		try {
 			PortI[] p = this.findPortsFromInterface(URIProviderCI.class);
 			p[0].unpublishPort();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdown();
@@ -207,7 +207,7 @@ extends		AbstractComponent
 		try {
 			PortI[] p = this.findPortsFromInterface(URIProviderCI.class);
 			p[0].unpublishPort();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdownNow();

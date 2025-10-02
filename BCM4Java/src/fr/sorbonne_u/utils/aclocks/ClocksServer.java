@@ -457,7 +457,7 @@ extends		AbstractComponent
 		this.logMessage("component shuts down.");
 		try {
 			this.inboundPort.unpublishPort();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown();

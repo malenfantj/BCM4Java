@@ -155,7 +155,7 @@ extends		AbstractComponent
 		// the shutdown is a good place to unpublish inbound ports.
 		try {
 			this.inboundPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		};
 		super.shutdown();
@@ -170,7 +170,7 @@ extends		AbstractComponent
 		// the shutdown is a good place to unpublish inbound ports.
 		try {
 			this.inboundPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		};
 		super.shutdownNow();

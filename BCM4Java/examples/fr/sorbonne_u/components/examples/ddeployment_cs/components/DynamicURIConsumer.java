@@ -139,7 +139,7 @@ extends		AbstractComponent
 		try {
 			this.uriGetterPort.unpublishPort() ;
 			this.launchInboundPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		
@@ -155,7 +155,7 @@ extends		AbstractComponent
 		try {
 			this.uriGetterPort.unpublishPort() ;
 			this.launchInboundPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		
@@ -200,7 +200,7 @@ extends		AbstractComponent
 							try {
 								((DynamicURIConsumer)this.getTaskOwner()).
 														getURIandPrint() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}

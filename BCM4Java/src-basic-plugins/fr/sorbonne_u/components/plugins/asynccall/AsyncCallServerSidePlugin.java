@@ -371,7 +371,7 @@ extends		AbstractPlugin
 							public void run() {
 								try {
 									c.internalExecute();
-								} catch (Exception e) {
+								} catch (Throwable e) {
 									e.printStackTrace();
 								}
 							}
@@ -389,7 +389,7 @@ extends		AbstractPlugin
 						public void run() {
 							try {
 								c.internalExecute();
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}

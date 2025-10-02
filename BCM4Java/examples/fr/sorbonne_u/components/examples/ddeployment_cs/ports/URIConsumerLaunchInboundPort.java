@@ -89,7 +89,7 @@ implements	URIConsumerLaunchCI
 							try {
 								((DynamicURIConsumer)this.getTaskOwner()).
 															getURIandPrint() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace(); ;
 							}
 						}

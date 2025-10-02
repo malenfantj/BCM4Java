@@ -1048,7 +1048,7 @@ implements	ReflectionCI
 				public void run() {
 					try {
 						this.getTaskOwner().execute();
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -1067,7 +1067,7 @@ implements	ReflectionCI
 					public void run() {
 						try {
 							t.run();
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -1090,7 +1090,7 @@ implements	ReflectionCI
 					public void run() {
 						try {
 							t.run();
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}

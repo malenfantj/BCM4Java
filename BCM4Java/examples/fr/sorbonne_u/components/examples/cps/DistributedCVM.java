@@ -122,7 +122,7 @@ extends		AbstractDistributedCVM
 			a.startStandardLifeCycle(5000L);
 			Thread.sleep(5000L);
 			System.exit(0);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

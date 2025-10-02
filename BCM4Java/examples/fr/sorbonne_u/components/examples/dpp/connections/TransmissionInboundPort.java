@@ -110,7 +110,7 @@ implements	TransmissionCI
 				public void run() {
 					try {
 						((AcceptingPipelineDataI)this.getTaskOwner()).accept(d);
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						throw new RuntimeException(e) ;
 					}
 				}

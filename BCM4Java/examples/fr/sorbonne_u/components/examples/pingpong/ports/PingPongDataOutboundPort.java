@@ -93,7 +93,7 @@ extends		AbstractDataOutboundPort
 						try {
 							((PingPongPlayer)this.getTaskOwner()).
 											playOnDataReception((Ball) d) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}

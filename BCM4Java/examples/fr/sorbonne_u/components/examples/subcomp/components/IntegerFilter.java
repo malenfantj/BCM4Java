@@ -203,7 +203,7 @@ implements 	IntegerFilteringI
 						this.outPort.getPortURI(),
 						toIBP_URI,
 						IntegerProcessingConnector.class.getCanonicalName()) ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 	}
@@ -227,7 +227,7 @@ implements 	IntegerFilteringI
 		try {
 			this.outPort.unpublishPort() ;
 			this.inPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown() ;
@@ -242,7 +242,7 @@ implements 	IntegerFilteringI
 		try {
 			this.outPort.unpublishPort() ;
 			this.inPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdownNow() ;

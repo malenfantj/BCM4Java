@@ -94,7 +94,7 @@ extends		AbstractCVM
 			cvm.startStandardLifeCycle(5000L);
 			Thread.sleep(10000L);
 			System.exit(0);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e) ;
 		}
 	}

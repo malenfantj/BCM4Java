@@ -263,7 +263,7 @@ extends		AbstractPlugin
 		try {
 			return this.getOutboundPort() != null &&
 										this.getOutboundPort().connected();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e) ;
 		}
 	}

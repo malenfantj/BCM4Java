@@ -170,7 +170,7 @@ implements	PingPongTwoWayCI
 					public void run() {
 						try {
 							((PingPongPlayer)this.getTaskOwner()).pingPong() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}

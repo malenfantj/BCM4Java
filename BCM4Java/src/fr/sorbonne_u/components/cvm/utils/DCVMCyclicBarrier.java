@@ -414,7 +414,7 @@ public class			DCVMCyclicBarrier
 				}
 				try {
 					this.localCyclicBarrier.await();
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					e.printStackTrace();
 					throw new RuntimeException(e);
 				}
@@ -480,7 +480,7 @@ public class			DCVMCyclicBarrier
 							this.finished,
 							this.executionLog,
 							this.tracer));
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);
 			}
@@ -538,7 +538,7 @@ public class			DCVMCyclicBarrier
 			DCVMCyclicBarrier as = new DCVMCyclicBarrier(args[0]);
 			as.run();
 			System.exit(0);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

@@ -297,7 +297,7 @@ extends		AbstractComponent
 					this.outboundPort.getPortURI(),
 					valueProvidingInboundPortURI,
 					ValueProvidingConnector.class.getCanonicalName());
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 	}
@@ -321,7 +321,7 @@ extends		AbstractComponent
 					try {
 						((ValueConsumer)this.getTaskOwner()).
 												computeAndThenPrint() ;
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -336,7 +336,7 @@ extends		AbstractComponent
 //								10,
 //								new ComputeAndThenPrintFinalContinuation(
 //										((ValueConsumer)this.getOwner()))) ;
-//					} catch (Exception e) {
+//					} catch (Throwable e) {
 //						e.printStackTrace();
 //					}
 //				}
@@ -405,7 +405,7 @@ extends		AbstractComponent
 									vc.computeAndThenPrintContinuation(result) ;
 								}
 							}) ;
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -450,7 +450,7 @@ extends		AbstractComponent
 							try {
 								((ValueConsumer)this.getTaskOwner()).
 													computeAndThenPrint() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -514,12 +514,12 @@ extends		AbstractComponent
 											new ComputeAndThenPrintContinuation(
 													vc, result, continuation
 													)) ;
-									} catch (Exception e) {
+									} catch (Throwable e) {
 										e.printStackTrace();
 									}
 								}
 							});
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}

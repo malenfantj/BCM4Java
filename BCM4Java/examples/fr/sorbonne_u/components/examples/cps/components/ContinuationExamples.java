@@ -114,7 +114,7 @@ extends		AbstractComponent
 						}
 						try {
 							ce.sumVectorUnitask(vector, finalContinuation1) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -143,7 +143,7 @@ extends		AbstractComponent
 						}
 						try {
 							ce.sumVectorMultitask(vector, finalContinuation2) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -263,7 +263,7 @@ extends		AbstractComponent
 														awaitedResult + first) ;
 									}
 								}) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -276,6 +276,5 @@ extends		AbstractComponent
 			continuation.applyTo(first).runAsTask() ;
 		}
 	}
-
 }
 //-----------------------------------------------------------------------------

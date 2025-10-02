@@ -112,7 +112,7 @@ extends		AbstractDistributedCVM
 			dcvm.startStandardLifeCycle(1000L);
 			Thread.sleep(10000L);
 			System.exit(0);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

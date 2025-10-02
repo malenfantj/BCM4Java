@@ -794,7 +794,7 @@ implements	PortI
 			assert	pluginURI != null && pluginURI.length() > 0;
 			assert	this.getOwner().isInstalled(pluginURI);
 			return ((AbstractComponent)this.getOwner()).getPlugin(pluginURI);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e) ;
 		}
 	}

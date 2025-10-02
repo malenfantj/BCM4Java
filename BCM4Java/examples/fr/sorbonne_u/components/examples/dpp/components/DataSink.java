@@ -180,7 +180,7 @@ implements	AcceptingPipelineDataI
 	{
 		try {
 			this.transmissionInboundPort.unpublishPort();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown();

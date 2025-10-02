@@ -205,7 +205,7 @@ extends		AbstractComponent
 					public void run() {
 						try {
 							tc.verifyPresence(key + count, count) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -221,7 +221,7 @@ extends		AbstractComponent
 					public void run() {
 						try {
 							tc.remove(key + count, count) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -255,7 +255,7 @@ extends		AbstractComponent
 					public void run() {
 						try {
 							tc.verifyPresence(key, value) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -317,7 +317,7 @@ extends		AbstractComponent
 		try {
 			this.readingOutboundPort.destroyPort() ;
 			this.writingOutboundPort.destroyPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 

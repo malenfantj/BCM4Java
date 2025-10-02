@@ -110,7 +110,7 @@ extends		AbstractComponent
 	{
 		try {
 			this.p.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdown();

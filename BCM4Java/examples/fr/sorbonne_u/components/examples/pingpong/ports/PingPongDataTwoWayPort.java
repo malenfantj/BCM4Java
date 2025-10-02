@@ -97,7 +97,7 @@ extends		AbstractDataTwoWayPort
 					public void run() {
 						try {
 							((PingPongPlayer)this.getTaskOwner()).hit((Ball) d) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}

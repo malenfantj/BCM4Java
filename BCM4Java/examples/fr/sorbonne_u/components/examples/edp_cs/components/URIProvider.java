@@ -208,7 +208,7 @@ extends		AbstractComponent
 	{
 		try {
 			this.uriServiceEndPoint.cleanUpServerSide();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdown();
@@ -222,7 +222,7 @@ extends		AbstractComponent
 	{
 		try {
 			this.uriServiceEndPoint.cleanUpServerSide();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e);
 		}
 		super.shutdownNow();

@@ -152,7 +152,7 @@ extends		AbstractComponent
 							try {
 								assert	requiredInterface.equals(ExampleCI.class) ;
 								return new ExampleOutboundPort(owner) ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								throw new RuntimeException(e) ;
 							}
 						}

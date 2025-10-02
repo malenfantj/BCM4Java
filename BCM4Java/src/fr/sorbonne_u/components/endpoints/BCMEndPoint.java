@@ -362,7 +362,7 @@ implements	BCMEndPointI<CI>,
 
 				this.inboundPort = (AbstractInboundPort) p;
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ConnectionException(e);
 		}
 
@@ -434,7 +434,7 @@ implements	BCMEndPointI<CI>,
 					this.makeOutboundPort(
 							(AbstractComponent) clientSideEndPointOwner,
 							this.inboundPortURI);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ConnectionException(e);
 		}
 
@@ -446,7 +446,7 @@ implements	BCMEndPointI<CI>,
 							+ "exception: outbound port not connected to the "
 							+ "inbound port with URI "
 							+ this.getInboundPortURI());
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 
@@ -715,7 +715,7 @@ implements	BCMEndPointI<CI>,
 			sb.append(", outbound port URI = ");
 			try {
 				sb.append(((AbstractPort)this.outboundPort).getPortURI());
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RuntimeException(e);
 			}
 		}

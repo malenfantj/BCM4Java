@@ -117,7 +117,7 @@ implements	TransmissionCI
 					try {
 						((AcceptingPipelineDataI)
 								this.getTaskProviderReference()).accept(d);
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						throw new RuntimeException(e) ;
 					}
 				}

@@ -85,7 +85,7 @@ implements	IntegerProcessingCI
 					public void run() {
 						try {
 							((IntegerProcessingI)this.getTaskOwner()).process(i) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}

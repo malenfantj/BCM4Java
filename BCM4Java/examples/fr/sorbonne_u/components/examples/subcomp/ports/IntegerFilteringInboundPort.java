@@ -88,7 +88,7 @@ implements	IntegerFilteringCI
 					public void run() {
 						try {
 							((IntegerFilteringI)this.getTaskOwner()).filter(i) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}

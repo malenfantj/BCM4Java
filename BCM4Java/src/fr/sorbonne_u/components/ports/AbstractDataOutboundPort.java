@@ -168,7 +168,7 @@ implements	DataOutboundPortI
 									" no longer have index " +
 									p.getExecutorServiceIndex() +
 									" in owner!");
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new Exception(e) ;
 			}
 		}

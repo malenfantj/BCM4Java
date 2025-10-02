@@ -200,7 +200,7 @@ implements	PushControlImplementationI
 						public void run() {
 							try {
 								plugin.pushOnPort(portURI);
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -237,7 +237,7 @@ implements	PushControlImplementationI
 								plugin.limitedPushingTask(portURI ,
 														  interval,
 														  n);
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -278,7 +278,7 @@ implements	PushControlImplementationI
 		// perform the next push.
 		try {
 			this.pushOnPort(portURI);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new Exception(e);
 		}
 		// remove the future that corresponds to the current execution of
@@ -299,7 +299,7 @@ implements	PushControlImplementationI
 									plugin.limitedPushingTask(portURI ,
 															  interval,
 															  n - 1);
-								} catch (Exception e) {
+								} catch (Throwable e) {
 									e.printStackTrace();
 								}
 							}

@@ -134,7 +134,7 @@ implements	ConnectorI
 
 		try {
 			AbstractConnector.checkImplementationInvariant(this);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			// this is not to create to much changes in existing code.
 			throw new RuntimeException(e);
 		}

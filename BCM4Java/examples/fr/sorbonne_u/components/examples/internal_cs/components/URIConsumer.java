@@ -193,7 +193,7 @@ extends		AbstractComponent
 							try {
 								((URIConsumer)this.getTaskOwner()).
 													getURIandPrint() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -231,7 +231,7 @@ extends		AbstractComponent
 			this.doPortConnection(this.uriGetterPort.getPortURI(),
 								  this.serverInboundPortURI,
 								  URIServiceConnector.class.getCanonicalName());
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 		// initialisation code can be put here; do not however call any
@@ -260,7 +260,7 @@ extends		AbstractComponent
 				public void run() {
 					try {
 						((URIConsumer)this.getTaskOwner()).getURIandPrint() ;
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}

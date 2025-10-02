@@ -171,7 +171,7 @@ extends		AbstractComponent
 	{
 		try {
 			this.transmissionOutboundPort.unpublishPort();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown();

@@ -119,7 +119,7 @@ extends		AbstractCVM
 			a.startStandardLifeCycle(10000L) ;
 			Thread.sleep(5000L);
 			System.exit(0) ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

@@ -184,7 +184,7 @@ implements	IntegerProcessingI
 			assert	this.isSubcomponent() ;
 			assert	this.getCompositeComponentReference() instanceof
 														IntegerProcessingI ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 	}
@@ -197,7 +197,7 @@ implements	IntegerProcessingI
 	{
 		try {
 			this.inPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdown() ;
@@ -211,7 +211,7 @@ implements	IntegerProcessingI
 	{
 		try {
 			this.inPort.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		super.shutdownNow();
@@ -234,7 +234,7 @@ implements	IntegerProcessingI
 				public void run() {
 					try {
 						((IntegerProcessingI)this.getTaskOwner()).process(v) ;
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace() ;
 					}
 				}

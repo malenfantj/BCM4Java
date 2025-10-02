@@ -112,7 +112,7 @@ extends		AbstractComponent
 	{
 		try {
 			((EmitterPlugin)this.getPlugin(this.emitterPluginURI)).connect();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 		super.start();

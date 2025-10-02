@@ -437,7 +437,7 @@ implements	ComponentI
 					composite.reflectionInboundPortURI +
 					" on subcomponent " + this.reflectionInboundPortURI
 					+ " ...done.");
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RuntimeException(e) ;
 			}
 		}
@@ -607,7 +607,7 @@ implements	ComponentI
 							" found none,"
 						:	" found one with URI " + ret.getPortURI() + ",")
 						+ " ...done.");
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					throw new RuntimeException(e) ;
 				}
 			}
@@ -2167,7 +2167,7 @@ implements	ComponentI
 		try {
 			this.installedPlugins = new AtomicReference<>(null);
 			this.configurePluginFacilities();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 
@@ -2183,7 +2183,7 @@ implements	ComponentI
 
 		try {
 			this.configureReflection(reflectionInboundPortURI);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 
@@ -2321,7 +2321,7 @@ implements	ComponentI
 									"associated to its implemented " +
 									"interface " +
 									p.getImplementedInterface() + "!");
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					e.printStackTrace();
 				}
 			}
@@ -2351,7 +2351,7 @@ implements	ComponentI
 										" is registered under its implement"
 										+ " interface " + ci + " but not" +
 										" under its URI!");
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						throw new RuntimeException(e) ;
 					}
 				}
@@ -2373,7 +2373,7 @@ implements	ComponentI
 									" is registered under its URI but not "
 									+ "under its implemented interface " +
 									p.getImplementedInterface() + "!");
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					throw new RuntimeException(e) ;
 				}
 			}
@@ -2566,7 +2566,7 @@ implements	ComponentI
 				p.setPluginURI(uri);
 				this.installPlugin(p);
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -2603,7 +2603,7 @@ implements	ComponentI
 			ReflectionInboundPort rip =
 					new ReflectionInboundPort(reflectionInboundPortURI, this);
 			rip.publishPort();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 
@@ -3322,7 +3322,7 @@ implements	ComponentI
 	//                 assert p.getImplementedInterface() == ci;
 	//                 assert portURIs2ports.containsKey(p.getPortURI());
 	//                 assert portURIs2ports.get(p.getPortURI()) == p;
-	//             } catch (Exception e) {
+	//             } catch (Throwable e) {
 	//                 throw new RuntimeException(e) ;
 	//             }
 	//         }
@@ -3333,7 +3333,7 @@ implements	ComponentI
 	//         try {
 	//             assert uri.equals(p.getPortURI());
 	//             assert interfaces2ports.get(p.getImplementedInterface()).contains(p);
-	//         } catch (Exception e) {
+	//         } catch (Throwable e) {
 	//             throw new RuntimeException(e) ;
 	//         }
 	//     }
@@ -3409,7 +3409,7 @@ implements	ComponentI
 						p -> { try {
 								 return inter.isAssignableFrom(
 												p.getImplementedInterface());
-							   } catch (Exception e) {
+							   } catch (Throwable e) {
 								 throw new RuntimeException(e) ;
 							   }
 							 }) :
@@ -3435,7 +3435,7 @@ implements	ComponentI
 									append(temp.stream().map(t -> {
 										try {
 											return t.getPortURI();
-										} catch (Exception e1) {
+										} catch (Throwable e1) {
 											throw new RuntimeException(e1) ;
 										}
 									}).collect(Collectors.joining(", "))).
@@ -4067,7 +4067,7 @@ implements	ComponentI
 						public void run() {
 							try {
 								this.getTaskOwner().execute();
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -4145,7 +4145,7 @@ implements	ComponentI
 			for (PortI p : toBeDestroyed) {
 				p.destroyPort();
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e);
 		}
 
@@ -4212,7 +4212,7 @@ implements	ComponentI
 			for (PortI p : this.portURIs2ports.values()) {
 				p.destroyPort();
 			}
-		} catch (Exception e1) {
+		} catch (Throwable e1) {
 			throw new ComponentShutdownException(e1);
 		}
 
@@ -4461,7 +4461,7 @@ implements	ComponentI
 						new BCMException(
 								"taskPluginURI == null || "
 								+ "owner.isInstalled(this.taskPluginURI)");
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RuntimeException(
 							new ComponentTaskExecutionException(
 									"owner does not have a plug-in with URI "
@@ -5634,7 +5634,7 @@ implements	ComponentI
 						new BCMException(
 								"servicePluginURI == null || "
 								+ "owner.isInstalled(servicePluginURI)");
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RuntimeException(
 							new ComponentTaskExecutionException(
 									"owner does not have a plug-in with URI "
@@ -5769,7 +5769,7 @@ implements	ComponentI
 							{
 								try {
 									return t.call();
-								} catch (Exception e) {
+								} catch (Throwable e) {
 									throw new ExecutionException(e);
 								}
 							}
@@ -5781,7 +5781,7 @@ implements	ComponentI
 									TimeoutException
 							{ 	try {
 									return t.call();
-								} catch (Exception e) {
+								} catch (Throwable e) {
 									throw new ExecutionException(e);
 								}
 							}

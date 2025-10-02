@@ -491,7 +491,7 @@ implements	IntercessionCI
 				public void run() {
 					try {
 						this.getTaskOwner().execute() ;
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
@@ -510,7 +510,7 @@ implements	IntercessionCI
 					public void run() {
 						try {
 							t.run() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -533,7 +533,7 @@ implements	IntercessionCI
 					public void run() {
 						try {
 							t.run() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}

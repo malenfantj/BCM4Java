@@ -33,12 +33,10 @@ package fr.sorbonne_u.components.plugins.asynccall.connections;
 // knowledge of the CeCILL-C license and that you accept its terms.
 
 import java.io.Serializable;
-
 import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.AbstractPort;
 import fr.sorbonne_u.components.ComponentI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
-import fr.sorbonne_u.components.exceptions.BCMException;
 import fr.sorbonne_u.components.exceptions.BCMRuntimeException;
 import fr.sorbonne_u.components.helpers.CVMDebugModes;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
@@ -333,7 +331,7 @@ implements	AsyncCallResultReceptionCI
 								((AsyncCallClientSidePlugin)
 									this.getTaskProviderReference()).
 													receive(callURI, result);
-							} catch (BCMException e) {
+							} catch (Throwable e) {
 								throw new BCMRuntimeException(e) ;
 							}
 						}
@@ -347,7 +345,7 @@ implements	AsyncCallResultReceptionCI
 								((AsyncCallClientSidePlugin)
 									this.getTaskProviderReference()).
 													receive(callURI, result);
-							} catch (BCMException e) {
+							} catch (Throwable e) {
 								throw new BCMRuntimeException(e) ;
 							}
 						}

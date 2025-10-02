@@ -469,7 +469,7 @@ implements	ComponentVirtualMachineI
 						new Object[]{AbstractCVM.getThisJVMURI() +
 											DCC_INBOUNDPORT_URI_SUFFIX});
 				assert	this.isDeployedComponent(dccURI) ;
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				this.logDebug(null, "WARNING! -- The dynamic component "
 									+ "creator has not been "
 									+ "successfully deployed!") ;
@@ -744,7 +744,7 @@ implements	ComponentVirtualMachineI
 					public void run() {
 						try {
 							this.getTaskOwner().execute() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						}
 					}
@@ -776,7 +776,7 @@ implements	ComponentVirtualMachineI
 						public void run() {
 							try {
 								this.getTaskOwner().execute() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -1085,7 +1085,7 @@ implements	ComponentVirtualMachineI
 			this.shutdown();
 			System.out.println("ending...");
 			return true;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return false ;
 		}

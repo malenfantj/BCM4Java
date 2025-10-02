@@ -378,7 +378,7 @@ extends		AbstractComponent
 						otherPingPongTwoWayPortURI + "-dtwp",
 						DataTwoWayConnector.class.getCanonicalName()) ;
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 		//System.out.println("PingPongPlayer>>start 10") ;
@@ -436,7 +436,7 @@ extends		AbstractComponent
 		// can be destroyed during the shut down process.
 		try {
 			this.doShutdownWork() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		
@@ -476,7 +476,7 @@ extends		AbstractComponent
 		// can be destroyed during the shut down process.
 		try {
 			this.doShutdownWork() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 		
@@ -514,7 +514,7 @@ extends		AbstractComponent
 								Thread.sleep(500) ;
 								((PingPongPlayer)this.getTaskOwner()).
 											pingPongOutboundPort.play() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -576,7 +576,7 @@ extends		AbstractComponent
 								Thread.sleep(500) ;
 								((PingPongPlayer)this.getTaskOwner()).
 									pingPongOutboundPort.playOnDataPull() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -634,7 +634,7 @@ extends		AbstractComponent
 								Thread.sleep(500) ;
 								((PingPongPlayer)this.getTaskOwner()).
 									pingPongDataInboundPort.send(b) ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}
@@ -681,7 +681,7 @@ extends		AbstractComponent
 							Thread.sleep(500) ;
 							((PingPongPlayer)this.getTaskOwner()).
 								pingPongTwoWayPort.getOut().pingPong() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						};
 					}
@@ -701,7 +701,7 @@ extends		AbstractComponent
 							Thread.sleep(500) ;
 							((PingPongPlayer)this.getTaskOwner()).
 								pingpongDataTwoWayPort.getOut().send(b) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						};
 					}
@@ -742,7 +742,7 @@ extends		AbstractComponent
 							Thread.sleep(500) ;
 							((PingPongPlayer)this.getTaskOwner()).
 								pingpongDataTwoWayPort.getOut().send(b) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace();
 						};
 					}

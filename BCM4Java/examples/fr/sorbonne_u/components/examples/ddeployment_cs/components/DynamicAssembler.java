@@ -157,13 +157,13 @@ extends		AbstractComponent
 								try {
 									((DynamicAssembler)this.getTaskOwner()).
 															dynamicDeploy() ;
-								} catch (Exception e) {
+								} catch (Throwable e) {
 									e.printStackTrace();
 								}
 							}
 						}) ;
 
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 	}
@@ -193,7 +193,7 @@ extends		AbstractComponent
 		try {
 			this.portToConsumerJVM.unpublishPort() ;
 			this.portToProviderJVM.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 
@@ -209,7 +209,7 @@ extends		AbstractComponent
 		try {
 			this.portToConsumerJVM.unpublishPort() ;
 			this.portToProviderJVM.unpublishPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 
@@ -327,7 +327,7 @@ extends		AbstractComponent
 						public void run() {
 							try {
 								((DynamicAssembler)this.getTaskOwner()).launch() ;
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								e.printStackTrace();
 							}
 						}

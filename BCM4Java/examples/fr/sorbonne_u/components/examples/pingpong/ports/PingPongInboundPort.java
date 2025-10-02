@@ -90,7 +90,7 @@ implements	PingPongCI
 					public void run() {
 						try {
 							((PingPongPlayer)this.getTaskOwner()).play() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}
@@ -109,7 +109,7 @@ implements	PingPongCI
 					public void run() {
 						try {
 							((PingPongPlayer)this.getTaskOwner()).playOnDataPull() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}
@@ -128,7 +128,7 @@ implements	PingPongCI
 					public void run() {
 						try {
 							((PingPongPlayer)this.getTaskOwner()).playOnDataReception(b) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}
@@ -147,7 +147,7 @@ implements	PingPongCI
 					public void run() {
 						try {
 							((PingPongPlayer)this.getTaskOwner()).pingPong() ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}
@@ -181,7 +181,7 @@ implements	PingPongCI
 					public void run() {
 						try {
 							((PingPongPlayer)this.getTaskOwner()).hit(b) ;
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							e.printStackTrace() ;
 						}
 					}

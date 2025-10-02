@@ -156,7 +156,7 @@ extends		AbstractComponent
 					this.pairDataOBP.getPortURI(),
 					ServerComponent.SS_DATAINBOUNDPORT_URI,
 					DataConnector.class.getCanonicalName()) ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentStartException(e) ;
 		}
 
@@ -221,7 +221,7 @@ extends		AbstractComponent
 		try {
 			this.pairDataOBP.unpublishPort() ;
 			this.pairDataOBP.destroyPort() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new ComponentShutdownException(e) ;
 		}
 

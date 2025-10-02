@@ -283,7 +283,7 @@ public class				DCVM_Launcher
 		try {
 			DCVM_Launcher launcher = new DCVM_Launcher(args[0]) ;
 			launcher.launch() ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

@@ -323,7 +323,7 @@ implements	AsyncCallCI
 							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).
 									disconnectReceptionPort(receptionPortURI);
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							throw new BCMRuntimeException(e) ;
 						}
 					}
@@ -337,7 +337,7 @@ implements	AsyncCallCI
 							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).
 									disconnectReceptionPort(receptionPortURI);
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							throw new BCMRuntimeException(e) ;
 						}
 					}
@@ -371,7 +371,7 @@ implements	AsyncCallCI
 						try {
 							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).asyncCall(c);
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							throw new BCMRuntimeException(e) ;
 						}
 					}
@@ -384,7 +384,7 @@ implements	AsyncCallCI
 						try {
 							((AsyncCallServerSidePlugin)
 								this.getTaskProviderReference()).asyncCall(c);
-						} catch (Exception e) {
+						} catch (Throwable e) {
 							throw new BCMRuntimeException(e) ;
 						}
 					}

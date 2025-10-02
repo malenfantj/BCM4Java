@@ -422,7 +422,7 @@ public class				GlobalRegistry
 							"Global registry accepted the " + count
 														+ "th connection.") ;
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				try {
 					ss.close() ;
 				} catch (IOException e1) {
@@ -492,7 +492,7 @@ public class				GlobalRegistry
 			reg.finished.await() ;
 			reg.closing() ;
 			System.exit(0) ;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
