@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -86,6 +87,10 @@ import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 import fr.sorbonne_u.utils.Pair;
+import fr.sorbonne_u.utils.aclocks.AcceleratedClock;
+import fr.sorbonne_u.utils.aclocks.ClocksServerCI;
+import fr.sorbonne_u.utils.aclocks.ClocksServerConnector;
+import fr.sorbonne_u.utils.aclocks.ClocksServerOutboundPort;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -561,6 +566,10 @@ implements	ComponentI
 		return ((AbstractComponent)subcomponent).
 										findInboundPortFromURI(this, portURI);
 	}
+
+	// -------------------------------------------------------------------------
+	// Ports management
+	// -------------------------------------------------------------------------
 
 	/**
 	 * finds an inbound port of this component from its URI if it is a
@@ -1843,6 +1852,108 @@ implements	ComponentI
 	}
 
 	// -------------------------------------------------------------------------
+	// Accelerated clock management (for tests)
+	// -------------------------------------------------------------------------
+
+
+	/** optional URI of a clock used to synchronise components.				*/
+	protected String			clockURI;
+	/** optional clock used to synchronise components.						*/
+	protected final CompletableFuture<AcceleratedClock>	clock;
+
+	/**
+	 * return true if the accelerated clock has been initialised, otherwise
+	 * false.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return	true if the accelerated clock has been initialised, otherwise false.
+	 */
+	protected boolean		isClockInitialised()
+	{
+		return this.clock.isDone();
+	}
+
+	/**
+	 * return the clock as an {@code AcceleratedClock}.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code isClockInitialised()}
+	 * post	{@code return != null}	// no postcondition.
+	 * </pre>
+	 *
+	 * @return						the clock as an {@code AcceleratedClock}.
+	 * @throws ExecutionException	<i>to do</i>.
+	 * @throws InterruptedException	<i>to do</i>.
+	 */
+	protected AcceleratedClock	getClock()
+	throws	InterruptedException,
+			ExecutionException
+	{
+		assert	isClockInitialised() :
+				new PreconditionException("isClockInitialised()");
+
+		return this.clock.get();
+	}
+
+	/**
+	 * initialise the clock from the clock server.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code !isClockInitialised()}
+	 * pre	{@code clockServerInboundPortURI != null && !clockServerInboundPortURI.isEmpty()}
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
+	 * post	{@code isClockInitialised()}
+	 * post	{@code !getExecutionMode().isSimulationTest() || isClock4Simulation()}
+	 * </pre>
+	 *
+	 * @param clockServerInboundPortURI	URI of the inbound port of the clock server component.
+	 * @param clockURI					URI of the clock to be retrieved from the clock server.
+	 * @throws Exception				<i>to do</i>.
+	 */
+	protected void		initialiseClock(
+		String clockServerInboundPortURI,
+		String clockURI
+		)
+	throws Exception
+	{
+		assert	!isClockInitialised() :
+				new PreconditionException("!isClockInitialised()");
+		assert	clockServerInboundPortURI != null &&
+										!clockServerInboundPortURI.isEmpty() :
+				new PreconditionException(
+						"clockServerInboundPortURI != null && "
+						+ "!clockServerInboundPortURI.isEmpty()");
+		assert	clockURI != null && !clockURI.isEmpty() :
+				new PreconditionException(
+						"clockURI != null && !clockURI.isEmpty()");
+
+		assert	this.clockURI != null : new BCMException("clockURI != null");
+
+		this.addRequiredInterface(ClocksServerCI.class);
+		ClocksServerOutboundPort csop = new ClocksServerOutboundPort(this);
+		csop.publishPort();
+		this.doPortConnection(
+				csop.getPortURI(),
+				clockServerInboundPortURI,
+				ClocksServerConnector.class.getCanonicalName());
+		this.clock.complete(csop.getClock(clockURI));
+		this.doPortDisconnection(csop.getPortURI());
+		csop.unpublishPort();
+		csop.destroyPort();
+		this.removeRequiredInterface(ClocksServerCI.class);
+	}
+
+	// -------------------------------------------------------------------------
 	// Logging and tracing facilities
 	// -------------------------------------------------------------------------
 
@@ -2163,6 +2274,7 @@ implements	ComponentI
 
 		this.state = new AtomicReference<>(ComponentState.INITIALISED);
 		this.composite = new AtomicReference<>(null);
+		this.clock = new CompletableFuture<>();
 
 		try {
 			this.installedPlugins = new AtomicReference<>(null);
