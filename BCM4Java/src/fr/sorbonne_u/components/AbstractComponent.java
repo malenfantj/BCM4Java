@@ -1855,9 +1855,6 @@ implements	ComponentI
 	// Accelerated clock management (for tests)
 	// -------------------------------------------------------------------------
 
-
-	/** optional URI of a clock used to synchronise components.				*/
-	protected String			clockURI;
 	/** optional clock used to synchronise components.						*/
 	protected final CompletableFuture<AcceleratedClock>	clock;
 
@@ -1923,8 +1920,7 @@ implements	ComponentI
 	protected void		initialiseClock(
 		String clockServerInboundPortURI,
 		String clockURI
-		)
-	throws Exception
+		) throws Exception
 	{
 		assert	!isClockInitialised() :
 				new PreconditionException("!isClockInitialised()");
@@ -1936,8 +1932,6 @@ implements	ComponentI
 		assert	clockURI != null && !clockURI.isEmpty() :
 				new PreconditionException(
 						"clockURI != null && !clockURI.isEmpty()");
-
-		assert	this.clockURI != null : new BCMException("clockURI != null");
 
 		this.addRequiredInterface(ClocksServerCI.class);
 		ClocksServerOutboundPort csop = new ClocksServerOutboundPort(this);
