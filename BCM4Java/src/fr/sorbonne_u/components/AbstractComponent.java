@@ -62,6 +62,7 @@ import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.connectors.ConnectorI;
 import fr.sorbonne_u.components.cvm.AbstractCVM;
 import fr.sorbonne_u.components.exceptions.BCMException;
+import fr.sorbonne_u.components.exceptions.BCMRuntimeException;
 import fr.sorbonne_u.components.exceptions.ComponentShutdownException;
 import fr.sorbonne_u.components.exceptions.ComponentStartException;
 import fr.sorbonne_u.components.exceptions.ComponentTaskExecutionException;
@@ -82,6 +83,7 @@ import fr.sorbonne_u.components.ports.PortI;
 import fr.sorbonne_u.components.reflection.interfaces.ReflectionCI;
 import fr.sorbonne_u.components.reflection.utils.ConstructorSignature;
 import fr.sorbonne_u.components.reflection.utils.ServiceSignature;
+import fr.sorbonne_u.components.utils.tests.TestScenario;
 import fr.sorbonne_u.exceptions.ImplementationInvariantException;
 import fr.sorbonne_u.exceptions.InvariantException;
 import fr.sorbonne_u.exceptions.PostconditionException;
@@ -1852,7 +1854,7 @@ implements	ComponentI
 	}
 
 	// -------------------------------------------------------------------------
-	// Accelerated clock management (for tests)
+	// Accelerated clock and test scenarios management
 	// -------------------------------------------------------------------------
 
 	/** optional clock used to synchronise components.						*/
@@ -1945,6 +1947,86 @@ implements	ComponentI
 		csop.unpublishPort();
 		csop.destroyPort();
 		this.removeRequiredInterface(ClocksServerCI.class);
+	}
+
+	/**
+	 * task to be scheduled and executed to perform one step in a component
+	 * test scenario, scheduling the next one of the test scenario for this
+	 * component is not terminated.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code canScheduleTasks()}
+	 * pre	{@code testScenario != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 * 
+	 * @param testScenario	test scenario being executed.
+	 */
+	protected void		testStepTask(TestScenario testScenario)
+	{
+		assert	canScheduleTasks() :
+				new PreconditionException("canScheduleTasks()");
+		assert	testScenario != null :
+				new PreconditionException("testScenario != null");
+
+		testScenario.performNextStep(this.getReflectionInboundPortURI(),
+									 this);
+		testScenario.advanceToNextStep(this.getReflectionInboundPortURI());
+		if (!testScenario.scenarioTerminated(getReflectionInboundPortURI())) {
+			try {
+				long d = testScenario.
+								unixEpochTimeDelayToNextStepInNanos(
+												this.reflectionInboundPortURI,
+												getClock());
+				this.scheduleTask(
+						o -> this.testStepTask(testScenario),
+						d,
+						TimeUnit.NANOSECONDS);
+			} catch (InterruptedException|ExecutionException e) {
+				throw new BCMRuntimeException(e) ;
+			}
+		}
+	}
+
+	/**
+	 * execute the test steps in the test scenario attributed to this component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code testScenario != null}
+	 * pre	{@code testScenario.entityAppearsIn(getReflectionInboundPortURI()}
+	 * pre	{@code canScheduleTasks()}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 * 
+	 * @param testScenario	test scenario being executed.
+	 * @throws Exception 	<i>to do</i>.
+	 */
+	protected void		executeTestScenario(TestScenario testScenario)
+	throws Exception
+	{
+		assert	testScenario != null :
+				new PreconditionException("testScenario != null");
+		assert	testScenario.entityAppearsIn(getReflectionInboundPortURI()) :
+				new BCMException(
+						"testScenario.entityAppearsIn("
+						+ "getReflectionInboundPortURI())");
+		assert	this.canScheduleTasks() :
+				new PreconditionException("canScheduleTasks()");
+
+		this.getClock().waitUntilStart();
+		if (!testScenario.scenarioTerminated(getReflectionInboundPortURI())) {
+			long d =
+				testScenario.unixEpochTimeDelayToNextStepInNanos(
+									getReflectionInboundPortURI(), getClock());
+			this.scheduleTask(
+					o -> this.testStepTask(testScenario),
+					d,
+					TimeUnit.NANOSECONDS);
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -2159,7 +2241,15 @@ implements	ComponentI
 	// -------------------------------------------------------------------------
 
 	/** URI of the (unique) reflection inbound port of the component.		*/
-	protected final String		reflectionInboundPortURI;
+	protected final String	reflectionInboundPortURI;
+
+	/**
+	 * @see fr.sorbonne_u.components.ComponentI#getReflectionInboundPortURI()
+	 */
+	public String		getReflectionInboundPortURI()
+	{
+		return this.reflectionInboundPortURI;
+	}
 
 	/**
 	 * create a passive component if both <code>nbThreads</code> and

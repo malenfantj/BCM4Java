@@ -101,6 +101,20 @@ import java.io.FileNotFoundException;
  */
 public interface		ComponentI
 {
+	/**
+	 * return the URI of the reflection inbound port of the component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null && !return.isEmpty()}
+	 * </pre>
+	 *
+	 * @return	the URI of the reflection inbound port of the component.
+	 */
+	public String		getReflectionInboundPortURI();
+
 	// -------------------------------------------------------------------------
 	// Life-cycle management
 	// -------------------------------------------------------------------------
