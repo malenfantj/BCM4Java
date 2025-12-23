@@ -334,7 +334,7 @@ public abstract class	AssertionChecking
 		if (value != null) {
 			return value;
 		} else {
-			throw exceptionFactory.get();
+			throw new AssertionError(exceptionFactory.get());
 		}
 	}
 
@@ -366,7 +366,7 @@ public abstract class	AssertionChecking
 		if (expression) {
 			return true;
 		} else {
-			throw exceptionFactory.get();
+			throw new AssertionError(exceptionFactory.get());
 		}
 	}
 
@@ -400,7 +400,7 @@ public abstract class	AssertionChecking
 		if (expression) {
 			return value;
 		} else {
-			throw exceptionFactory.get();
+			throw new AssertionError(exceptionFactory.get());
 		}
 	}
 }
