@@ -321,12 +321,11 @@ public abstract class	AssertionChecking
 	 * @param value				value to be asserted non null.
 	 * @param exceptionFactory	supplier of an exception to be thrown if {@code value} is null.
 	 * @return					{@code value} if it is not null.
-	 * @throws VerboseException	a {@code PreconditionException} if {@code exceptionFactory} is {@code null} or an exception provided by {@code exceptionFactory} if {@code value} is null.
 	 */
 	public static <T> T		assertNonNullOrThrow(
 		T value,
 		Supplier<? extends VerboseException> exceptionFactory
-		) throws	VerboseException
+		)
 	{
 		assert	exceptionFactory != null :
 				new PreconditionException("exceptionFactory != null");
@@ -353,12 +352,11 @@ public abstract class	AssertionChecking
 	 * @param expression		expression to be asserted true.
 	 * @param exceptionFactory	supplier of an exception to be thrown if {@code expression} is false.
 	 * @return					true if {@code expression} is.
-	 * @throws VerboseException	a {@code PreconditionException} if {@code exceptionFactory} is {@code null} or an exception provided by {@code exceptionFactory} if {@code expression} is false.
 	 */
 	public static boolean	assertTrueOrThrow(
 		boolean expression,
 		Supplier<? extends VerboseException> exceptionFactory
-		) throws	VerboseException
+		)
 	{
 		assert	exceptionFactory != null :
 				new PreconditionException("exceptionFactory != null");
@@ -386,13 +384,12 @@ public abstract class	AssertionChecking
 	 * @param value				value to be returned if {@code expression} is true.
 	 * @param exceptionFactory	supplier of an exception to be thrown if {@code expression} is false.
 	 * @return					{@code value} if {@code expression} is true.
-	 * @throws VerboseException	a {@code PreconditionException} if {@code exceptionFactory} is {@code null} or an exception provided by {@code exceptionFactory} if {@code value} is null.
 	 */
 	public static <T> T		assertTrueAndReturnOrThrow(
 		boolean expression,
 		T value,
 		Supplier<? extends VerboseException> exceptionFactory
-		) throws	VerboseException
+		)
 	{
 		assert	exceptionFactory != null :
 				new PreconditionException("exceptionFactory != null");
