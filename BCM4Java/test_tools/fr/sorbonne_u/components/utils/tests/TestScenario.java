@@ -492,10 +492,11 @@ implements	Serializable
 	 */
 	public boolean		scenarioTerminated(String uri)
 	{
-		assert	entityAppearsIn(uri) :
-				new PreconditionException("entityAppearsIn(uri)");
-
-		return this.nextSteps.get(uri) >= this.testSteps.length;
+		if (this.entityAppearsIn(uri)) {
+			return this.nextSteps.get(uri) >= this.testSteps.length;
+		} else {
+			return true;
+		}
 	}
 
 	/**
