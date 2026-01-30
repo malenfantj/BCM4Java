@@ -591,7 +591,7 @@ implements	Serializable
 
 		Instant nextInstant =
 			this.testSteps[this.nextSteps.get(uri)].getInstantOfOccurrence();
-		return clock.nanoDelayToAcceleratedInstantFromEpochTime(
+		return clock.nanoDelayToInstantFromEpochTime(
 									System.currentTimeMillis(), nextInstant);
 	}
 

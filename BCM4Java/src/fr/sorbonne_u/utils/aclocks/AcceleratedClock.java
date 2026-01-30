@@ -43,39 +43,71 @@ import fr.sorbonne_u.exceptions.PreconditionException;
 
 // -----------------------------------------------------------------------------
 /**
- * The class <code>AcceleratedClock</code> implements a relative clock working
- * on an accelerated time based on the class {@code Instant} in parallel with
- * a Unix epoch time underlying system clock; its main purpose is to ease the
- * implementation of time-triggered test scenarios, especially for
- * cyber-physical but also for timed test scenarios in general.
+ * The class <code>AcceleratedClock</code> implements a kind of synchronised
+ * multi-clock having two time references: (1) a relative clock working on an
+ * accelerated time based on the standard Java class {@code Instant} in parallel
+ * with (2) the Unix epoch time underlying system clock which are kept in
+ * synchrony (modulo an acceleration factor) after some combined start time in
+ * the two time references serving as the first synchronisation point between
+ * them; its main purpose is to ease the implementation of time-triggered test
+ * scenarios, especially for timed test scenarios in parallel and distributed
+ * systems.
  *
  * <p><strong>Description</strong></p>
  * 
  * <p>
- * The purpose of this class is to provide a clock that keeps track of the
- * time in two different time lines. One time line is given by instants,
- * represented as {@code java.time.Instant}, that is used to express scenarios,
- * especially in test scenarios. The second time line is the Unix epoch time
- * provided by the hardware clock. The goal is that this clock can be shared
- * among several processes to synchronise their actions on the same accelerated
- * time in a time-triggered approach. Moreover, an acceleration factor can be
- * given so that the instant time is keep synchronised with the Unix epoch time
- * modulo the acceleration factor from some start time:
+ * The purpose of this class is to provide a kind of multi-clock that keeps
+ * track of the time in two different time lines that are maintained in
+ * synchrony after a given start time aligned in the two time references. One
+ * time line is given by instants, represented as {@code java.time.Instant},
+ * that can be used to express the time at which actions must be executed,
+ * especially in test scenarios. Contrary to its use in Java, instants in this
+ * time reference are virtual; they are not meant to refer to the actual time
+ * (hence, {@code Instant::now} is meaningless, except to define the start time
+ * of the clock but another instant can be used as a start time. Hence, a test
+ * scenario can use any instant-based period to anchor its actions, only the
+ * relations between instants matters. However, the full power of the classes
+ * {@code Instant} and {@code Duration} can be used to compare instants and
+ * compute delays between instants, for example.
+ * </p>
+ * <p>
+ * The second time line is the Unix epoch time based on the hardware clock and
+ * a standard start time (midnight UTC on 1 January 1970). This time reference
+ * is used to make the multi-clock progress at the rythm of the real time. It
+ * is accessible in Java through standard methods (mainly
+ * {@code System::currentTimeMillis}). It is also the time reference used for
+ * scheduling tasks in Java, tasks that can execute actions in test scenarios.
+ * The relationship between the two time lines can be pictured as follows:
  * </p>
  * <pre>
  *                         start instant              accelerated instant i
- * Accelerated instants -------|------------------------------|--------------
+ * Accelerated instants -------|------------------------------|-------------->
  *                              \             ^              /
  *                               \            |             /
  *                                \      acceleration      /
  *                                 \        factor        /
  *                                  \         |          /
- * Unix epoch time      -------------|------------------|-------------------
+ * Unix epoch time      -------------|------------------|-------------------->
  *                             start time         Unix epoch time of i
  * </pre>
  * <p>
- * With this class, one can plan scenarios in human readable {@code Instant} but
- * can compute delays and time in Unix epoch time corresponding to the instants
+ * The multi-clock uses an acceleration factor (default is 1) between the two
+ * time references, hence the time in the {@code Instant} reference can advance
+ * faster or slower than the time in the Unix epoch time reference (<i>e.g.</i>,
+ * with acceleration factor 60, one second advance in the Unix epoch will mirror
+ * in a one minute advance in the {@code Instant} time reference). This feature
+ * is particularly convenient when "long" scenario in the instant time reference
+ * needs to be run faster or slower. The multi-clock keeps the two time
+ * references synchronised (modulo the acceleration factor) in the sense that,
+ * after the synchornised start time, methods allows to get the instant
+ * corresponding to a Unix epoch time value and <i>vice versa</i>, as well as
+ * a delay between two instants can be converted into a delay in Unix epoch time
+ * to schedule a future task for example.
+ * </p>
+ * <p>
+ * With this class, one can plan scenarios in a more human readable
+ * {@code Instant} time line but can compute delays and time in Unix epoch time
+ * corresponding to the instants
  * in order to schedule tasks on Java thread pools so that they execute in an
  * accelerated real time line.
  * </p>
@@ -94,34 +126,36 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * </p>
  * <ul>
  * <li>{@code currentInstant} takes the current Unix epoch system time given
- *   by {@code System.currentTimeMillis()} and converts it in an instant based
- *   on the start instant and taking into account the acceleration factor.</li>
- * <li>{@code instantOfEpochInNanos} performs the same computation but with a
- *   given a Unix epoch system time in nanoseconds passed as parameter rather
+ *   by {@code System.currentTimeMillis()}, anchors it on the Unix epoch time
+ *   time line (relative to the start instant) and then converts it in an
+ *   instant relatively to the start instant and taking into account the
+ *   acceleration factor.</li>
+ * <li>{@code instantOfEpochTimeInNanos} performs the same computation but with
+ *   a given a Unix epoch system time in nanoseconds passed as parameter rather
  *   than the current system time.</li>
  * </ul>
  * <p>
  * To compute real time delays from instants, there are:
  * </p>
  * <ul>
- * <li>{@code unixEpochTimeInNanosFromInstant} takes an accelerated instant
- *   and return the corresponding Unix epoch time in nanoseconds given the
- *   Unix epoch start time.</li>
- * <li>{@code nanoDelayUntilAcceleratedInstant} takes an accelerated instant
- *   return the delay in nanoseconds from the current system time to the moment
- *   in Unix epoch real time at which some computation must be scheduled on a
- *   thread to execute as if it happens at the provided instant in accelerated
- *   time. For example, assume a clock accelerated 10 times is started at an
- *   instant {@code I} and a Unix epoch system time T. Then, assume that the
- *   program wants to schedule some computation to be executed 10 minutes after
- *   {@code I} in accelerated time. In this situation, the call
- *   {@code nanoDelayUntilAcceleratedInstant(I.plusSeconds(600))} returns
- *   the delay d in real time (and in nanoseconds) to be used immediately in
- *   order to schedule the computation so that it will execute at
- *   {@code I.plusSeconds(600)} in accelerated time.</li>
- * <li>{@code nanoDelayToAcceleratedInstantFromEpochTime} performs the same
- *   computation but to give a delay from a given system epoch time in
- *   milliseconds rather than from the current system time.</li>
+ * <li>{@code unixEpochTimeInNanosFromInstant} takes an instant and return the
+ *   corresponding Unix epoch time in nanoseconds given the Unix epoch start
+ *   time and the acceleration factor.</li>
+ * <li>{@code nanoDelayUntilInstant} takes an instant return the delay in
+ *   nanoseconds from the current system time to the moment in Unix epoch real
+ *   time at which some computation must be scheduled on a thread to execute as
+ *   if it happens at the provided instant. For example, assume a clock
+ *   accelerated 10 times is started at an instant {@code I} and a Unix epoch
+ *   system time T. Then, assume that the program wants to schedule some
+ *   computation to be executed 10 minutes after {@code I} in accelerated time.
+ *   In this situation, the call
+ *   {@code nanoDelayUntilInstant(I.plusSeconds(600))} returns the delay d in
+ *   real time (and in nanoseconds) to be used immediately to schedule the
+ *   computation so that it will execute at {@code I.plusSeconds(600)} in
+ *   accelerated instant time reference.</li>
+ * <li>{@code nanoDelayToInstantFromEpochTime} performs the same computation but
+ *   to get a delay from a given system epoch time in milliseconds rather than
+ *   from the current system time.</li>
  * </ul>
  * <p>
  * The computations of the delays are correct only after the start time has been
@@ -148,16 +182,16 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * 
  * <p>
  * On standard (non real time) Unix systems, hardware clocks are in practice
- * precise to the milliseconds and even to the tens of milliseconds. Therefore,
- * care must be taken not to plan scenarios where the delays between scheduled
- * actions are less than these values. And indeed, this is even more important
- * when large acceleration factors are used as the acceleration factor equally
- * applies to the precision (for example, on my Mac, the precision is usually
- * around a few milliseconds; with an acceleration factor of 10, the useful
- * precision (shortest accurate delays between scheduled actions before
- * acceleration) is more a few tens of milliseconds, and with an acceleration
- * factor 100, the precision is no more than a few hundreds of milliseconds,
- * hence a few tenth of a second.
+ * precise to the milliseconds at best and more likely to the tens of
+ * milliseconds. Therefore, care must be taken not to plan scenarios where the
+ * delays between scheduled actions are less than these values. And indeed, this
+ * is even more important when large acceleration factors are used as the
+ * acceleration factor equally applies to the precision (for example, on my Mac,
+ * the precision is usually around a few milliseconds; with an acceleration
+ * factor of 10, the useful precision (shortest accurate delays between instants
+ * scheduled actions before acceleration) is more a few tens of milliseconds,
+ * and with an acceleration factor 100, the precision is no more than a few
+ * hundreds of milliseconds, hence a few seconds.
  * </p>
  * <p>
  * The {@code Instant} class offers quite flexible ways to compute instants from
@@ -171,12 +205,12 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  *                                      System.currentTimeMillis() + 5000L),
  *                          Instant.parse("2022-11-07T06:00:00.000Z"),
  *                          1.0);
- *          ac.waitUntilStart();
- *          Instant observed = ac.currentInstant();
- *          Instant nextAction = observed.plusSeconds(5);
- *          long delay = ac.nanoDelayUntilInstant(nextAction);
- *          Thread.sleep(TimeUnit.NANOSECONDS.toMillis(delay));
- *          // perform some action
+ * ac.waitUntilStart();
+ * Instant observed = ac.currentInstant();
+ * Instant nextAction = observed.plusSeconds(5);
+ * long delay = ac.nanoDelayUntilInstant(nextAction);
+ * Thread.sleep(TimeUnit.NANOSECONDS.toMillis(delay));
+ * // perform some action
  * </pre>
  * <p>
  * This kind of scenarios tends to drift as the imprecision of the hardware
@@ -196,8 +230,18 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  *   instants that are created from a string like
  *   {@code Instant.parse("2022-11-07T06:00:00.000Z")}. With absolute instants,
  *   the computation of delays tends to absorb the drift along the scenario
- *   execution, hence leaving less imprecision over whole executions.
+ *   execution, hence showing less imprecision over whole executions.
  * </ol>
+ * <p>
+ * Though assertions in the code express that the drift should not impact the
+ * instants to the extend that a later instant can lead to a Unix time in the
+ * past at any time, the actual computation test the values and correct negative
+ * delays to 0 when necessary, emitting warnings when it occurs. If the negative
+ * delays remain small in absolute value, the correction to 0 should not have
+ * significant impacts on test scenarios outcomes. If the negative delays become
+ * large in absolute value, then it is preferable to lower the acceleration
+ * factor.
+ * </p>
  * 
  * <p><strong>Implementation Invariants</strong></p>
  * 
@@ -212,9 +256,6 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * <p><strong>Invariants</strong></p>
  * 
  * <pre>
- * invariant	{@code getAccelerationFactor() > 0.0}
- * invariant	{@code getStartEpochNanos() > 0}
- * invariant	{@code getStartInstant() != null}
  * invariant	{@code getEndInstant() != null && getEndInstant().isAfter(getStartInstant())}
  * </pre>
  * 
@@ -980,17 +1021,17 @@ implements	Serializable
 
 	/**
 	 * compute real time delay from now to the real time at which to schedule
-	 * immediately the execution given an accelerated {@code Instant} at which
-	 * the execution must occur. For example, if C is the current time
-	 * (from {@code System.currentTimeMillis()}) and I the accelerated
-	 * {@code Instant}, I is first converted into a real Unix epoch time R using
-	 * the stored start {@code Instant} and the Unix epoch time start time,
+	 * immediately the execution given an {@code Instant} at which the execution
+	 * must occur. For example, if C is the current time (from
+	 * {@code System.currentTimeMillis()}) and I the {@code Instant}, I is first
+	 * converted into a real Unix epoch time R using the stored start
+	 * {@code Instant}, the Unix epoch time start time and the accelarion factor,
 	 * which give the result as R - C.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code acceleratedInstant != null && acceleratedInstant.isAfter(currentInstant())}
+	 * pre	{@code i != null && (i.equals(currentInstant) || i.isAfter(currentInstant))}
 	 * post	{@code return >= 0}
 	 * </pre>
 	 *
@@ -1001,16 +1042,16 @@ implements	Serializable
 	 * </p>
 	 * 
 	 * @param i	accelerated {@code Instant} at which to the execution must occur.
-	 * @return						real time delay from now to the real time at which to schedule immediately the execution.
+	 * @return	real time delay from now to the real time at which to schedule immediately the execution.
 	 */
 	public long			nanoDelayUntilInstant(Instant i)
 	{
 		Instant currentInstant = currentInstant();
-		if (!(i != null && i.isAfter(currentInstant))) {
+		if (!(i != null && (i.equals(currentInstant) || i.isAfter(currentInstant)))) {
 			System.err.println(
 					"Warning: AcceleratedClock::nanoDelayUntilInstant:"
 					+ " instant " + i + " is null or *not* after "
-					+ currentInstant() + "!");
+					+ currentInstant + "!");
 		}
 
 		long acceleratedElapsedInNanos =
@@ -1026,10 +1067,12 @@ implements	Serializable
 		long delayInNanos = forseenInNanos - currentInNanos;
 
 		if (delayInNanos < 0) {
-			delayInNanos = 0;
 			System.err.println(
-					"Warning: AcceleratedClock::nanoDelayUntilInstant "
-					+ "negative delay until instant, corrected to 0.");
+					"Warning: AcceleratedClock::nanoDelayUntilInstant: "
+					+ "negative delay " + delayInNanos + " "
+					+ TimeUnit.NANOSECONDS + "  until instant " + i + " from "
+					+ currentInstant + ", corrected to 0.");
+			delayInNanos = 0;
 		}
 
 		if (VERBOSE) {
@@ -1064,17 +1107,17 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis) >= getStartEpochNanos()}
-	 * pre	{@code acceleratedInstant != null && acceleratedInstant.isAfter(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis))}
+	 * pre	{@code i != null && i.isAfter(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis))}
 	 * post	{@code return > 0}
 	 * </pre>
 	 *
 	 * @param baseEpochTimeInMillis	base time from which the delay is computed as Unix epoch time in milliseconds.
-	 * @param acceleratedInstant	accelerated {@code Instant} at which to the execution must occur.
+	 * @param i						accelerated {@code Instant} at which to the execution must occur.
 	 * @return						real time delay from now to the real time at which to schedule immediately the execution.
 	 */
-	public long			nanoDelayToAcceleratedInstantFromEpochTime(
+	public long			nanoDelayToInstantFromEpochTime(
 		long baseEpochTimeInMillis,
-		Instant acceleratedInstant
+		Instant i
 		)
 	{
 		long baseEpochTimeInNanos =
@@ -1085,25 +1128,32 @@ implements	Serializable
 				new PreconditionException(
 					"TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)"
 					+ " >= getStartEpochNanos()");
-		assert	acceleratedInstant != null &&
-					acceleratedInstant.isAfter(
+		assert	i != null &&
+					i.isAfter(
 							instantOfEpochTimeInNanos(baseEpochTimeInNanos)) :
 				new PreconditionException(
-							"acceleratedInstant != null && "
-							+ "acceleratedInstant.isAfter("
-							+ "instantOfEpochInNanos("
+							"i != null && i.isAfter(instantOfEpochInNanos("
 							+ "TimeUnit.MILLISECONDS.toNanos("
 							+ "baseEpochTimeInMillis)))");
 
 		long elapsedInNanos =
 				TimeUnit.MILLISECONDS.toNanos(
-						acceleratedInstant.toEpochMilli()
+						i.toEpochMilli()
 									- this.getStartInstant().toEpochMilli());
 		long unixEpochElapsedInNanos =
 				(long) (elapsedInNanos/this.accelerationFactor);
 		long forseenInNanos =
 				this.getStartEpochNanos() + unixEpochElapsedInNanos;
 		long delayInNanos = forseenInNanos - baseEpochTimeInNanos;
+
+		if (delayInNanos < 0) {
+			System.err.println(
+					"Warning: AcceleratedClock::nanoDelayToInstantFromEpochTime: "
+					+ "negative delay " + delayInNanos + " "
+					+ TimeUnit.NANOSECONDS + "  until instant " + i + " from "
+					+ baseEpochTimeInMillis + ", corrected to 0.");
+			delayInNanos = 0;
+		}
 
 		if (VERBOSE) {
 			System.out.println(
