@@ -81,13 +81,13 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * </p>
  * <pre>
  *                         start instant              accelerated instant i
- * Accelerated instants -------|------------------------------|-------------->
+ * Accelerated instants -------|------------------------------|--------------
  *                              \             ^              /
  *                               \            |             /
  *                                \      acceleration      /
  *                                 \        factor        /
  *                                  \         |          /
- * Unix epoch time      -------------|------------------|-------------------->
+ * Unix epoch time      -------------|------------------|--------------------
  *                             start time         Unix epoch time of i
  * </pre>
  * <p>

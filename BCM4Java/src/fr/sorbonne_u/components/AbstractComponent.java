@@ -4709,10 +4709,15 @@ implements	ComponentI
 		 */
 		protected void	runTaskLambda(FComponentTask t)
 		{
-			assert	t != null :
-					new PreconditionException("trying to run a null task!");
+			try {
+				assert	t != null :
+						new PreconditionException("trying to run a null task!");
 
-			t.run(this.getTaskOwner());
+				t.run(this.getTaskOwner());
+			} catch(Throwable e) {
+				System.err.println("AbstractTask::runTaskLambda raised " + e);
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -4748,16 +4753,16 @@ implements	ComponentI
 				CVMDebugModes.CALLING,
 				new StringBuffer(
 						"running a task on the executor service of index ").
-						append(executorServiceIndex).
-						append(executorServiceIndex >= 0 ?
-									new StringBuffer(" (URI ").
-										append(this.executorServices.get()[
+					append(executorServiceIndex).
+					append(executorServiceIndex >= 0 ?
+							new StringBuffer(" (URI ").
+								append(this.executorServices.get()[
 						                       executorServiceIndex].getURI()).
-										append(")").toString()
-								: "").
-						append(" of the component ").
-						append(this.reflectionInboundPortURI).
-						append(".").toString());
+								append(")").toString()
+							: "").
+					append(" of the component ").
+					append(this.reflectionInboundPortURI).
+					append(".").toString());
 		}
 
 		t.setOwnerReference(this);
