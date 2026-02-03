@@ -180,7 +180,7 @@ public class			AbstractComponentHelper
 							+ " must never implement a component interface!"));
 		}
 		// Component classes can only have protected constructors
-		ret &= protectedConstructorsOnly(cl);
+		ret &= protectedOrPrivateConstructorsOnly(cl);
 		if (!ret) {
 			throw new RuntimeException(
 					new BCMException(
@@ -192,7 +192,7 @@ public class			AbstractComponentHelper
 
 	/**
 	 * return true if the class and all of its superclasses up to
-	 * <code>AbstractComponent</code> have protected constructors
+	 * <code>AbstractComponent</code> have protected or private constructors
 	 * only.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -203,9 +203,9 @@ public class			AbstractComponentHelper
 	 * </pre>
 	 *
 	 * @param cl	a class that represents a component to be checked.
-	 * @return		true if the class and all of its superclasses have protected constructors only.
+	 * @return		true if the class and all of its superclasses have protected or private constructors only.
 	 */
-	public static boolean	protectedConstructorsOnly(Class<?> cl)
+	public static boolean	protectedOrPrivateConstructorsOnly(Class<?> cl)
 	{
 		assert	cl != null :
 					new PreconditionException("cl != null");
@@ -214,7 +214,8 @@ public class			AbstractComponentHelper
 		while (!cl.equals(Object.class) && ret) {
 			Constructor<?>[] cons = cl.getDeclaredConstructors() ;
 			for(int i = 0 ; i < cons.length && ret ; i++) {
-				ret = Modifier.isProtected(cons[i].getModifiers()) ;
+				ret = Modifier.isProtected(cons[i].getModifiers()) 
+						|| Modifier.isPrivate(cons[i].getModifiers());
 			}
 			cl = cl.getSuperclass() ;
 		}
