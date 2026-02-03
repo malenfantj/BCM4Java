@@ -42,6 +42,7 @@ import fr.sorbonne_u.components.AbstractComponent;
 import fr.sorbonne_u.components.exceptions.BCMException;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -81,6 +82,7 @@ import java.util.Set;
  * 
  * <pre>
  * invariant	{@code testSteps != null && testSteps.length > 0}
+ * invariant	{@code ordered(testSteps)}
  * invariant	{@code participantsURIs != null && participantsURIs.size() > 0}
  * invariant	{@code startInstant != null}
  * invariant	{@code endInstant != null}
@@ -157,6 +159,14 @@ implements	Serializable
 		assert instance != null : new PreconditionException("instance != null");
 
 		boolean ret = true;
+		ret &= AssertionChecking.checkImplementationInvariant(
+				instance.testSteps != null && instance.testSteps.length > 0,
+				TestScenario.class, instance,
+				"testSteps != null && testSteps.length > 0");
+		ret &= AssertionChecking.checkImplementationInvariant(
+				ordered(instance.testSteps),
+				TestScenario.class, instance,
+				"ordered(testSteps)");
 		ret &= AssertionChecking.checkImplementationInvariant(
 				instance.participantsURIs != null &&
 										instance.participantsURIs.size() > 0,
@@ -252,16 +262,15 @@ implements	Serializable
 	 * pre	{@code endInstant != null}
 	 * pre	{@code startInstant.isBefore(endInstant)}
 	 * pre	{@code testSteps != null && testSteps.length > 0}
-	 * pre	{@code ordered(testSteps)}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param beginingMessage					message to be output on sysout at the beginning of the scenario.
-	 * @param endingMessage						message to be output on sysout at the end of the scenario.
-	 * @param clockURI							URI of the clock providing the time reference for this scenario.
-	 * @param startInstant						start instant of the simulation run.
-	 * @param endInstant						end instant of the simulation run.
-	 * @param testSteps							test steps in the scenario.
+	 * @param beginingMessage	message to be output on sysout at the beginning of the scenario.
+	 * @param endingMessage		message to be output on sysout at the end of the scenario.
+	 * @param clockURI			URI of the clock providing the time reference for this scenario.
+	 * @param startInstant		start instant of the simulation run.
+	 * @param endInstant		end instant of the simulation run.
+	 * @param testSteps			test steps in the scenario.
 	 */
 	public				TestScenario(
 		String beginingMessage,
@@ -285,8 +294,6 @@ implements	Serializable
 		assert	clockURI != null && !clockURI.isEmpty() :
 				new PreconditionException(
 						"clockURI != null && !clockURI.isEmpty()");
-		assert	ordered(testSteps) :
-				new PreconditionException("ordered(simulationTestSteps)");
 
 		this.clockURI = clockURI;
 		this.beginningMessage = beginingMessage;
@@ -294,6 +301,15 @@ implements	Serializable
 		this.startInstant = startInstant;
 		this.endInstant = endInstant;
 		this.testSteps = testSteps;
+		Arrays.sort(this.testSteps,
+				(t1, t2) ->
+					((TestStepI)t1).getInstantOfOccurrence().isBefore(
+									((TestStepI)t1).getInstantOfOccurrence()) ?
+						-1
+					:	((TestStepI)t1).getInstantOfOccurrence().equals(
+									((TestStepI)t1).getInstantOfOccurrence()) ?
+							0
+						:	1);
 
 		this.participantsURIs = new HashSet<>();
 		this.nextSteps = new HashMap<>();
