@@ -37,7 +37,6 @@ import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-
 import fr.sorbonne_u.exceptions.PostconditionException;
 import fr.sorbonne_u.exceptions.PreconditionException;
 
@@ -807,11 +806,18 @@ implements	Serializable
 	 */
 	public long			waitingDelayUntilStartInMillis()
 	{
+		// use a local variable to avoid two calls to System.currentTimeMillis()
+		// hence avoiding a change in the condition between the precondition
+		// check and the actual computation but incurring a loss of precision
 		long current = System.currentTimeMillis();
 		assert	startTimeNotReached(current) :
 				new PreconditionException("startTimeNotReached(current)");
 
-		return TimeUnit.NANOSECONDS.toMillis(
+		// as toMillis from nanoseconds to milliseconds is likely to truncate
+		// add one miliseconds to the result to make sure that the waiting time
+		// will be large enough to make sure that the start time is clearly
+		// reached
+		return 1 + TimeUnit.NANOSECONDS.toMillis(
 							this.unixEpochStartTimeInNanos
 									- TimeUnit.MILLISECONDS.toNanos(current));
 	}
@@ -832,14 +838,22 @@ implements	Serializable
 	 */
 	public long			waitingDelayUntilEndInMillis()
 	{
+		// use a local variable to avoid two calls to System.currentTimeMillis()
+		// hence avoiding a change in the condition between the precondition
+		// check and the actual computation but incurring a loss of precision
 		long current = System.currentTimeMillis();
 		assert	getEndInstant() != null :
 				new PreconditionException("getEndInstant() != null");
 		assert	endTimeNotReached(current) :
 				new PreconditionException("endTimeNotReached()");
 
-		return TimeUnit.NANOSECONDS.toMillis(this.unixEpochEndTimeInNanos)
-																	- current;
+		// as toMillis from nanoseconds to milliseconds is likely to truncate
+		// add one milliseconds to the result to make sure that the waiting time
+		// will be large enough to make sure that the start time is clearly
+		// reached
+		return 1 + TimeUnit.NANOSECONDS.toMillis(
+							this.unixEpochEndTimeInNanos
+									- TimeUnit.MILLISECONDS.toNanos(current));
 	}
 
 	/**
@@ -857,19 +871,26 @@ implements	Serializable
 	 */
 	public void			waitUntilStart() throws InterruptedException
 	{
+		// use a local variable to avoid two calls to System.currentTimeMillis()
+		// hence avoiding a change in the condition between the precondition
+		// check and the actual computation but incurring a loss of precision
 		long current = System.currentTimeMillis();
 		assert	startTimeNotReached(current) :
 				new PreconditionException("startTimeNotReached()");
 
-		long delay = TimeUnit.NANOSECONDS.toMillis(
+		// as toMillis from nanoseconds to milliseconds is likely to truncate
+		// add one miliseconds to the result to make sure that the waiting time
+		// will be large enough to make sure that the start time is clearly
+		// reached
+		long delay = 1 + TimeUnit.NANOSECONDS.toMillis(
 							this.unixEpochStartTimeInNanos
 									- TimeUnit.MILLISECONDS.toNanos(current));
-		if (delay > 0) {
+		if (delay >= 0) {
 			Thread.sleep(delay);
 		} else {
 			System.err.println(
 					"Warning: AcceleratedClock#waitUntilStart " +
-					" negative delay until start, no waiting.");
+					" negative delay " + delay + " until start, no waiting.");
 		}
 	}
 
@@ -891,19 +912,26 @@ implements	Serializable
 	{
 		assert	getEndInstant() != null :
 				new PreconditionException("getEndInstant() != null");
+		// use a local variable to avoid two calls to System.currentTimeMillis()
+		// hence avoiding a change in the condition between the precondition
+		// check and the actual computation but incurring a loss of precision
 		long current = System.currentTimeMillis();
 		assert	endTimeNotReached(current) :
 				new PreconditionException("endTimeNotReached()");
 
-		long endTimeInMillis =
-				TimeUnit.NANOSECONDS.toMillis(this.unixEpochEndTimeInNanos);
-		if (current <= endTimeInMillis) {
-			long delay = endTimeInMillis - current;
+		// as toMillis from nanoseconds to milliseconds is likely to truncate
+		// add one miliseconds to the result to make sure that the waiting time
+		// will be large enough to make sure that the start time is clearly
+		// reached
+		long delay = 1 + TimeUnit.NANOSECONDS.toMillis(
+							this.unixEpochEndTimeInNanos
+									- TimeUnit.MILLISECONDS.toNanos(current));
+		if (delay >= 0) {
 			Thread.sleep(delay);
 		} else {
 			System.err.println(
 					"AcceleratedClock#waitUntilStart " +
-					" negative delay until end, no waiting.");
+					" negative delay " + delay + " until end, no waiting.");
 		}
 	}
 
@@ -923,6 +951,9 @@ implements	Serializable
 	 */
 	public Instant		currentInstant()
 	{
+		// use a local variable to avoid two calls to System.currentTimeMillis()
+		// hence avoiding a change in the condition between the precondition
+		// check and the actual computation but incurring a loss of precision
 		long current = System.currentTimeMillis();
 		assert	!startTimeNotReached(current) :
 				new PreconditionException("!startTimeNotReached(current)");
@@ -931,8 +962,8 @@ implements	Serializable
 		long elapsedInNanos = currentInNanos - this.getStartEpochNanos();
 		long acceleratedElapsedInNanos =
 				(long) (elapsedInNanos * this.getAccelerationFactor());
-		Duration d = Duration.ofNanos(acceleratedElapsedInNanos);
-		Instant ret = this.getStartInstant().plus(d);
+		Instant ret =
+				this.getStartInstant().plusNanos(acceleratedElapsedInNanos);
 
 		if (VERBOSE) {
 			System.out.println(
@@ -975,8 +1006,8 @@ implements	Serializable
 		long elapsedInNanos = epochTimeInNanos - this.getStartEpochNanos();
 		long acceleratedElapsedInNanos =
 				(long) (elapsedInNanos * this.accelerationFactor);
-		Duration d = Duration.ofNanos(acceleratedElapsedInNanos);
-		Instant ret = this.getStartInstant().plus(d);
+		Instant ret =
+				this.getStartInstant().plusNanos(acceleratedElapsedInNanos);
 
 		assert	ret != null : new PostconditionException("return != null");
 		assert	ret.equals(getStartInstant()) || ret.isAfter(getStartInstant()) :
@@ -1006,12 +1037,10 @@ implements	Serializable
 		assert	i.isAfter(getStartInstant()) :
 				new PreconditionException("i.isAfter(getStartInstant())");
 
+		Duration d = Duration.between(this.getStartInstant(), i);
 		long acceleratedElapsedInNanos =
-				TimeUnit.MILLISECONDS.toNanos(
-					i.toEpochMilli() - this.getStartInstant().toEpochMilli());
-		long elapsedInNanos =
-				(long) (acceleratedElapsedInNanos/this.accelerationFactor);
-		long ret = this.unixEpochStartTimeInNanos + elapsedInNanos;
+				(long) (d.toNanos()/this.accelerationFactor);
+		long ret = this.getStartEpochNanos() + acceleratedElapsedInNanos;
 		
 		assert	ret >= this.getStartEpochNanos() :
 				new PostconditionException("return >= getStartEpochNanos()");
@@ -1031,14 +1060,15 @@ implements	Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code i != null && (i.equals(currentInstant) || i.isAfter(currentInstant))}
+	 * pre	{@code i != null}
+	 * pre	{@code i.equals(currentInstant) || i.isAfter(currentInstant)}
 	 * post	{@code return >= 0}
 	 * </pre>
 	 *
 	 * <p>
-	 * Note that the precondition is converted from assertion to warning to let
-	 * the execution continue even though a negative delay would occur, which is
-	 * corrected to 0.
+	 * Note that the second precondition is converted from assertion to warning
+	 * to let the execution continue even though a negative delay would occur,
+	 * which is corrected to 0.
 	 * </p>
 	 * 
 	 * @param i	accelerated {@code Instant} at which to the execution must occur.
@@ -1046,52 +1076,47 @@ implements	Serializable
 	 */
 	public long			nanoDelayUntilInstant(Instant i)
 	{
+		assert	i != null : new PreconditionException("i != null");
 		Instant currentInstant = currentInstant();
-		if (!(i != null && (i.equals(currentInstant) || i.isAfter(currentInstant)))) {
+		if (!(i.equals(currentInstant) || i.isAfter(currentInstant))) {
 			System.err.println(
 					"Warning: AcceleratedClock::nanoDelayUntilInstant:"
-					+ " instant " + i + " is null or *not* after "
+					+ " instant " + i + " is *not* equal or after "
 					+ currentInstant + "!");
 		}
 
-		long acceleratedElapsedInNanos =
-				TimeUnit.MILLISECONDS.toNanos(
-					i.toEpochMilli() - this.getStartInstant().toEpochMilli());
+		long fromStartToInstantInNanos =
+				Duration.between(this.getStartInstant(), i).toNanos();
+		long fromStartToCurrentInNanos =
+				(long) ((TimeUnit.MILLISECONDS.toNanos(
+											System.currentTimeMillis())
+									- this.getStartEpochNanos())
+							* this.accelerationFactor);
+		long delayInNanos =
+				fromStartToInstantInNanos - fromStartToCurrentInNanos;
+		long unixEpochDelayInNanos =
+				(long) (delayInNanos/this.accelerationFactor);
 
-		long unixEpochElapsedInNanos =
-				(long) (acceleratedElapsedInNanos/this.accelerationFactor);
-		long forseenInNanos =
-				this.unixEpochStartTimeInNanos + unixEpochElapsedInNanos;
-		long currentInNanos =
-				TimeUnit.MILLISECONDS.toNanos(System.currentTimeMillis());
-		long delayInNanos = forseenInNanos - currentInNanos;
-
-		if (delayInNanos < 0) {
+		if (unixEpochDelayInNanos < 0) {
 			System.err.println(
 					"Warning: AcceleratedClock::nanoDelayUntilInstant: "
-					+ "negative delay " + delayInNanos + " "
+					+ "negative delay " + unixEpochDelayInNanos + " "
 					+ TimeUnit.NANOSECONDS + "  until instant " + i + " from "
 					+ currentInstant + ", corrected to 0.");
-			delayInNanos = 0;
+			unixEpochDelayInNanos = 0;
 		}
 
 		if (VERBOSE) {
 			System.out.println(
-					"AcceleratedClock#nanoDelayUntilAcceleratedInstant "
-					+ i + " at " + currentInNanos + " returns " + delayInNanos);
-			System.out.println(
-					"AcceleratedClock#nanoDelayUntilAcceleratedInstant 1 "
-					+ acceleratedElapsedInNanos + " ++ " 
-					+ unixEpochElapsedInNanos);
-			System.out.println(
-					"AcceleratedClock#nanoDelayUntilAcceleratedInstant 2 "
-					+ this.unixEpochStartTimeInNanos + " ++ "
-								+ currentInNanos + " -- " + forseenInNanos);
+					"AcceleratedClock::nanoDelayUntilAcceleratedInstant "
+					+ i + " at " + currentInstant + " returns "
+					+ unixEpochDelayInNanos);
 		}
 
-		assert	delayInNanos >= 0 : new PostconditionException("return >= 0");
+		assert	unixEpochDelayInNanos >= 0 :
+				new PostconditionException("return >= 0");
 
-		return delayInNanos;
+		return unixEpochDelayInNanos;
 	}
 
 	/**
@@ -1107,11 +1132,12 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis) >= getStartEpochNanos()}
-	 * pre	{@code i != null && i.isAfter(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis))}
+	 * pre	{@code i != null}
+	 * pre	{@code i.equals(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis))) || i.isAfter(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)))}
 	 * post	{@code return > 0}
 	 * </pre>
 	 *
-	 * @param baseEpochTimeInMillis	base time from which the delay is computed as Unix epoch time in milliseconds.
+	 * @param baseEpochTimeInMillis	base time from which the delay is computed, as Unix epoch time in milliseconds.
 	 * @param i						accelerated {@code Instant} at which to the execution must occur.
 	 * @return						real time delay from now to the real time at which to schedule immediately the execution.
 	 */
@@ -1121,30 +1147,26 @@ implements	Serializable
 		)
 	{
 		long baseEpochTimeInNanos =
-				TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis);
-
-		assert	TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis) >=
-														getStartEpochNanos() :
+						TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis);
+		assert	baseEpochTimeInNanos >= getStartEpochNanos() :
 				new PreconditionException(
 					"TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)"
 					+ " >= getStartEpochNanos()");
-		assert	i != null &&
-					i.isAfter(
-							instantOfEpochTimeInNanos(baseEpochTimeInNanos)) :
-				new PreconditionException(
-							"i != null && i.isAfter(instantOfEpochInNanos("
-							+ "TimeUnit.MILLISECONDS.toNanos("
-							+ "baseEpochTimeInMillis)))");
+		assert	i != null : new PreconditionException("i != null");
+		if (i.equals(instantOfEpochTimeInNanos(
+						TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)))
+				|| i.isAfter(instantOfEpochTimeInNanos(
+						TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)))) {
+			System.err.println(
+				"Warning: AcceleratedClock::nanoDelayToInstantFromEpochTime "
+				+ "instant " + i + " is before the current instant.");
+		}
 
-		long elapsedInNanos =
-				TimeUnit.MILLISECONDS.toNanos(
-						i.toEpochMilli()
-									- this.getStartInstant().toEpochMilli());
-		long unixEpochElapsedInNanos =
-				(long) (elapsedInNanos/this.accelerationFactor);
-		long forseenInNanos =
-				this.getStartEpochNanos() + unixEpochElapsedInNanos;
-		long delayInNanos = forseenInNanos - baseEpochTimeInNanos;
+		long fromStartToInstantInNanos =
+				Duration.between(getStartInstant(), i).toNanos();
+		long unixEpochFromStartInNanos =
+				(long) (fromStartToInstantInNanos/this.accelerationFactor);
+		long delayInNanos = unixEpochFromStartInNanos - baseEpochTimeInNanos;
 
 		if (delayInNanos < 0) {
 			System.err.println(
@@ -1160,10 +1182,10 @@ implements	Serializable
 				"AcceleratedClock#nanoDelayToAcceleratedInstantFromEpochTime "
 				+ this.unixEpochStartTimeInNanos + " ++ "
 				+ TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)
-				+ " -- " + forseenInNanos);
+				+ " -- " + delayInNanos);
 		}
 
-		assert	delayInNanos > 0 : new PostconditionException("return > 0");
+		assert	delayInNanos >= 0 : new PostconditionException("return >= 0");
 
 		return delayInNanos;
 	}
@@ -1186,6 +1208,44 @@ implements	Serializable
 	 */
 	public static void	main(String[] args)
 	{
+		// small test of the Instant and Duration accuracy
+//		long inMillis = System.currentTimeMillis();
+//		Instant ii_1 = Instant.ofEpochMilli(inMillis);
+//		Instant ii_1_bis = ii_1;
+//		Instant ii_1_ter = Instant.ofEpochMilli(inMillis);
+//		long deltaInNanos = 257L;
+//		Instant ii_2 = ii_1.plusNanos(2000000 + deltaInNanos);
+//		long afterInMillis = ii_2.toEpochMilli();
+//		long delta = ii_2.getNano();
+//		Duration dd_1 = Duration.between(ii_1, ii_2);
+//		Duration dd_1_1 = dd_1;
+//		Duration dd_1_2 = Duration.between(ii_1, ii_2);
+//		Duration dd_1_3 = Duration.between(ii_1, ii_2).plusNanos(deltaInNanos);
+//		Duration dd_1_4 = Duration.between(ii_1, ii_2).plusNanos(2000000 + deltaInNanos);
+//		System.out.println("This should be true (obvious): " + ii_1.equals(ii_1_bis));
+//		System.out.println("This should be true (deep equal): " + ii_1.equals(ii_1_ter));
+//		System.out.println("This should be false (precise to the nanoseconds): " + ii_1.equals(ii_2));
+//		System.out.println("This should be true (obvious): " + dd_1.equals(dd_1_1));
+//		System.out.println("This should be true (deep equal): " + dd_1.equals(dd_1_2));
+//		System.out.println("This should be false (precise to the nanoseconds): " + dd_1.equals(dd_1_3));
+//		System.out.println("The two next long values should differs by 2 milliseconds:");
+//		System.out.println(inMillis);
+//		System.out.println(afterInMillis);
+//		System.out.println("This is the nano part of " + (inMillis*1000000 + 2000000 + deltaInNanos) + ": " + delta);
+//		System.out.println("This is equal to " + (2000000 + deltaInNanos) + ": " + dd_1.toNanos());
+//		System.out.println("This is also equal to " + (2000000 + deltaInNanos) + ": " + dd_1_4.minus(dd_1).getNano());
+//
+//		long baseInNanos = 5456L;
+//		Instant ii_10 = ii_1.plusNanos(baseInNanos);
+//		Instant ii_11 = ii_10.plusNanos(deltaInNanos);
+//		Duration dd_10 = Duration.between(ii_10, ii_11);
+//		System.out.println(ii_10.toEpochMilli());
+//		System.out.println(ii_11.toEpochMilli());
+//		System.out.println(dd_10.toNanos());
+//		Instant ii_12 = ii_10.plusNanos(2000000 + deltaInNanos);
+//		Duration dd_11 = Duration.between(ii_10, ii_12);
+//		System.out.println(dd_11.toNanos());
+
 		try {
 			long startTimeInMillis;
 			Instant start = Instant.parse("2022-11-07T06:00:00.000Z");
@@ -1329,7 +1389,10 @@ implements	Serializable
 			// printing is done at the end to avoid perturbing the timing too
 			// much, yet small discrepancies are expected
 			System.out.println(logs.toString());
-			System.out.println("Waiting until the end.");
+			delayToEndInMillis = clock.waitingDelayUntilEndInMillis();
+			System.out.println(
+					"Waiting until the end in " + delayToEndInMillis + " "
+					+ TimeUnit.MILLISECONDS);
 			clock.waitUntilEnd();
 			System.out.println("The end of second at " + System.currentTimeMillis() + ".");
 
@@ -1394,7 +1457,10 @@ implements	Serializable
 			// printing is done at the end to avoid perturbing the timing too
 			// much, yet small discrepancies are expected
 			System.out.println(logs.toString());
-			System.out.println("Waiting until the end.");
+			delayToEndInMillis = clock.waitingDelayUntilEndInMillis();
+			System.out.println(
+					"Waiting until the end in " + delayToEndInMillis + " "
+					+ TimeUnit.MILLISECONDS);
 			clock.waitUntilEnd();
 			System.out.println("The end of third at " + System.currentTimeMillis() + ".");
 
@@ -1459,7 +1525,10 @@ implements	Serializable
 				// printing is done at the end to avoid perturbing the timing too
 				// much, yet small discrepancies are expected
 				System.out.println(logs.toString());
-				System.out.println("Waiting until the end.");
+				delayToEndInMillis = clock.waitingDelayUntilEndInMillis();
+				System.out.println(
+						"Waiting until the end in " + delayToEndInMillis + " "
+						+ TimeUnit.MILLISECONDS);
 				clock.waitUntilEnd();
 				System.out.println("The end of fourth at "
 											+ System.currentTimeMillis() + ".");
@@ -1467,7 +1536,6 @@ implements	Serializable
 				System.out.println("Exception raised " + e);
 				System.out.println(logs);
 			}
-
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e) ;
 		}
