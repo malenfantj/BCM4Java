@@ -962,6 +962,16 @@ implements	Serializable
 		long elapsedInNanos = currentInNanos - this.getStartEpochNanos();
 		long acceleratedElapsedInNanos =
 				(long) (elapsedInNanos * this.getAccelerationFactor());
+
+		if (System.getProperty("os.name").startsWith("Windows")
+				&& acceleratedElapsedInNanos < TimeUnit.SECONDS.toNanos(1)) {
+			System.err.println(
+					"[AcceleratedInstant::instantOfEpochTimeInNanos] Warning: "
+					+ "on Windows, the Java class Instant may be precise only "
+					+ " to the seconds, but the delay "
+					+ acceleratedElapsedInNanos + " is under one second.");
+		}
+
 		Instant ret =
 				this.getStartInstant().plusNanos(acceleratedElapsedInNanos);
 
@@ -1006,6 +1016,16 @@ implements	Serializable
 		long elapsedInNanos = epochTimeInNanos - this.getStartEpochNanos();
 		long acceleratedElapsedInNanos =
 				(long) (elapsedInNanos * this.accelerationFactor);
+
+		if (System.getProperty("os.name").startsWith("Windows")
+				&& acceleratedElapsedInNanos < TimeUnit.SECONDS.toNanos(1)) {
+			System.err.println(
+					"[AcceleratedInstant::instantOfEpochTimeInNanos] Warning: "
+					+ "on Windows, the Java class Instant may be precise only "
+					+ " to the seconds, but the delay "
+					+ acceleratedElapsedInNanos + " is under one second.");
+		}
+
 		Instant ret =
 				this.getStartInstant().plusNanos(acceleratedElapsedInNanos);
 
@@ -1025,7 +1045,7 @@ implements	Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code i.isAfter(getStartInstant())}
+	 * pre	{@code i.equals(getStartInstant()) || i.isAfter(getStartInstant())}
 	 * post	{@code return >= getStartEpochNanos()}
 	 * </pre>
 	 *
@@ -1034,10 +1054,22 @@ implements	Serializable
 	 */
 	public long			unixEpochTimeInNanosFromInstant(Instant i)
 	{
-		assert	i.isAfter(getStartInstant()) :
-				new PreconditionException("i.isAfter(getStartInstant())");
+		assert	i.equals(getStartInstant()) || i.isAfter(getStartInstant()) :
+				new PreconditionException(
+						"i.equals(getStartInstant()) || "
+						+ "i.isAfter(getStartInstant())");
 
 		Duration d = Duration.between(this.getStartInstant(), i);
+
+		if (System.getProperty("os.name").startsWith("Windows") && d.isZero()) {
+			System.err.println(
+					"[AcceleratedInstant::unixEpochTimeInNanosFromInstant] "
+					+ "Warning: on Windows, the Java class Instant may be "
+					+ "precise only to the seconds, but the duration "
+					+ d + " is zero and this may result from an actual"
+					+ " duration under the second.");
+		}
+
 		long acceleratedElapsedInNanos =
 				(long) (d.toNanos()/this.accelerationFactor);
 		long ret = this.getStartEpochNanos() + acceleratedElapsedInNanos;
@@ -1078,7 +1110,7 @@ implements	Serializable
 	{
 		assert	i != null : new PreconditionException("i != null");
 		Instant currentInstant = currentInstant();
-		if (!(i.equals(currentInstant) || i.isAfter(currentInstant))) {
+		if (i.isBefore(currentInstant)) {
 			System.err.println(
 					"Warning: AcceleratedClock::nanoDelayUntilInstant:"
 					+ " instant " + i + " is *not* equal or after "
@@ -1153,19 +1185,30 @@ implements	Serializable
 					"TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)"
 					+ " >= getStartEpochNanos()");
 		assert	i != null : new PreconditionException("i != null");
-		if (i.equals(instantOfEpochTimeInNanos(
-						TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)))
-				|| i.isAfter(instantOfEpochTimeInNanos(
-						TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)))) {
+		Instant currentInstant = instantOfEpochTimeInNanos(baseEpochTimeInNanos);
+		if (i.isBefore(currentInstant)) {
 			System.err.println(
 				"Warning: AcceleratedClock::nanoDelayToInstantFromEpochTime "
-				+ "instant " + i + " is before the current instant.");
+				+ "instant " + i + " is before the current instant "
+				+ currentInstant + ".");
 		}
 
 		long fromStartToInstantInNanos =
 				Duration.between(getStartInstant(), i).toNanos();
+
+		if (System.getProperty("os.name").startsWith("Windows")
+										&& fromStartToInstantInNanos <= 0) {
+			System.err.println(
+					"[AcceleratedInstant::unixEpochTimeInNanosFromInstant] "
+					+ "Warning: on Windows, the Java class Instant may be "
+					+ "precise only to the seconds, but the duration "
+					+ fromStartToInstantInNanos + " is zero and this may "
+					+ "result from an actual duration under the second.");
+		}
+
 		long unixEpochFromStartInNanos =
-				(long) (fromStartToInstantInNanos/this.accelerationFactor);
+				((long) (fromStartToInstantInNanos/this.accelerationFactor))
+													+ this.getStartEpochNanos();
 		long delayInNanos = unixEpochFromStartInNanos - baseEpochTimeInNanos;
 
 		if (delayInNanos < 0) {
