@@ -304,10 +304,10 @@ implements	Serializable
 		Arrays.sort(this.testSteps,
 				(t1, t2) ->
 					((TestStepI)t1).getInstantOfOccurrence().isBefore(
-									((TestStepI)t1).getInstantOfOccurrence()) ?
+									((TestStepI)t2).getInstantOfOccurrence()) ?
 						-1
 					:	((TestStepI)t1).getInstantOfOccurrence().equals(
-									((TestStepI)t1).getInstantOfOccurrence()) ?
+									((TestStepI)t2).getInstantOfOccurrence()) ?
 							0
 						:	1);
 
