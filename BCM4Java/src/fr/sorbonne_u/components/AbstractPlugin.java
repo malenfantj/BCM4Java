@@ -124,16 +124,6 @@ import fr.sorbonne_u.components.ComponentI.ComponentTask;
  * 
  * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
  */
-/**
- * The class <code>AbstractPlugin</code>
- *
- * <p><strong>Description</strong></p>
- * 
- * 
- * <p>Created on : 2024-04-25</p>
- * 
- * @author	<a href="mailto:Jacques.Malenfant@lip6.fr">Jacques Malenfant</a>
- */
 public abstract class	AbstractPlugin
 implements	PluginI
 {
@@ -195,8 +185,8 @@ implements	PluginI
 		@Override
 		public void		finalise() throws Exception
 		{
-			assert	!this.cpObp.connected() :
-						new PluginException(
+			assert	!cpObp.connected() :
+					new PluginException(
 								"reflection outbound port still connected!");
 
 			this.cpObp.unpublishPort();
@@ -225,9 +215,8 @@ implements	PluginI
 			) throws Exception
 		{
 			assert	plugin != null && pluginInboundPortURI != null :
-						new PreconditionException(
-								"plugin != null && "
-										+ "pluginInboundPortURI != null");
+					new PreconditionException(
+							"plugin != null && pluginInboundPortURI != null");
 
 			this.doPortConnection(
 						this.cpObp.getPortURI(),
@@ -259,9 +248,8 @@ implements	PluginI
 			) throws Exception
 		{
 			assert	pluginInboundPortURI != null && pluginURI != null :
-						new PreconditionException(
-								"pluginInboundPortURI != null && "
-										+ "pluginURI != null");
+					new PreconditionException(
+							"pluginInboundPortURI != null && pluginURI != null");
 
 			this.doPortConnection(
 					this.cpObp.getPortURI(),
@@ -294,9 +282,8 @@ implements	PluginI
 			) throws Exception
 		{
 			assert	pluginInboundPortURI != null && pluginURI != null :
-						new PreconditionException(
-								"pluginInboundPortURI != null && "
-										+ "pluginURI != null");
+					new PreconditionException(
+							"pluginInboundPortURI != null && pluginURI != null");
 
 			this.doPortConnection(
 					this.cpObp.getPortURI(),
@@ -334,12 +321,12 @@ implements	PluginI
 		) throws Exception
 	{
 		assert	pluginInboundPortURI != null && pluginToInstall != null :
-					new PreconditionException(
-							"pluginInboundPortURI != null && "
+				new PreconditionException(
+						"pluginInboundPortURI != null && "
 									+ "pluginToInstall != null");
 		assert	pluginToInstall.getPluginURI() != null :
-					new PreconditionException(
-							"pluginToInstall.getPluginURI() != null");
+				new PreconditionException(
+						"pluginToInstall.getPluginURI() != null");
 
 		FakeComponent fake = new FakeComponent() {};
 		fake.runTask(
@@ -376,9 +363,8 @@ implements	PluginI
 		) throws Exception
 	{
 		assert	pluginInboundPortURI != null && pluginURI != null :
-					new PreconditionException(
-							"pluginInboundPortURI != null && "
-									+ "pluginURI != null");
+				new PreconditionException(
+						"pluginInboundPortURI != null && pluginURI != null");
 
 		FakeComponent fake = new FakeComponent() {};
 		fake.runTask(
@@ -416,9 +402,8 @@ implements	PluginI
 		) throws Exception
 	{
 		assert	pluginInboundPortURI != null && pluginURI != null :
-					new PreconditionException(
-							"pluginInboundPortURI != null && "
-									+ "pluginURI != null");
+				new PreconditionException(
+						"pluginInboundPortURI != null && pluginURI != null");
 
 		FakeComponent fake = new FakeComponent() {};
 		fake.runTask(
@@ -616,7 +601,7 @@ implements	PluginI
 	protected void		setOwner(ComponentI owner)
 	{
 		assert	owner != null : new PreconditionException("owner != null");
-		assert	this.getOwner() == null :
+		assert	getOwner() == null :
 				new PreconditionException("getOwner() == null");
 
 		this.owner.set(owner);
@@ -638,8 +623,8 @@ implements	PluginI
 	public void			setPluginURI(String uri)
 	{
 		assert	uri != null : new PreconditionException("uri != null");
-		assert	this.getPluginURI() == null :
-					new PreconditionException("getPluginURI() == null");
+		assert	getPluginURI() == null :
+				new PreconditionException("getPluginURI() == null");
 
 		this.plugInURI.set(uri);
 	}
@@ -716,10 +701,9 @@ implements	PluginI
 	{
 		assert	owner != null : new PreconditionException("owner != null");
 		assert	this.getPluginURI() != null :
-					new PreconditionException("getPluginURI() != null");
+				new PreconditionException("getPluginURI() != null");
 		assert	!owner.isInstalled(this.getPluginURI()) :
-					new PreconditionException(
-							"!owner.isInstalled(getPluginURI())");
+				new PreconditionException("!owner.isInstalled(getPluginURI())");
 
 		this.owner.set(owner);
 
@@ -814,7 +798,7 @@ implements	PluginI
 	{
 		assert	portURI != null :
 				new PreconditionException("portURI != null");
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 
@@ -838,7 +822,7 @@ implements	PluginI
 	 */
 	protected void		addRequiredInterface(Class<? extends RequiredCI> inter)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).addRequiredInterface(inter);
@@ -861,7 +845,7 @@ implements	PluginI
 	 */
 	protected void		addOfferedInterface(Class<? extends OfferedCI> inter)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).addOfferedInterface(inter);
@@ -887,7 +871,7 @@ implements	PluginI
 		Class<? extends RequiredCI> inter
 		)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).removeRequiredInterface(inter);
@@ -913,7 +897,7 @@ implements	PluginI
 		Class<? extends OfferedCI> inter
 		)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		((AbstractComponent)this.getOwner()).removeOfferedInterface(inter);
@@ -933,7 +917,7 @@ implements	PluginI
 	 */
 	protected void		logMessage(String message)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		this.getOwner().logMessage(message);
@@ -964,9 +948,9 @@ implements	PluginI
 		boolean schedulable
 		)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	!this.getOwner().validExecutorServiceURI(uri) :
+		assert	!getOwner().validExecutorServiceURI(uri) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceURI(uri)");
 
@@ -1000,9 +984,9 @@ implements	PluginI
 		ExecutorServiceFactory factory
 		)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	!this.getOwner().validExecutorServiceURI(uri) :
+		assert	!getOwner().validExecutorServiceURI(uri) :
 				new PreconditionException(
 									"getOwner().validExecutorServiceURI(uri)");
 
@@ -1026,7 +1010,7 @@ implements	PluginI
 	 */
 	protected int		getExecutorServiceIndex(String uri)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).getExecutorServiceIndex(uri);
@@ -1048,7 +1032,7 @@ implements	PluginI
 	 */
 	protected ExecutorService	getExecutorService(int index)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).getExecutorService(index);
@@ -1070,7 +1054,7 @@ implements	PluginI
 	 */
 	protected ExecutorService	getExecutorService(String uri)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).getExecutorService(uri);
@@ -1095,7 +1079,7 @@ implements	PluginI
 		int index
 		)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).
@@ -1121,7 +1105,7 @@ implements	PluginI
 		String uri
 		)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).
@@ -1146,7 +1130,7 @@ implements	PluginI
 	 */
 	protected ExecutorService	shutdownExecutorService(String uri)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).shutdownExecutorService(uri);
@@ -1172,7 +1156,7 @@ implements	PluginI
 		String uri
 		)
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		return ((AbstractComponent)this.getOwner()).
@@ -1196,21 +1180,21 @@ implements	PluginI
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	protected Future<?>		runTaskOnComponent(
+	protected Future<?>		runTaskWithFuture(
 		int executorServiceIndex,
 		ComponentTask t
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
+		assert	getOwner().validExecutorServiceIndex(executorServiceIndex) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceIndex("
 						+ "executorServiceIndex)");
 
 		return ((AbstractComponent)this.getOwner()).
-								runTaskOnComponent(executorServiceIndex, t);
+								runTaskWithFuture(executorServiceIndex, t);
 	}
 
 	/**
@@ -1230,21 +1214,21 @@ implements	PluginI
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	protected Future<?>		runTaskOnComponent(
+	protected Future<?>		runTaskWithFuture(
 		String executorServiceURI,
 		ComponentTask t
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
+		assert	getOwner().validExecutorServiceURI(executorServiceURI) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceURI("
 						+ "executorServiceURI)");
 
 		return ((AbstractComponent)this.getOwner()).
-								runTaskOnComponent(executorServiceURI, t);
+								runTaskWithFuture(executorServiceURI, t);
 	}
 
 	/**
@@ -1262,18 +1246,113 @@ implements	PluginI
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
-	protected Future<?>		runTaskOnComponent(ComponentTask t)
+	protected Future<?>		runTaskWithFuture(ComponentTask t)
 	throws	AssertionError,
 			RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
-			return ((AbstractComponent)this.getOwner()).runTaskOnComponent(
+			return ((AbstractComponent)this.getOwner()).runTaskWithFuture(
 								this.getPreferredExecutionServiceIndex(), t);
 		} else {
-			return ((AbstractComponent)this.getOwner()).runTaskOnComponent(t);
+			return ((AbstractComponent)this.getOwner()).runTaskWithFuture(t);
+		}
+	}	
+
+	/**
+	 * run the <code>ComponentTask</code> on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code getOwner().validExecutorServiceIndex(executorServiceIndex)}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceIndex			index of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected void			runTaskOnComponent(
+		int executorServiceIndex,
+		ComponentTask t
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	getOwner() != null :
+				new PreconditionException("getOwner() != null");
+		assert	getOwner().validExecutorServiceIndex(executorServiceIndex) :
+				new PreconditionException(
+						"getOwner().validExecutorServiceIndex("
+						+ "executorServiceIndex)");
+
+		((AbstractComponent)this.getOwner()).
+								runTaskOnComponent(executorServiceIndex, t);
+	}
+
+	/**
+	 * run the <code>ComponentTask</code> on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * pre	{@code getOwner().validExecutorServiceURI(executorServiceURI)}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected void			runTaskOnComponent(
+		String executorServiceURI,
+		ComponentTask t
+		) throws	AssertionError,
+					RejectedExecutionException
+	{
+		assert	getOwner() != null :
+				new PreconditionException("getOwner() != null");
+		assert	getOwner().validExecutorServiceURI(executorServiceURI) :
+				new PreconditionException(
+						"getOwner().validExecutorServiceURI("
+						+ "executorServiceURI)");
+
+		((AbstractComponent)this.getOwner()).
+								runTaskOnComponent(executorServiceURI, t);
+	}
+
+	/**
+	 * run the <code>ComponentTask</code> on the owner component.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre 	{@code getOwner() != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param t								component task to be executed as main task.
+	 * @throws AssertionError				if the preconditions are not satisfied.
+	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 */
+	protected void			runTaskOnComponent(ComponentTask t)
+	throws	AssertionError,
+			RejectedExecutionException
+	{
+		assert	getOwner() != null :
+				new PreconditionException("getOwner() != null");
+
+		if (this.getPreferredExecutionServiceURI() != null) {
+			((AbstractComponent)this.getOwner()).runTaskOnComponent(
+								this.getPreferredExecutionServiceIndex(), t);
+		} else {
+			((AbstractComponent)this.getOwner()).runTaskOnComponent(t);
 		}
 	}	
 
@@ -1305,9 +1384,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
+		assert	getOwner().validExecutorServiceIndex(executorServiceIndex) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceIndex("
 						+ "executorServiceIndex)");
@@ -1345,9 +1424,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
+		assert	getOwner().validExecutorServiceURI(executorServiceURI) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceURI("
 						+ "executorServiceURI)");
@@ -1382,7 +1461,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
@@ -1432,9 +1511,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
+		assert	getOwner().validExecutorServiceIndex(executorServiceIndex) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceIndex("
 						+ "executorServiceIndex)");
@@ -1482,9 +1561,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
+		assert	getOwner().validExecutorServiceURI(executorServiceURI) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceURI("
 						+ "executorServiceURI)");
@@ -1529,7 +1608,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
@@ -1578,9 +1657,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
+		assert	getOwner().validExecutorServiceIndex(executorServiceIndex) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceIndex("
 						+ "executorServiceIndex)");
@@ -1624,9 +1703,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
+		assert	getOwner().validExecutorServiceURI(executorServiceURI) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceURI("
 						+ "executorServiceURI)");
@@ -1667,7 +1746,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
@@ -1709,10 +1788,10 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
-					new PreconditionException(
+		assert	getOwner() != null :
+				new PreconditionException("getOwner() != null");
+		assert	getOwner().validExecutorServiceIndex(executorServiceIndex) :
+				new PreconditionException(
 							"getOwner().validExecutorServiceIndex("
 													+ "executorServiceIndex)");
 
@@ -1747,10 +1826,10 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
-					new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
-					new PreconditionException(
+		assert	getOwner() != null :
+				new PreconditionException("getOwner() != null");
+		assert	getOwner().validExecutorServiceURI(executorServiceURI) :
+				new PreconditionException(
 							"getOwner().validExecutorServiceURI("
 													+ "executorServiceURI)");
 
@@ -1789,7 +1868,7 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
 
 		if (this.getPreferredExecutionServiceURI() != null) {
@@ -1829,9 +1908,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceIndex(executorServiceIndex) :
+		assert	getOwner().validExecutorServiceIndex(executorServiceIndex) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceIndex("
 						+ "executorServiceIndex)");
@@ -1869,9 +1948,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getOwner().validExecutorServiceURI(executorServiceURI) :
+		assert	getOwner().validExecutorServiceURI(executorServiceURI) :
 				new PreconditionException(
 						"getOwner().validExecutorServiceURI("
 						+ "executorServiceURI)");
@@ -1907,9 +1986,9 @@ implements	PluginI
 		) throws	AssertionError,
 					RejectedExecutionException
 	{
-		assert	this.getOwner() != null :
+		assert	getOwner() != null :
 				new PreconditionException("getOwner() != null");
-		assert	this.getPreferredExecutionServiceURI() != null :
+		assert	getPreferredExecutionServiceURI() != null :
 				new PreconditionException(
 								"getPreferredExecutionServiceURI() != null");
 
