@@ -35,6 +35,7 @@ package fr.sorbonne_u.components;
 
 import java.lang.annotation.Annotation;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -2011,12 +2012,14 @@ public interface		ComponentI
 	 * @return								the result of the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequest(ComponentService<T> request)
 	throws	AssertionError,
 			RejectedExecutionException,
+			CancellationException,
 			InterruptedException,
 			ExecutionException;
 
@@ -2038,12 +2041,14 @@ public interface		ComponentI
 	 * @return								the result of the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
 	public <T> T		handleRequest(FComponentService<T> request)
 			throws	AssertionError,
 			RejectedExecutionException,
+			CancellationException,
 			InterruptedException,
 			ExecutionException;
 
@@ -2066,6 +2071,7 @@ public interface		ComponentI
 	 * @return								the result of the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
@@ -2074,6 +2080,7 @@ public interface		ComponentI
 		ComponentService<T> request
 		) 	throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2096,6 +2103,7 @@ public interface		ComponentI
 	 * @return								the result of the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
@@ -2104,6 +2112,7 @@ public interface		ComponentI
 		FComponentService<T> request
 		) 	throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2126,6 +2135,7 @@ public interface		ComponentI
 	 * @return								the result of the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
@@ -2134,6 +2144,7 @@ public interface		ComponentI
 		ComponentService<T> request
 		) 	throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2157,6 +2168,7 @@ public interface		ComponentI
 	 * @return								the result of the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting
 	 * @throws ExecutionException			if the computation threw an exception
 	 */
@@ -2165,6 +2177,7 @@ public interface		ComponentI
 		FComponentService<T> request
 		) 	throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2188,6 +2201,7 @@ public interface		ComponentI
 	 * @return								a scheduled future to synchronise with the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting.
 	 * @throws ExecutionException			if the computation threw an exception.
 	 */
@@ -2197,6 +2211,7 @@ public interface		ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2220,6 +2235,7 @@ public interface		ComponentI
 	 * @return								a scheduled future to synchronise with the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting.
 	 * @throws ExecutionException			if the computation threw an exception.
 	 */
@@ -2229,6 +2245,7 @@ public interface		ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2253,6 +2270,7 @@ public interface		ComponentI
 	 * @return								a scheduled future to synchronise with the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting.
 	 * @throws ExecutionException			if the computation threw an exception.
 	 */
@@ -2263,6 +2281,7 @@ public interface		ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2287,6 +2306,7 @@ public interface		ComponentI
 	 * @return								a scheduled future to synchronise with the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting.
 	 * @throws ExecutionException			if the computation threw an exception.
 	 */
@@ -2297,6 +2317,7 @@ public interface		ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2321,6 +2342,7 @@ public interface		ComponentI
 	 * @return								a scheduled future to synchronise with the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting.
 	 * @throws ExecutionException			if the computation threw an exception.
 	 */
@@ -2331,6 +2353,7 @@ public interface		ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 
@@ -2355,6 +2378,7 @@ public interface		ComponentI
 	 * @return								a scheduled future to synchronise with the task.
 	 * @throws AssertionError				if the preconditions are not satisfied.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
+	 * @throws CancellationException		if the task has been cancelled..
 	 * @throws InterruptedException			if the current thread was interrupted while waiting.
 	 * @throws ExecutionException			if the computation threw an exception.
 	 */
@@ -2365,6 +2389,7 @@ public interface		ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException;
 

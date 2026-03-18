@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -6019,10 +6020,10 @@ implements	ComponentI
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param <T>					the type of the value returned by the request.
-	 * @param executorServiceURI	URI of the executor service that will run the task.
-	 * @param request				service request to be executed on the component.
-	 * @return						a future value embedding the result of the task.
+	 * @param <T>							the type of the value returned by the request.
+	 * @param executorServiceURI			URI of the executor service that will run the task.
+	 * @param request						service request to be executed on the component.
+	 * @return								a future value embedding the result of the task.
 	 * @throws AssertionError				if the component is not started, the URI is not valid or the request is null.
 	 * @throws RejectedExecutionException	if the task cannot be scheduled for execution.
 	 */
@@ -6090,6 +6091,7 @@ implements	ComponentI
 		ComponentService<T> request
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6103,6 +6105,7 @@ implements	ComponentI
 	public <T> T		handleRequest(ComponentService<T> request)
 	throws	AssertionError,
 			RejectedExecutionException,
+			CancellationException,
 			InterruptedException,
 			ExecutionException
 	{
@@ -6117,6 +6120,7 @@ implements	ComponentI
 		FComponentService<T> request
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6140,6 +6144,7 @@ implements	ComponentI
 		ComponentService<T> request
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6155,6 +6160,7 @@ implements	ComponentI
 		FComponentService<T> request
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6179,6 +6185,7 @@ implements	ComponentI
 		FComponentService<T> request
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6336,6 +6343,7 @@ implements	ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6353,6 +6361,7 @@ implements	ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6369,6 +6378,7 @@ implements	ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6396,6 +6406,7 @@ implements	ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6414,6 +6425,7 @@ implements	ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
@@ -6442,6 +6454,7 @@ implements	ComponentI
 		TimeUnit u
 		) throws	AssertionError,
 					RejectedExecutionException,
+					CancellationException,
 					InterruptedException,
 					ExecutionException
 	{
