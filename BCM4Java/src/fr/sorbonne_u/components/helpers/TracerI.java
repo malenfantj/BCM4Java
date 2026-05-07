@@ -94,25 +94,6 @@ public interface		TracerI
 	default void		setTitle(String title)	{ }
 
 	/**
-	 * set the coordinate of the top left point in screen coordinates, if
-	 * possible.
-	 * 
-	 * <p><strong>Contract</strong></p>
-	 * 
-	 * <pre>
-	 * pre	{@code xOrigin >= 0}
-	 * pre	{@code xOrigin < getScreenWidth()}
-	 * pre	{@code yOrigin >= 0}
-	 * pre	{@code yOrigin < getScreenHeight()}
-	 * post	{@code true}	// no postcondition.
-	 * </pre>
-	 *
-	 * @param xOrigin	x coordinate of the top left point in screen coordinates.
-	 * @param yOrigin	y coordinate of the top left point in screen coordinates.
-	 */
-	default void		setOrigin(int xOrigin, int yOrigin)	{ }
-
-	/**
 	 * set the tracer frame relative coordinates among the frames of the
 	 * application, if possible.
 	 * 
