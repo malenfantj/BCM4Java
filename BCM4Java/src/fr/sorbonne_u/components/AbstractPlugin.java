@@ -35,6 +35,7 @@ package fr.sorbonne_u.components;
 
 import fr.sorbonne_u.components.annotations.RequiredInterfaces;
 import fr.sorbonne_u.components.exceptions.PluginException;
+import fr.sorbonne_u.components.interfaces.ComponentInterface;
 import fr.sorbonne_u.components.interfaces.OfferedCI;
 import fr.sorbonne_u.components.interfaces.RequiredCI;
 import fr.sorbonne_u.components.ports.PortI;
@@ -473,6 +474,7 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code !(this instanceof ComponentInterface)}
 	 * pre	{@code true}	// no precondition.
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
@@ -493,6 +495,7 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code !(this instanceof ComponentInterface)}
 	 * pre	{@code executorServiceURI != null && !executorServiceURI.isEmpty()}
 	 * post	{@code getPreferredExecutionServiceURI().equals(executorServiceURI)}
 	 * </pre>
@@ -522,6 +525,7 @@ implements	PluginI
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
+	 * pre	{@code !(this instanceof ComponentInterface)}
 	 * pre	{@code !callerRuns || executorServiceURI == null}
 	 * pre	{@code executorServiceURI == null || !executorServiceURI.isEmpty()}
 	 * post	{@code executorServiceURI == null || getPreferredExecutionServiceURI().equals(executorServiceURI)}
@@ -537,6 +541,8 @@ implements	PluginI
 	{
 		super();
 
+		assert	!(this instanceof ComponentInterface) :
+				new PreconditionException("!(this instanceof ComponentInterface)");
 		assert	!callerRuns || executorServiceURI == null :
 				new PreconditionException(
 						"!callerRuns || executorServiceURI == null");
@@ -699,6 +705,11 @@ implements	PluginI
 	@Override
 	public void			installOn(ComponentI owner) throws Exception
 	{
+		// a control added in case a programmer avoids calling the constructors
+		// of AbstractPlugin which already control this
+		assert	!(this instanceof ComponentInterface) :
+				new PreconditionException("!(this instanceof ComponentInterface)");
+
 		assert	owner != null : new PreconditionException("owner != null");
 		assert	this.getPluginURI() != null :
 				new PreconditionException("getPluginURI() != null");
