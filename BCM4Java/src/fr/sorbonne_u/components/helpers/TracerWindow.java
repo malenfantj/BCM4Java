@@ -64,6 +64,7 @@ import fr.sorbonne_u.exceptions.PreconditionException;
  * creating an instance of {@code TracerWindow}, its position can be set in
  * screen pixels units.
  * </p>
+ * <p>
  * To facilitate even more the positioning of trace windows, this class also
  * allows its user to use a tiling coordinates system. In this system, the
  * screen is divided into a number of tiles in width and height and the windows
@@ -356,8 +357,8 @@ implements	WindowListener,
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param width
-	 * @param height
+	 * @param width		width of the tiling coordinates system.
+	 * @param height	height of the tiling coordinates system.
 	 */
 	public static void	setTilingSize(int width, int height)
 	{
