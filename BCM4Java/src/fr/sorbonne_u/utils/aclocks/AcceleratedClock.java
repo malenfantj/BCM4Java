@@ -1233,6 +1233,46 @@ implements	Serializable
 		return delayInNanos;
 	}
 
+	/**
+	 * compute the accelerated elapsed time corresponding to the given duration.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code d != null}
+	 * post	{@code return >= 0}
+	 * </pre>
+	 *
+	 * @param d	a duration.
+	 * @return	the accelerated elapsed time corresponding to the given duration.
+	 */
+	public long			acceleratedElapsedTimeFromDuration(Duration d)
+	{
+		assert	d != null : new PreconditionException("d != null");
+
+		return (long) (d.toNanos()/this.accelerationFactor);
+	}
+
+	/**
+	 * compute the duration corresponding to the given accelerated elapsed time.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code elapsed >= 0}
+	 * post	{@code return != null}
+	 * </pre>
+	 *
+	 * @param elapsed	accelerated elapsed time.
+	 * @return			the duration corresponding to the given accelerated elapsed time.
+	 */
+	public Duration		durationFromAcceleratedElapsedTime(long elapsed)
+	{
+		assert	elapsed >= 0 : new PreconditionException("elapsed >= 0");
+
+		return Duration.ofNanos((long)(elapsed * this.accelerationFactor));
+	}
+
 	// -------------------------------------------------------------------------
 	// Tests
 	// -------------------------------------------------------------------------
@@ -1252,42 +1292,42 @@ implements	Serializable
 	public static void	main(String[] args)
 	{
 		// small test of the Instant and Duration accuracy
-//		long inMillis = System.currentTimeMillis();
-//		Instant ii_1 = Instant.ofEpochMilli(inMillis);
-//		Instant ii_1_bis = ii_1;
-//		Instant ii_1_ter = Instant.ofEpochMilli(inMillis);
-//		long deltaInNanos = 257L;
-//		Instant ii_2 = ii_1.plusNanos(2000000 + deltaInNanos);
-//		long afterInMillis = ii_2.toEpochMilli();
-//		long delta = ii_2.getNano();
-//		Duration dd_1 = Duration.between(ii_1, ii_2);
-//		Duration dd_1_1 = dd_1;
-//		Duration dd_1_2 = Duration.between(ii_1, ii_2);
-//		Duration dd_1_3 = Duration.between(ii_1, ii_2).plusNanos(deltaInNanos);
-//		Duration dd_1_4 = Duration.between(ii_1, ii_2).plusNanos(2000000 + deltaInNanos);
-//		System.out.println("This should be true (obvious): " + ii_1.equals(ii_1_bis));
-//		System.out.println("This should be true (deep equal): " + ii_1.equals(ii_1_ter));
-//		System.out.println("This should be false (precise to the nanoseconds): " + ii_1.equals(ii_2));
-//		System.out.println("This should be true (obvious): " + dd_1.equals(dd_1_1));
-//		System.out.println("This should be true (deep equal): " + dd_1.equals(dd_1_2));
-//		System.out.println("This should be false (precise to the nanoseconds): " + dd_1.equals(dd_1_3));
-//		System.out.println("The two next long values should differs by 2 milliseconds:");
-//		System.out.println(inMillis);
-//		System.out.println(afterInMillis);
-//		System.out.println("This is the nano part of " + (inMillis*1000000 + 2000000 + deltaInNanos) + ": " + delta);
-//		System.out.println("This is equal to " + (2000000 + deltaInNanos) + ": " + dd_1.toNanos());
-//		System.out.println("This is also equal to " + (2000000 + deltaInNanos) + ": " + dd_1_4.minus(dd_1).getNano());
-//
-//		long baseInNanos = 5456L;
-//		Instant ii_10 = ii_1.plusNanos(baseInNanos);
-//		Instant ii_11 = ii_10.plusNanos(deltaInNanos);
-//		Duration dd_10 = Duration.between(ii_10, ii_11);
-//		System.out.println(ii_10.toEpochMilli());
-//		System.out.println(ii_11.toEpochMilli());
-//		System.out.println(dd_10.toNanos());
-//		Instant ii_12 = ii_10.plusNanos(2000000 + deltaInNanos);
-//		Duration dd_11 = Duration.between(ii_10, ii_12);
-//		System.out.println(dd_11.toNanos());
+		long inMillis = System.currentTimeMillis();
+		Instant ii_1 = Instant.ofEpochMilli(inMillis);
+		Instant ii_1_bis = ii_1;
+		Instant ii_1_ter = Instant.ofEpochMilli(inMillis);
+		long deltaInNanos = 257L;
+		Instant ii_2 = ii_1.plusNanos(2000000 + deltaInNanos);
+		long afterInMillis = ii_2.toEpochMilli();
+		long delta = ii_2.getNano();
+		Duration dd_1 = Duration.between(ii_1, ii_2);
+		Duration dd_1_1 = dd_1;
+		Duration dd_1_2 = Duration.between(ii_1, ii_2);
+		Duration dd_1_3 = Duration.between(ii_1, ii_2).plusNanos(deltaInNanos);
+		Duration dd_1_4 = Duration.between(ii_1, ii_2).plusNanos(2000000 + deltaInNanos);
+		System.out.println("This should be true (obvious): " + ii_1.equals(ii_1_bis));
+		System.out.println("This should be true (deep equal): " + ii_1.equals(ii_1_ter));
+		System.out.println("This should be false (precise to the nanoseconds): " + ii_1.equals(ii_2));
+		System.out.println("This should be true (obvious): " + dd_1.equals(dd_1_1));
+		System.out.println("This should be true (deep equal): " + dd_1.equals(dd_1_2));
+		System.out.println("This should be false (precise to the nanoseconds): " + dd_1.equals(dd_1_3));
+		System.out.println("The two next long values should differs by 2 milliseconds:");
+		System.out.println(inMillis);
+		System.out.println(afterInMillis);
+		System.out.println("This is the nano part of " + (inMillis*1000000 + 2000000 + deltaInNanos) + ": " + delta);
+		System.out.println("This is equal to " + (2000000 + deltaInNanos) + ": " + dd_1.toNanos());
+		System.out.println("This is also equal to " + (2000000 + deltaInNanos) + ": " + dd_1_4.minus(dd_1).getNano());
+
+		long baseInNanos = 5456L;
+		Instant ii_10 = ii_1.plusNanos(baseInNanos);
+		Instant ii_11 = ii_10.plusNanos(deltaInNanos);
+		Duration dd_10 = Duration.between(ii_10, ii_11);
+		System.out.print("Even though this time in millis " + ii_10.toEpochMilli());
+		System.out.println(" and this other one in millis " + ii_11.toEpochMilli() + " appear equals");
+		System.out.println("the duration between the two instants that gave them still retains the difference in nanos " + dd_10.toNanos());
+		Instant ii_12 = ii_10.plusNanos(2000000 + deltaInNanos);
+		Duration dd_11 = Duration.between(ii_10, ii_12);
+		System.out.println("And the precision is robust " + dd_11.toNanos());
 
 		try {
 			long startTimeInMillis;
@@ -1320,6 +1360,26 @@ implements	Serializable
 							accFactor);
 			long waitingTime = clock.waitingDelayUntilStartInMillis();
 			System.out.println("Beginning first at " + System.currentTimeMillis());
+			Duration expectedDuration = Duration.between(actions[0], actions[1]);
+			long expected = (long)(TimeUnit.SECONDS.toNanos(5)/accFactor);
+			long computed = clock.acceleratedElapsedTimeFromDuration(
+															expectedDuration);
+			System.out.println(
+					"The expected accelerated time "
+					+ expected
+					+ " should be equal to the computed "
+					+ computed
+					+ " : "
+					+ (expected == computed));
+			Duration computedDuration =
+							clock.durationFromAcceleratedElapsedTime(computed);
+			System.out.println(
+					"And the expected duration "
+					+ expectedDuration
+					+ " should be equal to the computed "
+					+ computedDuration
+					+ " : "
+					+ (expectedDuration.equals(computedDuration)));
 			clock.waitUntilStart();
 			long realStartTime = System.currentTimeMillis();
 			Instant observedStart = clock.currentInstant();
@@ -1386,6 +1446,25 @@ implements	Serializable
 							accFactor);
 			waitingTime = clock.waitingDelayUntilStartInMillis();
 			System.out.println("Beginning second at " + System.currentTimeMillis());
+			expected = (long)(TimeUnit.SECONDS.toNanos(5)/accFactor);
+			computed = clock.acceleratedElapsedTimeFromDuration(
+															expectedDuration);
+			System.out.println(
+					"The expected accelerated time "
+					+ expected
+					+ " should be equal to the computed "
+					+ computed
+					+ " : "
+					+ (expected == computed));
+			computedDuration =
+							clock.durationFromAcceleratedElapsedTime(computed);
+			System.out.println(
+					"And the expected duration "
+					+ expectedDuration
+					+ " should be equal to the computed "
+					+ computedDuration
+					+ " : "
+					+ (expectedDuration.equals(computedDuration)));
 			clock.waitUntilStart();
 			realStartTime = System.currentTimeMillis();
 			observedStart = clock.currentInstant();
@@ -1452,6 +1531,25 @@ implements	Serializable
 							accFactor);
 			waitingTime = clock.waitingDelayUntilStartInMillis();
 			System.out.println("Beginning of third at " + System.currentTimeMillis());
+			expected = (long)(TimeUnit.SECONDS.toNanos(5)/accFactor);
+			computed = clock.acceleratedElapsedTimeFromDuration(
+															expectedDuration);
+			System.out.println(
+					"The expected accelerated time "
+					+ expected
+					+ " should be equal to the computed "
+					+ computed
+					+ " : "
+					+ (expected == computed));
+			computedDuration =
+							clock.durationFromAcceleratedElapsedTime(computed);
+			System.out.println(
+					"And the expected duration "
+					+ expectedDuration
+					+ " should be equal to the computed "
+					+ computedDuration
+					+ " : "
+					+ (expectedDuration.equals(computedDuration)));
 			clock.waitUntilStart();
 			realStartTime = System.currentTimeMillis();
 			observedStart = clock.currentInstant();
@@ -1522,6 +1620,25 @@ implements	Serializable
 				waitingTime = clock.waitingDelayUntilStartInMillis();
 				System.out.println("Beginning of fourth at "
 											+ System.currentTimeMillis());
+				expected = (long)(TimeUnit.SECONDS.toNanos(5)/accFactor);
+				computed = clock.acceleratedElapsedTimeFromDuration(
+																expectedDuration);
+				System.out.println(
+						"The expected accelerated time "
+						+ expected
+						+ " should be equal to the computed "
+						+ computed
+						+ " : "
+						+ (expected == computed));
+				computedDuration =
+								clock.durationFromAcceleratedElapsedTime(computed);
+				System.out.println(
+						"And the expected duration "
+						+ expectedDuration
+						+ " should be equal to the computed "
+						+ computedDuration
+						+ " : "
+						+ (expectedDuration.equals(computedDuration)));
 				clock.waitUntilStart();
 				realStartTime = System.currentTimeMillis();
 				observedStart = clock.currentInstant();
