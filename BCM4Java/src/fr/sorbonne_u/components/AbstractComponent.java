@@ -1949,12 +1949,12 @@ implements	ComponentI
 	}
 
 	/**
-	 * return the clock as an {@code AcceleratedClock}.
+	 * synchronise with and return the clock as an {@code AcceleratedClock}.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code isClockInitialised()}
+	 * pre	{@code true}	// no precondition.
 	 * post	{@code return != null}	// no postcondition.
 	 * </pre>
 	 *
@@ -1966,9 +1966,6 @@ implements	ComponentI
 	throws	InterruptedException,
 			ExecutionException
 	{
-		assert	isClockInitialised() :
-				new PreconditionException("isClockInitialised()");
-
 		return this.clock.get();
 	}
 
