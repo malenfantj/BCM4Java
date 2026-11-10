@@ -5144,7 +5144,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code validExecutorServiceIndex(executorServiceIndex)}
 	 * pre	{@code isSchedulable(executorServiceIndex)}
-	 * pre	{@code t != null && delay > 0 && u != null}
+	 * pre	{@code t != null && delay >= 0 && u != null}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
@@ -5165,8 +5165,8 @@ implements	ComponentI
 					RejectedExecutionException
 	{
 		assert	isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-				new PreconditionException("t != null && delay > 0 && u != null");
+		assert	t != null && delay >= 0 && u != null :
+				new PreconditionException("t != null && delay >= 0 && u != null");
 
 		if (AbstractCVM.DEBUG_MODE.contains(CVMDebugModes.CALLING)) {
 			AbstractCVM.getCVM().logDebug(
@@ -5200,7 +5200,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code validExecutorServiceURI(executorServiceURI)}
 	 * pre	{@code isSchedulable(executorServiceURI)}
-	 * pre	{@code t != null && delay > 0 && u != null}
+	 * pre	{@code t != null && delay >= 0 && u != null}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
@@ -5221,8 +5221,8 @@ implements	ComponentI
 					RejectedExecutionException
 	{
 		assert	isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-				new PreconditionException("t != null && delay > 0 && u != null");
+		assert	t != null && delay >= 0 && u != null :
+				new PreconditionException("t != null && delay >= 0 && u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService(executorServiceURI).
@@ -5239,7 +5239,7 @@ implements	ComponentI
 	 * pre	{@code isStarted()}
 	 * pre	{@code canScheduleTasks()}
 	 * pre	{@code validExecutorServiceIndex(this.standardSchedulableHandlerIndex)}
-	 * pre	{@code t != null && delay > 0 && u != null}
+	 * pre	{@code t != null && delay >= 0 && u != null}
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
@@ -5258,8 +5258,8 @@ implements	ComponentI
 					RejectedExecutionException
 	{
 		assert	isStarted() : new PreconditionException("isStarted()");
-		assert	t != null && delay > 0 && u != null :
-				new PreconditionException("t != null && delay > 0 && u != null");
+		assert	t != null && delay >= 0 && u != null :
+				new PreconditionException("t != null && delay >= 0 && u != null");
 
 		t.setOwnerReference(this);
 		return this.getSchedulableExecutorService().schedule(t, delay, u);
