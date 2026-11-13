@@ -710,6 +710,26 @@ implements	Serializable
 	}
 
 	/**
+	 * return {@code true} if {@code i} is between the start and the end instant
+	 * inclusive, otherwise {@code false}.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code i != null}
+	 * post	{@code true}	// no postcondition.
+	 * </pre>
+	 *
+	 * @param i	an instant.
+	 * @return	{@code true} if {@code i} is between the start and the end instant inclusive, otherwise {@code false}.
+	 */
+	public boolean		validInstant(Instant i)
+	{
+		assert	i != null : new PreconditionException("i != null");
+		return !i.isBefore(getStartInstant()) && !i.isAfter(getEndInstant());
+	}
+
+	/**
 	 * return true if the start time of the clock has not been reached.
 	 * 
 	 * <p><strong>Contract</strong></p>
@@ -944,7 +964,7 @@ implements	Serializable
 	 * <pre>
 	 * pre	{@code !startTimeNotReached()}
 	 * post	{@code return != null}
-	 * post	{@code return.equals(getStartInstant()) || return.isAfter(getStartInstant())}
+	 * post	{@code validInstant(return)}
 	 * </pre>
 	 *
 	 * @return	the current accelerated instant.
@@ -984,10 +1004,8 @@ implements	Serializable
 		}
 
 		assert	ret != null : new PostconditionException("return != null");
-		assert	ret.equals(getStartInstant()) || ret.isAfter(getStartInstant()) :
-				new PostconditionException(
-						"return.equals(getStartInstant()) || "
-						+ "return.isAfter(getStartInstant())");
+		assert	validInstant(ret) :
+				new PostconditionException("validInstant(ret)");
 
 		return ret;
 	}
@@ -1002,7 +1020,7 @@ implements	Serializable
 	 * <pre>
 	 * pre	{@code epochInNanos >= getStartEpochNanos()}
 	 * post	{@code return != null}
-	 * post	{@code return.equals(getStartInstant()) || return.isAfter(getStartInstant())}
+	 * post	{@code validInstant(return)}
 	 * </pre>
 	 *
 	 * @param epochTimeInNanos	Unix epoch time for which the accelerated instant must be computed.
@@ -1030,10 +1048,8 @@ implements	Serializable
 				this.getStartInstant().plusNanos(acceleratedElapsedInNanos);
 
 		assert	ret != null : new PostconditionException("return != null");
-		assert	ret.equals(getStartInstant()) || ret.isAfter(getStartInstant()) :
-				new PostconditionException(
-						"return.equals(getStartInstant()) || "
-						+ "return.isAfter(getStartInstant())");
+		assert	validInstant(ret) :
+				new PostconditionException("validInstant(return)");
 
 		return ret;
 	}
@@ -1045,7 +1061,8 @@ implements	Serializable
 	 * <p><strong>Contract</strong></p>
 	 * 
 	 * <pre>
-	 * pre	{@code i.equals(getStartInstant()) || i.isAfter(getStartInstant())}
+	 * pre	{@code i != null}
+	 * pre	{@code validInstant(i)}
 	 * post	{@code return >= getStartEpochNanos()}
 	 * </pre>
 	 *
@@ -1054,10 +1071,9 @@ implements	Serializable
 	 */
 	public long			unixEpochTimeInNanosFromInstant(Instant i)
 	{
-		assert	i.equals(getStartInstant()) || i.isAfter(getStartInstant()) :
-				new PreconditionException(
-						"i.equals(getStartInstant()) || "
-						+ "i.isAfter(getStartInstant())");
+		assert	i != null : new PreconditionException("i != null");
+		assert	validInstant(i) :
+				new PreconditionException("validInstant(i)");
 
 		Duration d = Duration.between(this.getStartInstant(), i);
 
@@ -1093,7 +1109,8 @@ implements	Serializable
 	 * 
 	 * <pre>
 	 * pre	{@code i != null}
-	 * pre	{@code i.equals(currentInstant) || i.isAfter(currentInstant)}
+	 * pre	{@code validInstant(i)}
+	 * pre	{@code !i.isBefore(currentInstant)}
 	 * post	{@code return >= 0}
 	 * </pre>
 	 *
@@ -1109,11 +1126,12 @@ implements	Serializable
 	public long			nanoDelayUntilInstant(Instant i)
 	{
 		assert	i != null : new PreconditionException("i != null");
+		assert	validInstant(i) : new PreconditionException("validInstant(i)");
 		Instant currentInstant = currentInstant();
 		if (i.isBefore(currentInstant)) {
 			System.err.println(
 					"Warning: AcceleratedClock::nanoDelayUntilInstant:"
-					+ " instant " + i + " is *not* equal or after "
+					+ " instant " + i + " is *before* "
 					+ currentInstant + "!");
 		}
 
@@ -1165,7 +1183,8 @@ implements	Serializable
 	 * <pre>
 	 * pre	{@code TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis) >= getStartEpochNanos()}
 	 * pre	{@code i != null}
-	 * pre	{@code i.equals(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis))) || i.isAfter(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)))}
+	 * pre	{@code validInstant(i)}
+	 * pre	{@code !i.isBefore(instantOfEpochInNanos(TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis))}
 	 * post	{@code return > 0}
 	 * </pre>
 	 *
@@ -1185,6 +1204,7 @@ implements	Serializable
 					"TimeUnit.MILLISECONDS.toNanos(baseEpochTimeInMillis)"
 					+ " >= getStartEpochNanos()");
 		assert	i != null : new PreconditionException("i != null");
+		assert	validInstant(i) : new PreconditionException("validInstant(i)");
 		Instant currentInstant = instantOfEpochTimeInNanos(baseEpochTimeInNanos);
 		if (i.isBefore(currentInstant)) {
 			System.err.println(
