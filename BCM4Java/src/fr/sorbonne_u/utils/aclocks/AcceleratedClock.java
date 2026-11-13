@@ -726,6 +726,7 @@ implements	Serializable
 	public boolean		validInstant(Instant i)
 	{
 		assert	i != null : new PreconditionException("i != null");
+
 		return !i.isBefore(getStartInstant()) && !i.isAfter(getEndInstant());
 	}
 
