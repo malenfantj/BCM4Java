@@ -267,6 +267,15 @@ implements	TestStepI
 	// -------------------------------------------------------------------------
 
 	/**
+	 * @see fr.sorbonne_u.components.utils.tests.TestStepI#getClockURI()
+	 */
+	@Override
+	public String		getClockURI()
+	{
+		return this.clockURI;
+	}
+
+	/**
 	 * @see fr.sorbonne_u.components.utils.tests.TestStepI#getPerformingEntityURI()
 	 */
 	@Override

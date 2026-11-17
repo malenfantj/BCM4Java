@@ -42,13 +42,13 @@ import fr.sorbonne_u.components.ports.AbstractOutboundPort;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -186,6 +186,31 @@ implements	ClocksServerCI
 		return ((ClocksServerCI)this.getConnector()).createClock(
 									clockURI, unixEpochStartTimeInNanos,
 									startInstant, accelerationFactor);
+	}
+
+	/**
+	 * @see fr.sorbonne_u.utils.aclocks.ClocksServerCI#createClock(java.lang.String, long, java.time.Instant, java.time.Instant, double)
+	 */
+	@Override
+	public AcceleratedClock	createClock(
+		String clockURI,
+		long unixEpochStartTimeInNanos,
+		Instant startInstant,
+		Instant endInstant,
+		double accelerationFactor
+		) throws Exception
+	{
+		if (VERBOSE) {
+			this.getOwner().traceMessage(
+								"ClocksServerOutboundPort#createClock("
+								+ clockURI + ") from "
+								+ this.getOwner().getClass().getCanonicalName()
+								+ "\n");
+		}
+
+		return ((ClocksServerCI)this.getConnector()).createClock(
+								clockURI, unixEpochStartTimeInNanos,
+								startInstant, endInstant, accelerationFactor);
 	}
 
 	/**

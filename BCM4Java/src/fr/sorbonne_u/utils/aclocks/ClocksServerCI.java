@@ -43,13 +43,7 @@ import java.time.Instant;
  *
  * <p><strong>Description</strong></p>
  * 
- * <p><strong>White-box Invariant</strong></p>
- * 
- * <pre>
- * invariant	{@code true}	// no more invariant
- * </pre>
- * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -92,6 +86,42 @@ extends		OfferedCI,
 		String clockURI,
 		long unixEpochStartTimeInNanos,
 		Instant	startInstant,
+		double accelerationFactor
+		) throws Exception;
+
+	/**
+	 * create an accelerated clock with the given parameters associated with the
+	 * given URI.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
+	 * pre	{@code unixEpochStartTimeInNanos > 0}
+	 * pre	{@code startInstant != null}
+	 * pre	{@code endInstant != null}
+	 * pre	{@code endInstant.isAfter(startInstant)}
+	 * pre	{@code accelerationFactor > 0.0}
+	 * post	{@code return != null}
+	 * post	{@code return.getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code return.getStartInstant().equals(startInstant)}
+	 * post	{@code return.getAccelerationFactor() == accelerationFactor}
+	 * post	{@code getClock(clockURI).equals(return)}
+	 * </pre>
+	 *
+	 * @param clockURI					URI designating the created clock.
+	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time expressed in nanoseconds.
+	 * @param startInstant				start instant to be aligned with the {@code unixEpochStartTimeInNanos}.
+	 * @param endInstant				end instant.
+	 * @param accelerationFactor		acceleration factor to be applied between elapsed time as {@code Instant} and elapsed time as Unix epoch time in nanoseconds.
+	 * @return							the newly created clock.
+	 * @throws Exception				<i>to do</i>.
+	 */
+	public AcceleratedClock	createClock(
+		String clockURI,
+		long unixEpochStartTimeInNanos,
+		Instant	startInstant,
+		Instant	endInstant,
 		double accelerationFactor
 		) throws Exception;
 

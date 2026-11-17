@@ -57,6 +57,21 @@ public interface		TestStepI
 extends		Serializable
 {
 	/**
+	 * return the URI of the clock giving the time reference for the test
+	 * scenario in which this test step appears.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code true}	// no precondition.
+	 * post	{@code return != null && !return.isEmpty()}
+	 * </pre>
+	 *
+	 * @return	the URI of the clock giving the time reference for the test scenario in which this test step appears.
+	 */
+	public String		getClockURI();
+
+	/**
 	 * return the URI of the entity that must perform this test step.
 	 * 
 	 * <p><strong>Contract</strong></p>

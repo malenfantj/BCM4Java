@@ -106,13 +106,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * cannot interfere negatively with creating a clock with {@code createClock}.
  * </p>
  * 
- * <p><strong>White-box Invariant</strong></p>
+ * <p><strong>Implementation Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
  * </pre>
  * 
- * <p><strong>Black-box Invariant</strong></p>
+ * <p><strong>Invariants</strong></p>
  * 
  * <pre>
  * invariant	{@code true}	// no more invariant
@@ -212,6 +212,47 @@ extends		AbstractComponent
 		this(AbstractPort.generatePortURI(ReflectionCI.class),
 			 STANDARD_INBOUNDPORT_URI,
 			 clockURI, unixEpochStartTimeInNanos, startInstant,
+			 accelerationFactor);
+	}
+
+	/**
+	 * create the clock server component with an inbound port offering the
+	 * component interface {@code ClocksServerCI} with as URI the value of
+	 * {@code STANDARD_INBOUNDPORT_URI}; the created clock server component
+	 * will also have a first clock created from the given parameters.
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
+	 * pre	{@code getClock(clockURI) == null}
+	 * pre	{@code unixEpochStartTimeInNanos > 0}
+	 * pre	{@code startInstant != null}
+	 * pre	{@code endInstant != null && endInstant.isAfter(startInstant)}
+	 * pre	{@code accelerationFactor > 0.0}
+	 * post	{@code getClock(clockURI).getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code getClock(clockURI).getStartInstant().equals(startInstant)}
+	 * post	{@code getClock(clockURI).getAccelerationFactor() == accelerationFactor}
+	 * </pre>
+	 *
+	 * @param clockURI					URI designating the first created clock.
+	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time expressed in nanoseconds.
+	 * @param startInstant				start instant to be aligned with the {@code unixEpochStartTimeInNanos}.
+	 * @param endInstant				end instant.
+	 * @param accelerationFactor		acceleration factor to be applied between elapsed time as {@code Instant} and elapsed time as Unix epoch time in nanoseconds.
+	 * @throws Exception				<i>to do</i>.
+	 */
+	protected			ClocksServer(
+		String clockURI,
+		long unixEpochStartTimeInNanos,
+		Instant	startInstant,
+		Instant	endInstant,
+		double accelerationFactor
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(ReflectionCI.class),
+			 STANDARD_INBOUNDPORT_URI,
+			 clockURI, unixEpochStartTimeInNanos, startInstant, endInstant,
 			 accelerationFactor);
 	}
 
@@ -324,6 +365,50 @@ extends		AbstractComponent
 	}
 
 	/**
+	 * create the clock server component with an inbound port having the given
+	 * URI for the inbound port offering the component interface
+	 * {@code ClocksServerCI}; the created clock server component will also have
+	 * a first clock created from the given parameters..
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
+	 * pre	{@code getClock(clockURI) == null}
+	 * pre	{@code unixEpochStartTimeInNanos > 0}
+	 * pre	{@code startInstant != null}
+	 * pre	{@code endInstant != null && endInstant.isAfter(startInstant)}
+	 * pre	{@code accelerationFactor > 0.0}
+	 * post	{@code getClock(clockURI) != null}
+	 * post	{@code getClock(clockURI).getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code getClock(clockURI).getStartInstant().equals(startInstant)}
+	 * post	{@code getClock(clockURI).getAccelerationFactor() == accelerationFactor}
+	 * </pre>
+	 *
+	 * @param inboundPortURI			URI of the inbound port offering the {@code ClockServerCI} component interface.
+	 * @param clockURI					URI designating the created clock.
+	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time expressed in nanoseconds.
+	 * @param startInstant				start instant to be aligned with the {@code unixEpochStartTimeInNanos}.
+	 * @param endInstant				end instant.
+	 * @param accelerationFactor		acceleration factor to be applied between elapsed time as {@code Instant} and elapsed time as Unix epoch time in nanoseconds.
+	 * @throws Exception 				<i>to do</i>.
+	 */
+	protected			ClocksServer(
+		String inboundPortURI,
+		String clockURI,
+		long unixEpochStartTimeInNanos,
+		Instant	startInstant,
+		Instant	endInstant,
+		double accelerationFactor
+		) throws Exception
+	{
+		this(AbstractPort.generatePortURI(ReflectionCI.class),
+			 inboundPortURI, clockURI, unixEpochStartTimeInNanos,
+			 startInstant, endInstant, accelerationFactor);
+	}
+
+	/**
 	 * create the clock server component with an inbound port having the
 	 * given reflection inbound port URI and the given URI for the inbound
 	 * port offering the component interface {@code ClocksServerCI}; the created
@@ -362,6 +447,53 @@ extends		AbstractComponent
 		double accelerationFactor
 		) throws Exception
 	{
+		this(reflectionInboundPortURI, inboundPortURI, clockURI,
+			 unixEpochStartTimeInNanos, startInstant, null,
+			 accelerationFactor);
+	}
+
+	/**
+	 * create the clock server component with an inbound port having the
+	 * given reflection inbound port URI and the given URI for the inbound
+	 * port offering the component interface {@code ClocksServerCI}; the created
+	 * clock server component will also have a first clock created from the
+	 * given parameters..
+	 * 
+	 * <p><strong>Contract</strong></p>
+	 * 
+	 * <pre>
+	 * pre	{@code inboundPortURI != null && !inboundPortURI.isEmpty()}
+	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
+	 * pre	{@code getClock(clockURI) == null}
+	 * pre	{@code unixEpochStartTimeInNanos > 0}
+	 * pre	{@code startInstant != null}
+	 * pre	{@code endInstant == null || endInstant.isAfter(startInstant)}
+	 * pre	{@code accelerationFactor > 0.0}
+	 * post	{@code getClock(clockURI) != null}
+	 * post	{@code getClock(clockURI).getStartEpochNanos() == unixEpochStartTimeInNanos}
+	 * post	{@code getClock(clockURI).getStartInstant().equals(startInstant)}
+	 * post	{@code getClock(clockURI).getAccelerationFactor() == accelerationFactor}
+	 * </pre>
+	 *
+	 * @param reflectionInboundPortURI	URI of the reflection inbound port.
+	 * @param inboundPortURI			URI of the inbound port offering the {@code ClockServerCI} component interface.
+	 * @param clockURI					URI designating the created clock.
+	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time expressed in nanoseconds.
+	 * @param startInstant				start instant to be aligned with the {@code unixEpochStartTimeInNanos}.
+	 * @param endInstant				end instant.
+	 * @param accelerationFactor		acceleration factor to be applied between elapsed time as {@code Instant} and elapsed time as Unix epoch time in nanoseconds.
+	 * @throws Exception 				<i>to do</i>.
+	 */
+	protected			ClocksServer(
+		String reflectionInboundPortURI,
+		String inboundPortURI,
+		String clockURI,
+		long unixEpochStartTimeInNanos,
+		Instant	startInstant,
+		Instant	endInstant,
+		double accelerationFactor
+		) throws Exception
+	{
 		// access to this.clocks in mutual exclusion is ensured by having only
 		// one thread to execute the component services.
 		super(reflectionInboundPortURI, 1, 0);
@@ -376,6 +508,9 @@ extends		AbstractComponent
 				new PreconditionException("unixEpochStartTimeInNanos > 0");
 		assert	startInstant != null :
 				new PreconditionException("startInstant != null");
+		assert	endInstant == null || endInstant.isAfter(startInstant) :
+				new PreconditionException(
+						"endInstant == null || endInstant.isAfter(startInstant)");
 		assert	accelerationFactor > 0.0 :
 				new PreconditionException("accelerationFactor > 0.0");
 
@@ -389,7 +524,7 @@ extends		AbstractComponent
 			this.traceMessage("Creating the clock " + clockURI + ".\n");
 		}
 		this.createClock(clockURI, unixEpochStartTimeInNanos,
-						 startInstant, accelerationFactor);
+						 startInstant, endInstant, accelerationFactor);
 
 		assert	getClock(clockURI) != null :
 				new PostconditionException("getClock(clockURI) != null");
@@ -477,6 +612,7 @@ extends		AbstractComponent
 	 * pre	{@code clockURI != null && !clockURI.isEmpty()}
 	 * pre	{@code unixEpochStartTimeInNanos > 0}
 	 * pre	{@code startInstant != null}
+	 * pre	{@code endInstant == null || endInstant.isAfter(startInstant)}
 	 * pre	{@code accelerationFactor > 0.0}
 	 * post	{@code return != null}
 	 * post	{@code return.getStartEpochNanos() == unixEpochStartTimeInNanos}
@@ -488,14 +624,16 @@ extends		AbstractComponent
 	 * @param clockURI					URI designating the created clock.
 	 * @param unixEpochStartTimeInNanos	start time in Unix epoch time expressed in nanoseconds.
 	 * @param startInstant				start instant to be aligned with the {@code unixEpochStartTimeInNanos}.
+	 * @param endInstant				end instant.
 	 * @param accelerationFactor		acceleration factor to be applied between elapsed time as {@code Instant} and elapsed time as Unix epoch time in nanoseconds.
 	 * @return							the newly created clock.
 	 * @throws Exception				<i>to do</i>.
 	 */
-	public AcceleratedClock		createClock(
+	public AcceleratedClock	createClock(
 		String clockURI,
 		long unixEpochStartTimeInNanos,
 		Instant	startInstant,
+		Instant	endInstant,
 		double accelerationFactor
 		) throws Exception
 	{
@@ -511,6 +649,9 @@ extends		AbstractComponent
 				new PreconditionException("unixEpochStartTimeInNanos > 0");
 		assert	startInstant != null :
 				new PreconditionException("startInstant != null");
+		assert	endInstant == null || endInstant.isAfter(startInstant) :
+				new PreconditionException(
+						"endInstant == null || endInstant.isAfter(startInstant)");
 		assert	accelerationFactor > 0.0 :
 				new PreconditionException("accelerationFactor > 0.0");
 
@@ -518,11 +659,19 @@ extends		AbstractComponent
 			this.traceMessage("Creating the clock " + clockURI + ".\n");
 		}
 
-		AcceleratedClock ret =
-				new AcceleratedClock(clockURI,
-									 unixEpochStartTimeInNanos,
-									 startInstant,
-									 accelerationFactor);
+		AcceleratedClock ret = null;
+		if (endInstant == null) {
+			ret = new AcceleratedClock(clockURI,
+									   unixEpochStartTimeInNanos,
+									   startInstant,
+									   accelerationFactor);
+		} else {
+			ret = new AcceleratedClock(clockURI,
+									   unixEpochStartTimeInNanos,
+									   startInstant,
+									   endInstant,
+									   accelerationFactor);
+		}
 
 		if (VERBOSE) {
 			this.traceMessage("Clock " + clockURI + " created.\n");

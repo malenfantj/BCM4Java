@@ -235,10 +235,10 @@ implements	Serializable
 	 * post	{@code true}	// no postcondition.
 	 * </pre>
 	 *
-	 * @param clockURI							URI of the clock providing the time reference for this scenario.
-	 * @param startInstant						start instant of the simulation run.
-	 * @param endInstant						end instant of the simulation run.
-	 * @param testSteps							test steps in the scenario.
+	 * @param clockURI		URI of the clock providing the time reference for this scenario.
+	 * @param startInstant	start instant of the simulation run.
+	 * @param endInstant	end instant of the simulation run.
+	 * @param testSteps		test steps in the scenario.
 	 */
 	public				TestScenario(
 		String clockURI,
@@ -650,7 +650,7 @@ implements	Serializable
 	}
 
 	/**
-	 * 
+	 * schedule the next test step for the given component.
 	 * 
 	 * <p><strong>Contract</strong></p>
 	 * 
@@ -658,6 +658,7 @@ implements	Serializable
 	 * pre	{@code uri != null && !uri.isEmpty()}
 	 * pre	{@code performer != null}
 	 * pre	{@code clock != null}
+	 * pre	{@code clock.getClockURI().equals(getClockURI())}
 	 * pre	{@code entityAppearsIn(uri)}
 	 * pre	{@code !scenarioTerminated(uri)}
 	 * post	{@code true}	// no postcondition.
@@ -678,6 +679,9 @@ implements	Serializable
 		assert	performer != null :
 				new PreconditionException("performer != null");
 		assert	clock != null : new PreconditionException("clock != null");
+		assert	clock.getClockURI().equals(getClockURI()) :
+				new PreconditionException(
+						"clock.getClockURI().equals(getClockURI())");
 		assert	this.entityAppearsIn(uri) :
 				new PreconditionException("entityAppearsIn(uri)");
 		assert	!this.scenarioTerminated(uri) :
